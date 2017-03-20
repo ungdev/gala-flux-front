@@ -13,7 +13,6 @@ export default class App extends React.Component {
                 </header>
                 <hr/>
                 <main>
-                    I am the content
                     {this.props.children}
                 </main>
                 <hr/>
