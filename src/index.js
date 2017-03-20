@@ -19,7 +19,7 @@ import LogPage from "./components/pages/LogPage.jsx";
  * @returns {*}
  */
 function requireAuth (nextState, replace, callback) {
-    const token = localStorage.getItem('@token');
+    const token = localStorage.getItem('token');
     if (!token) replace('/');
     return callback();
 }

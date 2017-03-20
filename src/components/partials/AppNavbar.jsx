@@ -1,8 +1,22 @@
 import React from 'react';
 
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 
 export default class AppNavbar extends React.Component {
+
+    constructor() {
+        super();
+
+        this._logout = this._logout.bind(this);
+    }
+
+    /**
+     *  Remove the JWT from the localStorage and redirect the user to the root
+     */
+    _logout() {
+        localStorage.removeItem('token');
+        browserHistory.push('/');
+    }
 
     render() {
         return (
@@ -15,6 +29,9 @@ export default class AppNavbar extends React.Component {
                 </div>
                 <div>
                     <Link to="/log">Log</Link>
+                </div>
+                <div>
+                    <a href="" onClick={this._logout}>Logout</a>
                 </div>
             </div>
         );
