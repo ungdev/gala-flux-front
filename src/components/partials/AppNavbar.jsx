@@ -31,7 +31,7 @@ export default class AppNavbar extends React.Component {
                     <Link to="/log">Log</Link>
                 </div>
                 <div>
-                    <a href="" onClick={this._logout}>Logout</a>
+                    <a onClick={this._logout}>Logout</a>
                 </div>
             </div>
         );
