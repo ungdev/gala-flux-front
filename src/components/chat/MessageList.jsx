@@ -10,6 +10,8 @@ export default class MessageList extends React.Component {
         this.state = {
             messages: []
         };
+
+        this._handleMessage = this._handleMessage.bind(this);
     }
 
     componentDidMount() {
@@ -21,13 +23,20 @@ export default class MessageList extends React.Component {
             this.setState({messages: body});
         });
         // listen to the new messages
-        io.socket.on('message', event => {
-            console.log('DB Message event: ', event);
-            // handle the new message
-            const state = this.state;
-            state.messages.push(event.data);
-            this.setState(state);
-        });
+        io.socket.on('message', this._handleMessage);
+    }
+
+    componentWillUnmount() {
+        // remove the socket io listener
+        io.socket.off('message', this._handleMessage);
+    }
+
+    _handleMessage(e) {
+        console.log('DB Message event: ', e);
+        // handle the new message
+        const state = this.state;
+        state.messages.push(e.data);
+        this.setState(state);
     }
 
     render() {
