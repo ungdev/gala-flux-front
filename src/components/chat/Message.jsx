@@ -12,7 +12,7 @@ export default class Message extends React.Component {
     render() {
         return (
             <li>
-                {this.state.message}
+                {this.state.message.text}
             </li>
         );
     }
