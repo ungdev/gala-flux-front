@@ -3,6 +3,9 @@ import ReactDOM from "react-dom";
 
 import { browserHistory, Router, Route, IndexRoute } from 'react-router';
 
+// material ui
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
 // Pages
 import App from "./components/App.jsx";
 import HomePage from "./components/pages/HomePage.jsx";
@@ -25,12 +28,14 @@ function requireAuth (nextState, replace, callback) {
 }
 
 ReactDOM.render(
-    <Router history={browserHistory}>
-        <Route path="/" component={App}>
-            <IndexRoute component={HomePage} />
-            <Route path="bar" component={BarPage} onEnter={requireAuth}/>
-            <Route path="log" component={LogPage} onEnter={requireAuth}/>
-        </Route>
-    </Router>,
+    <MuiThemeProvider>
+        <Router history={browserHistory}>
+            <Route path="/" component={App}>
+                <IndexRoute component={HomePage} />
+                <Route path="bar" component={BarPage} onEnter={requireAuth}/>
+                <Route path="log" component={LogPage} onEnter={requireAuth}/>
+            </Route>
+        </Router>
+    </MuiThemeProvider>,
     document.getElementById('app')
 );
