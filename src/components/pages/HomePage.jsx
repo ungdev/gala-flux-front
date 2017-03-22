@@ -12,34 +12,20 @@ export default class HomePage extends React.Component {
     }
 
     componentWillMount() {
-        console.log('check url params');
-        let authorizationCode = this.getAuthorizationCode();
+        // when the home page his mounted, check if there is an authorization_code in the URL
+        let authorizationCode = this._getAuthorizationCode();
         if (authorizationCode) {
-            AuthService.sendAuthorizationCode(authorizationCode, success => {
-                console.log("logged ! : ", success);
-                AuthService.saveJWT('jwtetu');
-                browserHistory.push('/bar');
-            }, error => {
-                console.log("send code error : ", error);
-            });
+            AuthService.sendAuthorizationCode(authorizationCode,
+                success => {
+                    // on success, save the JWT
+                    AuthService.saveJWT(success.body.jwt);
+                    browserHistory.push('/bar');
+                },
+                error => {
+                    console.log("send code error : ", error);
+                }
+            );
         }
-    }
-
-    /**
-     * Cut the current URL and search for the authorization code
-     * @returns {String|null} The authorization code or null
-     */
-    getAuthorizationCode() {
-        let query = (window.location.href).split("?")[1];
-        if (query) {
-            let parameters = query.split("&");
-            for (let i = 0; i < parameters.length; i++) {
-                let parameter = parameters[i].split("=");
-                if (parameter[0] == "authorization_code")
-                    return parameter[1];
-            }
-        }
-        return null;
     }
 
     /**
@@ -63,6 +49,26 @@ export default class HomePage extends React.Component {
                 </button>
             </div>
         );
+    }
+
+    /**
+     * Cut the current URL and search for the authorization code in it
+     * @returns {String|null} The authorization code or null
+     */
+    static _getAuthorizationCode() {
+        // get the part of the URL after '?'
+        const query = (window.location.href).split("?")[1];
+        if (query) {
+            // look at each parameters
+            const parameters = query.split("&");
+            for (let i = 0; i < parameters.length; i++) {
+                // if the parameter name is authorization_code, return the value
+                const parameter = parameters[i].split("=");
+                if (parameter[0] == "authorization_code")
+                    return parameter[1];
+            }
+        }
+        return null;
     }
 
 }

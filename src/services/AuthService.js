@@ -1,21 +1,58 @@
+/**
+ * Class used for all about Authentication
+ */
 class AuthService {
 
     constructor() {
+        // The value of _jwtName is the name of the JWT in the localStorage
         this._jwtName = 'token';
     }
 
     /**
-     * Check if there is a item in the localStorage with the value
+     * Check if the user is authenticated.
+     * Used to protect some routes.
+     *
+     * Parameters from react-router (onEnter prop)
+     *
+     * @param nextState
+     * @param replace
+     * @param callback
+     * @returns callback
+     */
+    requireAuth (nextState, replace, callback) {
+        // if there is a JWT in the localStorage, the user is allowed to access the route
+        if (this.isAuthenticated()) {
+            return callback();
+        }
+        // if there is no JWT, send a request to the server in order to try
+        // to authenticate the user by his IP address
+        this.checkIpAddress(
+            success => {
+                // save the JWT. Now the User can access the route.
+                this.saveJWT(success.body.jwt);
+                return callback();
+            },
+            error => {
+                // if the IP address is not valid, redirect him to the home page
+                // so he can login with EtuUTT
+                replace('/');
+                return callback();
+            }
+        );
+    }
+
+    /**
+     * Check if there is an item in the localStorage with the value
      * of this._jwtName as name. The value of this item should be a JWT.
      *
-     * @returns {Object|null} A JWT or null if the item is not in the localStorage
+     * @returns {String|null} A JWT or null if the item is not in the localStorage
      */
     isAuthenticated() {
         return localStorage.getItem(this._jwtName);
     }
 
     /**
-     * Create or update the jwt in the localStorage
+     * Create or update the JWT in the localStorage
      *
      * @param jwt
      */
@@ -24,8 +61,8 @@ class AuthService {
     }
 
     /**
-     * Send an HttpRequest to the server to try to authenticate
-     * the client with the IP address
+     * Send an webSocket request to the server to try to authenticate
+     * the user with IP address
      *
      * @callback success
      * @callback error
@@ -43,7 +80,8 @@ class AuthService {
     }
 
     /**
-     * Try to authenticate with oauth (EtuUTT)
+     * Try to authenticate with oauth (EtuUTT) : Step 1
+     * Do a webSocket request to get the EtuUTT redirection link.
      *
      * @callback success
      * @callback error
@@ -61,6 +99,11 @@ class AuthService {
     };
 
     /**
+     * Try to authenticate with oauth (EtuUTT) : Step 2
+     * After been redirected to the EtuUTT website, the user his
+     * redirected back here with an authorization code in the URL.
+     * We have to send this authorization code to the server.
+     * If all is ok, the server send us a JWT.
      *
      * @param authorizationCode
      * @callback success
