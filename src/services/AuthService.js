@@ -76,9 +76,9 @@ class AuthService {
             url: '/login/ip'
         }, (resData, jwres) => {
             if (jwres.error) {
-                error(jwres);
+                return error(jwres);
             }
-            success(jwres)
+            return success(jwres);
         });
     }
 
@@ -95,11 +95,11 @@ class AuthService {
             url: '/login/oauth'
         }, (resData, jwres) => {
             if (jwres.error) {
-                error(jwres);
+                return error(jwres);
             }
-            success(jwres)
+            return success(jwres);
         });
-    };
+    }
 
     /**
      * Try to authenticate with oauth (EtuUTT) : Step 2
@@ -119,9 +119,9 @@ class AuthService {
             data: {authorizationCode}
         }, (resData, jwres) => {
             if (jwres.error) {
-                error(jwres);
+                return error(jwres);
             }
-            success(jwres);
+            return success(jwres);
         });
     }
 
