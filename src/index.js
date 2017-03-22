@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 
 import { browserHistory, Router, Route, IndexRoute } from 'react-router';
 
+import AuthService from './services/AuthService';
+
 // material ui
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
@@ -22,9 +24,22 @@ import LogPage from "./components/pages/LogPage.jsx";
  * @returns {*}
  */
 function requireAuth (nextState, replace, callback) {
-    const token = localStorage.getItem('token');
-    if (!token) replace('/');
-    return callback();
+    // if there is a token, continue
+    console.log('check token');
+    if (AuthService.isAuthenticated()) {
+        return callback();
+    }
+    // if there is no token, check the IP address
+    console.log('check ip address');
+    AuthService.checkIpAddress(resp => {
+        console.log(resp);
+        AuthService.saveJWT('fakejwt');
+        return callback();
+    }, error => {
+        console.log("error : ", error);
+        replace('/');
+        return callback();
+    });
 }
 
 ReactDOM.render(
