@@ -13,7 +13,7 @@ export default class HomePage extends React.Component {
 
     componentWillMount() {
         // when the home page his mounted, check if there is an authorization_code in the URL
-        let authorizationCode = this._getAuthorizationCode();
+        let authorizationCode = HomePage._getAuthorizationCode();
         if (authorizationCode) {
             AuthService.sendAuthorizationCode(authorizationCode,
                 success => {

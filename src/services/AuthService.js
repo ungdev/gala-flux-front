@@ -6,6 +6,9 @@ class AuthService {
     constructor() {
         // The value of _jwtName is the name of the JWT in the localStorage
         this._jwtName = 'token';
+
+        // binding
+        this.requireAuth = this.requireAuth.bind(this);
     }
 
     /**
