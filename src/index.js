@@ -14,6 +14,11 @@ import HomePage from "./components/pages/HomePage.jsx";
 import BarPage from "./components/pages/BarPage.jsx";
 import LogPage from "./components/pages/LogPage.jsx";
 
+// This code is executed when the app is loaded
+// So if there is a jwt in the localStorage, try to authenticate the webSocket connexion
+AuthService.tryToAuthenticateConnexion();
+
+
 ReactDOM.render(
     <MuiThemeProvider>
         <Router history={browserHistory}>
