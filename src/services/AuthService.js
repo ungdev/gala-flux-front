@@ -23,7 +23,7 @@ class AuthService {
      * @returns callback
      */
     requireAuth (nextState, replace, callback) {
-        // if there is a JWT in the localStorage, the user is allowed to access the route
+        // if there is a JWT in the localStorage
         if (this.isAuthenticated()) {
             return callback();
         }
@@ -122,6 +122,31 @@ class AuthService {
                 return error(jwres);
             }
             return success(jwres);
+        });
+    }
+
+    /**
+     * If there is a jwt in the localStorage, try to authenticate the
+     * webSocket connexion by sending the jwt to the server.
+     * In case of success, the response contains a new jwt.
+     *
+     * @return {boolean} the authentication success
+     */
+    tryToAuthenticateConnexion() {
+        let jwt = this.isAuthenticated();
+        if (!jwt) {
+            return false;
+        }
+        io.socket.request({
+            method: 'post',
+            url: '/login/jwt',
+            data: {jwt}
+        }, (resData, jwres) => {
+            if (jwres.error) {
+                return false;
+            }
+            this.saveJWT(jwres.body.jwt);
+            return true;
         });
     }
 
