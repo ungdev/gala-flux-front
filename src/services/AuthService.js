@@ -150,6 +150,13 @@ class AuthService {
         });
     }
 
+    /**
+     * Remove the token from the localStorage
+     */
+    logout() {
+        localStorage.removeItem(this._jwtName);
+    }
+
 }
 
 export default new AuthService();
