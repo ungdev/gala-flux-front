@@ -6,6 +6,8 @@ class AuthService {
     constructor() {
         // The value of _jwtName is the name of the JWT in the localStorage
         this._jwtName = 'token';
+        // The value of _loginAsJwtName is the name of the JWT in the localStorage if the user is "login as" someone else
+        this._firstJwtName = "firstToken";
 
         // binding
         this.requireAuth = this.requireAuth.bind(this);
@@ -67,8 +69,11 @@ class AuthService {
      * Send an webSocket request to the server to try to authenticate
      * the user with IP address
      *
-     * @callback success
-     * @callback error
+     * @callback successCallback
+     * @callback errorCallback
+     *
+     * @param {successCallback} success
+     * @param {errorCallback} error
      */
     checkIpAddress(success, error) {
         io.socket.request({
@@ -108,9 +113,12 @@ class AuthService {
      * We have to send this authorization code to the server.
      * If all is ok, the server send us a JWT.
      *
+     * @callback successCallback
+     * @callback errorCallback
+     *
      * @param authorizationCode
-     * @callback success
-     * @callback error
+     * @param {successCallback} success
+     * @param {errorCallback} error
      */
     sendAuthorizationCode(authorizationCode, success, error) {
         io.socket.request({
@@ -147,6 +155,39 @@ class AuthService {
             }
             this.saveJWT(jwres.body.jwt);
             return true;
+        });
+    }
+
+    /**
+     * Try to authenticate the user with an other account, by user id.
+     * In case of success, the server responds with a JWT.
+     *
+     * @callback successCallback
+     * @callback errorCallback
+     *
+     * @param {String} id : the user id
+     * @param {successCallback} success
+     * @param {errorCallback} error
+     */
+    tryToLoginAs(id, success, error) {
+        io.socket.request({
+            method: 'post',
+            url: '/login/as/' + id
+        }, (resData, jwres) => {
+            if (jwres.error) {
+                return error(jwres);
+            }
+            // check if the user is already authenticated with an other account
+            let firstJwt = localStorage.getItem(this._firstJwtName);
+            if (firstJwt) {
+                // if it's the case, just replace the current jwt
+                this.saveJWT(jwres.body.jwt);
+            } else {
+                // else, save the current jwt in the localStorage and update the main token
+                localStorage.setItem(this._firstJwtName, localStorage.getItem(this._jwtName));
+                this.saveJWT(jwres.body.jwt);
+            }
+            return success(jwres);
         });
     }
 
