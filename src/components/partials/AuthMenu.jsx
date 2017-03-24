@@ -25,6 +25,7 @@ export default class AuthMenu extends React.Component {
         this._logout = this._logout.bind(this);
         this._openLoginAs = this._openLoginAs.bind(this);
         this._closeDialog = this._closeDialog.bind(this);
+        this._backToMainAccount = this._backToMainAccount.bind(this);
     }
 
     /**
@@ -64,6 +65,14 @@ export default class AuthMenu extends React.Component {
     }
 
     /**
+     * Close the menu and call the AuthService's method to come back to the main account
+     */
+    _backToMainAccount() {
+        this._closeMenu();
+        AuthService.backToMainAccount();
+    }
+
+    /**
      * Set the value of 'open' to false in the state
      * to close the AuthMenu
      */
@@ -88,7 +97,7 @@ export default class AuthMenu extends React.Component {
                     aria-haspopup="true"
                     onClick={this._openMenu}
                 >
-                    [Username]
+                    {AuthService.payload ? AuthService.payload.userId : null}
                 </Button>
                 <Menu
                     id="auth-menu"
@@ -98,7 +107,7 @@ export default class AuthMenu extends React.Component {
                 >
                     <MenuItem onClick={this._logout}>Logout</MenuItem>
                     <MenuItem onClick={this._openLoginAs}>Login as</MenuItem>
-                    <MenuItem onClick={this._closeMenu}>Back to main account</MenuItem>
+                    <MenuItem onClick={this._backToMainAccount}>Back to main account</MenuItem>
                 </Menu>
                 <LoginAs open={this.state.openLoginAs} closeDialog={this._closeDialog} />
             </div>

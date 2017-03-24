@@ -1,3 +1,5 @@
+import jwtDecode from 'jwt-decode';
+
 /**
  * Class used for all about Authentication
  */
@@ -8,9 +10,19 @@ class AuthService {
         this._jwtName = 'token';
         // The value of _loginAsJwtName is the name of the JWT in the localStorage if the user is "login as" someone else
         this._firstJwtName = "firstToken";
+        // The jwt (the active account, with the _jwtName) decoded payload
+        this._payload = null;
 
         // binding
         this.requireAuth = this.requireAuth.bind(this);
+    }
+
+    /**
+     * Return the decoded jwt payload
+     * @returns {object|null}
+     */
+    get payload() {
+        return this._payload;
     }
 
     /**
@@ -26,7 +38,7 @@ class AuthService {
      */
     requireAuth (nextState, replace, callback) {
         // if there is a JWT in the localStorage
-        if (this.isAuthenticated()) {
+        if (this.getJWT()) {
             return callback();
         }
         // if there is no JWT, send a request to the server in order to try
@@ -52,7 +64,7 @@ class AuthService {
      *
      * @returns {String|null} A JWT or null if the item is not in the localStorage
      */
-    isAuthenticated() {
+    getJWT() {
         return localStorage.getItem(this._jwtName);
     }
 
@@ -63,6 +75,7 @@ class AuthService {
      */
     saveJWT(jwt) {
         localStorage.setItem(this._jwtName, jwt);
+        this._payload = jwtDecode(jwt);
     }
 
     /**
@@ -141,7 +154,7 @@ class AuthService {
      * @return {boolean} the authentication success
      */
     tryToAuthenticateConnexion() {
-        let jwt = this.isAuthenticated();
+        let jwt = this.getJWT();
         if (!jwt) {
             return false;
         }
@@ -196,6 +209,20 @@ class AuthService {
      */
     logout() {
         localStorage.removeItem(this._jwtName);
+    }
+
+    /**
+     * Switch tokens
+     */
+    backToMainAccount() {
+        const firstToken = localStorage.getItem(this._firstJwtName);
+        if (firstToken) {
+            // remove the item in the localStorage which saves the main account jwt
+            localStorage.removeItem(this._firstJwtName);
+            // set the main token value and update the websocket connexion
+            this.saveJWT(firstToken);
+            this.tryToAuthenticateConnexion();
+        }
     }
 
 }
