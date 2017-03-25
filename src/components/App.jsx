@@ -1,6 +1,7 @@
 import React from 'react';
 
 import AppNavbar from "./partials/AppNavbar.jsx";
+import AppFooter from "./partials/AppFooter.jsx";
 
 export default class App extends React.Component {
 
@@ -17,10 +18,7 @@ export default class App extends React.Component {
                 <main style={style.main}>
                     {this.props.children}
                 </main>
-                <hr/>
-                <footer>
-                    I am the Footer
-                </footer>
+                <AppFooter />
             </div>
         );
     }

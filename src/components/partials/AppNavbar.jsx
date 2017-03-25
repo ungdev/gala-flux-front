@@ -8,30 +8,9 @@ import Toolbar from 'material-ui/Toolbar';
 import Text from 'material-ui/Text';
 import Button from 'material-ui/Button';
 
+import AuthMenu from './AuthMenu.jsx';
+
 export default class AppNavbar extends React.Component {
-
-    constructor() {
-        super();
-
-        this._logout =  this._logout.bind(this);
-        this._redirectTo=  this._redirectTo.bind(this);
-    }
-
-    /**
-     *  Remove the JWT from the localStorage and redirect the user to the root
-     */
-    _logout() {
-        localStorage.removeItem('token');
-        this._redirectTo('/');
-    }
-
-    /**
-     *  The redirection path
-     *  @param path
-     */
-    _redirectTo(path) {
-        browserHistory.push(path);
-    }
 
     render() {
         const style = {
@@ -43,12 +22,12 @@ export default class AppNavbar extends React.Component {
         return (
             <AppBar>
                 <Toolbar>
-                    <Text colorInherit type="title" style={style.title} onClick={_ => this._redirectTo('/')}>
+                    <Text colorInherit type="title" style={style.title} onClick={_ => browserHistory.push('/')}>
                         Flux 2.0
                     </Text>
-                    <Button contrast onClick={_ => this._redirectTo('/bar')}>Bar</Button>
-                    <Button contrast onClick={_ => this._redirectTo('/log')}>Log</Button>
-                    <Button contrast onClick={_ => this._logout()}>Logout</Button>
+                    <Button contrast onClick={_ => browserHistory.push('/bar')}>Bar</Button>
+                    <Button contrast onClick={_ => browserHistory.push('/log')}>Log</Button>
+                    <AuthMenu />
                 </Toolbar>
             </AppBar>
         );

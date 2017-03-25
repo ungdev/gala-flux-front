@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/prudywsh/flux2-client#readme",
   "dependencies": {
+    "flux": "^3.1.2",
+    "jwt-decode": "^2.2.0",
     "material-ui": "^1.0.0-alpha.7",
     "path": "^0.12.7",
     "react": "^15.4.2",
