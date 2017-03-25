@@ -1,12 +1,11 @@
 import React from 'react';
 
-import { browserHistory } from 'react-router';
+import AuthStore from '../../stores/AuthStore';
+import AuthActions from '../../actions/AuthActions';
 
 import Button from 'material-ui/Button';
 import LoginAs from './LoginAs.jsx';
 import { Menu, MenuItem } from 'material-ui/Menu';
-
-import AuthService from '../../services/AuthService';
 
 export default class AuthMenu extends React.Component {
 
@@ -14,7 +13,8 @@ export default class AuthMenu extends React.Component {
         super();
 
         this.state = {
-            menuAnchor: undefined,
+            user: null,
+            menuAnchor: null,
             openMenu: false,
             openLoginAs: false
         };
@@ -28,14 +28,24 @@ export default class AuthMenu extends React.Component {
         this._backToMainAccount = this._backToMainAccount.bind(this);
     }
 
+    componentDidMount() {
+        // listen the store change
+        AuthStore.addChangeListener(this._onAuthStoreChange.bind(this));
+    }
+
     /**
-     * Call the AuthService to logout the user.
-     * Then, redirect him to the home page
+     * When there is a change in the AuthStore, update the value of user in the component state
+     */
+    _onAuthStoreChange() {
+        this.setState({ user: AuthStore.jwt });
+    }
+
+    /**
+     * Close the menu and call the AuthActions to logout the user.
      */
     _logout() {
         this._closeMenu();
-        AuthService.logout();
-        AuthMenu._redirectTo('/');
+        AuthActions.logout();
     }
 
     /**
@@ -69,7 +79,7 @@ export default class AuthMenu extends React.Component {
      */
     _backToMainAccount() {
         this._closeMenu();
-        AuthService.backToMainAccount();
+        AuthActions.backToMainAccount();
     }
 
     /**
@@ -78,14 +88,6 @@ export default class AuthMenu extends React.Component {
      */
     _closeMenu() {
         this.setState({ openMenu: false });
-    }
-
-    /**
-     * The redirection path
-     * @param path
-     */
-    static _redirectTo(path) {
-        browserHistory.push(path);
     }
 
     render() {
@@ -97,7 +99,7 @@ export default class AuthMenu extends React.Component {
                     aria-haspopup="true"
                     onClick={this._openMenu}
                 >
-                    {AuthService.payload ? AuthService.payload.userId : null}
+                    {this.state.user ? this.state.user.userId : ''}
                 </Button>
                 <Menu
                     id="auth-menu"

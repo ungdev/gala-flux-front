@@ -1,10 +1,10 @@
 import React from 'react';
 
+import AuthService from '../../services/AuthService';
+
 import Button from 'material-ui/Button';
 import { Dialog, DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
-
-import AuthService from '../../services/AuthService';
 
 export default class LoginAs extends React.Component {
 
@@ -33,16 +33,13 @@ export default class LoginAs extends React.Component {
      */
     _submitForm() {
         AuthService.tryToLoginAs(this.state.id,
-            success => {
-                console.log("login as success : ", success);
-                this.props.closeDialog();
-                this.setState({ id: '' });
-            },
             error => {
                 console.log("login as error : ", error);
                 // + display an error in the text field
             }
         );
+        this.props.closeDialog();
+        this.setState({ id: '' });
     }
 
     render() {

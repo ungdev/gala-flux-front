@@ -1,5 +1,9 @@
 import React from 'react';
 
+import ChatStore from '../../stores/ChatStore';
+import ChatService from '../../services/ChatService';
+import ChatActions from '../../actions/ChatActions';
+
 import Message from './Message.jsx';
 
 export default class MessageList extends React.Component {
@@ -15,14 +19,13 @@ export default class MessageList extends React.Component {
     }
 
     componentDidMount() {
-        // get the messages
-        io.socket.get('/message', (body, JWR) => {
-            console.log('Sails responded with: ', body);
-            console.log('with headers: ', JWR.headers);
-            console.log('and with status code: ', JWR.statusCode);
-            this.setState({messages: body});
+        // listen the store change
+        ChatStore.addChangeListener(this._onChatStoreChange.bind(this));
+        // get the messages to init the store
+        ChatService.getMessages(err => {
+            console.log("get messages error : ", err);
         });
-        // listen to the new messages
+        // listen to the new messages. On new message, trigger an action
         io.socket.on('message', this._handleMessage);
     }
 
@@ -31,12 +34,20 @@ export default class MessageList extends React.Component {
         io.socket.off('message', this._handleMessage);
     }
 
+    /**
+     * Trigger an action to handle the new message
+     *
+     * @param e
+     */
     _handleMessage(e) {
-        console.log('DB Message event: ', e);
-        // handle the new message
-        const state = this.state;
-        state.messages.push(e.data);
-        this.setState(state);
+        ChatActions.newMessage(e.data);
+    }
+
+    /**
+     * Update the messages in the state
+     */
+    _onChatStoreChange() {
+        this.setState({messages : ChatStore.messages});
     }
 
     render() {

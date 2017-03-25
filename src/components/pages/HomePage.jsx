@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { browserHistory } from 'react-router';
 import AuthService from '../../services/AuthService';
 
 export default class HomePage extends React.Component {
@@ -13,42 +12,15 @@ export default class HomePage extends React.Component {
 
     componentWillMount() {
         // when the home page his mounted, check if there is an authorization_code in the URL
+        // we check it here because the EtuUtt redirect the user on '/' (this page)
         let authorizationCode = HomePage._getAuthorizationCode();
         if (authorizationCode) {
             AuthService.sendAuthorizationCode(authorizationCode,
-                success => {
-                    // on success, save the JWT
-                    AuthService.saveJWT(success.body.jwt);
-                    browserHistory.push('/bar');
-                },
                 error => {
                     console.log("send code error : ", error);
                 }
             );
         }
-    }
-
-    /**
-     *  Write the token on the localStorage
-     *  And redirect to the bar or according to the user team
-     */
-    _login() {
-        AuthService.authWithEtuUTT(resp => {
-            console.log("resp : ", resp);
-            window.location = resp.body.redirectUri;
-        }, err => {
-            console.log("err : ", err);
-        });
-    }
-
-    render() {
-        return (
-            <div>
-                <button onClick={this._login}>
-                    Login
-                </button>
-            </div>
-        );
     }
 
     /**
@@ -69,6 +41,27 @@ export default class HomePage extends React.Component {
             }
         }
         return null;
+    }
+
+    /**
+     *  Redirect the user to the EtuUtt auth page
+     */
+    _login() {
+        AuthService.authWithEtuUTT(resp => {
+            window.location = resp.body.redirectUri;
+        }, err => {
+            console.log("err : ", err);
+        });
+    }
+
+    render() {
+        return (
+            <div>
+                <button onClick={this._login}>
+                    Login
+                </button>
+            </div>
+        );
     }
 
 }

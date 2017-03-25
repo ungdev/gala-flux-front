@@ -12,14 +12,6 @@ import AuthMenu from './AuthMenu.jsx';
 
 export default class AppNavbar extends React.Component {
 
-    /**
-     * redirect
-     * @param {String} path
-     */
-    static _redirectTo(path) {
-        browserHistory.push(path);
-    }
-
     render() {
         const style = {
             title: {
@@ -30,11 +22,11 @@ export default class AppNavbar extends React.Component {
         return (
             <AppBar>
                 <Toolbar>
-                    <Text colorInherit type="title" style={style.title} onClick={_ => AppNavbar._redirectTo('/')}>
+                    <Text colorInherit type="title" style={style.title} onClick={_ => browserHistory.push('/')}>
                         Flux 2.0
                     </Text>
-                    <Button contrast onClick={_ => AppNavbar._redirectTo('/bar')}>Bar</Button>
-                    <Button contrast onClick={_ => AppNavbar._redirectTo('/log')}>Log</Button>
+                    <Button contrast onClick={_ => browserHistory.push('/bar')}>Bar</Button>
+                    <Button contrast onClick={_ => browserHistory.push('/log')}>Log</Button>
                     <AuthMenu />
                 </Toolbar>
             </AppBar>

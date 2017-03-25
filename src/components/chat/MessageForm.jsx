@@ -1,5 +1,7 @@
 import React from 'react';
 
+import ChatService from '../../services/ChatService';
+
 export default class MessageForm extends React.Component {
 
     constructor() {
@@ -14,19 +16,11 @@ export default class MessageForm extends React.Component {
      */
     _handleKeyDown(e) {
         if (e.key  === "Enter" && e.target.value) {
-            this._sendMessage(e.target.value);
+            ChatService.sendMessage(e.target.value, err => {
+                console.log("post message error : ", err);
+            });
             e.target.value = '';
         }
-    }
-
-    /**
-     * Send a message
-     * @param text: the message to send
-     */
-    _sendMessage(text) {
-        io.socket.post('/testcreate', {text}, function (resData, JWR){
-            console.log('Create done: ', resData)
-        });
     }
 
     render() {
