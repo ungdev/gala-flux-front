@@ -12,12 +12,14 @@ export default class LoginAs extends React.Component {
         super(props);
 
         this.state = {
-            id: ''
+            id: '',
+            error: ''
         };
 
         // binding
         this._handleChange = this._handleChange.bind(this);
         this._submitForm= this._submitForm.bind(this);
+        this._closeDialog= this._closeDialog.bind(this);
     }
 
     /**
@@ -33,27 +35,47 @@ export default class LoginAs extends React.Component {
      */
     _submitForm() {
         AuthService.tryToLoginAs(this.state.id,
-            error => {
-                console.log("login as error : ", error);
-                // + display an error in the text field
+            err => {
+                if (err) {
+                    this.setState({ error: err.body[0]._error.message });
+                } else {
+                    this._closeDialog();
+                }
             }
         );
+    }
+
+    /**
+     * Reset the state of the LoginAs component and
+     * call the closeDialog method of his parent to hide the Dialog
+     */
+    _closeDialog() {
         this.props.closeDialog();
-        this.setState({ id: '' });
+        this.setState({ id: '', error: '' });
     }
 
     render() {
         return (
             <Dialog
                 open={this.props.open}
-                onRequestClose={this.props.closeDialog}
+                onRequestClose={this._closeDialog}
             >
                 <DialogTitle>Login as</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        label="Enter the user ID"
-                        onChange={this._handleChange}
-                    />
+                    {
+                        this.state.error
+                            ?
+                                <TextField
+                                    error
+                                    label={this.state.error}
+                                    onChange={this._handleChange}
+                                />
+                            :
+                                <TextField
+                                    label="Enter the user ID"
+                                    onChange={this._handleChange}
+                                />
+                    }
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={this.props.closeDialog} primary>Cancel</Button>

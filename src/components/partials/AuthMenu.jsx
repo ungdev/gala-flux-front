@@ -16,7 +16,8 @@ export default class AuthMenu extends React.Component {
             user: null,
             menuAnchor: null,
             openMenu: false,
-            openLoginAs: false
+            openLoginAs: false,
+            loginAs: false
         };
 
         // binding
@@ -37,7 +38,10 @@ export default class AuthMenu extends React.Component {
      * When there is a change in the AuthStore, update the value of user in the component state
      */
     _onAuthStoreChange() {
-        this.setState({ user: AuthStore.jwt });
+        this.setState({
+            user: AuthStore.user,
+            loginAs: AuthStore.loginAs
+        });
     }
 
     /**
@@ -54,6 +58,7 @@ export default class AuthMenu extends React.Component {
      */
     _openLoginAs() {
         this.setState({ openLoginAs: true });
+        this._closeMenu();
     }
 
     /**
@@ -91,6 +96,13 @@ export default class AuthMenu extends React.Component {
     }
 
     render() {
+        const style = {
+            backToMainAccount: {
+                // only show "back to main account" if the user is login as someone else
+                display: this.state.loginAs ? "block" : "none"
+            }
+        };
+
         return (
             <div>
                 <Button
@@ -99,7 +111,7 @@ export default class AuthMenu extends React.Component {
                     aria-haspopup="true"
                     onClick={this._openMenu}
                 >
-                    {this.state.user ? this.state.user.userId : ''}
+                    {this.state.user ? this.state.user.name : ''}
                 </Button>
                 <Menu
                     id="auth-menu"
@@ -109,7 +121,7 @@ export default class AuthMenu extends React.Component {
                 >
                     <MenuItem onClick={this._logout}>Logout</MenuItem>
                     <MenuItem onClick={this._openLoginAs}>Login as</MenuItem>
-                    <MenuItem onClick={this._backToMainAccount}>Back to main account</MenuItem>
+                    <MenuItem onClick={this._backToMainAccount} style={style.backToMainAccount}>Back to main account</MenuItem>
                 </Menu>
                 <LoginAs open={this.state.openLoginAs} closeDialog={this._closeDialog} />
             </div>

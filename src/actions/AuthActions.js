@@ -40,6 +40,10 @@ function backToMainAccount() {
         localStorage.removeItem(constants.firstJwtName);
         // set the main token value and update the webSocket connexion
         saveJWT(firstToken);
+
+        AppDispatcher.dispatch({
+            type: 'LOGOUT_AS'
+        });
     }
 }
 
@@ -59,9 +63,25 @@ function loginAs(newJWT) {
     }
     // replace the current jwt
     saveJWT(newJWT);
+
+    AppDispatcher.dispatch({
+        type: 'LOGIN_AS'
+    });
+}
+
+/**
+ * Send authenticated user's data
+ * @param data
+ */
+function getUserData(data) {
+    AppDispatcher.dispatch({
+        type: 'GET_USER_DATA',
+        data
+    });
 }
 
 exports.saveJWT = saveJWT;
 exports.logout = logout;
 exports.backToMainAccount = backToMainAccount;
 exports.loginAs = loginAs;
+exports.getUserData = getUserData;

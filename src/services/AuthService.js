@@ -1,9 +1,20 @@
 import AuthActions from '../actions/AuthActions';
+import jwtDecode from 'jwt-decode';
 
 /**
  * Class used for all about Authentication
  */
 class AuthService {
+
+    getUserData(jwt) {
+        // first request : get the user
+        io.socket.request({
+            method: 'get',
+            url: '/user/' + jwtDecode(jwt).userId
+        }, (resData, jwres) => {
+            AuthActions.getUserData(resData);
+        });
+    }
 
     /**
      * Send an webSocket request to the server to try to authenticate
@@ -23,6 +34,7 @@ class AuthService {
             if (jwres.error) {
                 return error(jwres);
             }
+            this.getUserData(jwres.body.jwt);
             return success(jwres);
         });
     }
@@ -67,6 +79,7 @@ class AuthService {
             if (jwres.error) {
                 return error(jwres);
             }
+            this.getUserData(jwres.body.jwt);
             AuthActions.saveJWT(jwres.body.jwt);
         });
     }
@@ -92,6 +105,7 @@ class AuthService {
             if (jwres.error) {
                 return false;
             }
+            this.getUserData(jwres.body.jwt);
             AuthActions.saveJWT(jwres.body.jwt);
             return true;
         });
@@ -101,20 +115,23 @@ class AuthService {
      * Try to authenticate the user with an other account, by user id.
      * In case of success, the server responds with a JWT.
      *
-     * @callback errorCallback
+     * @callback callback
      *
      * @param {String} id : the user id
-     * @param {errorCallback} error
+     * @param {callback} callback
      */
-    tryToLoginAs(id, error) {
+    tryToLoginAs(id, callback) {
         io.socket.request({
             method: 'post',
             url: '/login/as/' + id
         }, (resData, jwres) => {
             if (jwres.error) {
-                error(jwres);
+                // if there is an error, call the callback with the error
+                callback(jwres);
             } else {
+                this.getUserData(jwres.body.jwt);
                 AuthActions.loginAs(jwres.body.jwt);
+                callback();
             }
         });
     }
