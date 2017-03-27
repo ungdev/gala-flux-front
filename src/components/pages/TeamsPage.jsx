@@ -58,7 +58,7 @@ export default class TeamsPage extends React.Component {
      * if there is a team selected, update his users list
      */
     _onUserStoreChange() {
-        if (this.state.selectedTeam.team) {
+        if (this.state && this.state.selectedTeam.team) {
             let state = this.state;
             state.selectedTeam.members = UserStore.getByTeam(this.state.selectedTeam.team.id);
             this.setState(state);

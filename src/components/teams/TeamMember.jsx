@@ -13,6 +13,11 @@ export default class TeamMember extends React.Component {
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.setState({ member: nextProps.member });
+    }
+
+
     render() {
         return (
             <ListItem>
