@@ -1,38 +1,60 @@
 import React from 'react';
 
 import UserStore from '../../stores/UserStore';
+import UserService from '../../services/UserService';
 
+import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
-
 import { Table, TableHead, TableBody, TableRow, TableCell } from 'material-ui/Table';
 
 export default class AddMembers extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
-            users: []
+            users: [],
+            teamId: props.teamId
         };
 
         // binding
-        this._autoComplete = this._autoComplete.bind(this);
+        this._filterUsers = this._filterUsers.bind(this);
+        this._addToTeam = this._addToTeam.bind(this);
     }
 
     componentDidMount() {
-        this.setState({ users: UserStore.users });
+        this._filterUsers(null);
     }
 
-    _autoComplete(e) {
-        this.setState({ users: UserStore.getByName(e.target.value) });
-    };
+    componentWillReceiveProps(nextProps) {
+        this.setState({ teamId: nextProps.teamId });
+    }
+
+    _filterUsers(name) {
+        let users = UserStore.users.filter(user => user.team != this.state.teamId);
+        // if there is something in the auto complete input, filter by name
+        if (name) {
+            const regExp = new RegExp("^" + name, 'i');
+            users = users.filter(user => user.name.match(regExp, 'i'));
+        }
+        this.setState({ users });
+    }
+
+    _addToTeam(uid) {
+        const data = {
+            team: this.state.teamId
+        };
+        UserService.updateUser(uid, data, err => {
+            console.log("update user error : ", err);
+        });
+    }
 
     render() {
         return (
             <div>
                 <TextField
                     label="Search a member"
-                    onChange={this._autoComplete}
+                    onChange={e => this._filterUsers(e.target.value)}
                 />
                 <div>
                     <Table>
@@ -49,7 +71,9 @@ export default class AddMembers extends React.Component {
                                     return  <TableRow key={i}>
                                                 <TableCell>{user.name}</TableCell>
                                                 <TableCell>{user.team}</TableCell>
-                                                <TableCell>+</TableCell>
+                                                <TableCell>
+                                                    <IconButton onClick={_ => this._addToTeam(user.id)}>+</IconButton>
+                                                </TableCell>
                                             </TableRow>
                                 })
                             }

@@ -49,7 +49,7 @@ export default class UpdateTeam extends React.Component {
                 <div style={style.main}>
                     <Layout container gutter={24}>
                         <Layout item xs={12} sm={6}>
-                            <AddMembers />
+                            <AddMembers teamId={this.state.team.team.id} />
                         </Layout>
                         <Layout item xs={12} sm={6}>
                             team info

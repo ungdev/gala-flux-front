@@ -14,7 +14,6 @@ class TeamService {
      * @param {errCallback} err
      */
     getUsers(err) {
-        // first request : get the user
         io.socket.request({
             method: 'get',
             url: '/user'
@@ -23,6 +22,29 @@ class TeamService {
                 err(jwres);
             } else {
                 UserActions.getUsers(jwres.body);
+            }
+        });
+    }
+
+    /**
+     * Make a webSocket request to update a user
+     *
+     * @callback erroCallback
+     *
+     * @param {String} uid : the user id
+     * @param {object} data : the attributes to update
+     * @param {erroCallback} err
+     */
+    updateUser(uid, data, err) {
+        io.socket.request({
+            method: 'put',
+            url: '/user/' + uid,
+            data
+        }, (resData, jwres) => {
+            if (jwres.error) {
+                err(jwres);
+            } else {
+                console.log("ok update user : ", jwres);
             }
         });
     }
