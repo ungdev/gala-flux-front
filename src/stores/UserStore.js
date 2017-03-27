@@ -28,6 +28,20 @@ class UserStore extends BaseStore {
         return this._users.filter(user => user.team == id);
     }
 
+    /**
+     * Get the users which starts by the string passed in parameter
+     *
+     * @param {String} str
+     * @returns {Array} the matching users
+     */
+    getByName(str) {
+        if (!str) {
+            return this._users;
+        }
+        const regExp = new RegExp("^" + str);
+        return this._users.filter(user => user.name.match(regExp));
+    }
+
     _handleActions(action) {
         switch(action.type) {
             case "GET_USERS":

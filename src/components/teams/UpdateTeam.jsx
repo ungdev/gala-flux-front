@@ -8,6 +8,8 @@ import Slide from 'material-ui/transitions/Slide';
 import Text from 'material-ui/Text';
 import Layout from 'material-ui/Layout';
 
+import AddMembers from './AddMembers.jsx';
+
 export default class UpdateTeam extends React.Component {
 
     constructor(props) {
@@ -47,7 +49,7 @@ export default class UpdateTeam extends React.Component {
                 <div style={style.main}>
                     <Layout container gutter={24}>
                         <Layout item xs={12} sm={6}>
-                            add members
+                            <AddMembers />
                         </Layout>
                         <Layout item xs={12} sm={6}>
                             team info
