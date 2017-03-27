@@ -13,7 +13,7 @@ export default class TeamList extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ teams: nextProps.teams })
+        this.setState({ teams: nextProps.teams });
     }
 
     render() {
@@ -24,7 +24,11 @@ export default class TeamList extends React.Component {
                         // For each message, create a Message component
                         this.state.teams.map((team, i) => {
                             return  <ListItem button key={i}>
-                                        <ListItemText primary={team.name} secondary={team.role} />
+                                        <ListItemText
+                                            primary={team.name}
+                                            secondary={team.role}
+                                            onClick={_ => this.props.showTeam(team)}
+                                        />
                                     </ListItem>
                         })
                     }

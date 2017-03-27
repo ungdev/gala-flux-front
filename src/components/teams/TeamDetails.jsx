@@ -1,31 +1,46 @@
 import React from 'react';
 
-import { List, ListItem, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
-import IconButton from 'material-ui/IconButton';
+import { List } from 'material-ui/List';
+import TeamMember from './TeamMember.jsx';
 
 export default class TeamDetails extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            selected: props.selected
+        };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({ selected: nextProps.selected });
+    }
+
     render() {
+        if (this.state.selected.team) {
+            return (
+                <div>
+                    <h2>{this.state.selected.team.name}</h2>
+                    {
+                        (this.state.selected.members && this.state.selected.members.length)
+                            ?
+                            <List>
+                                {
+                                    this.state.selected.members.map((member, i) => {
+                                        return <TeamMember member={member} key={i}/>
+                                    })
+                                }
+                            </List>
+                            :
+                            <span>No members</span>
+                    }
+                </div>
+            );
+        }
         return (
             <div>
-                <List>
-                    <ListItem>
-                        <ListItemText primary="Wi-Fi" />
-                        <ListItemSecondaryAction>
-                            <IconButton>
-                                x
-                            </IconButton>
-                        </ListItemSecondaryAction>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemText primary="Bluetooth" />
-                        <ListItemSecondaryAction>
-                            <IconButton>
-                                x
-                            </IconButton>
-                        </ListItemSecondaryAction>
-                    </ListItem>
-                </List>
+                <span>Select a team to see the details.</span>
             </div>
         );
     }
