@@ -2,6 +2,7 @@ import React from 'react';
 
 import UserStore from '../../stores/UserStore';
 import UserService from '../../services/UserService';
+import TeamStore from '../../stores/TeamStore';
 
 import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
@@ -70,7 +71,7 @@ export default class AddMembers extends React.Component {
                                 this.state.users.map((user, i) => {
                                     return  <TableRow key={i}>
                                                 <TableCell>{user.name}</TableCell>
-                                                <TableCell>{user.team}</TableCell>
+                                                <TableCell>{TeamStore.getTeamName(user.team)}</TableCell>
                                                 <TableCell>
                                                     <IconButton onClick={_ => this._addToTeam(user.id)}>+</IconButton>
                                                 </TableCell>
