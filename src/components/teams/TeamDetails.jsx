@@ -1,7 +1,9 @@
 import React from 'react';
 
 import { List } from 'material-ui/List';
+import Button from 'material-ui/Button';
 import TeamMember from './TeamMember.jsx';
+import UpdateTeam from './UpdateTeam.jsx';
 
 export default class TeamDetails extends React.Component {
 
@@ -9,12 +11,20 @@ export default class TeamDetails extends React.Component {
         super(props);
 
         this.state = {
-            selected: props.selected
+            selected: props.selected,
+            showUpdateDialog: false
         };
+
+        // binding
+        this._toggleUpdateDialog = this._toggleUpdateDialog.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({ selected: nextProps.selected });
+    }
+
+    _toggleUpdateDialog() {
+        this.setState({showUpdateDialog: !this.state.showUpdateDialog});
     }
 
     render() {
@@ -22,6 +32,9 @@ export default class TeamDetails extends React.Component {
             return (
                 <div>
                     <h2>{this.state.selected.team.name}</h2>
+                    <div>
+                        <Button raised primary onClick={this._toggleUpdateDialog}>Update Team</Button>
+                    </div>
                     {
                         (this.state.selected.members && this.state.selected.members.length)
                             ?
@@ -35,6 +48,11 @@ export default class TeamDetails extends React.Component {
                             :
                             <span>No members</span>
                     }
+                    <UpdateTeam
+                        show={this.state.showUpdateDialog}
+                        close={this._toggleUpdateDialog}
+                        team={this.state.selected}
+                    />
                 </div>
             );
         }
