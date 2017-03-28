@@ -23,6 +23,8 @@ import LogPage from "./components/pages/LogPage.jsx";
 // constants
 import * as constants from './config/constants';
 
+import jwtDecode from 'jwt-decode';
+
 // actions and services
 import AuthService from './services/AuthService';
 import AuthActions from './actions/AuthActions';
@@ -57,10 +59,20 @@ ReactDOM.render(
  * @returns callback
  */
 function requireAuth (nextState, replace, callback) {
-    // if there is a JWT in the localStorage, continue
-    if (localStorage.getItem(constants.jwtName)) {
-        return callback();
+    // if there is a valid JWT in the localStorage, continue
+    let jwt = localStorage.getItem(constants.jwtName);
+    if(jwt) {
+        try {
+            jwtDecode(jwt);
+            return callback();
+        } catch (e) {
+            console.log('JWT Decode error:', e);
+            localStorage.removeItem(constants.jwtName);
+            replace('/');
+            return callback();
+        }
     }
+
     // if there is no JWT, send a request to the server in order to try
     // to authenticate the user by his IP address
     AuthService.checkIpAddress(
