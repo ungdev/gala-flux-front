@@ -3,6 +3,7 @@ import React from 'react';
 import AuthStore from '../../stores/AuthStore';
 import AuthActions from '../../actions/AuthActions';
 
+import muiThemeable from 'material-ui/styles/muiThemeable';
 import Popover from 'material-ui/Popover';
 import IconButton from 'material-ui/IconButton';
 import AccountCircleIcon from 'material-ui/svg-icons/action/account-circle';
@@ -10,10 +11,10 @@ import AccountCircleIcon from 'material-ui/svg-icons/action/account-circle';
 import LoginAs from './LoginAs.jsx';
 import { Menu, MenuItem } from 'material-ui/Menu';
 
-export default class AuthMenu extends React.Component {
+class AuthMenu extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             user: null,
@@ -22,6 +23,8 @@ export default class AuthMenu extends React.Component {
             openLoginAs: false,
             loginAs: false
         };
+
+        this._palette = props.muiTheme.palette;
 
         // binding
         this._openMenu = this._openMenu.bind(this);
@@ -103,7 +106,7 @@ export default class AuthMenu extends React.Component {
         const style = {
             userButton: {
                 background: 'none',
-                color: 'white',
+                color: this._palette.alternateTextColor,
                 padding: 0,
                 outline: 'none',
                 cursor: 'pointer',
@@ -118,7 +121,7 @@ export default class AuthMenu extends React.Component {
                 height: '48px',
             },
             icon: {
-                color: 'white',
+                color: this._palette.alternateTextColor,
                 marginLeft: '8px',
             },
             userDetails: {
@@ -165,3 +168,4 @@ export default class AuthMenu extends React.Component {
     }
 
 }
+export default muiThemeable()(AuthMenu);

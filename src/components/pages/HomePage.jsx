@@ -1,11 +1,16 @@
 import React from 'react';
 
+import muiThemeable from 'material-ui/styles/muiThemeable';
+import RaisedButton from 'material-ui/RaisedButton';
+
 import AuthService from '../../services/AuthService';
 
-export default class HomePage extends React.Component {
+class HomePage extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+
+        this._palette = props.muiTheme.palette;
 
         this._login = this._login.bind(this);
     }
@@ -55,13 +60,34 @@ export default class HomePage extends React.Component {
     }
 
     render() {
+
+        const style = {
+            container: {
+                height: '100%',
+                padding: 0,
+                margin: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingTop: '30px',
+                textAlign: 'center',
+            },
+            title: {
+                fontSize: '7em',
+                fontWeight: 'normal',
+                marginBottom: '20px',
+            },
+        };
+
         return (
-            <div>
-                <button onTouchTap={this._login}>
-                    Login
-                </button>
+            <div style={style.container}>
+                <div>
+                    <h2 style={style.title}>Flux</h2>
+                    <RaisedButton label="Se connecter avec un compte UTT" primary={true} onTouchTap={this._login} />
+                </div>
             </div>
         );
     }
 
 }
+export default muiThemeable()(HomePage);

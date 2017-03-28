@@ -7,6 +7,9 @@ injectTapEventPlugin();
 
 // material ui
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import themeConfiguration from './config/theme';
+const muiTheme = getMuiTheme(themeConfiguration);
 
 // react router
 import { browserHistory, Router, Route, IndexRoute } from 'react-router';
@@ -30,7 +33,7 @@ AuthService.tryToAuthenticateConnexion(localStorage.getItem(constants.jwtName));
 
 // Render the app using react router
 ReactDOM.render(
-    <MuiThemeProvider>
+    <MuiThemeProvider muiTheme={muiTheme}>
         <Router history={browserHistory}>
             <Route path="/" component={App}>
                 <IndexRoute component={HomePage} />

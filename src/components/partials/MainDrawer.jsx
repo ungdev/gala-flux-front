@@ -1,12 +1,13 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
 
+import muiThemeable from 'material-ui/styles/muiThemeable';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 
-export default class MainDrawer extends React.Component {
+class MainDrawer extends React.Component {
 
     constructor(props) {
         super(props);
@@ -14,6 +15,8 @@ export default class MainDrawer extends React.Component {
         this.state = {
             open: false
         };
+
+        this._palette = props.muiTheme.palette;
 
         // binding
         this._handleToggle = this._handleToggle.bind(this);
@@ -31,7 +34,7 @@ export default class MainDrawer extends React.Component {
     render() {
         const style = {
             icon: {
-                color: 'white',
+                color: this._palette.alternateTextColor,
             }
         };
 
@@ -55,3 +58,4 @@ export default class MainDrawer extends React.Component {
         );
     }
 }
+export default muiThemeable()(MainDrawer);
