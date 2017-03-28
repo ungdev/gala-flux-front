@@ -53,6 +53,7 @@ class MainDrawer extends React.Component {
                     <MenuItem onTouchTap={_ => this._handleClick('/')}>home</MenuItem>
                     <MenuItem onTouchTap={_ => this._handleClick('/bar')}>Bar</MenuItem>
                     <MenuItem onTouchTap={_ => this._handleClick('/log')}>Log</MenuItem>
+                    <MenuItem onTouchTap={_ => this._handleClick('/teams')}>Team Manager</MenuItem>
                 </Drawer>
             </div>
         );
