@@ -54,7 +54,7 @@ export default class AddMembers extends React.Component {
         return (
             <div>
                 <TextField
-                    label="Search a member"
+                    label="Search a user to add"
                     onChange={e => this._filterUsers(e.target.value)}
                 />
                 <div>

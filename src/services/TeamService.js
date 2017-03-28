@@ -62,6 +62,25 @@ class TeamService {
         });
     }
 
+    /**
+     * Make a request to update a new team
+     *
+     * @callback doneCallback
+     *
+     * @param {string} teamId
+     * @param {object} data
+     * @param {doneCallback} callback
+     */
+    updateTeam(teamId, data, callback) {
+        io.socket.request({
+            method: 'put',
+            url: '/team/' + teamId,
+            data
+        }, (resData, jwres) => {
+            jwres.error ? callback(jwres.error) : callback();
+        });
+    }
+
 }
 
 export default new TeamService();

@@ -4,6 +4,8 @@ import TeamService from '../../services/TeamService';
 
 import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
+import SelectGroup from './formElements/SelectGroup.jsx';
+import SelectRole from './formElements/SelectRole.jsx';
 
 export default class NewTeam extends React.Component {
 
@@ -41,17 +43,8 @@ export default class NewTeam extends React.Component {
                     label="Create a new team"
                     onChange={e => this.setState({name: e.target.value})}
                 />
-                <select onChange={e => this.setState({role: e.target.value})}>
-                    <option value="bar">bar</option>
-                    <option value="admin">admin</option>
-                    <option value="log">log</option>
-                </select>
-                <select onChange={e => this.setState({group: e.target.value})}>
-                    <option value="bar">bar</option>
-                    <option value="admin">admin</option>
-                    <option value="orga">orga</option>
-                    <option value="log">log</option>
-                </select>
+                <SelectGroup onChange={v => this.setState({group: v})} />
+                <SelectRole onChange={v => this.setState({role: v})} />
                 <Button raised primary onClick={this._createNewTeam}>Create</Button>
             </div>
         );
