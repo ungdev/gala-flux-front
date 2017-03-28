@@ -16,7 +16,6 @@ class TeamService {
      * @param {errCallback} err
      */
     getTeams(success, err) {
-        // first request : get the user
         io.socket.request({
             method: 'get',
             url: '/team'
@@ -25,6 +24,23 @@ class TeamService {
                 return err(jwres);
             }
             return success(jwres.body);
+        });
+    }
+
+    /**
+     * Make a request to delete this team
+     *
+     * @callback doneCallback
+     *
+     * @param {String} teamId : the team to delete
+     * @param {doneCallback} callback
+     */
+    deleteTeam(teamId, callback) {
+        io.socket.request({
+            method: 'delete',
+            url: '/team/' + teamId
+        }, (resData, jwres) => {
+            jwres.error ? callback(jwres.error) : callback();
         });
     }
 

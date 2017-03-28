@@ -9,6 +9,7 @@ import Text from 'material-ui/Text';
 import Layout from 'material-ui/Layout';
 
 import AddMembers from './AddMembers.jsx';
+import UpdateTeamInfo from './UpdateTeamInfo.jsx';
 
 export default class UpdateTeam extends React.Component {
 
@@ -52,7 +53,7 @@ export default class UpdateTeam extends React.Component {
                             <AddMembers teamId={this.state.team.team.id} />
                         </Layout>
                         <Layout item xs={12} sm={6}>
-                            team info
+                            <UpdateTeamInfo team={this.state.team.team} closeDialog={this.props.close} />
                         </Layout>
                     </Layout>
                 </div>

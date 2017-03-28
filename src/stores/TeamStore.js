@@ -8,6 +8,9 @@ class TeamStore extends BaseStore {
         this.subscribe(() => this._handleActions.bind(this));
 
         this._teams = [];
+
+        this._handleTeamEvents = this._handleTeamEvents.bind(this);
+        this._deleteTeam = this._deleteTeam.bind(this);
     }
 
     get teams() {
@@ -47,11 +50,28 @@ class TeamStore extends BaseStore {
             }
         );
         // listen model changes
-        io.socket.on('team', this._handleTeam);
+        io.socket.on('team', this._handleTeamEvents);
     }
 
-    _handleTeam(e) {
+    /**
+     * Remove a team by id in the store
+     *
+     * @param {String} teamId : the team to remove
+     */
+    _deleteTeam(teamId) {
+        let before = this.teams;
+        this.teams = this.teams.filter(team => team.id != teamId);
+        let after = this.teams;
+        console.log(before.length + " ? " + after.length);
+    }
+
+    _handleTeamEvents(e) {
         console.log(e);
+        switch (e.verb) {
+            case "destroyed":
+                this._deleteTeam(e.id);
+                break;
+        }
     }
 
     _handleActions(action) {

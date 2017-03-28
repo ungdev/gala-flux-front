@@ -1,6 +1,5 @@
 import React from 'react';
 
-import TeamService from '../../services/TeamService';
 import TeamStore from '../../stores/TeamStore';
 import UserStore from '../../stores/UserStore';
 
@@ -42,9 +41,27 @@ export default class TeamsPage extends React.Component {
 
     /**
      * Get the teams from TeamStore and set the state
+     * If the selected team was deleted or updated, set it too
      */
     _onTeamStoreChange() {
-        this.setState({ teams: TeamStore.teams });
+        const state = this.state;
+        // refresh the teams
+        state.teams = TeamStore.teams;
+        // if there was a selected team in the previous state
+        if (state.selectedTeam.team) {
+            // reset the team, and look if it still exists
+            const id = state.selectedTeam.team.id;
+            state.selectedTeam.team = null;
+            for (let team of state.teams) {
+                // if it exists, set the selected team
+                if (team.id == id) {
+                    state.selectedTeam.team = team;
+                    break;
+                }
+            }
+        }
+
+        this.setState(state);
     }
 
     /**
