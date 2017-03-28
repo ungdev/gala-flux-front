@@ -44,6 +44,24 @@ class TeamService {
         });
     }
 
+    /**
+     * Make a request to create a new team
+     *
+     * @callback doneCallback
+     *
+     * @param {object} data
+     * @param {doneCallback} callback
+     */
+    createTeam(data, callback) {
+        io.socket.request({
+            method: 'post',
+            url: '/team',
+            data
+        }, (resData, jwres) => {
+            jwres.error ? callback(jwres.error) : callback();
+        });
+    }
+
 }
 
 export default new TeamService();

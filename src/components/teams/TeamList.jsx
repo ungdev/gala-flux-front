@@ -1,12 +1,13 @@
 import React from 'react';
 
 import { List, ListItem, ListItemText } from 'material-ui/List';
+import NewTeam from './NewTeam.jsx';
 
 export default class TeamList extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log(props);
+
         this.state = {
             teams: props.teams
         };
@@ -19,6 +20,7 @@ export default class TeamList extends React.Component {
     render() {
         return (
             <div>
+                <NewTeam />
                 <List>
                     {
                         // For each message, create a Message component
