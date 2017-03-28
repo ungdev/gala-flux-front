@@ -38,6 +38,10 @@ class TeamStore extends BaseStore {
         return null;
     }
 
+    /**
+     * init the store : get the existing teams and
+     * listen to webSocket events about Team model
+     */
     _init() {
         // fill the teams attribute
         TeamService.getTeams(
@@ -65,6 +69,11 @@ class TeamStore extends BaseStore {
         console.log(before.length + " ? " + after.length);
     }
 
+    /**
+     * Handle webSocket events about the Team model
+     *
+     * @param {object} e : the event
+     */
     _handleTeamEvents(e) {
         console.log(e);
         switch (e.verb) {
@@ -74,6 +83,11 @@ class TeamStore extends BaseStore {
         }
     }
 
+    /**
+     * Handle Actions from TeamActions
+     *
+     * @param {object} action : the action
+     */
     _handleActions(action) {
         switch(action.type) {
             case "SAVE_JWT":

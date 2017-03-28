@@ -22,6 +22,9 @@ export default class TeamMember extends React.Component {
         this.setState({ member: nextProps.member });
     }
 
+    /**
+     * Call the service to remove a User from a Team
+     */
     _removeFromTeam() {
         // a user cannot live without a team, so delete it
         UserService.deleteUser(this.state.member.id, err => {

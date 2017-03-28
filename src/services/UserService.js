@@ -48,6 +48,29 @@ class UserService {
         });
     }
 
+    /**
+    * Make a webSocket request to update a user
+    *
+    * @callback erroCallback
+    *
+    * @param {String} uid : the user id
+    * @param {object} data : the attributes to update
+    * @param {erroCallback} err
+    */
+    updateUser(uid, data, err) {
+        io.socket.request({
+            method: 'put',
+            url: '/user/' + uid,
+            data
+        }, (resData, jwres) => {
+            if (jwres.error) {
+                err(jwres);
+            } else {
+                console.log("ok update user : ", jwres);
+            }
+        });
+    }
+
 }
 
 export default new UserService();

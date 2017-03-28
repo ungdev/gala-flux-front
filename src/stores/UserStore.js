@@ -9,7 +9,7 @@ class UserStore extends BaseStore {
 
         this._users = [];
 
-        this._handleUser = this._handleUser.bind(this);
+        this._handleUserEvents = this._handleUserEvents.bind(this);
     }
 
     get users() {
@@ -31,6 +31,10 @@ class UserStore extends BaseStore {
         return this._users.filter(user => user.team == id);
     }
 
+    /**
+     * init the store : get the existing users and
+     * listen to webSocket events about User model
+     */
     _init() {
         // fill the users attribute
         UserService.getUsers(
@@ -43,10 +47,15 @@ class UserStore extends BaseStore {
             }
         );
         // listen model changes
-        io.socket.on('user', this._handleUser);
+        io.socket.on('user', this._handleUserEvents);
     }
 
-    _handleUser(e) {
+    /**
+     * Handle webSocket events about the User model
+     *
+     * @param {object} e : the event
+     */
+    _handleUserEvents(e) {
         switch (e.verb) {
             case "destroyed":
                 this.users = this.users.filter(user => user.id != e.id);
@@ -54,6 +63,11 @@ class UserStore extends BaseStore {
         }
     }
 
+    /**
+     * Handle Actions from UserActions
+     *
+     * @param {object} action : the action
+     */
     _handleActions(action) {
         switch(action.type) {
             case "SAVE_JWT":

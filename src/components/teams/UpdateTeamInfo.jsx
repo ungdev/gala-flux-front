@@ -22,6 +22,10 @@ export default class UpdateTeamInfo extends React.Component {
         this._setTeamAttribute = this._setTeamAttribute.bind(this);
     }
 
+    /**
+     * Call the Team service to delete this Team.
+     * In case of success, close the update dialog (because the team doesn't exists anymore)
+     */
     _deleteTeam() {
         TeamService.deleteTeam(this.state.team.id, err => {
             if (err) {
@@ -32,6 +36,9 @@ export default class UpdateTeamInfo extends React.Component {
         });
     }
 
+    /**
+     * Call the Team service to update this Team
+     */
     _updateTeam() {
         TeamService.updateTeam(this.state.team.id, this.state.team, err => {
             if (err) {
@@ -40,6 +47,12 @@ export default class UpdateTeamInfo extends React.Component {
         });
     }
 
+    /**
+     * Update an attribute of the team object in the component state
+     *
+     * @param {string} attr : the team attribute to update in the state
+     * @param {string} v : the new attribute value
+     */
     _setTeamAttribute(attr, v) {
         const team = this.state.team;
         team[attr] = v;
@@ -55,8 +68,8 @@ export default class UpdateTeamInfo extends React.Component {
                 <Button raised primary onClick={this._updateTeam}>
                     Update team
                 </Button>
-                <SelectGroup default={this.state.team.group} onChange={v => this._setTeamAttribute('group', v)} />
-                <SelectRole default={this.state.team.role} onChange={v => this._setTeamAttribute('role', v)} />
+                <SelectGroup selected={this.state.team.group} onChange={v => this._setTeamAttribute('group', v)} />
+                <SelectRole selected={this.state.team.role} onChange={v => this._setTeamAttribute('role', v)} />
                 <TextField
                     label="New name"
                     value={this.state.team.name}

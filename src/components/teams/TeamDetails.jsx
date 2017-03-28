@@ -23,11 +23,15 @@ export default class TeamDetails extends React.Component {
         this.setState({ selected: nextProps.selected });
     }
 
+    /**
+     * Show or hide the update dialog
+     */
     _toggleUpdateDialog() {
         this.setState({showUpdateDialog: !this.state.showUpdateDialog});
     }
 
     render() {
+        // if there is a selected team, display details about it
         if (this.state.selected.team) {
             return (
                 <div>
@@ -36,6 +40,8 @@ export default class TeamDetails extends React.Component {
                         <Button raised primary onClick={this._toggleUpdateDialog}>Update Team</Button>
                     </div>
                     {
+                        // if there are members in the team, display them.
+                        // else, show a message
                         (this.state.selected.members && this.state.selected.members.length)
                             ?
                             <List>
@@ -56,6 +62,7 @@ export default class TeamDetails extends React.Component {
                 </div>
             );
         }
+        // if no selected team, display a message
         return (
             <div>
                 <span>Select a team to see the details.</span>

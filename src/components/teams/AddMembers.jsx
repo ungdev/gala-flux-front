@@ -31,6 +31,12 @@ export default class AddMembers extends React.Component {
         this.setState({ teamId: nextProps.teamId });
     }
 
+    /**
+     * Used for the research input
+     * Return the users who have a name which start with @name
+     *
+     * @param {string} name
+     */
     _filterUsers(name) {
         let users = UserStore.users.filter(user => user.team != this.state.teamId);
         // if there is something in the auto complete input, filter by name
@@ -41,6 +47,11 @@ export default class AddMembers extends React.Component {
         this.setState({ users });
     }
 
+    /**
+     * Call the UserService to update his team
+     *
+     * @param {string} uid : the user id
+     */
     _addToTeam(uid) {
         const data = {
             team: this.state.teamId

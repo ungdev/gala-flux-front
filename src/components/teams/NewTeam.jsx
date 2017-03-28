@@ -18,16 +18,15 @@ export default class NewTeam extends React.Component {
             group: "bar"
         };
 
+        // binding
         this._createNewTeam = this._createNewTeam.bind(this);
     }
 
+    /**
+     * Call the Team Service to create a new team
+     */
     _createNewTeam() {
-        const data = {
-            name: this.state.name,
-            role: this.state.role,
-            group: this.state.group
-        };
-        TeamService.createTeam(data, err => {
+        TeamService.createTeam(this.state, err => {
             if (err) {
                 console.log("create team err", err);
             } else {
@@ -43,8 +42,8 @@ export default class NewTeam extends React.Component {
                     label="Create a new team"
                     onChange={e => this.setState({name: e.target.value})}
                 />
-                <SelectGroup onChange={v => this.setState({group: v})} />
-                <SelectRole onChange={v => this.setState({role: v})} />
+                <SelectGroup selected={this.state.group} onChange={v => this.setState({group: v})} />
+                <SelectRole selected={this.state.role} onChange={v => this.setState({role: v})} />
                 <Button raised primary onClick={this._createNewTeam}>Create</Button>
             </div>
         );

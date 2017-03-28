@@ -11,17 +11,17 @@ export default class SelectRole extends React.Component {
                 "admin",
                 "log"
             ],
-            default: props.default
+            selected: props.selected
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ default: nextProps.default });
+        this.setState({ selected: nextProps.selected });
     }
 
     render() {
         return (
-            <select value={this.state.default} onChange={e => this.props.onChange(e.target.value)}>
+            <select value={this.state.selected} onChange={e => this.props.onChange(e.target.value)}>
                 {
                     this.state.options.map((option, i) => {
                         return <option key={i} value={option}>{option}</option>
