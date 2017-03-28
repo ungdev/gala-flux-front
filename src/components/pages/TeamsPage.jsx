@@ -22,6 +22,7 @@ export default class TeamsPage extends React.Component {
 
         // binding
         this._onTeamStoreChange = this._onTeamStoreChange.bind(this);
+        this._onUserStoreChange = this._onUserStoreChange.bind(this);
         this._showTeam = this._showTeam.bind(this);
     }
 
@@ -70,7 +71,7 @@ export default class TeamsPage extends React.Component {
     _onUserStoreChange() {
         if (this.state && this.state.selectedTeam.team) {
             let state = this.state;
-            state.selectedTeam.members = UserStore.getByTeam(this.state.selectedTeam.team.id);
+            state.selectedTeam.members = UserStore.getByTeam(state.selectedTeam.team.id);
             this.setState(state);
         }
     }

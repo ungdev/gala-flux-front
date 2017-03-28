@@ -23,10 +23,8 @@ export default class TeamMember extends React.Component {
     }
 
     _removeFromTeam() {
-        const data = {
-            team: null
-        };
-        UserService.updateUser(this.state.member.id, data, err => {
+        // a user cannot live without a team, so delete it
+        UserService.deleteUser(this.state.member.id, err => {
             console.log('remove from team err : ', err);
         });
     }

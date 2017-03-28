@@ -8,6 +8,8 @@ class UserStore extends BaseStore {
         this.subscribe(() => this._handleActions.bind(this));
 
         this._users = [];
+
+        this._handleUser = this._handleUser.bind(this);
     }
 
     get users() {
@@ -45,7 +47,11 @@ class UserStore extends BaseStore {
     }
 
     _handleUser(e) {
-        console.log(e);
+        switch (e.verb) {
+            case "destroyed":
+                this.users = this.users.filter(user => user.id != e.id);
+                break;
+        }
     }
 
     _handleActions(action) {

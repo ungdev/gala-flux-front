@@ -3,7 +3,7 @@ import UserActions from '../actions/UserActions';
 /**
  * Class used for all about Authentication
  */
-class TeamService {
+class UserService {
 
     /**
      * Make a webSocket request to get the users
@@ -28,28 +28,26 @@ class TeamService {
     }
 
     /**
-     * Make a webSocket request to update a user
+     * Make a webSocket request to delete a user
      *
-     * @callback erroCallback
+     * @callback errorCallback
      *
      * @param {String} uid : the user id
-     * @param {object} data : the attributes to update
-     * @param {erroCallback} err
+     * @param {errorCallback} err
      */
-    updateUser(uid, data, err) {
+    deleteUser(uid, err) {
         io.socket.request({
-            method: 'put',
-            url: '/user/' + uid,
-            data
+            method: 'delete',
+            url: '/user/' + uid
         }, (resData, jwres) => {
             if (jwres.error) {
                 err(jwres);
             } else {
-                console.log("ok update user : ", jwres);
+                console.log("ok delete user : ", jwres);
             }
         });
     }
 
 }
 
-export default new TeamService();
+export default new UserService();
