@@ -1,7 +1,6 @@
 import React from 'react';
 
 import TeamService from '../../services/TeamService';
-import UserService from '../../services/UserService';
 import TeamStore from '../../stores/TeamStore';
 import UserStore from '../../stores/UserStore';
 
@@ -31,14 +30,8 @@ export default class TeamsPage extends React.Component {
         // listen the stores changes
         TeamStore.addChangeListener(this._onTeamStoreChange);
         UserStore.addChangeListener(this._onUserStoreChange);
-        // trigger action for the store to load teams
-        TeamService.getTeams(err => {
-            console.log("get teams error : ", err);
-        });
-        // trigger action for the store to load users
-        UserService.getUsers(err => {
-            console.log("get users error : ", err);
-        });
+        // init team list
+        this.setState({ teams: TeamStore.teams });
     }
 
     componentWillUnmount() {

@@ -1,4 +1,5 @@
 import BaseStore from './BaseStore';
+import TeamService from '../services/TeamService';
 
 class TeamStore extends BaseStore {
 
@@ -34,10 +35,29 @@ class TeamStore extends BaseStore {
         return null;
     }
 
+    _init() {
+        // fill the teams attribute
+        TeamService.getTeams(
+            success => {
+                this.teams = success;
+                console.log("success : ", success);
+            },
+            err => {
+                console.log("get teams error : ", err);
+            }
+        );
+        // listen model changes
+        io.socket.on('team', this._handleTeam);
+    }
+
+    _handleTeam(e) {
+        console.log(e);
+    }
+
     _handleActions(action) {
         switch(action.type) {
-            case "GET_TEAMS":
-                this.teams = action.teams;
+            case "SAVE_JWT":
+                this._init();
                 break;
         }
     }

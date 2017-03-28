@@ -1,4 +1,5 @@
 import BaseStore from './BaseStore';
+import UserService from '../services/UserService';
 
 class UserStore extends BaseStore {
 
@@ -28,10 +29,29 @@ class UserStore extends BaseStore {
         return this._users.filter(user => user.team == id);
     }
 
+    _init() {
+        // fill the users attribute
+        UserService.getUsers(
+            success => {
+                this.users = success;
+                console.log("success : ", success);
+            },
+            err => {
+                console.log("get users error yolo : ", err);
+            }
+        );
+        // listen model changes
+        io.socket.on('user', this._handleUser);
+    }
+
+    _handleUser(e) {
+        console.log(e);
+    }
+
     _handleActions(action) {
         switch(action.type) {
-            case "GET_USERS":
-                this.users = action.users;
+            case "SAVE_JWT":
+                this._init();
                 break;
         }
     }

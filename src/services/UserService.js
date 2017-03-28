@@ -7,22 +7,23 @@ class TeamService {
 
     /**
      * Make a webSocket request to get the users
-     * Then trigger an action to update the Store with the data
+     * Then return the data
      *
      * @callback errCallback
+     * @callback successCallback
      *
+     * @param {successCallback} success
      * @param {errCallback} err
      */
-    getUsers(err) {
+    getUsers(success, err) {
         io.socket.request({
             method: 'get',
             url: '/user'
         }, (resData, jwres) => {
             if (jwres.error) {
-                err(jwres);
-            } else {
-                UserActions.getUsers(jwres.body);
+                return err(jwres);
             }
+            return success(jwres.body);
         });
     }
 
