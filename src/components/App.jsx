@@ -7,9 +7,7 @@ export default class App extends React.Component {
 
     render() {
         const style = {
-            main: {
-                marginTop: 64
-            }
+            main: {}
         };
 
         return (

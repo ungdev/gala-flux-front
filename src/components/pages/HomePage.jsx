@@ -57,7 +57,7 @@ export default class HomePage extends React.Component {
     render() {
         return (
             <div>
-                <button onClick={this._login}>
+                <button onTouchTap={this._login}>
                     Login
                 </button>
             </div>

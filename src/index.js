@@ -1,6 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+// TapEvent
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
+
 // material ui
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
