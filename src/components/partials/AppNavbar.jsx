@@ -25,6 +25,7 @@ export default class AppNavbar extends React.Component {
                     <Text colorInherit type="title" style={style.title} onClick={_ => browserHistory.push('/')}>
                         Flux 2.0
                     </Text>
+                    <Button contrast onClick={_ => browserHistory.push('/teams')}>Teams</Button>
                     <Button contrast onClick={_ => browserHistory.push('/bar')}>Bar</Button>
                     <Button contrast onClick={_ => browserHistory.push('/log')}>Log</Button>
                     <AuthMenu />

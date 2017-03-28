@@ -16,11 +16,12 @@ export default class MessageList extends React.Component {
         };
 
         this._handleMessage = this._handleMessage.bind(this);
+        this._onChatStoreChange = this._onChatStoreChange.bind(this);
     }
 
     componentDidMount() {
         // listen the store change
-        ChatStore.addChangeListener(this._onChatStoreChange.bind(this));
+        ChatStore.addChangeListener(this._onChatStoreChange);
         // get the messages to init the store
         ChatService.getMessages(err => {
             console.log("get messages error : ", err);
@@ -30,6 +31,8 @@ export default class MessageList extends React.Component {
     }
 
     componentWillUnmount() {
+        // remove the store change
+        ChatStore.removeChangeListener(this._onChatStoreChange);
         // remove the socket io listener
         io.socket.off('message', this._handleMessage);
     }
@@ -47,7 +50,9 @@ export default class MessageList extends React.Component {
      * Update the messages in the state
      */
     _onChatStoreChange() {
-        this.setState({messages : ChatStore.messages});
+        if (this.state) {
+            this.setState({messages : ChatStore.messages});
+        }
     }
 
     render() {
