@@ -103,6 +103,7 @@ class AuthService {
             data: {jwt}
         }, (resData, jwres) => {
             if (jwres.error) {
+                console.log("try to authenticate error : ", jwres.error);
                 return false;
             }
             this.getUserData(jwres.body.jwt);
