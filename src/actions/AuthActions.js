@@ -1,6 +1,7 @@
 import AppDispatcher from '../dispatchers/AppDispatcher.js';
 import { browserHistory } from 'react-router';
 import * as constants from '../config/constants';
+import NotificationActions from './NotificationActions';
 
 /**
  * Create or update the token in the localStorage
@@ -26,6 +27,8 @@ function logout() {
     });
 
     browserHistory.push('/');
+
+    NotificationActions.snackbar('À bientôt !')
 }
 
 /**
