@@ -63,10 +63,7 @@ class TeamStore extends BaseStore {
      * @param {String} teamId : the team to remove
      */
     _deleteTeam(teamId) {
-        let before = this.teams;
         this.teams = this.teams.filter(team => team.id != teamId);
-        let after = this.teams;
-        console.log(before.length + " ? " + after.length);
     }
 
     /**
@@ -75,10 +72,12 @@ class TeamStore extends BaseStore {
      * @param {object} e : the event
      */
     _handleTeamEvents(e) {
-        console.log(e);
         switch (e.verb) {
             case "destroyed":
                 this._deleteTeam(e.id);
+                break;
+            case "created":
+                this.teams.push(e.data);
                 break;
         }
     }

@@ -56,9 +56,19 @@ class UserStore extends BaseStore {
      * @param {object} e : the event
      */
     _handleUserEvents(e) {
+        console.log("user store event : ", e);
         switch (e.verb) {
             case "destroyed":
                 this.users = this.users.filter(user => user.id != e.id);
+                break;
+            case "updated":
+                let temp = this.users;
+                for (let i = 0; i < temp.length; i++) {
+                    if (temp[i].id == e.id) {
+                        temp[i] = e.data;
+                    }
+                }
+                this.users = temp;
                 break;
         }
     }
