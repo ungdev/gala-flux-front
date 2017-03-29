@@ -70,11 +70,6 @@ export default class AddMembers extends React.Component {
     }
 
     render() {
-        const style = {
-            deleteButton: {
-                float: 'left',
-            }
-        };
 
         const actions = [
             <FlatButton
