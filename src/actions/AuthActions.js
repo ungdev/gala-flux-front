@@ -13,8 +13,6 @@ function saveJWT (jwt) {
         type: 'SAVE_JWT',
         jwt
     });
-
-    browserHistory.push('/bar');
 }
 
 /**

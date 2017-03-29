@@ -21,7 +21,7 @@ export default class AppNavbar extends React.Component {
     render() {
         return (
             <AppBar
-                title="Flux 2.0"
+                title="Flux"
                 titleStyle={this.styles.title}
                 onTitleTouchTap={_ => browserHistory.push('/')}
                 iconElementLeft={<MainDrawer />}

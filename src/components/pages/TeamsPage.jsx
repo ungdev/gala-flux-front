@@ -3,7 +3,7 @@ import React from 'react';
 import TeamStore from '../../stores/TeamStore';
 import UserStore from '../../stores/UserStore';
 
-import Layout from 'material-ui/Layout';
+import { Grid, Row, Col } from 'react-flexbox-grid';
 import TeamsList from '../teams/TeamList.jsx';
 import TeamDetails from '../teams/TeamDetails.jsx';
 
@@ -90,16 +90,14 @@ export default class TeamsPage extends React.Component {
 
     render() {
         return (
-            <div>
-                <Layout container gutter={24}>
-                    <Layout item xs={12} sm={4} md={6}>
-                        <TeamsList showTeam={this._showTeam} teams={this.state.teams} />
-                    </Layout>
-                    <Layout item xs={12} sm={8} md={6}>
-                        <TeamDetails selected={this.state.selectedTeam} />
-                    </Layout>
-                </Layout>
-            </div>
+            <Row className="hideContainer">
+                <Col xs={12} sm={4} md={6} className="hideContainer">
+                    <TeamsList showTeam={this._showTeam} teams={this.state.teams} selected={this.state.selectedTeam} />
+                </Col>
+                <Col xs={12} sm={8} md={6} className="hideContainer">
+                    <TeamDetails selected={this.state.selectedTeam} />
+                </Col>
+            </Row>
         );
     }
 
