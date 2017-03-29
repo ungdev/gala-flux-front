@@ -2,9 +2,9 @@ import React from 'react';
 
 import AuthService from '../../services/AuthService';
 
-import Button from 'material-ui/Button';
-import { Dialog, DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
+import Dialog from 'material-ui/Dialog';
 
 export default class LoginAs extends React.Component {
 
@@ -55,33 +55,45 @@ export default class LoginAs extends React.Component {
     }
 
     render() {
+        const actions = [
+            <FlatButton
+                label="Cancel"
+                primary={true}
+                onTouchTap={this._closeDialog}
+                />,
+            <FlatButton
+                label="Login"
+                primary={true}
+                keyboardFocused={true}
+                onTouchTap={this._submitForm}
+                />,
+        ];
+
         return (
-            <Dialog
-                open={this.props.open}
-                onRequestClose={this._closeDialog}
-            >
-                <DialogTitle>Login as</DialogTitle>
-                <DialogContent>
+            <div>
+                <Dialog
+                    title="Login as"
+                    actions={actions}
+                    modal={false}
+                    open={this.props.open}
+                    onRequestClose={this._closeDialog}
+                    >
                     {
                         this.state.error
                             ?
                                 <TextField
-                                    error
-                                    label={this.state.error}
+                                    hintText="Enter the user ID"
                                     onChange={this._handleChange}
+                                    errorText={this.state.error}
                                 />
                             :
                                 <TextField
-                                    label="Enter the user ID"
+                                    hintText="Enter the user ID"
                                     onChange={this._handleChange}
                                 />
                     }
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={this.props.closeDialog} primary>Cancel</Button>
-                    <Button onClick={this._submitForm} primary>Login</Button>
-                </DialogActions>
-            </Dialog>
+                </Dialog>
+            </div>
         );
     }
 

@@ -1,12 +1,18 @@
 import React from 'react';
 
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
+import IconButton from 'material-ui/IconButton';
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import AddIcon from 'material-ui/svg-icons/content/add';
+
+import SelectGroup from './formElements/SelectGroup.jsx';
+import SelectRole from './formElements/SelectRole.jsx';
+import TeamService from '../../services/TeamService';
 import UserStore from '../../stores/UserStore';
 import UserService from '../../services/UserService';
 import TeamStore from '../../stores/TeamStore';
-
-import IconButton from 'material-ui/IconButton';
-import TextField from 'material-ui/TextField';
-import { Table, TableHead, TableBody, TableRow, TableCell } from 'material-ui/Table';
 
 export default class AddMembers extends React.Component {
 
@@ -15,7 +21,7 @@ export default class AddMembers extends React.Component {
 
         this.state = {
             users: [],
-            teamId: props.teamId
+            team: props.team
         };
 
         // binding
@@ -28,7 +34,7 @@ export default class AddMembers extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ teamId: nextProps.teamId });
+        this.setState({ team: nextProps.team });
     }
 
     /**
@@ -38,7 +44,7 @@ export default class AddMembers extends React.Component {
      * @param {string} name
      */
     _filterUsers(name) {
-        let users = UserStore.users.filter(user => user.team != this.state.teamId);
+        let users = UserStore.users.filter(user => user.team != this.state.team.id);
         // if there is something in the auto complete input, filter by name
         if (name) {
             const regExp = new RegExp("^" + name, 'i');
@@ -54,45 +60,76 @@ export default class AddMembers extends React.Component {
      */
     _addToTeam(uid) {
         const data = {
-            team: this.state.teamId
+            team: this.state.team.id
         };
         UserService.updateUser(uid, data, err => {
             console.log("update user error : ", err);
         });
+        // TODO Real error checking before closing
+        this.props.close();
     }
 
     render() {
+        const style = {
+            deleteButton: {
+                float: 'left',
+            }
+        };
+
+        const actions = [
+            <FlatButton
+                label="Annuler"
+                secondary={true}
+                onTouchTap={this.props.close}
+            />,
+        ];
+
         return (
-            <div>
+            <Dialog
+                title={'Ajout de membres à l\'équipe ' + this.state.team.name}
+                open={this.props.show}
+                actions={actions}
+            >
+
                 <TextField
-                    label="Search a user to add"
+                    floatingLabelText="Cherchez le nom d'un utilisateur.."
                     onChange={e => this._filterUsers(e.target.value)}
                 />
                 <div>
-                    <Table>
-                        <TableHead>
+                    <Table
+                        selectable={false}
+                        >
+                        <TableHeader
+                            displaySelectAll={false}
+                            >
                             <TableRow>
-                                <TableCell>User</TableCell>
-                                <TableCell>Team</TableCell>
-                                <TableCell>Add</TableCell>
+                                <TableHeaderColumn>User</TableHeaderColumn>
+                                <TableHeaderColumn>Team</TableHeaderColumn>
+                                <TableHeaderColumn>Add</TableHeaderColumn>
                             </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {
-                                this.state.users.map((user, i) => {
-                                    return  <TableRow key={i}>
-                                                <TableCell>{user.name}</TableCell>
-                                                <TableCell>{TeamStore.getTeamName(user.team)}</TableCell>
-                                                <TableCell>
-                                                    <IconButton onClick={_ => this._addToTeam(user.id)}>+</IconButton>
-                                                </TableCell>
-                                            </TableRow>
-                                })
-                            }
+                        </TableHeader>
+                        <TableBody
+                            displayRowCheckbox={false}
+                            >
+                        {
+                            this.state.users.map((user, i) => {
+                                return  (
+                                    <TableRow key={i}>
+                                        <TableRowColumn>{user.name}</TableRowColumn>
+                                        <TableRowColumn>{TeamStore.getTeamName(user.team)}</TableRowColumn>
+                                        <TableRowColumn>
+                                            <IconButton onClick={_ => this._addToTeam(user.id)}>
+                                                <AddIcon />
+                                            </IconButton>
+                                        </TableRowColumn>
+                                    </TableRow>
+                                );
+                            })
+                        }
                         </TableBody>
                     </Table>
                 </div>
-            </div>
+            </Dialog>
         );
     }
 
