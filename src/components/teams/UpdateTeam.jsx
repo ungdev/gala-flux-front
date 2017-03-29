@@ -18,7 +18,7 @@ export default class UpdateTeam extends React.Component {
         this.state = {
             team: props.team,
             users: null
-        }
+        };
 
         // binding
         this._deleteTeam = this._deleteTeam.bind(this);

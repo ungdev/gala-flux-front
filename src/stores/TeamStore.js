@@ -75,10 +75,13 @@ class TeamStore extends BaseStore {
      * @param {object} e : the event
      */
     _handleTeamEvents(e) {
-        console.log(e);
+        console.log("team event : ", e);
         switch (e.verb) {
             case "destroyed":
                 this._deleteTeam(e.id);
+                break;
+            case "created":
+                this.teams.push(e.data);
                 break;
         }
     }
