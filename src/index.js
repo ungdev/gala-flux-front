@@ -29,6 +29,14 @@ import jwtDecode from 'jwt-decode';
 // actions and services
 import AuthService from './services/AuthService';
 import AuthActions from './actions/AuthActions';
+import NotificationActions from './actions/NotificationActions';
+
+// Error when api is not reachable
+setTimeout(function () {
+    if(!io.socket.isConnected()) {
+        NotificationActions.error('Connexion à l\'API Flux impossible.', null, null, true, 5);
+    }
+}, 5000);
 
 // This code is executed when the app is loaded
 // So if there is a jwt in the localStorage, try to authenticate the webSocket connexion

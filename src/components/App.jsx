@@ -2,6 +2,8 @@ import React from 'react';
 
 import AppNavbar from "./partials/AppNavbar.jsx";
 import AppFooter from "./partials/AppFooter.jsx";
+import ErrorNotification from "./partials/ErrorNotification.jsx";
+import SnackbarNotification from "./partials/SnackbarNotification.jsx";
 
 export default class App extends React.Component {
 
@@ -18,6 +20,8 @@ export default class App extends React.Component {
 
         return (
             <div className="hideContainer">
+                <ErrorNotification />
+                <SnackbarNotification />
                 <AppNavbar />
                 <main style={style.main}>
                     {this.props.children}
