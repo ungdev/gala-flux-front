@@ -1,8 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+// TapEvent
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
+
 // material ui
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import themeConfiguration from './config/theme';
+const muiTheme = getMuiTheme(themeConfiguration);
 
 // react router
 import { browserHistory, Router, Route, IndexRoute } from 'react-router';
@@ -17,6 +24,8 @@ import TeamsPage from "./components/pages/TeamsPage.jsx";
 // constants
 import * as constants from './config/constants';
 
+import jwtDecode from 'jwt-decode';
+
 // actions and services
 import AuthService from './services/AuthService';
 import AuthActions from './actions/AuthActions';
@@ -27,7 +36,7 @@ AuthService.tryToAuthenticateConnexion(localStorage.getItem(constants.jwtName));
 
 // Render the app using react router
 ReactDOM.render(
-    <MuiThemeProvider>
+    <MuiThemeProvider muiTheme={muiTheme}>
         <Router history={browserHistory}>
             <Route path="/" component={App}>
                 <IndexRoute component={HomePage} />
@@ -52,10 +61,20 @@ ReactDOM.render(
  * @returns callback
  */
 function requireAuth (nextState, replace, callback) {
-    // if there is a JWT in the localStorage, continue
-    if (localStorage.getItem(constants.jwtName)) {
-        return callback();
+    // if there is a valid JWT in the localStorage, continue
+    let jwt = localStorage.getItem(constants.jwtName);
+    if(jwt) {
+        try {
+            jwtDecode(jwt);
+            return callback();
+        } catch (e) {
+            console.log('JWT Decode error:', e);
+            localStorage.removeItem(constants.jwtName);
+            replace('/');
+            return callback();
+        }
     }
+
     // if there is no JWT, send a request to the server in order to try
     // to authenticate the user by his IP address
     AuthService.checkIpAddress(

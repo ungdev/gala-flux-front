@@ -15,6 +15,7 @@ module.exports = {
     },
     module: {
         loaders: [
+            { test: /\.css$/, loader: 'style-loader!css-loader', include: /flexboxgrid/ },
             { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
             { test: /\.jsx$/, loader: 'babel-loader', exclude: /node_modules/ }
         ]

@@ -8,12 +8,16 @@ export default class App extends React.Component {
     render() {
         const style = {
             main: {
-                marginTop: 64
-            }
+                position: 'fixed',
+                top: '64px',
+                bottom: '0px',
+                width: '100%',
+                overflow: 'auto',
+            },
         };
 
         return (
-            <div>
+            <div className="hideContainer">
                 <AppNavbar />
                 <main style={style.main}>
                     {this.props.children}

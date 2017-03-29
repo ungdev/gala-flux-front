@@ -3,14 +3,18 @@ import React from 'react';
 import AuthStore from '../../stores/AuthStore';
 import AuthActions from '../../actions/AuthActions';
 
-import Button from 'material-ui/Button';
+import muiThemeable from 'material-ui/styles/muiThemeable';
+import Popover from 'material-ui/Popover';
+import IconButton from 'material-ui/IconButton';
+import AccountCircleIcon from 'material-ui/svg-icons/action/account-circle';
+
 import LoginAs from './LoginAs.jsx';
 import { Menu, MenuItem } from 'material-ui/Menu';
 
-export default class AuthMenu extends React.Component {
+class AuthMenu extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             user: null,
@@ -19,6 +23,8 @@ export default class AuthMenu extends React.Component {
             openLoginAs: false,
             loginAs: false
         };
+
+        this._palette = props.muiTheme.palette;
 
         // binding
         this._openMenu = this._openMenu.bind(this);
@@ -77,6 +83,7 @@ export default class AuthMenu extends React.Component {
      */
     _openMenu(event) {
         this.setState({ openMenu: true, menuAnchor: event.currentTarget });
+        return false;
     }
 
     /**
@@ -97,35 +104,68 @@ export default class AuthMenu extends React.Component {
 
     render() {
         const style = {
+            userButton: {
+                background: 'none',
+                color: this._palette.alternateTextColor,
+                padding: 0,
+                outline: 'none',
+                cursor: 'pointer',
+                border: 0,
+
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '48px',
+            },
+            icon: {
+                color: this._palette.alternateTextColor,
+                marginLeft: '8px',
+            },
+            userDetails: {
+                textAlign: 'right',
+                display: 'inline-block',
+            },
             backToMainAccount: {
                 // only show "back to main account" if the user is login as someone else
                 display: this.state.loginAs ? "block" : "none"
-            }
+            },
         };
+
+        // Disable if not authenticated
+        if(!this.state.user) {
+            return null;
+        }
 
         return (
             <div>
-                <Button
-                    contrast
-                    aria-owns="auth-menu"
-                    aria-haspopup="true"
-                    onClick={this._openMenu}
-                >
-                    {this.state.user ? this.state.user.name : ''}
-                </Button>
-                <Menu
-                    id="auth-menu"
+                <button onTouchTap={this._openMenu} style={style.userButton}>
+                    <div style={style.userDetails}>
+                        <strong>Team</strong><br/>
+                        {this.state.user.name}
+                    </div>
+                    <AccountCircleIcon style={style.icon} />
+                </button>
+                <Popover
                     anchorEl={this.state.menuAnchor}
                     open={this.state.openMenu}
                     onRequestClose={this._closeMenu}
+                    targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                    anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                 >
-                    <MenuItem onClick={this._logout}>Logout</MenuItem>
-                    <MenuItem onClick={this._openLoginAs}>Login as</MenuItem>
-                    <MenuItem onClick={this._backToMainAccount} style={style.backToMainAccount}>Back to main account</MenuItem>
-                </Menu>
+                    <Menu>
+                        <MenuItem onTouchTap={this._logout}>Logout</MenuItem>
+                        <MenuItem onTouchTap={this._openLoginAs}>Login as someone else</MenuItem>
+                        <MenuItem onTouchTap={this._backToMainAccount} style={style.backToMainAccount}>Back to main account</MenuItem>
+                    </Menu>
+                </Popover>
+
                 <LoginAs open={this.state.openLoginAs} closeDialog={this._closeDialog} />
             </div>
         );
     }
 
 }
+export default muiThemeable()(AuthMenu);

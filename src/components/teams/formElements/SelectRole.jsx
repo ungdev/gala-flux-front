@@ -1,17 +1,21 @@
 import React from 'react';
 
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+
 export default class SelectRole extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
+            // TODO get from API
             options: [
                 "bar",
                 "admin",
                 "log"
             ],
-            selected: props.selected
+            selected: props.selected,
         }
     }
 
@@ -21,13 +25,21 @@ export default class SelectRole extends React.Component {
 
     render() {
         return (
-            <select value={this.state.selected} onChange={e => this.props.onChange(e.target.value)}>
+
+
+            <SelectField
+                floatingLabelText="Autorisations"
+                value={this.state.selected}
+                onChange={(e, index, value) => this.props.onChange(value)}
+                autoWidth={false}
+                required={true}
+            >
                 {
                     this.state.options.map((option, i) => {
-                        return <option key={i} value={option}>{option}</option>
+                        return <MenuItem key={i} value={option} primaryText={option} />
                     })
                 }
-            </select>
+            </SelectField>
         );
     }
 
