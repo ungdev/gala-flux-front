@@ -15,6 +15,19 @@ class AlertButtonService {
         });
     }
 
+    createAlertButton(data, callback) {
+        io.socket.request({
+            method: 'post',
+            url: '/alertbutton',
+            data
+        }, (resData, jwres) => {
+            if (jwres.error) {
+                return callback(jwres);
+            }
+            return callback(null, resData);
+        });
+    }
+
 }
 
 export default new AlertButtonService();
