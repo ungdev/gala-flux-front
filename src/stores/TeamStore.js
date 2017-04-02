@@ -43,7 +43,7 @@ class TeamStore extends BaseStore {
      * listen to webSocket events about Team model
      */
     _init() {
-        // fill the teams attri1bute
+        // fill the teams attribute
         TeamService.getTeams(
             success => {
                 this.teams = success;

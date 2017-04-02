@@ -9,6 +9,10 @@ class AlertButtonStore extends BaseStore {
         this.subscribe(() => this._handleActions.bind(this));
 
         this._buttons = [];
+
+        // binding
+        this._handleAlertButtonEvents = this._handleAlertButtonEvents.bind(this);
+        this._deleteButton = this._deleteButton.bind(this);
     }
 
     set buttons(v) {
@@ -21,6 +25,7 @@ class AlertButtonStore extends BaseStore {
     }
 
     _init() {
+        // fill the buttons attribute
         AlertButtonService.getAlertButtons((err, result) => {
             if (err) {
                 console.log("get alert button err : ", err);
@@ -29,6 +34,34 @@ class AlertButtonStore extends BaseStore {
                 console.log(this.buttons);
             }
         });
+        // listen model changes
+        io.socket.on('alertbutton', this._handleAlertButtonEvents);
+    }
+
+    /**
+     * Remove a button by id in the store
+     *
+     * @param {String} buttonId : the button to remove
+     */
+    _deleteButton(buttonId) {
+        this.buttons = this.buttons.filter(button => button.id != buttonId);
+    }
+
+    /**
+     * Handle webSocket events about the AlertButton model
+     *
+     * @param {object} e : the event
+     */
+    _handleAlertButtonEvents(e) {
+        switch (e.verb) {
+            case "destroyed":
+                this._deleteButton(e.id);
+                break;
+            case "created":
+                this.buttons.push(e.data);
+                this.emitChange();
+                break;
+        }
     }
 
     _handleActions(action) {
