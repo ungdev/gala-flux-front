@@ -1,14 +1,14 @@
 import React from 'react';
 
+import TeamService from '../../services/TeamService';
+
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import { Grid, Row, Col } from 'react-flexbox-grid';
+import { Row, Col } from 'react-flexbox-grid';
 
-import AddMembers from './AddMembers.jsx';
 import SelectGroup from './formElements/SelectGroup.jsx';
 import SelectRole from './formElements/SelectRole.jsx';
-import TeamService from '../../services/TeamService';
 
 export default class UpdateTeam extends React.Component {
 

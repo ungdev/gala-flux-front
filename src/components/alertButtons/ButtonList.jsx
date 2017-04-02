@@ -1,12 +1,15 @@
 import React from 'react';
 
 import AlertButtonStore from '../../stores/AlertButtonStore';
+import TeamStore from '../../stores/TeamStore';
 
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import NewButton  from './NewButton.jsx';
+
+import NewButton from './NewButton.jsx';
+import UpdateButton from './UpdateButton.jsx';
 import AdminButton from './AdminButton.jsx';
 
 export default class ButtonList extends React.Component {
@@ -16,24 +19,44 @@ export default class ButtonList extends React.Component {
 
         this.state = {
             buttons: [],
+            teams: [],
             categories: [],
             selectedCategory: null,
-            showCreateDialog: false
+            selectedButton: null,
+            showCreateDialog: false,
+            showUpdateDialog: false
         };
 
         // binding
         this._onAlertButtonStoreChange = this._onAlertButtonStoreChange.bind(this);
         this._toggleCreateDialog = this._toggleCreateDialog.bind(this);
+        this._toggleUpdateDialog = this._toggleUpdateDialog.bind(this);
+        this._onTeamStoreChange = this._onTeamStoreChange.bind(this);
     }
 
     componentDidMount() {
         // listen stores changes
         AlertButtonStore.addChangeListener(this._onAlertButtonStoreChange);
+        TeamStore.addChangeListener(this._onTeamStoreChange);
+        // init team list
+        this.setState({ teams: TeamStore.teams });
     }
 
     componentWillUnmount() {
         // remove the stores listeners
         AlertButtonStore.removeChangeListener(this._onAlertButtonStoreChange);
+        TeamStore.removeChangeListener(this._onTeamStoreChange);
+    }
+
+    _onTeamStoreChange() {
+        this.setState({ teams: TeamStore.teams });
+    }
+
+    _toggleUpdateDialog(button) {
+        this.setState({
+            selectedButton: button,
+            showUpdateDialog: !this.state.showUpdateDialog
+        });
     }
 
     _onAlertButtonStoreChange() {
@@ -84,6 +107,7 @@ export default class ButtonList extends React.Component {
                             return  <AdminButton
                                 key={i}
                                 button={button}
+                                update={this._toggleUpdateDialog}
                             />
                         }
                     })
@@ -100,6 +124,15 @@ export default class ButtonList extends React.Component {
                 <NewButton
                     show={this.state.showCreateDialog}
                     close={this._toggleCreateDialog}
+                    teams={this.state.teams}
+                />
+
+                <UpdateButton
+                    show={this.state.showUpdateDialog}
+                    close={this._toggleUpdateDialog}
+                    button={this.state.selectedButton}
+                    categories={this.state.categories}
+                    teams={this.state.teams}
                 />
             </div>
         );

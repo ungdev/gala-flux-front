@@ -1,6 +1,5 @@
 import React from "react";
 
-import TeamStore from '../../stores/TeamStore';
 import AlertButtonService from '../../services/AlertButtonService';
 
 import Dialog from 'material-ui/Dialog';
@@ -23,7 +22,7 @@ export default class ButtonForm extends React.Component {
                 "securite",
                 "technique"
             ],
-            teams: [],
+            teams: props.teams,
             formData: {
                 title: {
                     error: null,
@@ -47,24 +46,7 @@ export default class ButtonForm extends React.Component {
         };
 
         // binding
-        this._onTeamStoreChange = this._onTeamStoreChange.bind(this);
         this._submitForm = this._submitForm.bind(this);
-    }
-
-    componentDidMount() {
-        // listen the stores changes
-        TeamStore.addChangeListener(this._onTeamStoreChange);
-        // init team list
-        this.setState({ teams: TeamStore.teams });
-    }
-
-    componentWillUnmount() {
-        // remove the stores listeners
-        TeamStore.removeChangeListener(this._onTeamStoreChange);
-    }
-
-    _onTeamStoreChange() {
-        this.setState({ teams: TeamStore.teams });
     }
 
     _setFormDataAttribute(attribute, value) {
@@ -143,7 +125,7 @@ export default class ButtonForm extends React.Component {
                 <Row>
                     <Col xs={12}>
                         <TextField
-                            fullWidth="true"
+                            fullWidth={true}
                             floatingLabelText="Button title"
                             value={formData.title.value}
                             onChange={e => this._setFormDataAttribute("title", e.target.value)}

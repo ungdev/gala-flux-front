@@ -15,8 +15,7 @@ export default class AdminButton extends React.Component {
     render() {
         return (
             <Chip
-                onRequestDelete={null}
-                onTouchTap={null}
+                onTouchTap={_ => this.props.update(this.state.button)}
             >
                 {this.state.button.title}
             </Chip>
