@@ -20,6 +20,11 @@ class NotificationStore extends BaseStore {
         this._errorMessages = [];
 
 
+        // Contains the message under the loading circular progress
+        // The loading page will be shown only if this attribute is defined
+        this._loadingMessage = '';
+
+
         this.subscribe(() => this._handleActions.bind(this));
     }
 
@@ -85,6 +90,26 @@ class NotificationStore extends BaseStore {
     }
 
 
+    /**
+     * set loadingMessage - Show or hide the loading screen with the given message
+     *
+     * @param  {type} message Message shown on the loading screen or nothing to hide it
+     */
+    set loadingMessage(message) {
+        this._loadingMessage = message ? message : null;
+        this.emitChange();
+    }
+
+
+    /**
+     * get loadingMessage - Return the current message on the loading screen or nothing if hidden
+     *
+     * @return {string|null}  The current message or nothing
+     */
+    get loadingMessage() {
+        return this._loadingMessage;
+    }
+
 
     _handleActions(action) {
         switch(action.type) {
@@ -93,6 +118,9 @@ class NotificationStore extends BaseStore {
                 break;
             case "SNACKBAR":
                 this.pushSnackbar(action.data);
+                break;
+            case "LOADING":
+                this.loadingMessage = action.data;
                 break;
         }
     }
