@@ -9,6 +9,7 @@ import MenuItem from 'material-ui/MenuItem';
 import Toggle from 'material-ui/Toggle';
 import RaisedButton from 'material-ui/RaisedButton';
 import Delete from 'material-ui/svg-icons/action/delete';
+import AutoComplete from 'material-ui/AutoComplete';
 
 import AlertButtonService from '../../services/AlertButtonService';
 
@@ -118,17 +119,12 @@ export default class UpdateButton extends React.Component {
                             />
                         </Col>
                         <Col xs={12} sm={6}>
-                            <SelectField
-                                onChange={(e, i, v) => this._setButtonAttribute("category", v)}
-                                value={button.category}
-                                floatingLabelText="Categorie"
-                            >
-                                {
-                                    this.state.categories.map((category, i) => {
-                                        return <MenuItem key={i} value={category} primaryText={category} />
-                                    })
-                                }
-                            </SelectField>
+                            <AutoComplete
+                                hintText="Categorie"
+                                dataSource={this.state.categories}
+                                onUpdateInput={v => this._setButtonAttribute("category", v)}
+                                searchText={button.category}
+                            />
                             <SelectField
                                 onChange={(e, i, v) => this._setButtonAttribute("receiver", v)}
                                 value={button.receiver}
@@ -150,7 +146,7 @@ export default class UpdateButton extends React.Component {
                             />
                             <TextField
                                 floatingLabelText="Message placeholder"
-                                value={button.messagePlaceholder}
+                                value={button.messagePlaceholder || ""}
                                 onChange={e => this._setButtonAttribute("messagePlaceholder", e.target.value)}
                             />
                         </Col>

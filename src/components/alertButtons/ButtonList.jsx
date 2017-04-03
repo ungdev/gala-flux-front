@@ -61,7 +61,8 @@ export default class ButtonList extends React.Component {
 
     _onAlertButtonStoreChange() {
         const buttons = AlertButtonStore.buttons;
-        const categories = [];
+
+        let categories = [];
         // get distinct categories
         for (let button of buttons) {
             if (categories.indexOf(button.category) === -1) {

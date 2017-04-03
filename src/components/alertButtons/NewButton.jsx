@@ -9,6 +9,7 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Toggle from 'material-ui/Toggle';
 import FlatButton from 'material-ui/FlatButton';
+import AutoComplete from 'material-ui/AutoComplete';
 
 export default class NewButton extends React.Component {
 
@@ -137,18 +138,11 @@ export default class NewButton extends React.Component {
                         />
                     </Col>
                     <Col xs={12} sm={6}>
-                        <SelectField
-                            onChange={(e, i, v) => this._setFormDataAttribute("category", v)}
-                            value={formData.category.value}
-                            errorText={formData.category.error}
-                            floatingLabelText="Categorie"
-                        >
-                            {
-                                this.state.categories.map((category, i) => {
-                                    return <MenuItem key={i} value={category} primaryText={category} />
-                                })
-                            }
-                        </SelectField>
+                        <AutoComplete
+                            hintText="Categorie"
+                            dataSource={this.state.categories}
+                            onUpdateInput={v => this._setFormDataAttribute("category", v)}
+                        />
                         <SelectField
                             onChange={(e, i, v) => this._setFormDataAttribute("receiver", v)}
                             value={formData.receiver.value}

@@ -31,7 +31,6 @@ class AlertButtonStore extends BaseStore {
                 console.log("get alert button err : ", err);
             } else {
                 this.buttons = result;
-                console.log(this.buttons);
             }
         });
         // listen model changes
@@ -59,6 +58,7 @@ class AlertButtonStore extends BaseStore {
                 break;
             case "created":
                 this.buttons.push(e.data);
+                this.emitChange();
                 break;
         }
     }
