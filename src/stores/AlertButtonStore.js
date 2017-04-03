@@ -15,13 +15,13 @@ class AlertButtonStore extends BaseStore {
         this._deleteButton = this._deleteButton.bind(this);
     }
 
+    get buttons() {
+        return this._buttons;
+    }
+
     set buttons(v) {
         this._buttons = v;
         this.emitChange();
-    }
-
-    get buttons() {
-        return this._buttons;
     }
 
     _init() {
@@ -59,7 +59,6 @@ class AlertButtonStore extends BaseStore {
                 break;
             case "created":
                 this.buttons.push(e.data);
-                this.emitChange();
                 break;
         }
     }

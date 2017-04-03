@@ -10,7 +10,7 @@ import MenuItem from 'material-ui/MenuItem';
 import Toggle from 'material-ui/Toggle';
 import FlatButton from 'material-ui/FlatButton';
 
-export default class ButtonForm extends React.Component {
+export default class NewButton extends React.Component {
 
     constructor(props) {
         super(props);
@@ -49,6 +49,10 @@ export default class ButtonForm extends React.Component {
         this._submitForm = this._submitForm.bind(this);
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.setState({ teams: nextProps.teams });
+    }
+
     _setFormDataAttribute(attribute, value) {
         const state = this.state;
         state.formData[attribute].value = value;
@@ -82,12 +86,12 @@ export default class ButtonForm extends React.Component {
                 messagePlaceholder: state.formData.placeholder.value,
                 category: state.formData.category.value,
             };
-            console.log(data);
             AlertButtonService.createAlertButton(data, (error, result) => {
                 if (error) {
                     console.log("create alert button error : ", error);
                 } else {
                     console.log("create alert button : ", result);
+                    this.props.close();
                 }
             });
         } else {

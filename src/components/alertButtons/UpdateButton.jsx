@@ -7,6 +7,8 @@ import { Row, Col } from 'react-flexbox-grid';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Toggle from 'material-ui/Toggle';
+import RaisedButton from 'material-ui/RaisedButton';
+import Delete from 'material-ui/svg-icons/action/delete';
 
 import AlertButtonService from '../../services/AlertButtonService';
 
@@ -88,6 +90,11 @@ export default class UpdateButton extends React.Component {
                 label="Annuler"
                 secondary={true}
                 onClick={this.props.close}
+            />,
+            <RaisedButton
+                secondary={true}
+                icon={<Delete />}
+                onClick={this._deleteButton}
             />
         ];
 
@@ -137,13 +144,14 @@ export default class UpdateButton extends React.Component {
                         <Col xs={12} sm={6}>
                             <Toggle
                                 label="Message obligatoire :"
-                                onToggle={_ => this._setButtonAttribute("messageRequired", !button.messageRequired)}
+                                onToggle={_ => this._setButtonAttribute("message", !button.message)}
                                 style={{maxWidth: 250}}
+                                toggled={button.message}
                             />
                             <TextField
                                 floatingLabelText="Message placeholder"
-                                value={button.placeholder}
-                                onChange={e => this._setButtonAttribute("placeholder", e.target.value)}
+                                value={button.messagePlaceholder}
+                                onChange={e => this._setButtonAttribute("messagePlaceholder", e.target.value)}
                             />
                         </Col>
                     </Row>
