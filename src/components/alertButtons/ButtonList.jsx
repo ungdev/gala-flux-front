@@ -7,10 +7,11 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import {List, ListItem} from 'material-ui/List';
+import Edit from 'material-ui/svg-icons/image/edit';
 
 import NewButton from './NewButton.jsx';
 import UpdateButton from './UpdateButton.jsx';
-import AdminButton from './AdminButton.jsx';
 
 export default class ButtonList extends React.Component {
 
@@ -48,10 +49,17 @@ export default class ButtonList extends React.Component {
         TeamStore.removeChangeListener(this._onTeamStoreChange);
     }
 
+    /**
+     * Update the teams in the component store where there is a change in the TeamStore
+     */
     _onTeamStoreChange() {
         this.setState({ teams: TeamStore.teams });
     }
 
+    /**
+     * Set the state properties to open/close the update dialog
+     * @param {object|null} button : the button to update
+     */
     _toggleUpdateDialog(button) {
         this.setState({
             selectedButton: button,
@@ -59,6 +67,10 @@ export default class ButtonList extends React.Component {
         });
     }
 
+    /**
+     * Handle AlertButtonStore changes
+     * update the buttons and categories in the state
+     */
     _onAlertButtonStoreChange() {
         const buttons = AlertButtonStore.buttons;
 
@@ -74,6 +86,9 @@ export default class ButtonList extends React.Component {
 
     }
 
+    /**
+     * toggle the dialog to create a new AlertButton
+     */
     _toggleCreateDialog() {
         this.setState({ showCreateDialog: !this.state.showCreateDialog })
     }
@@ -81,16 +96,23 @@ export default class ButtonList extends React.Component {
     render() {
 
         const style = {
+            container: {
+                maxWidth: 500,
+                marginLeft: "auto",
+                marginRight: "auto",
+                padding: 10
+            },
             floatingButton: {
-                position: 'absolute',
+                position: 'fixed',
                 right: 36,
                 bottom: 36,
             }
         };
 
         return (
-            <div>
+            <div style={style.container}>
                 <SelectField
+                    fullWidth={true}
                     floatingLabelText="Categorie"
                     value={this.state.selectedCategory}
                     onChange={(e, i, v) => this.setState({ selectedCategory: v })}
@@ -101,18 +123,23 @@ export default class ButtonList extends React.Component {
                         })
                     }
                 </SelectField>
+
+                <List>
                 {
-                    // show only the buttons where the category his the selected category
+                    // if no category is selected, show all the buttons
+                    // else show only the buttons where the category his the selected category
                     this.state.buttons.map((button, i) => {
-                        if (button.category === this.state.selectedCategory) {
-                            return  <AdminButton
+                        if (!this.state.selectedCategory || button.category === this.state.selectedCategory) {
+                            return <ListItem
                                 key={i}
-                                button={button}
-                                update={this._toggleUpdateDialog}
+                                primaryText={button.title}
+                                rightIcon={<Edit />}
+                                onClick={this._toggleUpdateDialog}
                             />
                         }
                     })
                 }
+                </List>
 
                 <FloatingActionButton
                     style={style.floatingButton}

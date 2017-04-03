@@ -54,12 +54,22 @@ export default class NewButton extends React.Component {
         this.setState({ teams: nextProps.teams });
     }
 
+    /**
+     * Update an attribute of the alert button object in the component state
+     *
+     * @param {string} attribute
+     * @param {string|boolean} value
+     */
     _setFormDataAttribute(attribute, value) {
         const state = this.state;
         state.formData[attribute].value = value;
         this.setState(state);
     }
 
+    /**
+     * Check if the fields are valid
+     * In this case, call the AlertButtonService to create a new AlertButton
+     */
     _submitForm() {
         const state = this.state;
 
@@ -91,7 +101,6 @@ export default class NewButton extends React.Component {
                 if (error) {
                     console.log("create alert button error : ", error);
                 } else {
-                    console.log("create alert button : ", result);
                     this.props.close();
                 }
             });
@@ -139,7 +148,7 @@ export default class NewButton extends React.Component {
                     </Col>
                     <Col xs={12} sm={6}>
                         <AutoComplete
-                            hintText="Categorie"
+                            floatingLabelText="Categorie"
                             dataSource={this.state.categories}
                             onUpdateInput={v => this._setFormDataAttribute("category", v)}
                         />

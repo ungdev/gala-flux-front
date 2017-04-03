@@ -69,7 +69,7 @@ export default class UpdateButton extends React.Component {
      * Update an attribute of the alert button object in the component state
      *
      * @param {string} attr : the button attribute to update in the state
-     * @param {string} v : the new attribute value
+     * @param {string|boolean} v : the new attribute value
      */
     _setButtonAttribute(attr, v) {
         const button = this.state.button;
@@ -120,7 +120,7 @@ export default class UpdateButton extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <AutoComplete
-                                hintText="Categorie"
+                                floatingLabelText="Categorie"
                                 dataSource={this.state.categories}
                                 onUpdateInput={v => this._setButtonAttribute("category", v)}
                                 searchText={button.category}
