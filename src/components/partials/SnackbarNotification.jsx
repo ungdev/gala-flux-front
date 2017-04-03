@@ -43,10 +43,8 @@ export default class SnackbarNotification extends React.Component {
      * Open the message if there is new notification in the store and if there is no notification currently
      */
     _openMessageIfNecessary() {
-        console.log('ifnecessary')
         if(!this.state.message && !this.preventMessage) {
             let message = NotificationStore.shiftSnackbar();
-            console.log(message);
             if(message) {
                 // Enable notification
                 this.preventMessage = true;

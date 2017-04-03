@@ -3,3 +3,6 @@ export const jwtName = 'token';
 
 // Contains the old value JWT stored in jwtName (used for the "login as" feature)
 export const firstJwtName = 'firstToken';
+
+// websocket target full uri
+export const webSocketUri = 'http://localhost:1337';

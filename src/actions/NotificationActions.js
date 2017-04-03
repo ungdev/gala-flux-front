@@ -33,6 +33,31 @@ export default {
             data: message,
         });
 
-    }
+    },
+
+
+    /**
+     * error - Show a loading message
+     *
+     * @param {String} message Message that will be shown to the user],
+     */
+    loading(message) {
+
+        AppDispatcher.dispatch({
+            type: 'LOADING',
+            data: message,
+        });
+    },
+
+    /**
+     * error - Hide the loading message
+     */
+    hideLoading() {
+
+        AppDispatcher.dispatch({
+            type: 'LOADING',
+            data: null,
+        });
+    },
 
 }

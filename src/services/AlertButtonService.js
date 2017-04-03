@@ -12,7 +12,7 @@ class AlertButtonService {
      * @param {callback} callback
      */
     getAlertButtons(callback) {
-        io.socket.request({
+        iosocket.request({
             method: 'get',
             url: '/alertbutton'
         }, (resData, jwres) => {
@@ -29,7 +29,7 @@ class AlertButtonService {
      * @param {callback} callback
      */
     createAlertButton(data, callback) {
-        io.socket.request({
+        iosocket.request({
             method: 'post',
             url: '/alertbutton',
             data
@@ -47,7 +47,7 @@ class AlertButtonService {
      * @param {callback} callback
      */
     deleteAlertButton(id, callback) {
-        io.socket.request({
+        iosocket.request({
             method: 'delete',
             url: '/alertbutton/' + id
         }, (resData, jwres) => {
@@ -65,7 +65,7 @@ class AlertButtonService {
      * @param {callback} callback
      */
     updateAlertButton(id, data, callback) {
-        io.socket.request({
+        iosocket.request({
             method: 'put',
             url: '/alertbutton/' + id,
             data

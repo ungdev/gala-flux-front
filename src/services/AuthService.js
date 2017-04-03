@@ -1,4 +1,5 @@
 import AuthActions from '../actions/AuthActions';
+import NotificationActions from '../actions/NotificationActions';
 import jwtDecode from 'jwt-decode';
 
 /**
@@ -7,12 +8,19 @@ import jwtDecode from 'jwt-decode';
 class AuthService {
 
     getUserData(jwt) {
-        // first request : get the user
-        io.socket.request({
-            method: 'get',
-            url: '/user/' + jwtDecode(jwt).userId
-        }, (resData, jwres) => {
-            AuthActions.getUserData(resData);
+        return new Promise((resolve, reject) => {
+            // first request : get the user
+            iosocket.request({
+                method: 'get',
+                url: '/user/' + jwtDecode(jwt).userId
+            }, (resData, jwres) => {
+                if(jwres.error) {
+                    return reject(jwres.error);
+                }
+                AuthActions.getUserData(resData);
+                NotificationActions.snackbar('Bonjour ' + resData.name + ' !')
+                return resolve();
+            });
         });
     }
 
@@ -20,22 +28,23 @@ class AuthService {
      * Send an webSocket request to the server to try to authenticate
      * the user with IP address
      *
-     * @callback successCallback
-     * @callback errorCallback
-     *
-     * @param {successCallback} success
-     * @param {errorCallback} error
+     * @return {Promise}
      */
-    checkIpAddress(success, error) {
-        io.socket.request({
-            method: 'post',
-            url: '/login/ip'
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                return error(jwres);
-            }
-            this.getUserData(jwres.body.jwt);
-            return success(jwres);
+    tryToAuthenticateWithIP() {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'post',
+                url: '/login/ip'
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(jwres.error);
+                }
+                this.getUserData(jwres.body.jwt).
+                then(() => {
+                    AuthActions.saveJWT(jwres.body.jwt);
+                    return resolve();
+                })
+            });
         });
     }
 
@@ -47,7 +56,7 @@ class AuthService {
      * @callback error
      */
     authWithEtuUTT(success, error) {
-        io.socket.request({
+        iosocket.request({
             method: 'get',
             url: '/login/oauth'
         }, (resData, jwres) => {
@@ -68,20 +77,48 @@ class AuthService {
      * @callback errorCallback
      *
      * @param authorizationCode
-     * @param {errorCallback} error
+     * @return {Promise}
      */
-    sendAuthorizationCode(authorizationCode, error) {
-        io.socket.request({
-            method: 'post',
-            url: '/login/oauth/submit',
-            data: {authorizationCode}
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                return error(jwres);
+    sendAuthorizationCode(authorizationCode) {
+        return new Promise((resolve, reject) => {
+            if (!authorizationCode) {
+                reject(new Error('No authorizationCode'));
             }
-            this.getUserData(jwres.body.jwt);
-            AuthActions.saveJWT(jwres.body.jwt);
-        });
+            iosocket.request({
+                method: 'post',
+                url: '/login/oauth/submit',
+                data: {authorizationCode}
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(jwres.error);
+                }
+                this.getUserData(jwres.body.jwt).
+                then(() => {
+                    AuthActions.saveJWT(jwres.body.jwt);
+                    return resolve();
+                });
+            });
+        })
+    }
+
+    /**
+     * Cut the current URL and search for the authorization code in it
+     * @returns {String|null} The authorization code or null
+     */
+    getAuthorizationCode() {
+        // get the part of the URL after '?'
+        const query = (window.location.href).split("?")[1];
+        if (query) {
+            // look at each parameters
+            const parameters = query.split("&");
+            for (let i = 0; i < parameters.length; i++) {
+                // if the parameter name is authorization_code, return the value
+                const parameter = parameters[i].split("=");
+                if (parameter[0] == "authorization_code")
+                    return parameter[1];
+            }
+        }
+        return null;
     }
 
     /**
@@ -94,21 +131,25 @@ class AuthService {
      * @return {boolean} the authentication success
      */
     tryToAuthenticateConnexion(jwt) {
-        if (!jwt) {
-            return false;
-        }
-        io.socket.request({
-            method: 'post',
-            url: '/login/jwt',
-            data: {jwt}
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                console.log("try to authenticate error : ", jwres.error);
-                return false;
+        return new Promise((resolve, reject) => {
+            if (!jwt) {
+                reject(new Error('No JWT'));
             }
-            this.getUserData(jwres.body.jwt);
-            AuthActions.saveJWT(jwres.body.jwt);
-            return true;
+            iosocket.request({
+                method: 'post',
+                url: '/login/jwt',
+                data: {jwt}
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    reject(new Error(jwres.error));
+                    return false;
+                }
+                this.getUserData(jwres.body.jwt).
+                then(() => {
+                    AuthActions.saveJWT(jwres.body.jwt);
+                    return resolve();
+                });
+            });
         });
     }
 
@@ -122,7 +163,7 @@ class AuthService {
      * @param {callback} callback
      */
     tryToLoginAs(id, callback) {
-        io.socket.request({
+        iosocket.request({
             method: 'post',
             url: '/login/as/' + id
         }, (resData, jwres) => {
@@ -130,9 +171,11 @@ class AuthService {
                 // if there is an error, call the callback with the error
                 callback(jwres);
             } else {
-                this.getUserData(jwres.body.jwt);
-                AuthActions.loginAs(jwres.body.jwt);
-                callback();
+                this.getUserData(jwres.body.jwt).
+                then(() => {
+                    AuthActions.loginAs(jwres.body.jwt);
+                    return callback();
+                })
             }
         });
     }
