@@ -90,11 +90,11 @@ export default class TeamsPage extends React.Component {
 
     render() {
         return (
-            <Row className="hideContainer">
-                <Col xs={12} sm={4} md={6} className="hideContainer">
+            <Row className="hide-container">
+                <Col xs={12} sm={4} md={6} className="hide-container">
                     <TeamsList showTeam={this._showTeam} teams={this.state.teams} selected={this.state.selectedTeam} />
                 </Col>
-                <Col xs={12} sm={8} md={6} className="hideContainer">
+                <Col xs={12} sm={8} md={6} className="hide-container">
                     <TeamDetails selected={this.state.selectedTeam} />
                 </Col>
             </Row>
