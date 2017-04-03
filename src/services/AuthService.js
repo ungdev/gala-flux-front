@@ -3,7 +3,7 @@ import NotificationActions from '../actions/NotificationActions';
 import jwtDecode from 'jwt-decode';
 
 /**
- * Class used for all about Authentication
+ * Class used to make requests about authentication.
  */
 class AuthService {
 

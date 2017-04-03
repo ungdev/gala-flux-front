@@ -7,7 +7,7 @@ class TeamService {
 
     /**
      * Make a webSocket request to get the teams
-     * Then trigger an action to update the Store with the data
+     * Then call the callback with the result
      *
      * @callback successCallback
      * @callback errCallback
@@ -21,9 +21,10 @@ class TeamService {
             url: '/team'
         }, (resData, jwres) => {
             if (jwres.error) {
-                return err(jwres);
+                err(jwres);
+            } else {
+                success(jwres.body);
             }
-            return success(jwres.body);
         });
     }
 

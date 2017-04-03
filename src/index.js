@@ -20,6 +20,7 @@ import HomePage from "./components/pages/HomePage.jsx";
 import BarPage from "./components/pages/BarPage.jsx";
 import LogPage from "./components/pages/LogPage.jsx";
 import TeamsPage from "./components/pages/TeamsPage.jsx";
+import AlertPage from "./components/pages/AlertPage.jsx";
 
 // constants
 import * as constants from './config/constants';
@@ -44,6 +45,7 @@ ReactDOM.render(
                 <Route path="bar" component={BarPage} onEnter={requireAuth}/>
                 <Route path="log" component={LogPage} onEnter={requireAuth}/>
                 <Route path="teams" component={TeamsPage} onEnter={requireAuth}/>
+                <Route path="alert" component={AlertPage} onEnter={requireAuth}/>
             </Route>
         </Router>
     </MuiThemeProvider>,
