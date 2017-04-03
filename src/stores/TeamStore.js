@@ -89,7 +89,7 @@ class TeamStore extends BaseStore {
      */
     _handleActions(action) {
         switch(action.type) {
-            case "WEBSOCKET_CONNECTED":
+            case "SAVE_JWT":
                 this._init();
                 break;
             case "WEBSOCKET_DISCONNECTED":

@@ -2,6 +2,7 @@ import * as constants from '../config/constants';
 import NotificationActions from '../actions/NotificationActions';
 import WebSocketActions from '../actions/WebSocketActions';
 import AuthService from '../services/AuthService';
+import { browserHistory } from 'react-router';
 
 // Hold the set interval identifier which will try to reconnect every 5 sec
 let watchdog = null;
@@ -63,19 +64,35 @@ class WebSocketService {
                     jwtError = error;
                 }
 
-                // Authenticate with IP
-                AuthService.tryToAuthenticateWithIP()
+                // Authenticate via EtuUTT
+                let authCode = AuthService.getAuthorizationCode();
+                if(authCode) {
+                    NotificationActions.loading('Connexion depuis EtuUTT en cours..');
+                }
+                AuthService.sendAuthorizationCode(authCode)
                 .then(() => {
-                    WebSocketActions.connected();
+                    browserHistory.push(window.location.pathname);
                     NotificationActions.hideLoading();
                 })
-                // Ignore this error
                 .catch((error) => {
-                    WebSocketActions.connected();
+                    browserHistory.push(window.location.pathname);
                     NotificationActions.hideLoading();
-                    if(jwtError) {
-                        NotificationActions.error('Votre connexion a expiré, veuillez vous reconnecter.', jwtError);
-                    }
+                    NotificationActions.error('Une erreur s\'est produite pendant votre authentification via EtuUTT', error);
+
+                    // Authenticate with IP
+                    AuthService.tryToAuthenticateWithIP()
+                    .then(() => {
+                        WebSocketActions.connected();
+                        NotificationActions.hideLoading();
+                    })
+                    // Ignore this error
+                    .catch((error) => {
+                        WebSocketActions.connected();
+                        NotificationActions.hideLoading();
+                        if(jwtError) {
+                            NotificationActions.error('Votre connexion a expiré, veuillez vous reconnecter.', jwtError);
+                        }
+                    });
                 });
             });
         });
