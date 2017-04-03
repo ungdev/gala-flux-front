@@ -77,7 +77,9 @@ class WebSocketService {
                 .catch((error) => {
                     browserHistory.push(window.location.pathname);
                     NotificationActions.hideLoading();
-                    NotificationActions.error('Une erreur s\'est produite pendant votre authentification via EtuUTT', error);
+                    if(authCode) {
+                        NotificationActions.error('Une erreur s\'est produite pendant votre authentification via EtuUTT', error);
+                    }
 
                     // Authenticate with IP
                     AuthService.tryToAuthenticateWithIP()
