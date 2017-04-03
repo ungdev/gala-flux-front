@@ -11,10 +11,10 @@ export default class Alerts extends React.Component {
         this.state = {
             selectedButton: 1
         };
+    }
 
-        // binding
-        this._toggleUpdateDialog = this._toggleUpdateDialog.bind(this);
-        this._toggleMemberDialog = this._toggleMemberDialog.bind(this);
+    _toggleUpdateDialog(e) {
+        this.setState({selectedButton: e});
     }
 
     render() {
@@ -22,9 +22,21 @@ export default class Alerts extends React.Component {
             <div className="alerts">
                 <div className="alert__header">Alertes</div>
                 <div className="alerts__buttons">
-                    <RaisedButton id="1" label="En attente" />
-                    <RaisedButton id="2" label="En cours de traitement" />
-                    <RaisedButton id="3" label="Terminées" />
+                    <RaisedButton 
+                        label="En attente"
+                        onTouchTap={this._toggleUpdateDialog.bind(this, 1)}
+                        backgroundColor={(this.state.selectedButton === 1 ? c.cyanA700 : '')}
+                    />
+                    <RaisedButton
+                        label="En cours de traitement"
+                        onTouchTap={this._toggleUpdateDialog.bind(this, 2)}
+                        backgroundColor={(this.state.selectedButton === 2 ? c.cyanA700 : '')}
+                    />
+                    <RaisedButton
+                        label="Terminées"
+                        onTouchTap={this._toggleUpdateDialog.bind(this, 3)}
+                        backgroundColor={(this.state.selectedButton === 3 ? c.cyanA700 : '')}
+                    />
                 </div>
             </div>
         );
