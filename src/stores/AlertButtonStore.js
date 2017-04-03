@@ -34,7 +34,7 @@ class AlertButtonStore extends BaseStore {
             }
         });
         // listen model changes
-        io.socket.on('alertbutton', this._handleAlertButtonEvents);
+        iosocket.on('alertbutton', this._handleAlertButtonEvents);
     }
 
     /**
