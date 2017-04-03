@@ -14,7 +14,7 @@ class ChatService {
      * @param {errorCallback} error
      */
     sendMessage(text, error) {
-        io.socket.request({
+        iosocket.request({
             method: 'post',
             url: '/testcreate',
             data: {text}
@@ -32,7 +32,7 @@ class ChatService {
      * @param error
      */
     getMessages(error) {
-        io.socket.request({
+        iosocket.request({
             method: 'get',
             url: '/message'
         }, (resData, jwres) => {

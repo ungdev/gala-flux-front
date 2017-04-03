@@ -27,14 +27,14 @@ export default class MessageList extends React.Component {
             console.log("get messages error : ", err);
         });
         // listen to the new messages. On new message, trigger an action
-        io.socket.on('message', this._handleMessage);
+        iosocket.on('message', this._handleMessage);
     }
 
     componentWillUnmount() {
         // remove the store change
         ChatStore.removeChangeListener(this._onChatStoreChange);
         // remove the socket io listener
-        io.socket.off('message', this._handleMessage);
+        iosocket.off('message', this._handleMessage);
     }
 
     /**

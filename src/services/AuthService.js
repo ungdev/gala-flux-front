@@ -8,7 +8,7 @@ class AuthService {
 
     getUserData(jwt) {
         // first request : get the user
-        io.socket.request({
+        iosocket.request({
             method: 'get',
             url: '/user/' + jwtDecode(jwt).userId
         }, (resData, jwres) => {
@@ -20,22 +20,21 @@ class AuthService {
      * Send an webSocket request to the server to try to authenticate
      * the user with IP address
      *
-     * @callback successCallback
-     * @callback errorCallback
-     *
-     * @param {successCallback} success
-     * @param {errorCallback} error
+     * @return {Promise}
      */
-    checkIpAddress(success, error) {
-        io.socket.request({
-            method: 'post',
-            url: '/login/ip'
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                return error(jwres);
-            }
-            this.getUserData(jwres.body.jwt);
-            return success(jwres);
+    tryToAuthenticateWithIP() {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'post',
+                url: '/login/ip'
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(jwres.error);
+                }
+                this.getUserData(jwres.body.jwt);
+                AuthActions.saveJWT(jwres.body.jwt);
+                return resolve();
+            });
         });
     }
 
@@ -47,7 +46,7 @@ class AuthService {
      * @callback error
      */
     authWithEtuUTT(success, error) {
-        io.socket.request({
+        iosocket.request({
             method: 'get',
             url: '/login/oauth'
         }, (resData, jwres) => {
@@ -71,7 +70,7 @@ class AuthService {
      * @param {errorCallback} error
      */
     sendAuthorizationCode(authorizationCode, error) {
-        io.socket.request({
+        iosocket.request({
             method: 'post',
             url: '/login/oauth/submit',
             data: {authorizationCode}
@@ -94,21 +93,23 @@ class AuthService {
      * @return {boolean} the authentication success
      */
     tryToAuthenticateConnexion(jwt) {
-        if (!jwt) {
-            return false;
-        }
-        io.socket.request({
-            method: 'post',
-            url: '/login/jwt',
-            data: {jwt}
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                console.log("try to authenticate error : ", jwres.error);
-                return false;
+        return new Promise((resolve, reject) => {
+            if (!jwt) {
+                reject(new Error('No JWT'));
             }
-            this.getUserData(jwres.body.jwt);
-            AuthActions.saveJWT(jwres.body.jwt);
-            return true;
+            iosocket.request({
+                method: 'post',
+                url: '/login/jwt',
+                data: {jwt}
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    reject(new Error(jwres.error));
+                    return false;
+                }
+                this.getUserData(jwres.body.jwt);
+                AuthActions.saveJWT(jwres.body.jwt);
+                resolve();
+            });
         });
     }
 
@@ -122,7 +123,7 @@ class AuthService {
      * @param {callback} callback
      */
     tryToLoginAs(id, callback) {
-        io.socket.request({
+        iosocket.request({
             method: 'post',
             url: '/login/as/' + id
         }, (resData, jwres) => {

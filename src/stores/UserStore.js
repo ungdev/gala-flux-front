@@ -36,6 +36,7 @@ class UserStore extends BaseStore {
      * listen to webSocket events about User model
      */
     _init() {
+        // TODO test if we have permission
         // fill the users attribute
         UserService.getUsers(
             success => {
@@ -47,7 +48,7 @@ class UserStore extends BaseStore {
             }
         );
         // listen model changes
-        io.socket.on('user', this._handleUserEvents);
+        iosocket.on('user', this._handleUserEvents);
     }
 
     /**
@@ -80,8 +81,11 @@ class UserStore extends BaseStore {
      */
     _handleActions(action) {
         switch(action.type) {
-            case "SAVE_JWT":
+            case "WEBSOCKET_CONNECTED":
                 this._init();
+                break;
+            case "WEBSOCKET_DISCONNECTED":
+                this._users = [];
                 break;
         }
     }

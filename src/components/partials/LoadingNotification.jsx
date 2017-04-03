@@ -11,7 +11,7 @@ export default class LoadingNotification extends React.Component {
             super(props);
 
             this.state = {
-                loadingMessage: null,
+                loadingMessage: NotificationStore.loadingMessage,
             };
         }
 
@@ -41,7 +41,7 @@ export default class LoadingNotification extends React.Component {
                 <Dialog
                     contentStyle={style.content}
                     modal={false}
-                    open={this.state.loadingMessage !== null}
+                    open={this.state.loadingMessage != null}
                     modal={true}
                 >
                     <CircularProgress size={80} thickness={5} /><br/>

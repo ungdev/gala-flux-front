@@ -16,7 +16,7 @@ class UserService {
      * @param {errCallback} err
      */
     getUsers(success, err) {
-        io.socket.request({
+        iosocket.request({
             method: 'get',
             url: '/user'
         }, (resData, jwres) => {
@@ -36,7 +36,7 @@ class UserService {
      * @param {errorCallback} err
      */
     deleteUser(uid, err) {
-        io.socket.request({
+        iosocket.request({
             method: 'delete',
             url: '/user/' + uid
         }, (resData, jwres) => {
@@ -58,7 +58,7 @@ class UserService {
     * @param {erroCallback} err
     */
     updateUser(uid, data, err) {
-        io.socket.request({
+        iosocket.request({
             method: 'put',
             url: '/user/' + uid,
             data

@@ -27,20 +27,13 @@ import * as constants from './config/constants';
 import jwtDecode from 'jwt-decode';
 
 // actions and services
+import WebSocketService from './services/WebSocketService';
 import AuthService from './services/AuthService';
 import AuthActions from './actions/AuthActions';
 import NotificationActions from './actions/NotificationActions';
 
-// Error when api is not reachable
-setTimeout(function () {
-    if(!io.socket.isConnected()) {
-        NotificationActions.error('Connexion à l\'API Flux impossible.', null, null, true, 5);
-    }
-}, 5000);
-
-// This code is executed when the app is loaded
-// So if there is a jwt in the localStorage, try to authenticate the webSocket connexion
-AuthService.tryToAuthenticateConnexion(localStorage.getItem(constants.jwtName));
+// Connect to websocket server
+WebSocketService.connect();
 
 // Render the app using react router
 ReactDOM.render(
@@ -82,20 +75,7 @@ function requireAuth (nextState, replace, callback) {
             return callback();
         }
     }
-
-    // if there is no JWT, send a request to the server in order to try
-    // to authenticate the user by his IP address
-    AuthService.checkIpAddress(
-        success => {
-            // save the JWT. Now the User can access the route.
-            AuthActions.saveJWT(success.body.jwt);
-            return callback();
-        },
-        error => {
-            // if the IP address is not valid, redirect him to the home page
-            // so he can login with EtuUTT
-            replace('/');
-            return callback();
-        }
-    );
+    else {
+        replace('/');
+    }
 }

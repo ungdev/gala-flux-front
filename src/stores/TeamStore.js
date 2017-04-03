@@ -54,7 +54,7 @@ class TeamStore extends BaseStore {
             }
         );
         // listen model changes
-        io.socket.on('team', this._handleTeamEvents);
+        iosocket.on('team', this._handleTeamEvents);
     }
 
     /**
@@ -89,8 +89,11 @@ class TeamStore extends BaseStore {
      */
     _handleActions(action) {
         switch(action.type) {
-            case "SAVE_JWT":
+            case "WEBSOCKET_CONNECTED":
                 this._init();
+                break;
+            case "WEBSOCKET_DISCONNECTED":
+                this._teams = [];
                 break;
         }
     }

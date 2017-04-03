@@ -16,7 +16,7 @@ class TeamService {
      * @param {errCallback} err
      */
     getTeams(success, err) {
-        io.socket.request({
+        iosocket.request({
             method: 'get',
             url: '/team'
         }, (resData, jwres) => {
@@ -36,7 +36,7 @@ class TeamService {
      * @param {doneCallback} callback
      */
     deleteTeam(teamId, callback) {
-        io.socket.request({
+        iosocket.request({
             method: 'delete',
             url: '/team/' + teamId
         }, (resData, jwres) => {
@@ -53,7 +53,7 @@ class TeamService {
      * @param {doneCallback} callback
      */
     createTeam(data, callback) {
-        io.socket.request({
+        iosocket.request({
             method: 'post',
             url: '/team',
             data
@@ -72,7 +72,7 @@ class TeamService {
      * @param {doneCallback} callback
      */
     updateTeam(teamId, data, callback) {
-        io.socket.request({
+        iosocket.request({
             method: 'put',
             url: '/team/' + teamId,
             data

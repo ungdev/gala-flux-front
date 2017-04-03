@@ -22,7 +22,7 @@ class NotificationStore extends BaseStore {
 
         // Contains the message under the loading circular progress
         // The loading page will be shown only if this attribute is defined
-        this._loadingMessage = '';
+        this._loadingMessage = null;
 
 
         this.subscribe(() => this._handleActions.bind(this));
