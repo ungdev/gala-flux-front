@@ -32,10 +32,8 @@ class HomePage extends React.Component {
 
         return (
             <div className="container">
-                <div>
-                    <h2 className="title">Flux</h2>
-                    <RaisedButton label="Se connecter avec un compte UTT" primary={true} onTouchTap={this._login} />
-                </div>
+                <h2 className="title">Flux</h2>
+                <RaisedButton label="Se connecter avec un compte UTT" primary={true} onTouchTap={this._login} />
             </div>
         );
     }

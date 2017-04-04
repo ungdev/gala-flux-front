@@ -1,0 +1,26 @@
+$alert__team-name: 60px;
+$alert__action: 50px;
+
+.alert {
+    border-radius: .3125em;
+    border: 1px solid #dce3e6;
+    display: flex;
+}
+
+.alert__team-name {
+    height: 100%;
+    width: #{$alert__team-name};
+    background-color: #eeeeee;
+}
+
+.alert__content {
+    margin: 5px;
+    width: calc(100% - #{$alert__team-name} - #{$alert__action});
+}
+
+.alert__action {
+    height: 100%;
+    width: #{$alert__action};
+    background-color: #80deea;
+    margin-left: auto;
+}
