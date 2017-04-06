@@ -1,7 +1,7 @@
 import TeamActions from '../actions/TeamActions';
 
 /**
- * Class used for all about Authentication
+ * Class used for all about Teams
  */
 class TeamService {
 
@@ -85,7 +85,7 @@ class TeamService {
     }
 
     /**
-     * Make a request to update a new team
+     * Make a request to update a team
      *
      * @callback doneCallback
      *
