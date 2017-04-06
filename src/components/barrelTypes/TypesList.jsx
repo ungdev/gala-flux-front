@@ -21,6 +21,7 @@ export default class TypesList extends React.Component {
             selected: null,
             openNewDialog: false,
             openShowDialog: false,
+            openEditDialog: false,
         };
 
         // bindings
@@ -47,7 +48,10 @@ export default class TypesList extends React.Component {
     }
 
     _toggleEditDialog(barrelType) {
-
+        this.setState({
+            openEditDialog: !this.state.openEditDialog,
+            selected: barrelType
+        });
     }
 
     _toggleShowDialog(barrelType) {
@@ -108,6 +112,12 @@ export default class TypesList extends React.Component {
                     <ShowBarrelType
                         show={this.state.openShowDialog}
                         close={this._toggleShowDialog}
+                        type={this.state.selected}
+                    />
+
+                    <EditBarrelType
+                        show={this.state.openEditDialog}
+                        close={this._toggleEditDialog}
                         type={this.state.selected}
                     />
                 </div>

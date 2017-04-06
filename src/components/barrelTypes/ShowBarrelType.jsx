@@ -64,7 +64,7 @@ export default class ShowBarrelType extends React.Component {
                         </TableBody>
                     </Table>
                 }
-            </ Dialog>
+            </Dialog>
         )
     }
 
