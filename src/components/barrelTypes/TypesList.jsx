@@ -18,7 +18,9 @@ export default class TypesList extends React.Component {
 
         this.state = {
             types: [],
-            openNewDialog: false
+            selected: null,
+            openNewDialog: false,
+            openShowDialog: false,
         };
 
         // bindings
@@ -49,7 +51,10 @@ export default class TypesList extends React.Component {
     }
 
     _toggleShowDialog(barrelType) {
-
+        this.setState({
+            openShowDialog: !this.state.openShowDialog,
+            selected: barrelType
+        });
     }
 
     _toggleNewDialog() {
@@ -97,7 +102,13 @@ export default class TypesList extends React.Component {
 
                     <NewBarrelType
                         show={this.state.openNewDialog}
-                        close={_ => this.setState({ openNewDialog: !this.state.openNewDialog })}
+                        close={this._toggleNewDialog}
+                    />
+
+                    <ShowBarrelType
+                        show={this.state.openShowDialog}
+                        close={this._toggleShowDialog}
+                        type={this.state.selected}
                     />
                 </div>
             </div>
