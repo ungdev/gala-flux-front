@@ -5,13 +5,16 @@ import NotificationActions from './NotificationActions';
 
 /**
  * Create or update the token in the localStorage
+ *
+ * Emitted when server is accepted our authentication but we don't have
+ * informations about current user
  * @param jwt
  */
 function saveJWT (jwt) {
     localStorage.setItem(constants.jwtName, jwt);
 
     AppDispatcher.dispatch({
-        type: 'SAVE_JWT',
+        type: 'AUTH_JWT_SAVED',
         jwt
     });
 }
@@ -71,13 +74,19 @@ function loginAs(newJWT) {
 }
 
 /**
- * Send authenticated user's data
- * @param data
+ * Send user data on authentication
+ *
+ * Emitted when server has accepted our authentication and then we've got user data
+ *
+ * @param user Current authenticated user object
+ * @param team Current authenticated team object
  */
-function getUserData(data) {
+function authenticated(user, team) {
+    NotificationActions.snackbar('Bonjour ' + user.name + ' !');
     AppDispatcher.dispatch({
-        type: 'GET_USER_DATA',
-        data
+        type: 'AUTH_AUTHENTICATED',
+        user: user,
+        team: team,
     });
 }
 
@@ -85,4 +94,4 @@ exports.saveJWT = saveJWT;
 exports.logout = logout;
 exports.backToMainAccount = backToMainAccount;
 exports.loginAs = loginAs;
-exports.getUserData = getUserData;
+exports.authenticated = authenticated;

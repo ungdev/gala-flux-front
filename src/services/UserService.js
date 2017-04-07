@@ -5,6 +5,28 @@ import UserActions from '../actions/UserActions';
  */
 class UserService {
 
+
+    /**
+     * Pull user data from the server
+     *
+     * @param  {string} id  id of the user you wan to get
+     * @return {Promise}    Promise that resolve to user data
+     */
+    getUser(id) {
+        return new Promise((resolve, reject) => {
+            // first request : get the user
+            iosocket.request({
+                method: 'get',
+                url: '/user/' + id
+            }, (resData, jwres) => {
+                if(jwres.error) {
+                    return reject(jwres.error);
+                }
+                return resolve(resData);
+            });
+        });
+    }
+
     /**
      * Make a webSocket request to get the users
      * Then return the data

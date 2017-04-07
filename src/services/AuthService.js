@@ -6,20 +6,21 @@ import jwtDecode from 'jwt-decode';
  * Class used to make requests about authentication.
  */
 class AuthService {
-
-    getUserData(jwt) {
+    /**
+     * Pull the current role->permission configuration of the server
+     *
+     * @return {Promise}    Promise that resolve to role->permission association object
+     */
+    getRoles() {
         return new Promise((resolve, reject) => {
-            // first request : get the user
             iosocket.request({
                 method: 'get',
-                url: '/user/' + jwtDecode(jwt).userId
+                url: '/login/roles'
             }, (resData, jwres) => {
                 if(jwres.error) {
                     return reject(jwres.error);
                 }
-                AuthActions.getUserData(resData);
-                NotificationActions.snackbar('Bonjour ' + resData.name + ' !')
-                return resolve();
+                return resolve(resData);
             });
         });
     }
@@ -39,11 +40,8 @@ class AuthService {
                 if (jwres.error) {
                     return reject(jwres.error);
                 }
-                this.getUserData(jwres.body.jwt).
-                then(() => {
-                    AuthActions.saveJWT(jwres.body.jwt);
-                    return resolve();
-                })
+                AuthActions.saveJWT(jwres.body.jwt);
+                return resolve();
             });
         });
     }
@@ -92,11 +90,8 @@ class AuthService {
                 if (jwres.error) {
                     return reject(jwres.error);
                 }
-                this.getUserData(jwres.body.jwt).
-                then(() => {
-                    AuthActions.saveJWT(jwres.body.jwt);
-                    return resolve();
-                });
+                AuthActions.saveJWT(jwres.body.jwt);
+                return resolve();
             });
         })
     }
@@ -144,11 +139,8 @@ class AuthService {
                     reject(new Error(jwres.error));
                     return false;
                 }
-                this.getUserData(jwres.body.jwt).
-                then(() => {
-                    AuthActions.saveJWT(jwres.body.jwt);
-                    return resolve();
-                });
+                AuthActions.saveJWT(jwres.body.jwt);
+                return resolve();
             });
         });
     }
@@ -171,11 +163,8 @@ class AuthService {
                 // if there is an error, call the callback with the error
                 callback(jwres);
             } else {
-                this.getUserData(jwres.body.jwt).
-                then(() => {
-                    AuthActions.loginAs(jwres.body.jwt);
-                    return callback();
-                })
+                AuthActions.loginAs(jwres.body.jwt);
+                return callback();
             }
         });
     }
