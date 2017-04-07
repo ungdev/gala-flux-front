@@ -67,7 +67,7 @@ class BarrelTypeStore extends BaseStore {
     }
 
     /**
-     * Handle Actions from TeamActions
+     * Handle Actions from BarrelTypeActions
      *
      * @param {object} action : the action
      */
