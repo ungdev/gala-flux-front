@@ -91,8 +91,8 @@ export default class TypesList extends React.Component {
             },
             floatingButton: {
                 position: 'absolute',
-                right: '36px',
-                bottom: '36px',
+                right: '82px',
+                bottom: '82px',
             }
         };
 
@@ -136,6 +136,7 @@ export default class TypesList extends React.Component {
                         close={this._toggleEditDialog}
                         type={this.state.selected}
                     />
+
                 </div>
             </div>
         );
