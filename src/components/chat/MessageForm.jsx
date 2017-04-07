@@ -33,5 +33,4 @@ export default class MessageForm extends React.Component {
             </div>
         );
     }
-
 }

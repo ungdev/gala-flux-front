@@ -97,7 +97,6 @@ class TeamStore extends BaseStore {
                 break;
         }
     }
-
 }
 
 export default new TeamStore();
