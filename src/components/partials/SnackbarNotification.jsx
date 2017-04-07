@@ -6,21 +6,21 @@ import NotificationStore from '../../stores/NotificationStore';
 
 export default class SnackbarNotification extends React.Component {
 
-        constructor(props) {
-            super(props);
+    constructor(props) {
+        super(props);
 
-            this.state = {
-                message: null,
-                count: 0,
-            };
+        this.state = {
+            message: null,
+            count: 0,
+        };
 
-            // Set this variable to true to prevent message refresh before state has been updated
-            this.preventMessage = false;
+        // Set this variable to true to prevent message refresh before state has been updated
+        this.preventMessage = false;
 
-            // binding
-            this._openMessageIfNecessary = this._openMessageIfNecessary.bind(this);
-            this._handleRequestClose = this._handleRequestClose.bind(this);
-        }
+        // binding
+        this._openMessageIfNecessary = this._openMessageIfNecessary.bind(this);
+        this._handleRequestClose = this._handleRequestClose.bind(this);
+    }
 
     componentDidMount() {
         // listen the store change

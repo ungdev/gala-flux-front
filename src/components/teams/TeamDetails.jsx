@@ -63,7 +63,7 @@ export default class TeamDetails extends React.Component {
             };
 
             return (
-                <div className="hideContainer">
+                <div className="hide-container">
                     <div style={style.container}>
                         <RaisedButton primary style={style.button} onTouchTap={this._toggleUpdateDialog} label="Modifier l'équipe"/>
                         <h2>{this.state.selected.team.name}</h2>

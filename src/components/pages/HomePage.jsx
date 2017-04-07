@@ -2,9 +2,9 @@ import React from 'react';
 
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import RaisedButton from 'material-ui/RaisedButton';
-
 import AuthService from '../../services/AuthService';
 import NotificationActions from '../../actions/NotificationActions';
+require('../../styles/pages/HomePage.scss');
 
 class HomePage extends React.Component {
 
@@ -30,30 +30,10 @@ class HomePage extends React.Component {
 
     render() {
 
-        const style = {
-            container: {
-                height: '100%',
-                padding: 0,
-                margin: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingTop: '30px',
-                textAlign: 'center',
-            },
-            title: {
-                fontSize: '7em',
-                fontWeight: 'normal',
-                marginBottom: '20px',
-            },
-        };
-
         return (
-            <div style={style.container}>
-                <div>
-                    <h2 style={style.title}>Flux</h2>
-                    <RaisedButton label="Se connecter avec un compte UTT" primary={true} onTouchTap={this._login} />
-                </div>
+            <div className="container">
+                <h2 className="title">Flux</h2>
+                <RaisedButton label="Se connecter avec un compte UTT" primary={true} onTouchTap={this._login} />
             </div>
         );
     }

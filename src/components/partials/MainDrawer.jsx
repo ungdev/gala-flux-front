@@ -40,7 +40,6 @@ class MainDrawer extends React.Component {
 
         return (
             <div>
-
                 <IconButton iconStyle={style.icon} onTouchTap={this._handleToggle}>
                     <NavigationMenu/>
                 </IconButton>

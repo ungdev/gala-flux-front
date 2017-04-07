@@ -7,22 +7,22 @@ import NotificationStore from '../../stores/NotificationStore';
 
 export default class ErrorNotification extends React.Component {
 
-        constructor(props) {
-            super(props);
+    constructor(props) {
+        super(props);
 
-            this.state = {
-                errorMessage: null,
-                count: 0,
-            };
+        this.state = {
+            errorMessage: null,
+            count: 0,
+        };
 
-            // Set this variable to true to prevent errorMessage refresh before state has been updated
-            this.preventDialog = false;
-            this.interval = null;
+        // Set this variable to true to prevent errorMessage refresh before state has been updated
+        this.preventDialog = false;
+        this.interval = null;
 
-            // binding
-            this._openDialogIfNecessary = this._openDialogIfNecessary.bind(this);
-            this._closeDialog = this._closeDialog.bind(this);
-        }
+        // binding
+        this._openDialogIfNecessary = this._openDialogIfNecessary.bind(this);
+        this._closeDialog = this._closeDialog.bind(this);
+    }
 
     componentDidMount() {
         // listen the store change

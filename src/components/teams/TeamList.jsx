@@ -48,7 +48,7 @@ export default class TeamList extends React.Component {
         };
 
         return (
-            <div className="hideContainer">
+            <div className="hide-container">
                 <div style={style.container}>
                     <SelectableList value={this.state.selectedId}>
                         {
