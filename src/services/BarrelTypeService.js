@@ -39,7 +39,7 @@ class BarrelTypeService {
     deleteBarrelType(typeId, callback) {
         iosocket.request({
             method: 'delete',
-            url: '/barreltype/' + teamId
+            url: '/barreltype/' + typeId
         }, (resData, jwres) => {
             jwres.error ? callback(jwres.error) : callback(null, resData);
         });

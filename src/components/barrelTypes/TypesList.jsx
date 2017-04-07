@@ -43,10 +43,18 @@ export default class TypesList extends React.Component {
         BarrelTypeStore.removeChangeListener(this._onBarrelTypeStoreChange);
     }
 
+    /**
+     * Update the state when the BarrelTypeStore is updated
+     */
     _onBarrelTypeStoreChange() {
         this.setState({ types: BarrelTypeStore.types });
     }
 
+    /**
+     * Toggle the boolean to show the dialog to edit the given barrel type
+     *
+     * @param {object} barrelType : the barrel type to edit
+     */
     _toggleEditDialog(barrelType) {
         this.setState({
             openEditDialog: !this.state.openEditDialog,
@@ -54,6 +62,11 @@ export default class TypesList extends React.Component {
         });
     }
 
+    /**
+     * Toggle the boolean to show the dialog with the details of the given barrel type
+     *
+     * @param {object} barrelType : the barrel type to show
+     */
     _toggleShowDialog(barrelType) {
         this.setState({
             openShowDialog: !this.state.openShowDialog,
@@ -61,6 +74,9 @@ export default class TypesList extends React.Component {
         });
     }
 
+    /**
+     * Toggle the boolean to show the dialog to create a new barrel type
+     */
     _toggleNewDialog() {
         this.setState({ openNewDialog: !this.state.openNewDialog });
     }
