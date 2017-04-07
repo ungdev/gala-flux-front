@@ -82,6 +82,24 @@ class BarrelTypeService {
         });
     }
 
+    /**
+     * Make a request to create barrels
+     *
+     * @callback doneCallback
+     *
+     * @param {object} data
+     * @param {doneCallback} callback
+     */
+    saveBarrels(data, callback) {
+        iosocket.request({
+            method: 'post',
+            url: '/barreltype/barrel',
+            data
+        }, (resData, jwres) => {
+            jwres.error ? callback(jwres.error) : callback(null, resData);
+        });
+    }
+
 }
 
 export default new BarrelTypeService();
