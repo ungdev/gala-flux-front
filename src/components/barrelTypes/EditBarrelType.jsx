@@ -21,12 +21,19 @@ export default class EditBarrelType extends React.Component {
         // binding
         this._submitForm = this._submitForm.bind(this);
         this._setAttribute = this._setAttribute.bind(this);
+        this._deleteBarrelType = this._deleteBarrelType.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({ type: nextProps.type });
     }
 
+    /**
+     * Update an attribute of the barrel type object in the component state
+     *
+     * @param {string} attribute
+     * @param {string|boolean} value
+     */
     _setAttribute(attribute, value) {
         const numberAttributes = ["sellPrice", "supplierPrice", "liters"];
         const state = this.state;
@@ -51,6 +58,22 @@ export default class EditBarrelType extends React.Component {
         }
     }
 
+    /**
+     * Call the barrel type service to delete this barrel type
+     */
+    _deleteBarrelType() {
+        BarrelTypeService.deleteBarrelType(this.state.type.id ,(error, result) => {
+            if (error) {
+                console.log("delete barrel type error", error);
+            } else {
+                this.props.close();
+            }
+        });
+    }
+
+    /**
+     * Call the barrel type service to update this barrel type with the new data
+     */
     _submitForm() {
         BarrelTypeService.updateBarrelType(this.state.type.id, this.state.type, (error, result) => {
             if (error) {
@@ -76,16 +99,18 @@ export default class EditBarrelType extends React.Component {
             <RaisedButton
                 secondary={true}
                 icon={<Delete />}
-                onClick={this._deleteButton}
+                onClick={this._deleteBarrelType}
             />
         ];
 
         const type = this.state.type;
 
+        // if this.state.type is undefined, display an empty div
         if (!type) {
             return <div></div>
         }
 
+        // else display the dialog
         return (
             <div>
                 <Dialog
