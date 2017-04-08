@@ -93,7 +93,7 @@ export default class EditBarrel extends React.Component {
                 {
                     this.state.barrel &&
                     <Dialog
-                        title={"Assignation du fût '" + this.state.barrel.reference + "'"}
+                        title={"Modification du fût '" + this.state.barrel.reference + "'"}
                         open={this.props.show}
                         modal={true}
                         onRequestClose={this.props.close}
