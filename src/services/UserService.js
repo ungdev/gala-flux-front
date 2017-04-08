@@ -65,7 +65,7 @@ class UserService {
             if (jwres.error) {
                 err(jwres);
             } else {
-                console.log("ok delete user : ", jwres);
+                AUTH_JWT_SAVED.log("ok delete user : ", jwres);
             }
         });
     }

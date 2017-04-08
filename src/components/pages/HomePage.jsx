@@ -21,10 +21,12 @@ class HomePage extends React.Component {
      */
     _login() {
         NotificationActions.loading('Connexion depuis EtuUTT en cours..');
-        AuthService.authWithEtuUTT(resp => {
-            window.location = resp.body.redirectUri;
-        }, err => {
-            console.log("err : ", err);
+        AuthService.authWithEtuUTT()
+        .then((data) => {
+            window.location = data.redirectUri;
+        })
+        .catch((error) => {
+            NotificationActions.error('Une erreur s\'est produite pendant l\'initialisation de la connexion via EtuUTT', error)
         });
     }
 

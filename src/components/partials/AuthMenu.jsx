@@ -95,7 +95,10 @@ class AuthMenu extends React.Component {
      */
     _backToMainAccount() {
         this._closeMenu();
-        AuthActions.backToMainAccount();
+        AuthActions.loginBack()
+        .catch((error) => {
+            NotificationActions.error('Une erreur s\'est produite pendant que votre tentative de reconnexion sur votre compte d\'origine', error);
+        })
     }
 
     /**
@@ -132,14 +135,6 @@ class AuthMenu extends React.Component {
                 textAlign: 'right',
                 display: 'inline-block',
             },
-            loginAs: {
-                // only show "back to main account" if the user as permission
-                display: (this.state.canLoginAs) ? "block" : "none"
-            },
-            backToMainAccount: {
-                // only show "back to main account" if the user is login as someone else
-                display: this.state.loginAs ? "block" : "none"
-            },
         };
 
         // Disable if not authenticated
@@ -164,13 +159,22 @@ class AuthMenu extends React.Component {
                     anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                 >
                     <Menu>
-                        <MenuItem onTouchTap={this._logout}>Logout</MenuItem>
-                        <MenuItem onTouchTap={this._openLoginAs} style={style.loginAs}>Login as someone else</MenuItem>
-                        <MenuItem onTouchTap={this._backToMainAccount} style={style.backToMainAccount}>Back to main account</MenuItem>
+                        <MenuItem onTouchTap={this._logout}>Se déconnecter</MenuItem>
+
+                        { this.state.canLoginAs ?
+                            <MenuItem onTouchTap={this._openLoginAs} style={style.loginAs}>Se connecter en tant que ...</MenuItem>
+                        :''}
+
+                        { this.state.loginAs ?
+                            <MenuItem onTouchTap={this._backToMainAccount}>Retour à votre compte</MenuItem>
+                        :''}
+
                     </Menu>
                 </Popover>
 
-                <LoginAs open={this.state.openLoginAs} closeDialog={this._closeDialog} />
+                { this.state.openLoginAs ?
+                    <LoginAs open={this.state.openLoginAs} closeDialog={this._closeDialog} />
+                :''}
             </div>
         );
     }

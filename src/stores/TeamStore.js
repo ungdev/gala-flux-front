@@ -22,6 +22,53 @@ class TeamStore extends BaseStore {
         this.emitChange();
     }
 
+
+    /**
+     * Find list of elements that match filters
+     *
+     * @param  {Object} filters Object of filters
+     * @return {Array}         Array of elements
+     */
+    find(filters) {
+        let out = [];
+        for (let item of this._teams) {
+            let add = true;
+            for (let key in filters) {
+                if(item[key] !== filters[key]) {
+                    add = false;
+                    break;
+                }
+            }
+            if(add) {
+                out.push(item);
+            }
+        }
+        return out;
+    }
+
+
+    /**
+     * Find one element that match filters
+     *
+     * @param  {Object} filters Object of filters
+     * @return {Object}         Element
+     */
+    findOne(filters) {
+        for (let item of this._teams) {
+            let ok = true;
+            for (let key in filters) {
+                if(item[key] !== filters[key]) {
+                    ok = false;
+                    break;
+                }
+            }
+            if(ok) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     /**
      * Search a team by his id and return his name.
      * If the team can't be found, return null

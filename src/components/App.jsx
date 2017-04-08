@@ -13,14 +13,14 @@ export default class App extends React.Component {
 
         return (
             <div className="hide-container">
-                <ErrorNotification />
-                <SnackbarNotification />
-                <LoadingNotification />
                 <AppNavbar />
                 <main className="main">
                     {this.props.children}
                 </main>
                 <AppFooter />
+                <SnackbarNotification />
+                <LoadingNotification />
+                <ErrorNotification />
             </div>
         );
     }

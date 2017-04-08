@@ -174,13 +174,13 @@ class AuthStore extends BaseStore {
             case "AUTH_JWT_SAVED":
                 this._init(action.jwt);
                 break;
-            case "LOGOUT":
+            case "AUTH_LOGGED_OUT":
                 this._init();
                 break;
-            case "LOGIN_AS":
+            case "AUTH_LOGGED_AS":
                 this.loginAs = true;
                 break;
-            case "LOGOUT_AS":
+            case "AUTH_LOGGED_BACK":
                 this.loginAs = false;
                 break;
         }
