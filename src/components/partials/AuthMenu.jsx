@@ -18,10 +18,12 @@ class AuthMenu extends React.Component {
 
         this.state = {
             user: null,
+            team: null,
             menuAnchor: null,
             openMenu: false,
             openLoginAs: false,
-            loginAs: false
+            loginAs: false,
+            canLoginAs: false,
         };
 
         this._palette = props.muiTheme.palette;
@@ -45,8 +47,10 @@ class AuthMenu extends React.Component {
      */
     _onAuthStoreChange() {
         this.setState({
+            team: AuthStore.team,
             user: AuthStore.user,
-            loginAs: AuthStore.loginAs
+            loginAs: AuthStore.loginAs,
+            canLoginAs: AuthStore.can('auth/as'),
         });
     }
 
@@ -91,7 +95,10 @@ class AuthMenu extends React.Component {
      */
     _backToMainAccount() {
         this._closeMenu();
-        AuthActions.backToMainAccount();
+        AuthActions.loginBack()
+        .catch((error) => {
+            NotificationActions.error('Une erreur s\'est produite pendant que votre tentative de reconnexion sur votre compte d\'origine', error);
+        })
     }
 
     /**
@@ -122,20 +129,16 @@ class AuthMenu extends React.Component {
             },
             icon: {
                 color: this._palette.alternateTextColor,
-                marginLeft: '8px',
+                marginLeft: '10px',
             },
             userDetails: {
                 textAlign: 'right',
                 display: 'inline-block',
             },
-            backToMainAccount: {
-                // only show "back to main account" if the user is login as someone else
-                display: this.state.loginAs ? "block" : "none"
-            },
         };
 
         // Disable if not authenticated
-        if(!this.state.user) {
+        if(!this.state.user || !this.state.team) {
             return null;
         }
 
@@ -143,7 +146,7 @@ class AuthMenu extends React.Component {
             <div>
                 <button onTouchTap={this._openMenu} style={style.userButton}>
                     <div style={style.userDetails}>
-                        <strong>Team</strong><br/>
+                        <strong>{this.state.team.name}</strong><br/>
                         {this.state.user.name}
                     </div>
                     <AccountCircleIcon style={style.icon} />
@@ -156,13 +159,22 @@ class AuthMenu extends React.Component {
                     anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                 >
                     <Menu>
-                        <MenuItem onTouchTap={this._logout}>Logout</MenuItem>
-                        <MenuItem onTouchTap={this._openLoginAs}>Login as someone else</MenuItem>
-                        <MenuItem onTouchTap={this._backToMainAccount} style={style.backToMainAccount}>Back to main account</MenuItem>
+                        <MenuItem onTouchTap={this._logout}>Se déconnecter</MenuItem>
+
+                        { this.state.canLoginAs ?
+                            <MenuItem onTouchTap={this._openLoginAs} style={style.loginAs}>Se connecter en tant que ...</MenuItem>
+                        :''}
+
+                        { this.state.loginAs ?
+                            <MenuItem onTouchTap={this._backToMainAccount}>Retour à votre compte</MenuItem>
+                        :''}
+
                     </Menu>
                 </Popover>
 
-                <LoginAs open={this.state.openLoginAs} closeDialog={this._closeDialog} />
+                { this.state.openLoginAs ?
+                    <LoginAs open={this.state.openLoginAs} closeDialog={this._closeDialog} />
+                :''}
             </div>
         );
     }

@@ -117,6 +117,13 @@ export default class ErrorNotification extends React.Component {
                 buttonLabel += ' ('+this.state.errorMessage.timeout+')';
             }
         }
+
+        const style = {
+            dialog: {
+                zIndex: 2000,
+            }
+        };
+
         const actions = [
             <FlatButton
                 label={buttonLabel}
@@ -134,6 +141,7 @@ export default class ErrorNotification extends React.Component {
                     modal={false}
                     open={(this.state.errorMessage != null && this.preventDialog != null)}
                     onRequestClose={this._closeDialog}
+                    style={style.dialog}
                 >
                     {(this.state.errorMessage ? this.state.errorMessage.message : '')}
                 </Dialog>

@@ -6,6 +6,27 @@ import TeamActions from '../actions/TeamActions';
 class TeamService {
 
     /**
+     * Pull team data from the server
+     *
+     * @param  {string} id  id of the team you wan to get
+     * @return {Promise}    Promise that resolve to team data
+     */
+    getTeam(id) {
+        return new Promise((resolve, reject) => {
+            // first request : get the user
+            iosocket.request({
+                method: 'get',
+                url: '/team/' + id
+            }, (resData, jwres) => {
+                if(jwres.error) {
+                    return reject(jwres.error);
+                }
+                return resolve(resData);
+            });
+        });
+    }
+
+    /**
      * Make a webSocket request to get the teams
      * Then call the callback with the result
      *

@@ -80,7 +80,7 @@ class UserStore extends BaseStore {
      */
     _handleActions(action) {
         switch(action.type) {
-            case "SAVE_JWT":
+            case "AUTH_JWT_SAVED":
                 this._init();
                 break;
             case "WEBSOCKET_DISCONNECTED":

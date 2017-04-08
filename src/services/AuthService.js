@@ -1,25 +1,27 @@
 import AuthActions from '../actions/AuthActions';
 import NotificationActions from '../actions/NotificationActions';
+import {ApiError} from '../errors';
 import jwtDecode from 'jwt-decode';
 
 /**
  * Class used to make requests about authentication.
  */
 class AuthService {
-
-    getUserData(jwt) {
+    /**
+     * Pull the current role->permission configuration of the server
+     *
+     * @return {Promise}    Promise that resolve to role->permission association object
+     */
+    getRoles() {
         return new Promise((resolve, reject) => {
-            // first request : get the user
             iosocket.request({
                 method: 'get',
-                url: '/user/' + jwtDecode(jwt).userId
+                url: '/login/roles'
             }, (resData, jwres) => {
                 if(jwres.error) {
-                    return reject(jwres.error);
+                    return reject(new ApiError(jwres));
                 }
-                AuthActions.getUserData(resData);
-                NotificationActions.snackbar('Bonjour ' + resData.name + ' !')
-                return resolve();
+                return resolve(resData);
             });
         });
     }
@@ -37,13 +39,9 @@ class AuthService {
                 url: '/login/ip'
             }, (resData, jwres) => {
                 if (jwres.error) {
-                    return reject(jwres.error);
+                    return reject(new ApiError(jwres));
                 }
-                this.getUserData(jwres.body.jwt).
-                then(() => {
-                    AuthActions.saveJWT(jwres.body.jwt);
-                    return resolve();
-                })
+                return resolve(jwres.body.jwt);
             });
         });
     }
@@ -56,14 +54,16 @@ class AuthService {
      * @callback error
      */
     authWithEtuUTT(success, error) {
-        iosocket.request({
-            method: 'get',
-            url: '/login/oauth'
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                return error(jwres);
-            }
-            return success(jwres);
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'get',
+                url: '/login/oauth'
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 
@@ -77,7 +77,7 @@ class AuthService {
      * @callback errorCallback
      *
      * @param authorizationCode
-     * @return {Promise}
+     * @return {Promise} Promise for the jwt
      */
     sendAuthorizationCode(authorizationCode) {
         return new Promise((resolve, reject) => {
@@ -90,15 +90,11 @@ class AuthService {
                 data: {authorizationCode}
             }, (resData, jwres) => {
                 if (jwres.error) {
-                    return reject(jwres.error);
+                    return reject(new ApiError(jwres));
                 }
-                this.getUserData(jwres.body.jwt).
-                then(() => {
-                    AuthActions.saveJWT(jwres.body.jwt);
-                    return resolve();
-                });
+                return resolve(jwres.body.jwt);
             });
-        })
+        });
     }
 
     /**
@@ -128,9 +124,9 @@ class AuthService {
      *
      * @param {String} jwt
      *
-     * @return {boolean} the authentication success
+     * @return {Promise} Promise for the new authenticated jwt
      */
-    tryToAuthenticateConnexion(jwt) {
+    tryToAuthenticateWithJWT(jwt) {
         return new Promise((resolve, reject) => {
             if (!jwt) {
                 reject(new Error('No JWT'));
@@ -141,14 +137,9 @@ class AuthService {
                 data: {jwt}
             }, (resData, jwres) => {
                 if (jwres.error) {
-                    reject(new Error(jwres.error));
-                    return false;
+                    return reject(new ApiError(jwres));
                 }
-                this.getUserData(jwres.body.jwt).
-                then(() => {
-                    AuthActions.saveJWT(jwres.body.jwt);
-                    return resolve();
-                });
+                return resolve(jwres.body.jwt);
             });
         });
     }
@@ -160,23 +151,19 @@ class AuthService {
      * @callback callback
      *
      * @param {String} id : the user id
-     * @param {callback} callback
+     * @return {Promise} Promise for the jwt
      */
-    tryToLoginAs(id, callback) {
-        iosocket.request({
-            method: 'post',
-            url: '/login/as/' + id
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                // if there is an error, call the callback with the error
-                callback(jwres);
-            } else {
-                this.getUserData(jwres.body.jwt).
-                then(() => {
-                    AuthActions.loginAs(jwres.body.jwt);
-                    return callback();
-                })
-            }
+    tryToLoginAs(id) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'post',
+                url: '/login/as/' + id
+            }, (resData, jwres, tmp) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(jwres.body.jwt);
+            });
         });
     }
 

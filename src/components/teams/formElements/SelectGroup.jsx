@@ -27,7 +27,6 @@ export default class SelectGroup extends React.Component {
     }
 
     _handleUpdateInput(value) {
-        console.log(this.state.value);
         this.props.onChange(value);
         this.setState({
             value: value,
