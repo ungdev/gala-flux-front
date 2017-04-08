@@ -41,6 +41,12 @@ class BarrelStore extends BaseStore {
         iosocket.on('barrel', this._handleBarrelEvents);
     }
 
+    getTeamBarrels(team) {
+        return this._barrels.filter(barrel => {
+            return barrel.place == team
+        });
+    }
+
     /**
      * Remove a barrel by id in the store
      *
