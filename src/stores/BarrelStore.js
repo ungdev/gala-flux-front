@@ -11,6 +11,7 @@ class BarrelStore extends BaseStore {
 
         this._handleBarrelEvents = this._handleBarrelEvents.bind(this);
         this._deleteBarrel = this._deleteBarrel.bind(this);
+        this._updateBarrel = this._updateBarrel.bind(this);
     }
 
     get barrels() {
@@ -50,6 +51,22 @@ class BarrelStore extends BaseStore {
     }
 
     /**
+     * Find the barrel in the array and update it
+     *
+     * @param {string} barrelId: the id of the barrel to update
+     * @param {object} updatedBarrel: the new values of the barrel's attribute
+     */
+    _updateBarrel(barrelId, updatedBarrel) {
+        for (let barrel of this._barrels) {
+            if (barrel.id === barrelId) {
+                barrel = updatedBarrel;
+                break;
+            }
+        }
+        this.emitChange();
+    }
+
+    /**
      * Handle webSocket events about the Barrel model
      *
      * @param {object} e : the event
@@ -58,6 +75,9 @@ class BarrelStore extends BaseStore {
         switch (e.verb) {
             case "destroyed":
                 this._deleteBarrel(e.id);
+                break;
+            case "updated":
+                this._updateBarrel(e.id, e.data);
                 break;
             case "created":
                 this.barrels.push(e.data);
