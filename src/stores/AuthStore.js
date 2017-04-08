@@ -81,7 +81,8 @@ class AuthStore extends BaseStore {
             AuthActions.authenticated(this.user, this.team);
         })
         .catch((error) => {
-            NotificationActions.error('Impossible de récupérer les informations sur l\'utilisateur actuel.', error, null, true);
+            AuthActions.logout();
+            NotificationActions.error('Impossible de récupérer les informations sur l\'utilisateur actuel. Veuillez vous reconnecter.', error, null, true);
         });
     }
 
