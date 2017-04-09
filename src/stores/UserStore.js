@@ -40,7 +40,6 @@ class UserStore extends BaseStore {
         UserService.getUsers(
             success => {
                 this.users = success;
-                console.log("success : ", success);
             },
             err => {
                 console.log("get users error yolo : ", err);
