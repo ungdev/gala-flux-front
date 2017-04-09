@@ -23,6 +23,20 @@ class BarrelTypeStore extends BaseStore {
     }
 
     /**
+     * Get the barrel type name by barrel type id
+     * @param {string} typeId: the barrel type id
+     * @returns {string|null}
+     */
+    getBarrelName(typeId) {
+        for (let type of this._types) {
+            if (type.id == typeId) {
+                return type.name;
+            }
+        }
+        return null;
+    }
+
+    /**
      * init the store : get the existing barrel types and
      * listen to webSocket events about BarrelType model
      */
