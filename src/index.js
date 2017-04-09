@@ -16,9 +16,7 @@ import { browserHistory, Router, Route, IndexRoute } from 'react-router';
 
 // Pages
 import App from "./components/App.jsx";
-import HomePage from "./components/pages/HomePage.jsx";
-import BarPage from "./components/pages/BarPage.jsx";
-import LogPage from "./components/pages/LogPage.jsx";
+import Root from "./components/Root.jsx";
 import TeamsPage from "./components/pages/TeamsPage.jsx";
 import AlertPage from "./components/pages/AlertPage.jsx";
 import BarrelsPage from "./components/pages/BarrelsPage.jsx";
@@ -30,9 +28,6 @@ import jwtDecode from 'jwt-decode';
 
 // actions and services
 import WebSocketService from './services/WebSocketService';
-import AuthService from './services/AuthService';
-import AuthActions from './actions/AuthActions';
-import NotificationActions from './actions/NotificationActions';
 
 // Connect to websocket server
 WebSocketService.connect();
@@ -42,9 +37,7 @@ ReactDOM.render(
     <MuiThemeProvider muiTheme={muiTheme}>
         <Router history={browserHistory}>
             <Route path="/" component={App}>
-                <IndexRoute component={HomePage} />
-                <Route path="bar" component={BarPage} onEnter={requireAuth} />
-                <Route path="log" component={LogPage} onEnter={requireAuth} />
+                <IndexRoute component={Root} />
                 <Route path="teams" component={TeamsPage} onEnter={requireAuth} />
                 <Route path="alert" component={AlertPage} onEnter={requireAuth} />
                 <Route path="barrels" component={BarrelsPage} onEnter={requireAuth} />
