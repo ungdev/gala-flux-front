@@ -87,7 +87,6 @@ export default class EditBarrel extends React.Component {
             />
         ];
 
-        // else display the dialog
         return (
             <div>
                 {

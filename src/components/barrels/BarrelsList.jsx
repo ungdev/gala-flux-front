@@ -27,23 +27,25 @@ export default class BarrelsList extends React.Component {
         };
 
         // binding
-        this._onBarrelStoreChange = this._onBarrelStoreChange.bind(this);
         this._onBarrelTypeStoreChange = this._onBarrelTypeStoreChange.bind(this);
         this._toggleEditBarrel = this._toggleEditBarrel.bind(this);
+        this._setBarrels = this._setBarrels.bind(this);
     }
 
     componentDidMount() {
         // listen the stores changes
-        BarrelStore.addChangeListener(this._onBarrelStoreChange);
+        BarrelStore.addChangeListener(this._setBarrels);
         BarrelTypeStore.addChangeListener(this._onBarrelTypeStoreChange);
+        TeamStore.addChangeListener(this._setBarrels);
         // init barrels list and barrelTypes list
-        this.setState({ types: BarrelTypeStore.types });
+        this._setBarrels();
     }
 
     componentWillUnmount() {
         // remove the stores listeners
-        BarrelStore.removeChangeListener(this._onBarrelStoreChange);
+        BarrelStore.removeChangeListener(this._setBarrels);
         BarrelTypeStore.removeChangeListener(this._onBarrelTypeStoreChange);
+        TeamStore.removeChangeListener(this._setBarrels);
     }
 
     /**
@@ -57,13 +59,6 @@ export default class BarrelsList extends React.Component {
     }
 
     /**
-     * Update the state when the BarrelStore is updated
-     */
-    _onBarrelStoreChange() {
-        this._updateBarrels();
-    }
-
-    /**
      * Update the state when the BarrelTypeStore is updated
      */
     _onBarrelTypeStoreChange() {
@@ -71,14 +66,17 @@ export default class BarrelsList extends React.Component {
     }
 
     /**
-     *
+     * Set the barrels in the state.
+     * Get the team name of each barrel in the same time.
      */
-    _updateBarrels() {
+    _setBarrels() {
         let barrels = BarrelStore.barrels;
 
-        // for each barrel, get the place data
-        for (let barrel of barrels) {
-            barrel.team = TeamStore.getTeamName(barrel.place);
+        if (TeamStore.teams) {
+            // for each barrel, get the place data
+            for (let barrel of barrels) {
+                barrel.team = TeamStore.getTeamName(barrel.place);
+            }
         }
 
         this.setState({ barrels });
@@ -98,11 +96,7 @@ export default class BarrelsList extends React.Component {
                         <MenuItem key={-1} value={null} primaryText="" />
                         {
                             this.state.types.map(type => {
-                                return <MenuItem
-                                    value={type.id}
-                                    primaryText={type.name}
-                                    key={type.id}
-                                />
+                                return <MenuItem value={type.id} primaryText={type.name} key={type.id} />
                             })
                         }
                     </SelectField>
@@ -112,18 +106,18 @@ export default class BarrelsList extends React.Component {
                         {
                             this.state.barrels.map(barrel => {
                                 if (!this.state.filter || barrel.type === this.state.filter) {
-                                    return <TableRow key={barrel.id}>
-                                            <TableRowColumn>{barrel.reference}</TableRowColumn>
-                                            <TableRowColumn>{barrel.team}</TableRowColumn>
-                                            <TableRowColumn>
-                                                <IconButton
-                                                    tooltip="SVG Icon"
-                                                    onClick={_ => this._toggleEditBarrel(barrel)}
-                                                >
-                                                    <Settings />
-                                                </IconButton>
-                                            </TableRowColumn>
-                                        </TableRow>
+                                    return  <TableRow key={barrel.id}>
+                                                <TableRowColumn>{barrel.reference}</TableRowColumn>
+                                                <TableRowColumn>{barrel.team}</TableRowColumn>
+                                                <TableRowColumn>
+                                                    <IconButton
+                                                        tooltip="SVG Icon"
+                                                        onClick={_ => this._toggleEditBarrel(barrel)}
+                                                    >
+                                                        <Settings />
+                                                    </IconButton>
+                                                </TableRowColumn>
+                                            </TableRow>
                                 }
                             })
                         }

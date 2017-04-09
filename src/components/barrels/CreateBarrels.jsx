@@ -35,10 +35,19 @@ export default class CreateBarrels extends React.Component {
         this.setState({ types: nextProps.types });
     }
 
+    /**
+     * Toggle the boolean value to show/hide the form to create a new barrel
+     */
     _toggleFormDialog() {
         this.setState({ showForm: !this.state.showForm })
     }
 
+    /**
+     * Update the value of an attribute of the barrel in creation
+     *
+     * @param {string} attribute: the attribute to update
+     * @param {string} value: the new value of this attribute
+     */
     _setFormDataAttribute(attribute, value) {
         const state = this.state;
 
@@ -58,6 +67,9 @@ export default class CreateBarrels extends React.Component {
         this.setState(state);
     }
 
+    /**
+     * Call the Service to create a new barrel type
+     */
     _submitForm() {
         BarrelTypeService.saveBarrels(this.state.formData, (error, barrels) => {
             if (error) {
