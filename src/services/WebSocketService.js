@@ -98,6 +98,8 @@ class WebSocketService {
                         NotificationActions.hideLoading();
                         if(jwtError) {
                             NotificationActions.error('Votre connexion a expiré, veuillez vous reconnecter.', jwtError);
+                            localStorage.removeItem(constants.jwtName);
+                            localStorage.removeItem(constants.firstJwtName);
                         }
                     });
                 });
