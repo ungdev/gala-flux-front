@@ -14,7 +14,9 @@ export default class BarBarrels extends React.Component {
         super();
 
         this.state = {
-            barrels: []
+            barrels: [],
+            BarrelStoreToken: null,
+            BarrelTypeStoreToken: null
         };
 
         this.states = ["new", "opened", "empty"];
@@ -27,6 +29,22 @@ export default class BarBarrels extends React.Component {
     }
 
     componentDidMount() {
+        // fill the stores
+        BarrelStore.loadData(null, (error, result, token) => {
+            if (error) {
+                console.log("bar barrels load barrels error", error);
+            } else {
+                this.setState({ BarrelStoreToken: token });
+                // if no error, load the types
+                const types = [...new Set(result.map(barrel => barrel.type))];
+                BarrelTypeStore.loadData(types, (error, result, token) => {
+                    if (error) {
+                        console.log("bar barrels load types error", error);
+                    }
+                    this.setState({ BarrelTypeStoreToken: token });
+                });
+            }
+        });
         // listen the stores changes
         BarrelStore.addChangeListener(this._setBarrels);
         BarrelTypeStore.addChangeListener(this._setBarrels);
@@ -35,6 +53,8 @@ export default class BarBarrels extends React.Component {
     }
 
     componentWillUnmount() {
+        BarrelStore.unloadData(this.state.BarrelStoreToken);
+        BarrelTypeStore.unloadData(this.state.BarrelTypeStoreToken);
         // remove the stores listeners
         BarrelStore.removeChangeListener(this._setBarrels);
         BarrelTypeStore.removeChangeListener(this._setBarrels);

@@ -9,22 +9,19 @@ class BarrelTypeService {
      * Make a webSocket request to get the barrel types
      * Then call the callback with the result
      *
-     * @callback successCallback
-     * @callback errCallback
+     * @callback callback
      *
-     * @param {successCallback} success
-     * @param {errCallback} err
+     * @param {Array|null} filters
+     * @param {callback} callback
      */
-    getBarrelTypes(success, err) {
+    getBarrelTypes(filters, callback) {
+        console.log("filters : ", filters);
         iosocket.request({
             method: 'get',
+            data: {filters},
             url: '/barreltype'
         }, (resData, jwres) => {
-            if (jwres.error) {
-                err(jwres);
-            } else {
-                success(jwres.body);
-            }
+            jwres.error ? callback(jwres.error) : callback(null, resData);
         });
     }
 

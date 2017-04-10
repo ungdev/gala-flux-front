@@ -8,6 +8,9 @@ class BarrelTypeStore extends BaseStore {
         this.subscribe(() => this._handleActions.bind(this));
 
         this._types = [];
+        this._filters = {
+            length: 0
+        };
 
         this._handleBarrelTypeEvents = this._handleBarrelTypeEvents.bind(this);
         this._deleteBarrelType = this._deleteBarrelType.bind(this);
@@ -36,23 +39,38 @@ class BarrelTypeStore extends BaseStore {
         return null;
     }
 
-    /**
-     * init the store : get the existing barrel types and
-     * listen to webSocket events about BarrelType model
-     */
-    _init() {
-        // fill the types attribute
-        BarrelTypeService.getBarrelTypes(
-            success => {
-                this.types = success;
-                console.log("success : ", success);
-            },
-            err => {
-                console.log("get barrel types error : ", err);
+    loadData(filters, callback) {
+        const componentToken = this._filters.length;
+        this._filters.length++;
+        this._filters[componentToken] = filters;
+        // refresh the store with the new filters
+        return this.fetchData(callback, componentToken);
+    }
+
+    unloadData(token) {
+        delete this._filters[token];
+    }
+
+    fetchData(callback, componentToken) {
+        let filters = [];
+        for (let filter in this._filters) {
+            if (this._filters[filter] === null) {
+                filters = null;
+                break;
             }
-        );
+            filters = [...new Set([...filters, ...this._filters[filter]])];
+        }
+
+        BarrelTypeService.getBarrelTypes(filters, (error, result) => {
+            if (error) {
+                return callback(error);
+            }
+            this.types = result;
+            console.log("types222 : ", result);
+            return callback(null, result, componentToken);
+        });
         // listen model changes
-        iosocket.on('barreltype', this._handleBarrelTypeEvents);
+        iosocket.on('barreltype', this._handleBarrelEvents);
     }
 
     /**
@@ -87,9 +105,6 @@ class BarrelTypeStore extends BaseStore {
      */
     _handleActions(action) {
         switch(action.type) {
-            case "SAVE_JWT":
-                this._init();
-                break;
             case "WEBSOCKET_DISCONNECTED":
                 this._types = [];
                 break;

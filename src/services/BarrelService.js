@@ -7,22 +7,20 @@ class BarrelService {
      * Make a webSocket request to get the barrels
      * Then call the callback with the result
      *
-     * @callback successCallback
-     * @callback errCallback
+     * @callback callback
      *
-     * @param {successCallback} success
-     * @param {errCallback} err
+     * @param {Array|null} filters
+     * @param {callback} callback
      */
-    getBarrels(success, err) {
+    getBarrels(filters, callback) {
         iosocket.request({
             method: 'get',
+            data: {
+                filters: filters
+            },
             url: '/barrel'
         }, (resData, jwres) => {
-            if (jwres.error) {
-                err(jwres);
-            } else {
-                success(jwres.body);
-            }
+            jwres.error ? callback(jwres.error) : callback(null, resData);
         });
     }
 
