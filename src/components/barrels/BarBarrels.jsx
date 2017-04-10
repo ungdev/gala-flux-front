@@ -14,10 +14,11 @@ export default class BarBarrels extends React.Component {
         super();
 
         this.state = {
-            barrels: [],
-            BarrelStoreToken: null,
-            BarrelTypeStoreToken: null
+            barrels: []
         };
+
+        this.BarrelStoreToken = null;
+        this.BarrelTypeStoreToken = null;
 
         this.states = ["new", "opened", "empty"];
 
@@ -34,14 +35,20 @@ export default class BarBarrels extends React.Component {
             if (error) {
                 console.log("bar barrels load barrels error", error);
             } else {
-                this.setState({ BarrelStoreToken: token });
-                // if no error, load the types
-                const types = [...new Set(result.map(barrel => barrel.type))];
+                // save the component token
+                this.BarrelStoreToken = token;
+                // get distinct barrel types id and create objects with their id
+                let types = [...new Set(result.map(barrel => barrel.type))];
+                for (let i in types) {
+                    types[i] = {id: types[i]}
+                }
+                // load the barrel types
                 BarrelTypeStore.loadData(types, (error, result, token) => {
                     if (error) {
                         console.log("bar barrels load types error", error);
                     }
-                    this.setState({ BarrelTypeStoreToken: token });
+                    // save the component token
+                    this.BarrelTypeStoreToken = token;
                 });
             }
         });
@@ -53,8 +60,8 @@ export default class BarBarrels extends React.Component {
     }
 
     componentWillUnmount() {
-        BarrelStore.unloadData(this.state.BarrelStoreToken);
-        BarrelTypeStore.unloadData(this.state.BarrelTypeStoreToken);
+        BarrelStore.unloadData(this.BarrelStoreToken);
+        BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
         // remove the stores listeners
         BarrelStore.removeChangeListener(this._setBarrels);
         BarrelTypeStore.removeChangeListener(this._setBarrels);

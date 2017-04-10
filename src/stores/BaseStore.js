@@ -51,7 +51,10 @@ export default class BaseStore extends EventEmitter {
             }
             this._modelData = result;
             this.emitChange();
-            return callback(null, result, componentToken);
+
+            if (callback) {
+                callback(null, result, componentToken);
+            }
         });
         // listen model changes
         iosocket.on(this._modelName, this._handleModelEvents);
@@ -60,7 +63,7 @@ export default class BaseStore extends EventEmitter {
     /**
      * Add new filters and fetch the data to get the new asked data
      *
-     * @param {array} filters: new the data to get
+     * @param {Array} filters: new the data to get
      * @param {function} callback: what to do after the data fetching
      * @returns {callback}
      */
@@ -75,10 +78,12 @@ export default class BaseStore extends EventEmitter {
     /**
      * Remove the data used only for the component which has this token
      *
-     * @param {number} token: the component's token
+     * @param {number|null} token: the component's token
      */
     unloadData(token) {
         delete this._filters[token];
+        // reload only the data needed
+        this.fetchData();
     }
 
     /**
