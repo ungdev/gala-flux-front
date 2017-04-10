@@ -4,24 +4,20 @@ import BarrelTypeService from '../services/BarrelTypeService';
 class BarrelTypeStore extends BaseStore {
 
     constructor() {
-        super();
+        super('barreltype', BarrelTypeService.getBarrelTypes);
+
         this.subscribe(() => this._handleActions.bind(this));
 
-        this._types = [];
-        this._filters = {
-            length: 0
-        };
-
-        this._handleBarrelTypeEvents = this._handleBarrelTypeEvents.bind(this);
+        this._handleModelEvents = this._handleModelEvents.bind(this);
         this._deleteBarrelType = this._deleteBarrelType.bind(this);
     }
 
     get types() {
-        return this._types;
+        return this._modelData;
     }
 
     set types(v) {
-        this._types = v;
+        this._modelData = v;
         this.emitChange();
     }
 
@@ -31,46 +27,12 @@ class BarrelTypeStore extends BaseStore {
      * @returns {string|null}
      */
     getBarrelName(typeId) {
-        for (let type of this._types) {
+        for (let type of this._modelData) {
             if (type.id == typeId) {
                 return type.name;
             }
         }
         return null;
-    }
-
-    loadData(filters, callback) {
-        const componentToken = this._filters.length;
-        this._filters.length++;
-        this._filters[componentToken] = filters;
-        // refresh the store with the new filters
-        return this.fetchData(callback, componentToken);
-    }
-
-    unloadData(token) {
-        delete this._filters[token];
-    }
-
-    fetchData(callback, componentToken) {
-        let filters = [];
-        for (let filter in this._filters) {
-            if (this._filters[filter] === null) {
-                filters = null;
-                break;
-            }
-            filters = [...new Set([...filters, ...this._filters[filter]])];
-        }
-
-        BarrelTypeService.getBarrelTypes(filters, (error, result) => {
-            if (error) {
-                return callback(error);
-            }
-            this.types = result;
-            console.log("types222 : ", result);
-            return callback(null, result, componentToken);
-        });
-        // listen model changes
-        iosocket.on('barreltype', this._handleBarrelEvents);
     }
 
     /**
@@ -87,7 +49,7 @@ class BarrelTypeStore extends BaseStore {
      *
      * @param {object} e : the event
      */
-    _handleBarrelTypeEvents(e) {
+    _handleModelEvents(e) {
         switch (e.verb) {
             case "destroyed":
                 this._deleteBarrelType(e.id);
@@ -106,7 +68,7 @@ class BarrelTypeStore extends BaseStore {
     _handleActions(action) {
         switch(action.type) {
             case "WEBSOCKET_DISCONNECTED":
-                this._types = [];
+                this._modelData = [];
                 break;
         }
     }
