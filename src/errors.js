@@ -20,6 +20,7 @@ export class ApiError extends Error {
         let message = jwres.error.message;
         let code = jwres.statusCode;
         let status = 'UnexpectedError';
+        let formErrors = {};
 
         // Try to parse body
         if(jwres.body) {
@@ -28,12 +29,20 @@ export class ApiError extends Error {
                 code = jwres.body._error.code;
                 status = jwres.body._error.status;
             }
+            else if(jwres.body.code && jwres.body.code == 'E_VALIDATION') {
+                status = 'ValidationError';
+                message = jwres.body.details;
+                formErrors = jwres.body.invalidAttributes;
+            }
         }
+
+        console.log(jwres)
 
         // Construct
         super(message);
         this.name = 'ApiError';
         this.code = code;
         this.status = status;
+        this.formErrors = formErrors;
     }
  }
