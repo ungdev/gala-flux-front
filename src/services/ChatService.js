@@ -1,3 +1,4 @@
+import {ApiError} from '../errors';
 import ChatActions from '../actions/ChatActions';
 
 /**
@@ -27,19 +28,23 @@ class ChatService {
     }
 
     /**
-     * Get the messages
+     * Make a webSocket request to get the messages
      *
-     * @param error
+     * @param {Array|null} filters
+     * @return {Promise}
      */
-    getMessages(error) {
-        iosocket.request({
-            method: 'get',
-            url: '/message'
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                return error(jwres);
-            }
-            ChatActions.getMessages(resData);
+    getMessages(filters) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'get',
+                data: {filters},
+                url: '/message'
+            }, (resData, jwres) => {
+                if(jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 

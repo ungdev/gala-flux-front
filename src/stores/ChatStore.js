@@ -1,44 +1,41 @@
 import BaseStore from './BaseStore';
+import ChatService from '../services/ChatService';
 
 class ChatStore extends BaseStore {
 
     constructor() {
-        super();
+        super('message', ChatService.getMessages);
+
         this.subscribe(() => this._handleActions.bind(this));
-
-        this.messages = [];
+        this._handleModelEvents = this._handleModelEvents.bind(this);
     }
 
-    /**
-     * Push to the new message into the messages array
-     * and emit changes
-     *
-     * @param message
-     */
-    _newMessage(message) {
-        this.messages.push(message);
+    get messages() {
+        return this._modelData;
+    }
+
+    set messages(v) {
+        this._modelData = v;
         this.emitChange();
     }
 
     /**
-     * Fill the messages
-     * and emit changes
+     * Handle webSocket events about the Message model
      *
-     * @param messages
-     * @private
+     * @param {object} e: the event
      */
-    _setMessages(messages) {
-        this.messages = messages;
-        this.emitChange();
+    _handleModelEvents(e) {
+        switch (e.verb) {
+            case "created":
+                this.messages.push(e.data);
+                break;
+        }
     }
 
     _handleActions(action) {
         switch(action.type) {
             case "NEW_MESSAGE":
                 this._newMessage(action.message);
-                break;
-            case "GET_MESSAGES":
-                this._setMessages(action.messages);
                 break;
         }
     }
