@@ -136,7 +136,7 @@ export default class ErrorNotification extends React.Component {
         return (
             <div>
                 <Dialog
-                    title="Erreur :/"
+                    title="Erreur !"
                     actions={actions}
                     modal={false}
                     open={(this.state.errorMessage != null && this.preventDialog != null)}

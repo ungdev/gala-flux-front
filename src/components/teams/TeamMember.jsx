@@ -1,9 +1,11 @@
 import React from 'react';
 
 import UserService from '../../services/UserService';
+import * as constants from '../../config/constants';
 
 import { ListItem } from 'material-ui/List';
 import IconButton from 'material-ui/IconButton';
+import Avatar from 'material-ui/Avatar';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
 
 export default class TeamMember extends React.Component {
@@ -36,10 +38,12 @@ export default class TeamMember extends React.Component {
 
     render() {
         let secondaryText = (this.state.member.ip ? this.state.member.ip : this.state.member.login);
+        let avatarUri = constants.avatarBasePath + this.state.member.id;
         return (
             <ListItem
                 primaryText={this.state.member.name}
                 secondaryText={secondaryText}
+                leftAvatar={<Avatar src={avatarUri} backgroundColor="white" />}
                 rightIconButton={(
                     <IconButton
                         tooltip="Supprimer"
