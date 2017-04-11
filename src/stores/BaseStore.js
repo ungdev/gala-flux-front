@@ -40,7 +40,7 @@ export default class BaseStore extends EventEmitter {
     /**
      * Use the fetchMethod to fetch the data needed of this model.
      *
-     * @param {number} componentToken: the new component
+     * @param {number} [componentToken]: the new component
      * @return {Promise}
      */
     fetchData(componentToken) {
@@ -66,7 +66,7 @@ export default class BaseStore extends EventEmitter {
     /**
      * Add new filters and fetch the data to get the new asked data
      *
-     * @param {Array} filters: new the data to get
+     * @param {Array|null} filters: new the data to get
      * @returns {Promise}
      */
     loadData(filters) {

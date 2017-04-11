@@ -7,10 +7,9 @@ class BarrelService {
 
     /**
      * Make a webSocket request to get the barrels
-     * Then call the callback with the result
      *
      * @param {Array|null} filters
-     *
+     * @return {Promise}
      */
     getBarrels(filters) {
         return new Promise((resolve, reject) => {

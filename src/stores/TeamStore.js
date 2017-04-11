@@ -4,21 +4,20 @@ import TeamService from '../services/TeamService';
 class TeamStore extends BaseStore {
 
     constructor() {
-        super();
+        super('team', TeamService.getTeams);
+
         this.subscribe(() => this._handleActions.bind(this));
 
-        this._teams = [];
-
-        this._handleTeamEvents = this._handleTeamEvents.bind(this);
+        this._handleModelEvents = this._handleModelEvents.bind(this);
         this._deleteTeam = this._deleteTeam.bind(this);
     }
 
     get teams() {
-        return this._teams;
+        return this._modelData;
     }
 
     set teams(v) {
-        this._teams = v;
+        this._modelData = v;
         this.emitChange();
     }
 
@@ -31,7 +30,7 @@ class TeamStore extends BaseStore {
      */
     find(filters) {
         let out = [];
-        for (let item of this._teams) {
+        for (let item of this._modelData) {
             let add = true;
             for (let key in filters) {
                 if(item[key] !== filters[key]) {
@@ -54,7 +53,7 @@ class TeamStore extends BaseStore {
      * @return {Object}         Element
      */
     findOne(filters) {
-        for (let item of this._teams) {
+        for (let item of this._modelData) {
             let ok = true;
             for (let key in filters) {
                 if(item[key] !== filters[key]) {
@@ -77,31 +76,12 @@ class TeamStore extends BaseStore {
      * @returns {String|null}
      */
     getTeamName(id) {
-        for (let team of this._teams) {
+        for (let team of this._modelData) {
             if (team.id == id) {
                 return team.name;
             }
         }
         return null;
-    }
-
-    /**
-     * init the store : get the existing teams and
-     * listen to webSocket events about Team model
-     */
-    _init() {
-        // fill the teams attribute
-        TeamService.getTeams(
-            success => {
-                this.teams = success;
-                console.log("success : ", success);
-            },
-            err => {
-                console.log("get teams error : ", err);
-            }
-        );
-        // listen model changes
-        iosocket.on('team', this._handleTeamEvents);
     }
 
     /**
@@ -118,7 +98,7 @@ class TeamStore extends BaseStore {
      *
      * @param {object} e : the event
      */
-    _handleTeamEvents(e) {
+    _handleModelEvents(e) {
         switch (e.verb) {
             case "destroyed":
                 this._deleteTeam(e.id);
@@ -136,11 +116,8 @@ class TeamStore extends BaseStore {
      */
     _handleActions(action) {
         switch(action.type) {
-            case "AUTH_JWT_SAVED":
-                this._init();
-                break;
             case "WEBSOCKET_DISCONNECTED":
-                this._teams = [];
+                this._modelData = [];
                 break;
         }
     }

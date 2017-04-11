@@ -5,36 +5,22 @@ import AlertButtonService from '../services/AlertButtonService';
 class AlertButtonStore extends BaseStore {
 
     constructor() {
-        super();
+        super('alertbutton', AlertButtonService.getAlertButtons);
+
         this.subscribe(() => this._handleActions.bind(this));
 
-        this._buttons = [];
-
         // binding
-        this._handleAlertButtonEvents = this._handleAlertButtonEvents.bind(this);
+        this._handleModelEvents = this._handleModelEvents.bind(this);
         this._deleteButton = this._deleteButton.bind(this);
     }
 
     get buttons() {
-        return this._buttons;
+        return this._modelData;
     }
 
     set buttons(v) {
-        this._buttons = v;
+        this._modelData = v;
         this.emitChange();
-    }
-
-    _init() {
-        // fill the buttons attribute
-        AlertButtonService.getAlertButtons((err, result) => {
-            if (err) {
-                console.log("get alert button err : ", err);
-            } else {
-                this.buttons = result;
-            }
-        });
-        // listen model changes
-        iosocket.on('alertbutton', this._handleAlertButtonEvents);
     }
 
     /**
@@ -51,7 +37,7 @@ class AlertButtonStore extends BaseStore {
      *
      * @param {object} e : the event
      */
-    _handleAlertButtonEvents(e) {
+    _handleModelEvents(e) {
         switch (e.verb) {
             case "destroyed":
                 this._deleteButton(e.id);
@@ -64,11 +50,7 @@ class AlertButtonStore extends BaseStore {
     }
 
     _handleActions(action) {
-        switch(action.type) {
-            case "AUTH_JWT_SAVED":
-                this._init();
-                break;
-        }
+        switch(action.type) {}
     }
 
 }

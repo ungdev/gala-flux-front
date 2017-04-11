@@ -45,7 +45,7 @@ export default class BarBarrels extends React.Component {
                         // save the component token
                         this.BarrelTypeStoreToken = data.token;
                     })
-                    .catch(error => console.log("bar barrels load types error", error))
+                    .catch(error => console.log("bar barrels load types error", error));
             })
             .catch(error => console.log("bar barrels load barrels error", error));
 

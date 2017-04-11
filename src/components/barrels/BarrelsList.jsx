@@ -26,6 +26,8 @@ export default class BarrelsList extends React.Component {
             toEdit: null
         };
 
+        this.BarrelStoreToken = null;
+
         // binding
         this._onBarrelTypeStoreChange = this._onBarrelTypeStoreChange.bind(this);
         this._toggleEditBarrel = this._toggleEditBarrel.bind(this);
