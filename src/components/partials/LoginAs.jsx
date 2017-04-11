@@ -6,7 +6,6 @@ import TeamStore from '../../stores/TeamStore';
 import NotificationActions from '../../actions/NotificationActions';
 
 import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import AutoComplete from 'material-ui/AutoComplete';
 
@@ -21,29 +20,55 @@ export default class LoginAs extends React.Component {
             error: '',
         };
 
+        this.UserStoreToken = null;
+        this.TeamStoreToken = null;
+
         // binding
         this._handleChange = this._handleChange.bind(this);
         this._submitForm= this._submitForm.bind(this);
         this._closeDialog= this._closeDialog.bind(this);
-        this._onStoreChange= this._onStoreChange.bind(this);
+        this._setUsers = this._setUsers.bind(this);
     }
 
     componentDidMount() {
+        // fill the stores
+        UserStore.loadData(null)
+            .then(data => {
+                // save the component token
+                this.UserStoreToken = data.token;
+                // get distinct teams id and create objects with their id
+                let teams = [...new Set(data.result.map(team => team.id))];
+                for (let i in teams) {
+                    teams[i] = {id: teams[i]};
+                }
+                TeamStore.loadData(teams)
+                    .then(data => {
+                        // save the component token
+                        this.TeamStoreToken = data.token;
+                    })
+                    .catch(error => console.log("load teams error", error));
+            })
+            .catch(error => console.log("load users error", error));
         // listen the store change
-        UserStore.addChangeListener(this._onStoreChange);
-        TeamStore.addChangeListener(this._onStoreChange);
-        this._onStoreChange();
+        UserStore.addChangeListener(this._setUsers);
+        TeamStore.addChangeListener(this._setUsers);
+        // set component state
+        this._setUsers();
     }
 
     componentWillUnmount() {
-        UserStore.removeChangeListener(this._onStoreChange);
-        TeamStore.removeChangeListener(this._onStoreChange);
+        // clear the stores
+        UserStore.unloadData(this.UserStoreToken);
+        TeamStore.unloadData(this.TeamStoreToken);
+        // remove store listeners
+        UserStore.removeChangeListener(this._setUsers);
+        TeamStore.removeChangeListener(this._setUsers);
     }
 
     /**
      * Called on store update to update state
      */
-    _onStoreChange() {
+    _setUsers() {
         let out = [];
         for (var index in UserStore.users) {
             let team = TeamStore.findOne({id: UserStore.users[index].team});
@@ -57,7 +82,7 @@ export default class LoginAs extends React.Component {
 
     /**
      * Update input value change
-     * @param e
+     * @param {string} value
      */
     _handleChange(value) {
         this.setState({ value: value });
