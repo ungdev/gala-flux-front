@@ -48,6 +48,7 @@ export default class BaseStore extends EventEmitter {
         return new Promise((resolve, reject) => {
             this._fetchMethod(this.getFiltersSet())
                 .then(result => {
+                    console.log(this._modelName, result.length);
                     this._modelData = result;
                     this.emitChange();
 

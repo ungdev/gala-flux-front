@@ -37,7 +37,7 @@ export default class LoginAs extends React.Component {
                 // save the component token
                 this.UserStoreToken = data.token;
                 // get distinct teams id and create objects with their id
-                let teams = [...new Set(data.result.map(team => team.id))];
+                let teams = [...new Set(data.result.map(user => user.team))];
                 for (let i in teams) {
                     teams[i] = {id: teams[i]};
                 }
