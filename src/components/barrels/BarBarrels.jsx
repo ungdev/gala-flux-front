@@ -57,6 +57,7 @@ export default class BarBarrels extends React.Component {
     }
 
     componentWillUnmount() {
+        // clear stores
         BarrelStore.unloadData(this.BarrelStoreToken);
         BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
         // remove the stores listeners

@@ -40,7 +40,6 @@ export default class BaseStore extends EventEmitter {
     /**
      * Use the fetchMethod to fetch the data needed of this model.
      *
-     * @param {function} callback: to call after the data has been fetched
      * @param {number} componentToken: the new component
      * @return {Promise}
      */

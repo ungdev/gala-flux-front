@@ -33,6 +33,13 @@ export default class BarrelsList extends React.Component {
     }
 
     componentDidMount() {
+        // fill the store
+        BarrelStore.loadData(null)
+            .then(data => {
+                // save the component token
+                this.BarrelStoreToken = data.token;
+            })
+            .catch(error => console.log("load barrel error", error));
         // listen the stores changes
         BarrelStore.addChangeListener(this._setBarrels);
         BarrelTypeStore.addChangeListener(this._onBarrelTypeStoreChange);
@@ -42,6 +49,8 @@ export default class BarrelsList extends React.Component {
     }
 
     componentWillUnmount() {
+        // clear store
+        BarrelStore.unloadData(this.BarrelStoreToken);
         // remove the stores listeners
         BarrelStore.removeChangeListener(this._setBarrels);
         BarrelTypeStore.removeChangeListener(this._onBarrelTypeStoreChange);
