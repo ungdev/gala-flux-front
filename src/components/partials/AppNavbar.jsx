@@ -6,19 +6,15 @@ import AuthMenu from './AuthMenu.jsx';
 import MainDrawer from './MainDrawer.jsx';
 require('../../styles/partials/AppNavbar.scss');
 
-const styles = {
-    title: {
-        cursor: 'pointer',
-    },
-};
-
 export default class AppNavbar extends React.Component {
 
-    constructor(props, context) {
-        super(props);
-    }
-
     render() {
+        const styles = {
+            title: {
+                cursor: 'pointer',
+            }
+        };
+
         return (
             <AppBar
                 title="Flux"

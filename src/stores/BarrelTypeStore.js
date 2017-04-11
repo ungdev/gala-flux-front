@@ -45,7 +45,6 @@ class BarrelTypeStore extends BaseStore {
         BarrelTypeService.getBarrelTypes(
             success => {
                 this.types = success;
-                console.log("success : ", success);
             },
             err => {
                 console.log("get barrel types error : ", err);
@@ -87,7 +86,7 @@ class BarrelTypeStore extends BaseStore {
      */
     _handleActions(action) {
         switch(action.type) {
-            case "SAVE_JWT":
+            case "AUTH_JWT_SAVED":
                 this._init();
                 break;
             case "WEBSOCKET_DISCONNECTED":

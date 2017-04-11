@@ -94,7 +94,6 @@ class TeamStore extends BaseStore {
         TeamService.getTeams(
             success => {
                 this.teams = success;
-                console.log("success : ", success);
             },
             err => {
                 console.log("get teams error : ", err);

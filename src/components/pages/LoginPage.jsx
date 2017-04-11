@@ -1,20 +1,10 @@
 import React from 'react';
 
-import muiThemeable from 'material-ui/styles/muiThemeable';
 import RaisedButton from 'material-ui/RaisedButton';
 import AuthService from '../../services/AuthService';
 import NotificationActions from '../../actions/NotificationActions';
-require('../../styles/pages/HomePage.scss');
 
-class HomePage extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this._palette = props.muiTheme.palette;
-
-        this._login = this._login.bind(this);
-    }
+export default class LoginPage extends React.Component {
 
     /**
      *  Redirect the user to the EtuUtt auth page
@@ -22,12 +12,12 @@ class HomePage extends React.Component {
     _login() {
         NotificationActions.loading('Connexion depuis EtuUTT en cours..');
         AuthService.authWithEtuUTT()
-        .then((data) => {
-            window.location = data.redirectUri;
-        })
-        .catch((error) => {
-            NotificationActions.error('Une erreur s\'est produite pendant l\'initialisation de la connexion via EtuUTT', error)
-        });
+            .then((data) => {
+                window.location = data.redirectUri;
+            })
+            .catch((error) => {
+                NotificationActions.error('Une erreur s\'est produite pendant l\'initialisation de la connexion via EtuUTT', error)
+            });
     }
 
     render() {
@@ -41,4 +31,3 @@ class HomePage extends React.Component {
     }
 
 }
-export default muiThemeable()(HomePage);
