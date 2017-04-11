@@ -31,27 +31,24 @@ export default class BarBarrels extends React.Component {
 
     componentDidMount() {
         // fill the stores
-        BarrelStore.loadData(null, (error, result, token) => {
-            if (error) {
-                console.log("bar barrels load barrels error", error);
-            } else {
+        BarrelStore.loadData(null)
+            .then(data => {
                 // save the component token
-                this.BarrelStoreToken = token;
+                this.BarrelStoreToken = data.token;
                 // get distinct barrel types id and create objects with their id
-                let types = [...new Set(result.map(barrel => barrel.type))];
+                let types = [...new Set(data.result.map(barrel => barrel.type))];
                 for (let i in types) {
                     types[i] = {id: types[i]}
                 }
-                // load the barrel types
-                BarrelTypeStore.loadData(types, (error, result, token) => {
-                    if (error) {
-                        console.log("bar barrels load types error", error);
-                    }
-                    // save the component token
-                    this.BarrelTypeStoreToken = token;
-                });
-            }
-        });
+                BarrelTypeStore.loadData(types)
+                    .then(data => {
+                        // save the component token
+                        this.BarrelTypeStoreToken = data.token;
+                    })
+                    .catch(error => console.log("bar barrels load types error", error))
+            })
+            .catch(error => console.log("bar barrels load barrels error", error));
+
         // listen the stores changes
         BarrelStore.addChangeListener(this._setBarrels);
         BarrelTypeStore.addChangeListener(this._setBarrels);

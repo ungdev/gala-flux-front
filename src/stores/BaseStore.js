@@ -42,37 +42,40 @@ export default class BaseStore extends EventEmitter {
      *
      * @param {function} callback: to call after the data has been fetched
      * @param {number} componentToken: the new component
+     * @return {Promise}
      */
-    fetchData(callback, componentToken) {
+    fetchData(componentToken) {
 
-        this._fetchMethod(this.getFiltersSet(), (error, result) => {
-            if (error) {
-                return callback(error);
-            }
-            this._modelData = result;
-            this.emitChange();
+        return new Promise((resolve, reject) => {
+            this._fetchMethod(this.getFiltersSet())
+                .then(result => {
+                    this._modelData = result;
+                    this.emitChange();
 
-            if (callback) {
-                callback(null, result, componentToken);
-            }
+                    // listen model changes
+                    iosocket.on(this._modelName, this._handleModelEvents);
+
+                    resolve({
+                        result,
+                        token: componentToken
+                    });
+                })
+                .catch(error => reject(error));
         });
-        // listen model changes
-        iosocket.on(this._modelName, this._handleModelEvents);
     }
 
     /**
      * Add new filters and fetch the data to get the new asked data
      *
      * @param {Array} filters: new the data to get
-     * @param {function} callback: what to do after the data fetching
-     * @returns {callback}
+     * @returns {Promise}
      */
-    loadData(filters, callback) {
+    loadData(filters) {
         const componentToken = this._filters.length;
         this._filters.length++;
         this._filters[componentToken] = filters;
         // refresh the store with the new filters
-        return this.fetchData(callback, componentToken);
+        return this.fetchData(componentToken);
     }
 
     /**

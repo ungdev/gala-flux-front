@@ -1,4 +1,4 @@
-import TeamActions from '../actions/TeamActions';
+import {ApiError} from '../errors';
 
 /**
  * Class used for all about barrel types
@@ -12,16 +12,20 @@ class BarrelTypeService {
      * @callback callback
      *
      * @param {Array|null} filters
-     * @param {callback} callback
+     * @return {Promise}
      */
-    getBarrelTypes(filters, callback) {
-        console.log("filters : ", filters);
-        iosocket.request({
-            method: 'get',
-            data: {filters},
-            url: '/barreltype'
-        }, (resData, jwres) => {
-            jwres.error ? callback(jwres.error) : callback(null, resData);
+    getBarrelTypes(filters) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'get',
+                data: {filters},
+                url: '/barreltype'
+            }, (resData, jwres) => {
+                if(jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 
