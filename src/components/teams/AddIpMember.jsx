@@ -50,7 +50,11 @@ export default class AddIpMember extends React.Component {
      *
      * @param {Object} user EtuUTT user object
      */
-    _handleSubmit() {
+    _handleSubmit(e) {
+        if(e) {
+            e.preventDefault();
+        }
+
         // Pre-check
         let errors = {};
         if(!this.state.values.ip) {
@@ -65,14 +69,12 @@ export default class AddIpMember extends React.Component {
         }
 
         // Submit
-        console.log('start');
         UserService.createUser({
             team: this.state.team.id,
             name: this.state.values.name,
             ip: this.state.values.ip,
         })
         .then((user) => {
-            console.log(user);
             this.setState({ values: {
                 name: 'PC',
                 ip: '',
@@ -81,11 +83,9 @@ export default class AddIpMember extends React.Component {
             this.focusField.focus();
         })
         .catch((error) => {
-            console.log(error);
             let errors = {};
             if(error.status === 'ValidationError' && error.formErrors) {
                 for (let field in error.formErrors) {
-                    console.log(error.formErrors[field][0]);
                     if(field == 'ip' && error.formErrors[field][0].rule == 'unique') {
                         errors[field] = 'Cet IP a déjà été assigné à un autre utilisateur';
                     }
@@ -116,11 +116,13 @@ export default class AddIpMember extends React.Component {
             <FlatButton
                 label="Ajouter"
                 primary={true}
+                type="submit"
                 onTouchTap={this._handleSubmit}
             />,
         ];
 
         return (
+
             <Dialog
                 title={'Ajout d\'un membre IP'}
                 open={this.props.show}
@@ -133,8 +135,8 @@ export default class AddIpMember extends React.Component {
                 se connectera automatiquement en fonction de son ip, il vous
                 suffit d'entrer l'ip et le nom du compte dans le formulaire ci-dessous.<br/>
 
-
                 <form onSubmit={this._handleSubmit}>
+                    <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
                     <Row>
                         <Col xs={12} sm={6}>
                             <TextField

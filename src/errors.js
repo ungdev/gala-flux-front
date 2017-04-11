@@ -36,8 +36,6 @@ export class ApiError extends Error {
             }
         }
 
-        console.log(jwres)
-
         // Construct
         super(message);
         this.name = 'ApiError';
