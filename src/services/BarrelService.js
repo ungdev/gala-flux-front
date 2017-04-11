@@ -15,9 +15,7 @@ class BarrelService {
         return new Promise((resolve, reject) => {
             iosocket.request({
                 method: 'get',
-                data: {
-                    filters: filters
-                },
+                data: {filters},
                 url: '/barrel'
             }, (resData, jwres) => {
                 if(jwres.error) {

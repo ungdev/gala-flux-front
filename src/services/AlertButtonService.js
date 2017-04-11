@@ -15,9 +15,7 @@ class AlertButtonService {
         return new Promise((resolve, reject) => {
             iosocket.request({
                 method: 'get',
-                data: {
-                    filters: filters
-                },
+                data: {filters},
                 url: '/alertbutton'
             }, (resData, jwres) => {
                 if(jwres.error) {

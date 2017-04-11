@@ -20,23 +20,42 @@ export default class TeamsPage extends React.Component {
             }
         };
 
+        this.TeamStoreToken = null;
+        this.UserStoreToken = null;
+
         // binding
-        this._onTeamStoreChange = this._onTeamStoreChange.bind(this);
+        this._setTeams = this._setTeams.bind(this);
         this._onUserStoreChange = this._onUserStoreChange.bind(this);
         this._showTeam = this._showTeam.bind(this);
     }
 
     componentDidMount() {
+        // fill the stores
+        TeamStore.loadData(null)
+            .then(data => {
+                // save the component token
+                this.TeamStoreToken = data.token;
+            })
+            .catch(error => console.log("load teams error", error));
+        UserStore.loadData(null)
+            .then(data => {
+                // save the component token
+                this.UserStoreToken = data.token;
+            })
+            .catch(error => console.log("load users error", error));
         // listen the stores changes
-        TeamStore.addChangeListener(this._onTeamStoreChange);
+        TeamStore.addChangeListener(this._setTeams);
         UserStore.addChangeListener(this._onUserStoreChange);
         // init team list
-        this.setState({ teams: TeamStore.teams });
+        this._setTeams();
     }
 
     componentWillUnmount() {
+        // clear stores
+        TeamStore.unloadData(this.TeamStoreToken);
+        UserStore.unloadData(this.UserStoreToken);
         // remove the stores listeners
-        TeamStore.removeChangeListener(this._onTeamStoreChange);
+        TeamStore.removeChangeListener(this._setTeams);
         UserStore.removeChangeListener(this._onUserStoreChange);
     }
 
@@ -44,7 +63,7 @@ export default class TeamsPage extends React.Component {
      * Get the teams from TeamStore and set the state
      * If the selected team was deleted or updated, set it too
      */
-    _onTeamStoreChange() {
+    _setTeams() {
         const state = this.state;
         // refresh the teams
         state.teams = TeamStore.teams;
