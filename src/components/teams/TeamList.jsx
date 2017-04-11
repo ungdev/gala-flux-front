@@ -47,24 +47,23 @@ export default class TeamList extends React.Component {
             },
         };
 
+        const teams = this.state.teams;
+        const items = [];
+        for (let i in teams) {
+            items.push(<ListItem
+                value={teams[i].id}
+                key={i}
+                primaryText={teams[i].name}
+                secondaryText={teams[i].role}
+                onTouchTap={_ => this.props.showTeam(teams[i])}
+            />);
+        }
+
         return (
             <div className="hide-container">
                 <div style={style.container}>
                     <SelectableList value={this.state.selectedId}>
-                        {
-                            // For each message, create a Message component
-                            this.state.teams.map((team, i) => {
-                                return (
-                                    <ListItem
-                                        value={team.id}
-                                        key={team.id}
-                                        primaryText={team.name}
-                                        secondaryText={team.role}
-                                        onTouchTap={_ => this.props.showTeam(team)}
-                                    />
-                                );
-                            })
-                        }
+                        {items.map(item => item)}
                     </SelectableList>
                 </div>
 

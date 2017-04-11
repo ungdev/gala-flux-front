@@ -118,8 +118,10 @@ export default class BarBarrels extends React.Component {
                 "empty": []
             };
             // put each barrel of the user's team in the matching state
-            for (let barrel of BarrelStore.getTeamBarrels(AuthStore.user.team)) {
-                barrels[barrel.state].push(barrel);
+            const storeBarrels = BarrelStore.find({place: AuthStore.user.team});
+
+            for (let i in storeBarrels) {
+                barrels[storeBarrels[i].state].push(storeBarrels[i]);
             }
             this.setState({ barrels });
         }
@@ -143,10 +145,11 @@ export default class BarBarrels extends React.Component {
                                 ?
 
                                     this.state.barrels.new.map((barrel, i) => {
+                                        let type = BarrelTypeStore.findById(barrel.type);
                                         return  <BarBarrel
                                                     key={i}
                                                     barrel={barrel}
-                                                    typeName={BarrelTypeStore.getBarrelName(barrel.type)}
+                                                    typeName={type ? type.name : ""}
                                                     color={colors.new}
                                                     moveNextState={this._moveNextState}
                                                 />
@@ -164,10 +167,11 @@ export default class BarBarrels extends React.Component {
                             this.state.barrels.opened && this.state.barrels.opened.length
                                 ?
                                     this.state.barrels.opened.map((barrel, i) => {
+                                        let type = BarrelTypeStore.findById(barrel.type);
                                         return <BarBarrel
                                                     key={i}
                                                     barrel={barrel}
-                                                    typeName={BarrelTypeStore.getBarrelName(barrel.type)}
+                                                    typeName={type ? type.name : ""}
                                                     color={colors.opened}
                                                     backPreviousState={this._backPreviousState}
                                                     moveNextState={this._moveNextState}
@@ -185,10 +189,11 @@ export default class BarBarrels extends React.Component {
                             this.state.barrels.empty && this.state.barrels.empty.length
                                 ?
                                     this.state.barrels.empty.map((barrel, i) => {
+                                        let type = BarrelTypeStore.findById(barrel.type);
                                         return <BarBarrel
                                                     key={i}
                                                     barrel={barrel}
-                                                    typeName={BarrelTypeStore.getBarrelName(barrel.type)}
+                                                    typeName={type ? type.name : ""}
                                                     color={colors.empty}
                                                     backPreviousState={this._backPreviousState}
                                                 />

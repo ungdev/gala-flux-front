@@ -7,9 +7,6 @@ import IconButton from 'material-ui/IconButton';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import AddIcon from 'material-ui/svg-icons/content/add';
 
-import SelectGroup from './formElements/SelectGroup.jsx';
-import SelectRole from './formElements/SelectRole.jsx';
-import TeamService from '../../services/TeamService';
 import UserStore from '../../stores/UserStore';
 import UserService from '../../services/UserService';
 import TeamStore from '../../stores/TeamStore';
@@ -44,7 +41,16 @@ export default class AddMembers extends React.Component {
      * @param {string} name
      */
     _filterUsers(name) {
-        let users = UserStore.users.filter(user => user.team != this.state.team.id);
+        const storeUsers = UserStore.users;
+
+        // get users that are not in this team
+        let users = [];
+        for (let i in storeUsers) {
+            if (storeUsers[i].team !== this.state.team.id) {
+                users.push(storeUsers[i]);
+            }
+        }
+
         // if there is something in the auto complete input, filter by name
         if (name) {
             const regExp = new RegExp("^" + name, 'i');
@@ -91,38 +97,44 @@ export default class AddMembers extends React.Component {
                     onChange={e => this._filterUsers(e.target.value)}
                 />
                 <div>
-                    <Table
-                        selectable={false}
-                        >
-                        <TableHeader
-                            displaySelectAll={false}
+                    {
+                        this.state.users.length > 0 &&
+                        (
+                            <Table
+                                selectable={false}
                             >
-                            <TableRow>
-                                <TableHeaderColumn>User</TableHeaderColumn>
-                                <TableHeaderColumn>Team</TableHeaderColumn>
-                                <TableHeaderColumn>Add</TableHeaderColumn>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody
-                            displayRowCheckbox={false}
-                            >
-                        {
-                            this.state.users.map((user, i) => {
-                                return  (
-                                    <TableRow key={i}>
-                                        <TableRowColumn>{user.name}</TableRowColumn>
-                                        <TableRowColumn>{TeamStore.getTeamName(user.team)}</TableRowColumn>
-                                        <TableRowColumn>
-                                            <IconButton onClick={_ => this._addToTeam(user.id)}>
-                                                <AddIcon />
-                                            </IconButton>
-                                        </TableRowColumn>
+                                <TableHeader
+                                    displaySelectAll={false}
+                                >
+                                    <TableRow>
+                                        <TableHeaderColumn>User</TableHeaderColumn>
+                                        <TableHeaderColumn>Team</TableHeaderColumn>
+                                        <TableHeaderColumn>Add</TableHeaderColumn>
                                     </TableRow>
-                                );
-                            })
-                        }
-                        </TableBody>
-                    </Table>
+                                </TableHeader>
+                                <TableBody
+                                    displayRowCheckbox={false}
+                                >
+                                    {
+                                        this.state.users.map((user, i) => {
+                                            let team = TeamStore.findById(user.team);
+                                            return (
+                                                <TableRow key={i}>
+                                                    <TableRowColumn>{user.name}</TableRowColumn>
+                                                    <TableRowColumn>{team ? team.name : ""}</TableRowColumn>
+                                                    <TableRowColumn>
+                                                        <IconButton onClick={_ => this._addToTeam(user.id)}>
+                                                            <AddIcon />
+                                                        </IconButton>
+                                                    </TableRowColumn>
+                                                </TableRow>
+                                            );
+                                        })
+                                    }
+                                </TableBody>
+                            </Table>
+                        )
+                    }
                 </div>
             </Dialog>
         );

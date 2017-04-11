@@ -15,21 +15,6 @@ class UserStore extends BaseStore {
         return this._modelData;
     }
 
-    set users(v) {
-        this._modelData = v;
-        this.emitChange();
-    }
-
-    /**
-     * Get the users by team
-     *
-     * @param {String} id : the team id
-     * @returns {Array} the matching users
-     */
-    getByTeam(id) {
-        return this._modelData.filter(user => user.team == id);
-    }
-
     /**
      * Handle webSocket events about the User model
      *
@@ -38,16 +23,10 @@ class UserStore extends BaseStore {
     _handleUserEvents(e) {
         switch (e.verb) {
             case "destroyed":
-                this.users = this.users.filter(user => user.id != e.id);
+                this._delete(e.id);
                 break;
             case "updated":
-                let temp = this.users;
-                for (let i = 0; i < temp.length; i++) {
-                    if (temp[i].id == e.id) {
-                        temp[i] = e.data;
-                    }
-                }
-                this.users = temp;
+                this._set(e.id, e.data);
                 break;
         }
     }

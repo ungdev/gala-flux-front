@@ -14,11 +14,6 @@ class ChatStore extends BaseStore {
         return this._modelData;
     }
 
-    set messages(v) {
-        this._modelData = v;
-        this.emitChange();
-    }
-
     /**
      * Handle webSocket events about the Message model
      *
@@ -27,7 +22,7 @@ class ChatStore extends BaseStore {
     _handleModelEvents(e) {
         switch (e.verb) {
             case "created":
-                this.messages.push(e.data);
+                this._set(e.id, e.data);
                 break;
         }
     }

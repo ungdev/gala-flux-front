@@ -73,7 +73,15 @@ export default class BarrelsList extends React.Component {
      * Update the state when the BarrelTypeStore is updated
      */
     _onBarrelTypeStoreChange() {
-        this.setState({ types: BarrelTypeStore.types });
+        const storeBarrelTypes = BarrelTypeStore.types;
+
+        let types = [];
+
+        for (let i in storeBarrelTypes) {
+            types.push(storeBarrelTypes[i]);
+        }
+
+        this.setState({ types });
     }
 
     /**
@@ -81,12 +89,19 @@ export default class BarrelsList extends React.Component {
      * Get the team name of each barrel in the same time.
      */
     _setBarrels() {
-        let barrels = BarrelStore.barrels;
+        const storeBarrels = BarrelStore.barrels;
+        let barrels = [];
+
+        // create a array of object from the barrels in the barrelStore
+        for (let i in storeBarrels) {
+            barrels.push(storeBarrels[i]);
+        }
 
         if (TeamStore.teams) {
             // for each barrel, get the place data
             for (let barrel of barrels) {
-                barrel.team = TeamStore.getTeamName(barrel.place);
+                let team = TeamStore.findById(barrel.place);
+                barrel.team = team ? team.name : null;
             }
         }
 
@@ -94,6 +109,7 @@ export default class BarrelsList extends React.Component {
     }
 
     render() {
+
         return (
             <div>
                 <CreateBarrels types={this.state.types} />
@@ -139,7 +155,6 @@ export default class BarrelsList extends React.Component {
                     show={this.state.openEdit}
                     close={this._toggleEditBarrel}
                     barrel={this.state.toEdit}
-                    teams={TeamStore.teams}
                 />
 
             </div>

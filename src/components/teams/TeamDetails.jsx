@@ -33,14 +33,14 @@ export default class TeamDetails extends React.Component {
      * Show or hide the update dialog
      */
     _toggleUpdateDialog() {
-        this.setState({showUpdateDialog: !this.state.showUpdateDialog});
+        this.setState({ showUpdateDialog: !this.state.showUpdateDialog });
     }
 
     /**
      * Show or hide the member dialog
      */
     _toggleMemberDialog() {
-        this.setState({showMemberDialog: !this.state.showMemberDialog});
+        this.setState({ showMemberDialog: !this.state.showMemberDialog });
     }
 
     render() {
@@ -124,13 +124,15 @@ export default class TeamDetails extends React.Component {
                 </div>
             );
         }
+
         // if no selected team, display a message
         let style = {
             container: {
                 textAlign: 'center',
                 paddingTop: '100px',
             }
-        }
+        };
+
         return (
             <div style={style.container}>
                 <big>Veuillez sélectionner une équipe</big>

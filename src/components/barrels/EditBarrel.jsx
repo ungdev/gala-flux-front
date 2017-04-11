@@ -1,6 +1,7 @@
 import React from 'react';
 
 import BarrelService from '../../services/BarrelService';
+import TeamStore from '../../stores/TeamStore';
 
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -16,19 +17,55 @@ export default class EditBarrel extends React.Component {
 
         this.state = {
             barrel: props.barrel,
-            teams: props.teams
+            teams: []
         };
 
         // binding
         this._submitForm = this._submitForm.bind(this);
         this._deleteBarrel = this._deleteBarrel.bind(this);
+        this._setTeams = this._setTeams.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            barrel: nextProps.barrel,
-            teams: nextProps.teams
+            barrel: nextProps.barrel
         });
+    }
+
+    componentDidMount() {
+        // fill the store
+        TeamStore.loadData(null)
+            .then(data => {
+                // save the component token
+                this.TeamStoreToken = data.token;
+            })
+            .catch(error => console.log("load barrel error", error));
+        // listen the stores changes
+        TeamStore.addChangeListener(this._setTeams);
+        // init teams list in the component state
+        this._setTeams();
+    }
+
+    componentWillUnmount() {
+        // clear store
+        TeamStore.unloadData(this._setTeams);
+        // remove the stores listeners
+        TeamStore.removeChangeListener(this._setTeams);
+    }
+
+    /**
+     * Set the teams array in the component state
+     */
+    _setTeams() {
+        const storeTeams = TeamStore.teams;
+
+        // create a array from the teams in the store
+        let teams = [];
+        for (let i in storeTeams) {
+            teams.push(storeTeams[i]);
+        }
+
+        this.setState({ teams });
     }
 
     /**

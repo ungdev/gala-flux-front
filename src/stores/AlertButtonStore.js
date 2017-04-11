@@ -11,25 +11,10 @@ class AlertButtonStore extends BaseStore {
 
         // binding
         this._handleModelEvents = this._handleModelEvents.bind(this);
-        this._deleteButton = this._deleteButton.bind(this);
     }
 
     get buttons() {
         return this._modelData;
-    }
-
-    set buttons(v) {
-        this._modelData = v;
-        this.emitChange();
-    }
-
-    /**
-     * Remove a button by id in the store
-     *
-     * @param {String} buttonId : the button to remove
-     */
-    _deleteButton(buttonId) {
-        this.buttons = this.buttons.filter(button => button.id != buttonId);
     }
 
     /**
@@ -40,11 +25,10 @@ class AlertButtonStore extends BaseStore {
     _handleModelEvents(e) {
         switch (e.verb) {
             case "destroyed":
-                this._deleteButton(e.id);
+                this._delete(e.id);
                 break;
             case "created":
-                this.buttons.push(e.data);
-                this.emitChange();
+                this._set(e.id, e.data);
                 break;
         }
     }

@@ -15,6 +15,10 @@ export default class BaseStore extends EventEmitter {
 
         // the data to fetch
         this._filters = {length: 0};
+
+        // binding
+        this._delete = this._delete.bind(this);
+        this._set = this._set.bind(this);
     }
 
     subscribe(actionSubscribe) {
@@ -48,9 +52,7 @@ export default class BaseStore extends EventEmitter {
         return new Promise((resolve, reject) => {
             this._fetchMethod(this.getFiltersSet())
                 .then(result => {
-                    console.log(this._modelName, result.length);
-                    this._modelData = result;
-                    this.emitChange();
+                    this._setModelData(result);
 
                     // listen model changes
                     iosocket.on(this._modelName, this._handleModelEvents);
@@ -105,5 +107,97 @@ export default class BaseStore extends EventEmitter {
             filters = [...new Set([...filters, ...this._filters[filter]])];
         }
         return filters;
+    }
+
+    /**
+     * Delete an item in modelData by id
+     * @param {string} id: the item id
+     */
+    _delete(id) {
+        delete this._modelData[id];
+        this.emitChange();
+    }
+
+    /**
+     * Add or update an item
+     * @param {string} id: the item id
+     * @param {object} data: the item data
+     */
+    _set(id, data) {
+        this._modelData[id] = data;
+        this.emitChange();
+    }
+
+    /**
+     * From an array of objects, create an array where the key is
+     * the object id and the value is the object
+     *
+     * @param {Array} data: array of objects
+     */
+    _setModelData(data) {
+        let newModelData = [];
+        for (let item of data) {
+            newModelData[item.id] = item;
+        }
+        this._modelData = newModelData;
+        this.emitChange();
+    }
+
+    /**
+     * Find a data in the store by his id
+     *
+     * @param {string} id: the requested data id
+     * @returns {object|undefined}
+     */
+    findById(id) {
+        return this._modelData[id];
+    }
+
+    /**
+     * Find list of elements that match filters
+     *
+     * @param  {Object} filters: Object of filters
+     * @return {Array} Array of elements
+     */
+    find(filters) {
+        let out = [];
+
+        for (let i in this._modelData) {
+            let add = true;
+            for (let key in filters) {
+                if(this._modelData[i][key] !== filters[key]) {
+                    add = false;
+                    break;
+                }
+            }
+            if(add) {
+                out.push(this._modelData[i]);
+            }
+        }
+
+        return out;
+    }
+
+    /**
+     * Return the first element that matches the filters
+     *
+     * @param {Object} filters: Object of filters
+     * @return {Object|null} the object found or null by default
+     */
+    findOne(filters) {
+        for (let i in this._modelData) {
+            let add = true;
+            for (let key in filters) {
+                if(this._modelData[i][key] !== filters[key]) {
+                    add = false;
+                    break;
+                }
+            }
+            if(add) {
+                return this._modelData[i];
+            }
+        }
+
+        return null;
     }
 }

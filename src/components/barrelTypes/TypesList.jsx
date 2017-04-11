@@ -58,7 +58,15 @@ export default class TypesList extends React.Component {
      * Update the barrel types list in the component state
      */
     _setBarrelTypes() {
-        this.setState({ types: BarrelTypeStore.types });
+        const storeBarrelTypes = BarrelTypeStore.types;
+
+        let types = [];
+
+        for (let i in storeBarrelTypes) {
+            types.push(storeBarrelTypes[i]);
+        }
+
+        this.setState({ types });
     }
 
     /**
