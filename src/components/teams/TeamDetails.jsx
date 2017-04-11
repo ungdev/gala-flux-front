@@ -6,8 +6,8 @@ import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import TeamMember from './TeamMember.jsx';
 import UpdateTeam from './UpdateTeam.jsx';
-import AddMembers from './AddMembers.jsx';
 import AddEtuuttMember from './AddEtuuttMember.jsx';
+import AddIpMember from './AddIpMember.jsx';
 
 
 export default class TeamDetails extends React.Component {
@@ -18,14 +18,14 @@ export default class TeamDetails extends React.Component {
         this.state = {
             selected: props.selected,
             showUpdateDialog: false,
-            showMemberDialog: false,
             showAddEtuuttMemberDialog: false,
+            showAddIpMemberDialog: false,
         };
 
         // binding
         this._toggleUpdateDialog = this._toggleUpdateDialog.bind(this);
-        this._toggleMemberDialog = this._toggleMemberDialog.bind(this);
         this._toggleAddEtuuttMemberDialog = this._toggleAddEtuuttMemberDialog.bind(this);
+        this._toggleAddIpMemberDialog = this._toggleAddIpMemberDialog.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -40,17 +40,17 @@ export default class TeamDetails extends React.Component {
     }
 
     /**
-     * Show or hide the member dialog
-     */
-    _toggleMemberDialog() {
-        this.setState({showMemberDialog: !this.state.showMemberDialog});
-    }
-
-    /**
      * Show or hide AddEtuuttMember dialog
      */
     _toggleAddEtuuttMemberDialog() {
         this.setState({showAddEtuuttMemberDialog: !this.state.showAddEtuuttMemberDialog});
+    }
+
+    /**
+     * Show or hide AddIpMember dialog
+     */
+    _toggleAddIpMemberDialog() {
+        this.setState({showAddIpMemberDialog: !this.state.showAddIpMemberDialog});
     }
 
     render() {
@@ -69,6 +69,7 @@ export default class TeamDetails extends React.Component {
                 button: {
                     float: 'right',
                     marginTop: '15px',
+                    marginLeft: '10px',
                 }
             };
 
@@ -103,8 +104,8 @@ export default class TeamDetails extends React.Component {
                         </div>
 
                         <Divider style={style.divider} />
-                        <RaisedButton primary style={style.button} onClick={this._toggleMemberDialog} label="Ajouter des membres"/>
                         <RaisedButton primary style={style.button} onTouchTap={this._toggleAddEtuuttMemberDialog} label="Ajouter un membre EtuUTT"/>
+                        <RaisedButton primary style={style.button} onTouchTap={this._toggleAddIpMemberDialog} label="Ajouter un membre IP"/>
                         <h3>Liste des membres de l'équipe</h3>
                         {
                             // if there are members in the team, display them.
@@ -126,14 +127,14 @@ export default class TeamDetails extends React.Component {
                             close={this._toggleUpdateDialog}
                             team={this.state.selected.team}
                         />
-                        <AddMembers
-                            show={this.state.showMemberDialog}
-                            close={this._toggleMemberDialog}
-                            team={this.state.selected.team}
-                        />
                         <AddEtuuttMember
                             show={this.state.showAddEtuuttMemberDialog}
                             close={this._toggleAddEtuuttMemberDialog}
+                            team={this.state.selected.team}
+                        />
+                        <AddIpMember
+                            show={this.state.showAddIpMemberDialog}
+                            close={this._toggleAddIpMemberDialog}
                             team={this.state.selected.team}
                         />
                     </div>

@@ -5,9 +5,6 @@ import FlatButton from 'material-ui/FlatButton';
 import {List, ListItem} from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 
-import {blueGrey800} from 'material-ui/styles/colors';
-import muiThemeable from 'material-ui/styles/muiThemeable';
-
 import SearchField from "../partials/SearchField.jsx";
 import UserService from '../../services/UserService';
 import NotificationActions from '../../actions/NotificationActions';
@@ -23,7 +20,6 @@ export default class AddEtuuttMember extends React.Component {
             query: '',
             loading: false,
             error: '',
-            // TODO hide list when users is empty
         };
 
         // binding
@@ -62,7 +58,7 @@ export default class AddEtuuttMember extends React.Component {
     }
 
     /**
-     * Call the UserService to update his team
+     * Call the UserService to create user
      *
      * @param {Object} user EtuUTT user object
      */
@@ -84,15 +80,10 @@ export default class AddEtuuttMember extends React.Component {
         .then(() => {
             this.setState({ query: '', users: [] });
             NotificationActions.snackbar('L\'utilisateur ' + user.name + ' a bien été ajouté à l\'équipe ' + this.state.team.name);
-            console.log(this.searchField);
             this.searchField.focus();
         })
         .catch((error) => {
             if(!createdUser) {
-                console.log(error)
-                console.log(error.status)
-                console.log(error.formErrors && error.formErrors.login && error.formErrors.login[0])
-                console.log(error.formErrors.login[0].rule == 'unique')
                 if(error.status === 'ValidationError'
                 && error.formErrors && error.formErrors.login && error.formErrors.login[0]
                 && error.formErrors.login[0].rule == 'unique') {
@@ -115,7 +106,7 @@ export default class AddEtuuttMember extends React.Component {
 
         const actions = [
             <FlatButton
-                label="Terminer"
+                label="Fermer"
                 secondary={true}
                 onTouchTap={this.props.close}
             />,
@@ -130,7 +121,7 @@ export default class AddEtuuttMember extends React.Component {
                 modal={false}
                 onRequestClose={this.props.close}
             >
-                Pour ajouter un membre à l'équipe <strong>{this.state.team.name}</strong> à partir d'EtuUTT,
+                Pour ajouter un membre à l'équipe <strong>{this.state.team.name}</strong> qui se connectera à partir d'EtuUTT,
                 vous devez le trouver à l'aide du champ de recherche ci-dessous.
                 Vous pouvez rechercher par prénom, nom, surnom, numéro étudiant, login UTT et email.<br/>
 
@@ -142,7 +133,7 @@ export default class AddEtuuttMember extends React.Component {
                     value={this.state.query}
                     ref={(field) => { this.searchField = field; }}
                 />
-
+                { this.state.users ?
                 <List>
                     {
                         this.state.users.map((user, i) => {
@@ -159,6 +150,7 @@ export default class AddEtuuttMember extends React.Component {
                         })
                     }
                 </List>
+                : ''}
             </Dialog>
         );
     }
