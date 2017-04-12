@@ -50,8 +50,8 @@ class MainDrawer extends React.Component {
                     onRequestChange={(open) => this.setState({open})}
                 >
                     <MenuItem onTouchTap={_ => this._handleClick('/')}>home</MenuItem>
-                    <MenuItem onTouchTap={_ => this._handleClick('/bar')}>Bar</MenuItem>
-                    <MenuItem onTouchTap={_ => this._handleClick('/log')}>Log</MenuItem>
+                    <MenuItem onTouchTap={_ => this._handleClick('/teams')}>Teams</MenuItem>
+                    <MenuItem onTouchTap={_ => this._handleClick('/barrels')}>Barrels</MenuItem>
                 </Drawer>
             </div>
         );
