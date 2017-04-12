@@ -12,7 +12,8 @@ module.exports = {
     devtool: 'source-map',
     output: {
         path: path.resolve('dist'),
-        filename: 'app.js'
+        filename: 'app.js',
+        publicPath: '/',
     },
     module: {
         loaders: [
