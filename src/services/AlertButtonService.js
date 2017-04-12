@@ -1,3 +1,5 @@
+import {ApiError} from '../errors';
+
 /**
  * Class used to make requests about alert buttons
  */
@@ -5,18 +7,22 @@ class AlertButtonService {
 
     /**
      * Make a webSocket request to get the alert buttons
-     * Then call the callback function with the result
      *
-     * @callback callback
-     *
-     * @param {callback} callback
+     * @param {Array|null} filters
+     * @return {Promise}
      */
-    getAlertButtons(callback) {
-        iosocket.request({
-            method: 'get',
-            url: '/alertbutton'
-        }, (resData, jwres) => {
-            jwres.error ? callback(jwres.error) : callback(null, resData);
+    getAlertButtons(filters) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'get',
+                data: {filters},
+                url: '/alertbutton'
+            }, (resData, jwres) => {
+                if(jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 

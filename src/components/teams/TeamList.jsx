@@ -23,7 +23,10 @@ export default class TeamList extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ teams: nextProps.teams, selectedId: (nextProps.selected.team ? nextProps.selected.team.id : null) });
+        this.setState({
+            teams: nextProps.teams,
+            selectedId: (nextProps.selected.team ? nextProps.selected.team.id : null)
+        });
     }
 
     /**
@@ -52,17 +55,14 @@ export default class TeamList extends React.Component {
                 <div style={style.container}>
                     <SelectableList value={this.state.selectedId}>
                         {
-                            // For each message, create a Message component
                             this.state.teams.map((team, i) => {
-                                return (
-                                    <ListItem
-                                        value={team.id}
-                                        key={team.id}
-                                        primaryText={team.name}
-                                        secondaryText={team.role}
-                                        onTouchTap={_ => this.props.showTeam(team)}
-                                    />
-                                );
+                                return <ListItem
+                                            value={team.id}
+                                            key={i}
+                                            primaryText={team.name}
+                                            secondaryText={team.role}
+                                            onTouchTap={_ => this.props.showTeam(team)}
+                                        />
                             })
                         }
                     </SelectableList>

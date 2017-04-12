@@ -2,13 +2,11 @@ import React from 'react';
 
 import { List, ListItem } from 'material-ui/List';
 import RaisedButton from 'material-ui/RaisedButton';
-import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import TeamMember from './TeamMember.jsx';
 import UpdateTeam from './UpdateTeam.jsx';
 import AddEtuuttMember from './AddEtuuttMember.jsx';
 import AddIpMember from './AddIpMember.jsx';
-
 
 export default class TeamDetails extends React.Component {
 
@@ -36,7 +34,7 @@ export default class TeamDetails extends React.Component {
      * Show or hide the update dialog
      */
     _toggleUpdateDialog() {
-        this.setState({showUpdateDialog: !this.state.showUpdateDialog});
+        this.setState({ showUpdateDialog: !this.state.showUpdateDialog });
     }
 
     /**
@@ -141,13 +139,15 @@ export default class TeamDetails extends React.Component {
                 </div>
             );
         }
+
         // if no selected team, display a message
         let style = {
             container: {
                 textAlign: 'center',
                 paddingTop: '100px',
             }
-        }
+        };
+
         return (
             <div style={style.container}>
                 <big>Veuillez sélectionner une équipe</big>

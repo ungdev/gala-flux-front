@@ -1,4 +1,3 @@
-import UserActions from '../actions/UserActions';
 import {ApiError} from '../errors';
 import * as constants from '../config/constants';
 
@@ -33,21 +32,21 @@ class UserService {
      * Make a webSocket request to get the users
      * Then return the data
      *
-     * @callback errCallback
-     * @callback successCallback
-     *
-     * @param {successCallback} success
-     * @param {errCallback} err
+     * @param {Array|null} filters
+     * @return {Promise}
      */
-    getUsers(success, err) {
-        iosocket.request({
-            method: 'get',
-            url: '/user'
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                return err(jwres);
-            }
-            return success(jwres.body);
+    getUsers(filters) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'get',
+                data: {filters},
+                url: '/user'
+            }, (resData, jwres) => {
+                if(jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 
