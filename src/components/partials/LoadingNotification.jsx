@@ -7,13 +7,13 @@ import NotificationStore from '../../stores/NotificationStore';
 
 export default class LoadingNotification extends React.Component {
 
-        constructor(props) {
-            super(props);
+    constructor(props) {
+        super(props);
 
-            this.state = {
-                loadingMessage: NotificationStore.loadingMessage,
-            };
-        }
+        this.state = {
+            loadingMessage: NotificationStore.loadingMessage,
+        };
+    }
 
     componentDidMount() {
         // listen the store change
@@ -35,12 +35,12 @@ export default class LoadingNotification extends React.Component {
                 paddingTop: '40px',
                 fontSize: '1.5em',
             }
-        }
+        };
+
         return (
             <div>
                 <Dialog
                     contentStyle={style.content}
-                    modal={false}
                     open={this.state.loadingMessage != null}
                     modal={true}
                 >

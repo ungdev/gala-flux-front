@@ -200,4 +200,19 @@ export default class BaseStore extends EventEmitter {
 
         return null;
     }
+
+    /**
+     * Return a classic Array from the indexed objects in modelData
+     *
+     * @returns {Array}
+     */
+    getUnIndexedData() {
+        let out = [];
+
+        for (let i in this._modelData) {
+            out.push(this._modelData[i]);
+        }
+
+        return out;
+    }
 }

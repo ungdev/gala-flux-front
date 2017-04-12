@@ -14,7 +14,7 @@ class AlertButtonStore extends BaseStore {
     }
 
     get buttons() {
-        return this._modelData;
+        return this.getUnIndexedData();
     }
 
     /**

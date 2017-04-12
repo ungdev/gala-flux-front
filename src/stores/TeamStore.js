@@ -12,7 +12,7 @@ class TeamStore extends BaseStore {
     }
 
     get teams() {
-        return this._modelData;
+        return this.getUnIndexedData();
     }
 
     /**

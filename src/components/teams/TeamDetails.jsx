@@ -2,12 +2,10 @@ import React from 'react';
 
 import { List, ListItem } from 'material-ui/List';
 import RaisedButton from 'material-ui/RaisedButton';
-import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import TeamMember from './TeamMember.jsx';
 import UpdateTeam from './UpdateTeam.jsx';
 import AddMembers from './AddMembers.jsx';
-
 
 export default class TeamDetails extends React.Component {
 

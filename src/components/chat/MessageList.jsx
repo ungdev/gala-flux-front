@@ -43,14 +43,7 @@ export default class MessageList extends React.Component {
      * Update the messages in the state
      */
     _setMessages() {
-        const stateMessage = ChatStore.messages;
-        let messages = [];
-
-        for (let i in stateMessage) {
-            messages.push(stateMessage[i]);
-        }
-
-        this.setState({ messages });
+        this.setState({ messages: ChatStore.messages });
     }
 
     render() {

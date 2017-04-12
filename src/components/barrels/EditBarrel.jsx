@@ -57,15 +57,7 @@ export default class EditBarrel extends React.Component {
      * Set the teams array in the component state
      */
     _setTeams() {
-        const storeTeams = TeamStore.teams;
-
-        // create a array from the teams in the store
-        let teams = [];
-        for (let i in storeTeams) {
-            teams.push(storeTeams[i]);
-        }
-
-        this.setState({ teams });
+        this.setState({ teams: TeamStore.teams });
     }
 
     /**

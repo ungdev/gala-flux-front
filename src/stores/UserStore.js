@@ -12,7 +12,7 @@ class UserStore extends BaseStore {
     }
 
     get users() {
-        return this._modelData;
+        return this.getUnIndexedData();
     }
 
     /**

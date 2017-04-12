@@ -5,7 +5,6 @@ import AuthActions from '../../actions/AuthActions';
 
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import Popover from 'material-ui/Popover';
-import IconButton from 'material-ui/IconButton';
 import AccountCircleIcon from 'material-ui/svg-icons/action/account-circle';
 
 import LoginAs from './LoginAs.jsx';

@@ -69,14 +69,13 @@ export default class LoginAs extends React.Component {
      * Called on store update to update state
      */
     _setUsers() {
-        const storeUsers = UserStore.users;
         let out = [];
 
-        for (let i in storeUsers) {
-            let team = TeamStore.findById(storeUsers[i].team);
+        for (let user of UserStore.users) {
+            let team = TeamStore.findById(user.team);
             out.push({
-                text: storeUsers[i].name + ' : ' + (team ? team.name : undefined),
-                value: storeUsers[i].id,
+                text: user.name + ' : ' + (team ? team.name : undefined),
+                value: user.id,
             });
         }
 

@@ -11,7 +11,7 @@ class ChatStore extends BaseStore {
     }
 
     get messages() {
-        return this._modelData;
+        return this.getUnIndexedData();
     }
 
     /**

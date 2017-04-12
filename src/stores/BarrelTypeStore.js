@@ -12,7 +12,7 @@ class BarrelTypeStore extends BaseStore {
     }
 
     get types() {
-        return this._modelData;
+        return this.getUnIndexedData();
     }
 
     /**

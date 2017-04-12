@@ -15,7 +15,7 @@ export default class Alerts extends React.Component {
     }
 
     _toggleUpdateDialog(e) {
-        this.setState({selectedButton: e});
+        this.setState({ selectedButton: e });
     }
 
     render() {

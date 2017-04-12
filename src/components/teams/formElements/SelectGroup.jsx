@@ -16,7 +16,7 @@ export default class SelectGroup extends React.Component {
                 "orga"
             ],
             value: props.value,
-        }
+        };
 
         // binding
         this._handleUpdateInput = this._handleUpdateInput.bind(this);

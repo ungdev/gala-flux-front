@@ -73,14 +73,25 @@ export default class ButtonList extends React.Component {
      * Update the teams in the component store where there is a change in the TeamStore
      */
     _setTeams() {
-        const storeTeams = TeamStore.teams;
+        this.setState({ teams: TeamStore.teams });
+    }
 
-        let teams = [];
-        for (let i in storeTeams) {
-            teams.push(storeTeams[i]);
+    /**
+     * Handle AlertButtonStore changes
+     * update the buttons and categories in the state
+     */
+    _setButtons() {
+        const buttons = AlertButtonStore.buttons;
+        let categories = [];
+
+        // get distinct categories
+        for (let button of buttons) {
+            if (categories.indexOf(button.category) === -1) {
+                categories.push(button.category);
+            }
         }
 
-        this.setState({ teams });
+        this.setState({ buttons, categories });
     }
 
     /**
@@ -92,27 +103,6 @@ export default class ButtonList extends React.Component {
             selectedButton: button,
             showUpdateDialog: !this.state.showUpdateDialog
         });
-    }
-
-    /**
-     * Handle AlertButtonStore changes
-     * update the buttons and categories in the state
-     */
-    _setButtons() {
-        const storeAlertButton = AlertButtonStore.buttons;
-        let categories = [];
-        let buttons = [];
-
-        // get distinct categories
-        for (let i in storeAlertButton) {
-            let button = storeAlertButton[i];
-            buttons.push(button);
-            if (categories.indexOf(button.category) === -1) {
-                categories.push(button.category);
-            }
-        }
-
-        this.setState({ buttons, categories });
     }
 
     /**

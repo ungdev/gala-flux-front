@@ -29,7 +29,7 @@ export default class BarrelsList extends React.Component {
         this.BarrelStoreToken = null;
 
         // binding
-        this._onBarrelTypeStoreChange = this._onBarrelTypeStoreChange.bind(this);
+        this._setBarrelTypes = this._setBarrelTypes.bind(this);
         this._toggleEditBarrel = this._toggleEditBarrel.bind(this);
         this._setBarrels = this._setBarrels.bind(this);
     }
@@ -44,7 +44,7 @@ export default class BarrelsList extends React.Component {
             .catch(error => console.log("load barrel error", error));
         // listen the stores changes
         BarrelStore.addChangeListener(this._setBarrels);
-        BarrelTypeStore.addChangeListener(this._onBarrelTypeStoreChange);
+        BarrelTypeStore.addChangeListener(this._setBarrelTypes);
         TeamStore.addChangeListener(this._setBarrels);
         // init barrels list and barrelTypes list
         this._setBarrels();
@@ -55,7 +55,7 @@ export default class BarrelsList extends React.Component {
         BarrelStore.unloadData(this.BarrelStoreToken);
         // remove the stores listeners
         BarrelStore.removeChangeListener(this._setBarrels);
-        BarrelTypeStore.removeChangeListener(this._onBarrelTypeStoreChange);
+        BarrelTypeStore.removeChangeListener(this._setBarrelTypes);
         TeamStore.removeChangeListener(this._setBarrels);
     }
 
@@ -70,18 +70,10 @@ export default class BarrelsList extends React.Component {
     }
 
     /**
-     * Update the state when the BarrelTypeStore is updated
+     * Set the barrel types in the state
      */
-    _onBarrelTypeStoreChange() {
-        const storeBarrelTypes = BarrelTypeStore.types;
-
-        let types = [];
-
-        for (let i in storeBarrelTypes) {
-            types.push(storeBarrelTypes[i]);
-        }
-
-        this.setState({ types });
+    _setBarrelTypes() {
+        this.setState({ types: BarrelTypeStore.types });
     }
 
     /**
@@ -89,13 +81,7 @@ export default class BarrelsList extends React.Component {
      * Get the team name of each barrel in the same time.
      */
     _setBarrels() {
-        const storeBarrels = BarrelStore.barrels;
-        let barrels = [];
-
-        // create a array of object from the barrels in the barrelStore
-        for (let i in storeBarrels) {
-            barrels.push(storeBarrels[i]);
-        }
+        const barrels = BarrelStore.barrels;
 
         if (TeamStore.teams) {
             // for each barrel, get the place data

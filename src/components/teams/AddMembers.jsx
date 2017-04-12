@@ -41,15 +41,7 @@ export default class AddMembers extends React.Component {
      * @param {string} name
      */
     _filterUsers(name) {
-        const storeUsers = UserStore.users;
-
-        // get users that are not in this team
-        let users = [];
-        for (let i in storeUsers) {
-            if (storeUsers[i].team !== this.state.team.id) {
-                users.push(storeUsers[i]);
-            }
-        }
+        let users = UserStore.users.filter(user => user.team !== this.state.team.id);
 
         // if there is something in the auto complete input, filter by name
         if (name) {
