@@ -16,7 +16,8 @@ export default class TeamDetails extends React.Component {
         super(props);
 
         this.state = {
-            selected: props.selected,
+            team: props.team,
+            members: props.members,
             showUpdateDialog: false,
             showAddEtuuttMemberDialog: false,
             showAddIpMemberDialog: false,
@@ -29,7 +30,7 @@ export default class TeamDetails extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ selected: nextProps.selected });
+        this.setState({ team: nextProps.team, members: nextProps.members });
     }
 
     /**
@@ -55,7 +56,7 @@ export default class TeamDetails extends React.Component {
 
     render() {
         // if there is a selected team, display details about it
-        if (this.state.selected.team) {
+        if (this.state.team) {
 
             const style = {
                 container: {
@@ -74,30 +75,30 @@ export default class TeamDetails extends React.Component {
             };
 
             return (
-                <div className="hide-container">
+                <div className="container-hide">
                     <div style={style.container}>
                         <RaisedButton primary style={style.button} onTouchTap={this._toggleUpdateDialog} label="Modifier l'équipe"/>
-                        <h2>{this.state.selected.team.name}</h2>
+                        <h2>{this.state.team.name}</h2>
                         <div>
                             <List>
                                 <ListItem
                                     primaryText="Nom de l'équipe"
-                                    secondaryText={this.state.selected.team.name}
+                                    secondaryText={this.state.team.name}
                                     onTouchTap={this._toggleUpdateDialog}
                                 />
                                 <ListItem
                                     primaryText="Emplacement"
-                                    secondaryText={this.state.selected.team.location}
+                                    secondaryText={this.state.team.location}
                                     onTouchTap={this._toggleUpdateDialog}
                                 />
                                 <ListItem
                                     primaryText="Autorisations"
-                                    secondaryText={this.state.selected.team.role}
+                                    secondaryText={this.state.team.role}
                                     onTouchTap={this._toggleUpdateDialog}
                                 />
                                 <ListItem
                                     primaryText="Groupe de discussion"
-                                    secondaryText={this.state.selected.team.group}
+                                    secondaryText={this.state.team.group}
                                     onTouchTap={this._toggleUpdateDialog}
                                 />
                             </List>
@@ -110,11 +111,11 @@ export default class TeamDetails extends React.Component {
                         {
                             // if there are members in the team, display them.
                             // else, show a message
-                            (this.state.selected.members && this.state.selected.members.length)
+                            (this.state.members && this.state.members.length)
                                 ?
                                 <List>
                                     {
-                                        this.state.selected.members.map((member, i) => {
+                                        this.state.members.map((member, i) => {
                                             return <TeamMember member={member} key={i}/>
                                         })
                                     }
@@ -125,17 +126,17 @@ export default class TeamDetails extends React.Component {
                         <UpdateTeam
                             show={this.state.showUpdateDialog}
                             close={this._toggleUpdateDialog}
-                            team={this.state.selected.team}
+                            team={this.state.team}
                         />
                         <AddEtuuttMember
                             show={this.state.showAddEtuuttMemberDialog}
                             close={this._toggleAddEtuuttMemberDialog}
-                            team={this.state.selected.team}
+                            team={this.state.team}
                         />
                         <AddIpMember
                             show={this.state.showAddIpMemberDialog}
                             close={this._toggleAddIpMemberDialog}
-                            team={this.state.selected.team}
+                            team={this.state.team}
                         />
                     </div>
                 </div>

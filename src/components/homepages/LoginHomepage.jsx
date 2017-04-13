@@ -3,8 +3,9 @@ import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import AuthService from '../../services/AuthService';
 import NotificationActions from '../../actions/NotificationActions';
+require('../../styles/homepages/LoginHomepage.scss');
 
-export default class LoginPage extends React.Component {
+export default class LoginHomepage extends React.Component {
 
     /**
      *  Redirect the user to the EtuUtt auth page
@@ -23,8 +24,8 @@ export default class LoginPage extends React.Component {
     render() {
 
         return (
-            <div className="container">
-                <h2 className="title">Flux</h2>
+            <div className="LoginPage">
+                <h2>Flux</h2>
                 <RaisedButton label="Se connecter avec un compte UTT" primary={true} onTouchTap={this._login} />
             </div>
         );

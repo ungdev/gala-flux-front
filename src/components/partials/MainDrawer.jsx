@@ -1,5 +1,6 @@
 import React from 'react';
-import { browserHistory } from 'react-router';
+
+import router from '../../router';
 
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import Drawer from 'material-ui/Drawer';
@@ -26,8 +27,8 @@ class MainDrawer extends React.Component {
         this.setState({open: !this.state.open});
     }
 
-    _handleClick(path) {
-        browserHistory.push(path);
+    _handleClick(route) {
+        router.navigate(route);
         this.setState({open: false});
     }
 
@@ -49,9 +50,9 @@ class MainDrawer extends React.Component {
                     open={this.state.open}
                     onRequestChange={(open) => this.setState({open})}
                 >
-                    <MenuItem onTouchTap={_ => this._handleClick('/')}>home</MenuItem>
-                    <MenuItem onTouchTap={_ => this._handleClick('/teams')}>Teams</MenuItem>
-                    <MenuItem onTouchTap={_ => this._handleClick('/barrels')}>Barrels</MenuItem>
+                    <MenuItem onTouchTap={_ => this._handleClick('home')}>home</MenuItem>
+                    <MenuItem onTouchTap={_ => this._handleClick('admin.teams')}>Teams</MenuItem>
+                    <MenuItem onTouchTap={_ => this._handleClick('admin.barrels')}>Barrels</MenuItem>
                 </Drawer>
             </div>
         );

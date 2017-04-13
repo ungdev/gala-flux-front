@@ -3,7 +3,7 @@ import React from 'react';
 import Chat from '../chat/Chat.jsx';
 import BarBarrels from '../barrels/BarBarrels.jsx';
 
-export default class BarPage extends React.Component {
+export default class BarHomepage extends React.Component {
 
     render() {
         return (

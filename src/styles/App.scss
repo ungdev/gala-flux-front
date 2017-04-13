@@ -1,8 +1,26 @@
-.main {
-    position: fixed;
-    top: 64px;
-    bottom: 0px;
-    width: 100%;
-    overflow: auto;
+@import 'Colors';
+@import 'Constants';
+
+/**
+ * .container-hide can be used to keep height:100%
+ * under a fixed element like .main
+ */
+html, body, .container-hide {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
     height: 100%;
+    width: 100%;
+}
+
+/**
+ * Container under the appbar
+ */
+.main {
+    width: 100%;
+    position: fixed;
+    top: $AppBarHeight;
+    bottom: 0px;
+    overflow: auto;
 }

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import { browserHistory } from 'react-router';
 
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';

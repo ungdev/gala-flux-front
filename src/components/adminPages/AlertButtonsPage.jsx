@@ -2,7 +2,7 @@ import React from 'react';
 
 import ButtonList from '../alertButtons/ButtonList.jsx';
 
-export default class AlertPage extends React.Component {
+export default class AlertButtonsPage extends React.Component {
 
     render() {
         const style = {

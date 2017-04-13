@@ -14,7 +14,7 @@ export default class TeamList extends React.Component {
 
         this.state = {
             teams: props.teams,
-            selectedId: (props.selected.team ? props.selected.team.id : null),
+            selectedId: props.selected,
             showCreateDialog: false,
         };
 
@@ -23,7 +23,7 @@ export default class TeamList extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ teams: nextProps.teams, selectedId: (nextProps.selected.team ? nextProps.selected.team.id : null) });
+        this.setState({ teams: nextProps.teams, selectedId: nextProps.selected });
     }
 
     /**
@@ -48,7 +48,7 @@ export default class TeamList extends React.Component {
         };
 
         return (
-            <div className="hide-container">
+            <div className="container-hide">
                 <div style={style.container}>
                     <SelectableList value={this.state.selectedId}>
                         {

@@ -1,0 +1,60 @@
+.headline {
+    font-size: 24;
+    padding-top: 16;
+    margin-bottom: 12;
+    font-weight: 400;
+}
+
+
+@import '../Constants';
+@import '../Colors';
+
+/**
+ * Content under appbar+tabs
+ */
+.AdminPage__content {
+    width: 100%;
+    position: fixed;
+    top: $AppBarHeight + $TabsHeight;
+    bottom: 0px;
+    overflow: auto;
+}
+
+/**
+ * Container of a splitscreen view (with independant scrooling) under appbar+tabs
+ * Each child of this element will split the screen vertically and be scrollable
+ */
+.AdminPage__splitscreen {
+    width: 100%;
+    height: auto;
+    position: fixed;
+    top: $AppBarHeight + $TabsHeight;
+    bottom: 0px;
+    display: flex;
+    flex-direction: row;
+
+    > * {
+        display: flex;
+        flex-grow: 1;
+        flex-basis: 0;
+        flex-direction: column;
+        overflow: auto;
+        border-right: solid color($blue-grey, 800) 1px;
+    }
+
+    > *:last-child {
+        border-right: none;
+    }
+}
+
+
+/**
+ * This menu can be used in the splitscreen
+ */
+.AdminPage__splitscreen__menu {
+    flex-basis: 256px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    border-right: 0;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16), 0px 3px 10px rgba(0, 0, 0, 0.23);
+}

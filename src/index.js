@@ -11,15 +11,12 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import themeConfiguration from './config/theme';
 const muiTheme = getMuiTheme(themeConfiguration);
 
-// react router
-import { browserHistory, Router, Route, IndexRoute } from 'react-router';
+// Router
+import router from './router';
+import { RouterProvider } from 'react-router5';
 
 // Pages
 import App from "./components/App.jsx";
-import Root from "./components/Root.jsx";
-import TeamsPage from "./components/pages/TeamsPage.jsx";
-import AlertPage from "./components/pages/AlertPage.jsx";
-import BarrelsPage from "./components/pages/BarrelsPage.jsx";
 
 // constants
 import * as constants from './config/constants';
@@ -32,17 +29,12 @@ import WebSocketService from './services/WebSocketService';
 // Connect to websocket server
 WebSocketService.connect();
 
-// Render the app using react router
+// Render the app using router
 ReactDOM.render(
     <MuiThemeProvider muiTheme={muiTheme}>
-        <Router history={browserHistory}>
-            <Route path="/" component={App}>
-                <IndexRoute component={Root} />
-                <Route path="teams" component={TeamsPage} onEnter={requireAuth} />
-                <Route path="alert" component={AlertPage} onEnter={requireAuth} />
-                <Route path="barrels" component={BarrelsPage} onEnter={requireAuth} />
-            </Route>
-        </Router>
+        <RouterProvider router={ router }>
+            <App />
+        </RouterProvider>
     </MuiThemeProvider>,
     document.getElementById('app')
 );
