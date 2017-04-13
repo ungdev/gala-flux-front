@@ -1,4 +1,4 @@
-import TeamActions from '../actions/TeamActions';
+import {ApiError} from '../errors';
 
 /**
  * Class used for all about Teams
@@ -28,24 +28,24 @@ class TeamService {
 
     /**
      * Make a webSocket request to get the teams
-     * Then call the callback with the result
      *
-     * @callback successCallback
-     * @callback errCallback
-     *
-     * @param {successCallback} success
-     * @param {errCallback} err
+     * @param {Array|null} filters
+     * @return {Promise}
      */
-    getTeams(success, err) {
-        iosocket.request({
-            method: 'get',
-            url: '/team'
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                err(jwres);
-            } else {
-                success(jwres.body);
-            }
+    getTeams(filters) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'get',
+                data: {
+                    filters: filters
+                },
+                url: '/team'
+            }, (resData, jwres) => {
+                if(jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 

@@ -1,4 +1,4 @@
-import TeamActions from '../actions/TeamActions';
+import {ApiError} from '../errors';
 
 /**
  * Class used for all about barrel types
@@ -9,22 +9,23 @@ class BarrelTypeService {
      * Make a webSocket request to get the barrel types
      * Then call the callback with the result
      *
-     * @callback successCallback
-     * @callback errCallback
+     * @callback callback
      *
-     * @param {successCallback} success
-     * @param {errCallback} err
+     * @param {Array|null} filters
+     * @return {Promise}
      */
-    getBarrelTypes(success, err) {
-        iosocket.request({
-            method: 'get',
-            url: '/barreltype'
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                err(jwres);
-            } else {
-                success(jwres.body);
-            }
+    getBarrelTypes(filters) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'get',
+                data: {filters},
+                url: '/barreltype'
+            }, (resData, jwres) => {
+                if(jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 

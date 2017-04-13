@@ -24,29 +24,40 @@ export default class TypesList extends React.Component {
             openEditDialog: false,
         };
 
+        this.BarrelTypeStoreToken = null;
+
         // bindings
-        this._onBarrelTypeStoreChange = this._onBarrelTypeStoreChange.bind(this);
+        this._setBarrelTypes = this._setBarrelTypes.bind(this);
         this._toggleEditDialog = this._toggleEditDialog.bind(this);
         this._toggleShowDialog = this._toggleShowDialog.bind(this);
         this._toggleNewDialog = this._toggleNewDialog.bind(this);
     }
 
     componentDidMount() {
+        // fill the store
+        BarrelTypeStore.loadData(null)
+            .then(data => {
+                // save the component token
+                this.BarrelTypeStoreToken = data.token;
+            })
+            .catch(error => console.log("load barrel types error", error));
         // listen the stores changes
-        BarrelTypeStore.addChangeListener(this._onBarrelTypeStoreChange);
+        BarrelTypeStore.addChangeListener(this._setBarrelTypes);
         // init team list
-        this.setState({ types: BarrelTypeStore.types });
+        this._setBarrelTypes();
     }
 
     componentWillUnmount() {
+        // clear store
+        BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
         // remove the stores listeners
-        BarrelTypeStore.removeChangeListener(this._onBarrelTypeStoreChange);
+        BarrelTypeStore.removeChangeListener(this._setBarrelTypes);
     }
 
     /**
-     * Update the state when the BarrelTypeStore is updated
+     * Update the barrel types list in the component state
      */
-    _onBarrelTypeStoreChange() {
+    _setBarrelTypes() {
         this.setState({ types: BarrelTypeStore.types });
     }
 

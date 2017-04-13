@@ -28,32 +28,70 @@ export default class ButtonList extends React.Component {
             showUpdateDialog: false
         };
 
+        this.AlertButtonStoreToken = null;
+        this.TeamStoreToken = null;
+
         // binding
-        this._onAlertButtonStoreChange = this._onAlertButtonStoreChange.bind(this);
         this._toggleCreateDialog = this._toggleCreateDialog.bind(this);
         this._toggleUpdateDialog = this._toggleUpdateDialog.bind(this);
-        this._onTeamStoreChange = this._onTeamStoreChange.bind(this);
+        this._setTeams = this._setTeams.bind(this);
+        this._setButtons = this._setButtons.bind(this);
     }
 
     componentDidMount() {
+        // fill stores
+        AlertButtonStore.loadData(null)
+            .then(data => {
+                // save the component token
+                this.AlertButtonStoreToken = data.token;
+            })
+            .catch(error => console.log("load alert buttons error", error));
+        TeamStore.loadData(null)
+            .then(data => {
+                // save the component token
+                this.TeamStoreToken = data.token;
+            })
+            .catch(error => console.log("load teams error", error));
         // listen stores changes
-        AlertButtonStore.addChangeListener(this._onAlertButtonStoreChange);
-        TeamStore.addChangeListener(this._onTeamStoreChange);
-        // init team list
-        this.setState({ teams: TeamStore.teams });
+        AlertButtonStore.addChangeListener(this._setButtons);
+        TeamStore.addChangeListener(this._setTeams);
+        // init component state
+        this._setTeams();
+        this._setButtons();
     }
 
     componentWillUnmount() {
+        // clear the stores
+        AlertButtonStore.unloadData(this.AlertButtonStoreToken);
+        TeamStore.unloadData(this.TeamStoreToken);
         // remove the stores listeners
-        AlertButtonStore.removeChangeListener(this._onAlertButtonStoreChange);
-        TeamStore.removeChangeListener(this._onTeamStoreChange);
+        AlertButtonStore.removeChangeListener(this._setButtons);
+        TeamStore.removeChangeListener(this._setTeams);
     }
 
     /**
      * Update the teams in the component store where there is a change in the TeamStore
      */
-    _onTeamStoreChange() {
+    _setTeams() {
         this.setState({ teams: TeamStore.teams });
+    }
+
+    /**
+     * Handle AlertButtonStore changes
+     * update the buttons and categories in the state
+     */
+    _setButtons() {
+        const buttons = AlertButtonStore.buttons;
+        let categories = [];
+
+        // get distinct categories
+        for (let button of buttons) {
+            if (categories.indexOf(button.category) === -1) {
+                categories.push(button.category);
+            }
+        }
+
+        this.setState({ buttons, categories });
     }
 
     /**
@@ -65,25 +103,6 @@ export default class ButtonList extends React.Component {
             selectedButton: button,
             showUpdateDialog: !this.state.showUpdateDialog
         });
-    }
-
-    /**
-     * Handle AlertButtonStore changes
-     * update the buttons and categories in the state
-     */
-    _onAlertButtonStoreChange() {
-        const buttons = AlertButtonStore.buttons;
-
-        let categories = [];
-        // get distinct categories
-        for (let button of buttons) {
-            if (categories.indexOf(button.category) === -1) {
-                categories.push(button.category);
-            }
-        }
-
-        this.setState({ buttons, categories });
-
     }
 
     /**
@@ -125,20 +144,20 @@ export default class ButtonList extends React.Component {
                 </SelectField>
 
                 <List>
-                {
-                    // if no category is selected, show all the buttons
-                    // else show only the buttons where the category his the selected category
-                    this.state.buttons.map((button, i) => {
-                        if (!this.state.selectedCategory || button.category === this.state.selectedCategory) {
-                            return <ListItem
-                                key={i}
-                                primaryText={button.title}
-                                rightIcon={<Edit />}
-                                onClick={this._toggleUpdateDialog}
-                            />
-                        }
-                    })
-                }
+                    {
+                        this.state.buttons.map(button => {
+                            // if no category is selected, show all the buttons
+                            // else show only the buttons where the category his the selected category
+                            if (!this.state.selectedCategory || button.category === this.state.selectedCategory) {
+                                return  <ListItem
+                                            key={button.id}
+                                            primaryText={button.title}
+                                            rightIcon={<Edit />}
+                                            onClick={_ => this._toggleUpdateDialog(button)}
+                                        />;
+                            }
+                        })
+                    }
                 </List>
 
                 <FloatingActionButton

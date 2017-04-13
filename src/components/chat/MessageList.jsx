@@ -15,44 +15,35 @@ export default class MessageList extends React.Component {
             messages: []
         };
 
-        this._handleMessage = this._handleMessage.bind(this);
-        this._onChatStoreChange = this._onChatStoreChange.bind(this);
+        this.ChatStoreToken = null;
+
+        this._setMessages = this._setMessages.bind(this);
     }
 
     componentDidMount() {
+        // file the store
+        ChatStore.loadData(null)
+            .then(data => {
+                // save the component token
+                this.ChatStoreToken = data.token;
+            })
+            .catch(error => console.log("load messages error", error));
         // listen the store change
-        ChatStore.addChangeListener(this._onChatStoreChange);
-        // get the messages to init the store
-        ChatService.getMessages(err => {
-            console.log("get messages error : ", err);
-        });
-        // listen to the new messages. On new message, trigger an action
-        iosocket.on('message', this._handleMessage);
+        ChatStore.addChangeListener(this._setMessages);
     }
 
     componentWillUnmount() {
+        // clear the store
+        ChatStore.unloadData(this.ChatStoreToken);
         // remove the store change
-        ChatStore.removeChangeListener(this._onChatStoreChange);
-        // remove the socket io listener
-        iosocket.off('message', this._handleMessage);
-    }
-
-    /**
-     * Trigger an action to handle the new message
-     *
-     * @param e
-     */
-    _handleMessage(e) {
-        ChatActions.newMessage(e.data);
+        ChatStore.removeChangeListener(this._setMessages);
     }
 
     /**
      * Update the messages in the state
      */
-    _onChatStoreChange() {
-        if (this.state) {
-            this.setState({messages : ChatStore.messages});
-        }
+    _setMessages() {
+        this.setState({ messages: ChatStore.messages });
     }
 
     render() {

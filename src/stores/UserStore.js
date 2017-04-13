@@ -4,49 +4,15 @@ import UserService from '../services/UserService';
 class UserStore extends BaseStore {
 
     constructor() {
-        super();
-        this.subscribe(() => this._handleActions.bind(this));
+        super('user', UserService.getUsers);
 
-        this._users = [];
+        this.subscribe(() => this._handleActions.bind(this));
 
         this._handleUserEvents = this._handleUserEvents.bind(this);
     }
 
     get users() {
-        return this._users;
-    }
-
-    set users(v) {
-        this._users = v;
-        this.emitChange();
-    }
-
-    /**
-     * Get the users by team
-     *
-     * @param {String} id : the team id
-     * @returns {Array} the matching users
-     */
-    getByTeam(id) {
-        return this._users.filter(user => user.team == id);
-    }
-
-    /**
-     * init the store : get the existing users and
-     * listen to webSocket events about User model
-     */
-    _init() {
-        // fill the users attribute
-        UserService.getUsers(
-            success => {
-                this.users = success;
-            },
-            err => {
-                console.log("get users error yolo : ", err);
-            }
-        );
-        // listen model changes
-        iosocket.on('user', this._handleUserEvents);
+        return this.getUnIndexedData();
     }
 
     /**
@@ -55,19 +21,12 @@ class UserStore extends BaseStore {
      * @param {object} e : the event
      */
     _handleUserEvents(e) {
-        console.log("user store event : ", e);
         switch (e.verb) {
             case "destroyed":
-                this.users = this.users.filter(user => user.id != e.id);
+                this._delete(e.id);
                 break;
             case "updated":
-                let temp = this.users;
-                for (let i = 0; i < temp.length; i++) {
-                    if (temp[i].id == e.id) {
-                        temp[i] = e.data;
-                    }
-                }
-                this.users = temp;
+                this._set(e.id, e.data);
                 break;
         }
     }
@@ -79,11 +38,8 @@ class UserStore extends BaseStore {
      */
     _handleActions(action) {
         switch(action.type) {
-            case "AUTH_JWT_SAVED":
-                this._init();
-                break;
             case "WEBSOCKET_DISCONNECTED":
-                this._users = [];
+                this._modelData = [];
                 break;
         }
     }

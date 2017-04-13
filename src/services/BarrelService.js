@@ -1,3 +1,5 @@
+import {ApiError} from '../errors';
+
 /**
  * Class used for all about barrel
  */
@@ -5,24 +7,22 @@ class BarrelService {
 
     /**
      * Make a webSocket request to get the barrels
-     * Then call the callback with the result
      *
-     * @callback successCallback
-     * @callback errCallback
-     *
-     * @param {successCallback} success
-     * @param {errCallback} err
+     * @param {Array|null} filters
+     * @return {Promise}
      */
-    getBarrels(success, err) {
-        iosocket.request({
-            method: 'get',
-            url: '/barrel'
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                err(jwres);
-            } else {
-                success(jwres.body);
-            }
+    getBarrels(filters) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'get',
+                data: {filters},
+                url: '/barrel'
+            }, (resData, jwres) => {
+                if(jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 

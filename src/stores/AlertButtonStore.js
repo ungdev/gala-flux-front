@@ -5,45 +5,16 @@ import AlertButtonService from '../services/AlertButtonService';
 class AlertButtonStore extends BaseStore {
 
     constructor() {
-        super();
+        super('alertbutton', AlertButtonService.getAlertButtons);
+
         this.subscribe(() => this._handleActions.bind(this));
 
-        this._buttons = [];
-
         // binding
-        this._handleAlertButtonEvents = this._handleAlertButtonEvents.bind(this);
-        this._deleteButton = this._deleteButton.bind(this);
+        this._handleModelEvents = this._handleModelEvents.bind(this);
     }
 
     get buttons() {
-        return this._buttons;
-    }
-
-    set buttons(v) {
-        this._buttons = v;
-        this.emitChange();
-    }
-
-    _init() {
-        // fill the buttons attribute
-        AlertButtonService.getAlertButtons((err, result) => {
-            if (err) {
-                console.log("get alert button err : ", err);
-            } else {
-                this.buttons = result;
-            }
-        });
-        // listen model changes
-        iosocket.on('alertbutton', this._handleAlertButtonEvents);
-    }
-
-    /**
-     * Remove a button by id in the store
-     *
-     * @param {String} buttonId : the button to remove
-     */
-    _deleteButton(buttonId) {
-        this.buttons = this.buttons.filter(button => button.id != buttonId);
+        return this.getUnIndexedData();
     }
 
     /**
@@ -51,24 +22,19 @@ class AlertButtonStore extends BaseStore {
      *
      * @param {object} e : the event
      */
-    _handleAlertButtonEvents(e) {
+    _handleModelEvents(e) {
         switch (e.verb) {
             case "destroyed":
-                this._deleteButton(e.id);
+                this._delete(e.id);
                 break;
             case "created":
-                this.buttons.push(e.data);
-                this.emitChange();
+                this._set(e.id, e.data);
                 break;
         }
     }
 
     _handleActions(action) {
-        switch(action.type) {
-            case "AUTH_JWT_SAVED":
-                this._init();
-                break;
-        }
+        switch(action.type) {}
     }
 
 }
