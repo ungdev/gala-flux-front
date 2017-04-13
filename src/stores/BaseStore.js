@@ -58,7 +58,7 @@ export default class BaseStore extends EventEmitter {
                     iosocket.on(this._modelName, this._handleModelEvents);
 
                     resolve({
-                        result,
+                        result: this.find(this._filters[componentToken]),
                         token: componentToken
                     });
                 })
