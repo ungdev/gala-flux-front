@@ -4,6 +4,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 
 import NotificationStore from '../../stores/NotificationStore';
+import AuthActions from '../../actions/AuthActions';
 
 export default class ErrorNotification extends React.Component {
 
@@ -83,7 +84,8 @@ export default class ErrorNotification extends React.Component {
      */
     _closeDialog() {
         if(this.state.errorMessage.refresh) {
-             location.reload();
+            AuthActions.logout();
+            location.reload();
         }
         this.setState({ errorMessage: null, count: this.state.count+1 });
     }
