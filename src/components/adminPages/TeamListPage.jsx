@@ -13,63 +13,25 @@ export default class TeamListPage extends React.Component {
         super(props);
 
         this.state = {
-            teams: [],
-            selected: (props.route ? props.route.params.id : null),
+            selectedId: (props.route ? props.route.params.id : null),
         };
 
         // binding
-        this._onTeamStoreChange = this._onTeamStoreChange.bind(this);
-        this._selectTeam = this._selectTeam.bind(this);
+        this._handleTeamSelection = this._handleTeamSelection.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            selected: (nextProps.route ? nextProps.route.params.id : null),
+            selectedId: (nextProps.route ? nextProps.route.params.id : null),
         });
     }
 
-    componentDidMount() {
-        // listen the stores changes
-        TeamStore.addChangeListener(this._onTeamStoreChange);
-
-        // init team list
-        this.setState({ teams: TeamStore.teams });
-    }
-
-    componentWillUnmount() {
-        // remove the stores listeners
-        TeamStore.removeChangeListener(this._onTeamStoreChange);
-    }
-
     /**
-     * Get the teams from TeamStore and set the state
-     * If the selected team was deleted or updated, set it too
-     */
-    _onTeamStoreChange() {
-        // refresh the teams
-        this.setState({teams: TeamStore.teams});
-        // if there was a selected team in the previous state
-        if (state.selectedTeam) {
-            // look if it still exists
-            let found = false;
-            for (let team of state.teams) {
-                // if it exists, set the selected team
-                if (team.id == state.selectedTeam) {
-                    break;
-                }
-            }
-            if(!found) {
-                this._selectedTeam();
-            }
-        }
-    }
-
-    /**
-     * Select a team
+     * Select a team by changing URI which will update the component with new id
      *
      * @param {object} team
      */
-    _selectTeam(team) {
+    _handleTeamSelection(team) {
         if(team.id) {
             router.navigate('admin.teams.id', {id: team.id})
         }
@@ -80,7 +42,7 @@ export default class TeamListPage extends React.Component {
 
     render() {
         return (
-            <TeamsList showTeam={this._selectTeam} teams={this.state.teams} selected={this.state.selected} />
+            <TeamsList onTeamSelection={this._handleTeamSelection} selectedId={this.state.selectedId} />
         );
     }
 }
