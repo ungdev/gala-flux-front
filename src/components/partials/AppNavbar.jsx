@@ -41,7 +41,6 @@ export default class AppNavbar extends React.Component {
 
 
     render() {
-        console.log(router.getState())
         return (
             <AppBar
                 title={this.state.title}
