@@ -50,19 +50,27 @@ export default class BaseStore extends EventEmitter {
     fetchData(componentToken) {
 
         return new Promise((resolve, reject) => {
-            this._fetchMethod(this.getFiltersSet())
-                .then(result => {
-                    this._setModelData(result);
+            let filters = this.getFiltersSet();
 
-                    // listen model changes
-                    iosocket.on(this._modelName, this._handleModelEvents);
+            // No need to ask the server if there is no filter
+            if(Array.isArray(filters) && filters.length == 0) {
+                this._setModelData([]);
+            }
+            else {
+                this._fetchMethod(this.getFiltersSet())
+                    .then(result => {
+                        this._setModelData(result);
 
-                    resolve({
-                        result: this.find(this._filters[componentToken]),
-                        token: componentToken
-                    });
-                })
-                .catch(error => reject(error));
+                        // listen model changes
+                        iosocket.on(this._modelName, this._handleModelEvents);
+
+                        resolve({
+                            result: this.find(this._filters[componentToken]),
+                            token: componentToken
+                        });
+                    })
+                    .catch(error => reject(error));
+            }
         });
     }
 
