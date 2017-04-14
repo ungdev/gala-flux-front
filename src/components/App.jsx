@@ -51,12 +51,13 @@ export default class App extends React.Component {
          * Set the state with the new data of the store
          */
         _handleAuthStoreChange() {
+            console.log('_handleAuthStoreChange');
             this.setState({
                 team: AuthStore.team
             });
 
-            if (this.state.team) {
-                if (this.state.team.group === "bar") {
+            if (AuthStore.team) {
+                if (AuthStore.team.group === "bar") {
                     this.setState({homepage: BarHomepage});
                 } else {
                     this.setState({homepage: AdminHomepage});
