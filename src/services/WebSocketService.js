@@ -3,7 +3,7 @@ import NotificationActions from '../actions/NotificationActions';
 import WebSocketActions from '../actions/WebSocketActions';
 import AuthService from '../services/AuthService';
 import AuthActions from '../actions/AuthActions';
-import { browserHistory } from 'react-router';
+import router from '../router';
 
 // Hold the set interval identifier which will try to reconnect every 5 sec
 let watchdog = null;
@@ -75,11 +75,11 @@ class WebSocketService {
                 AuthService.sendAuthorizationCode(authCode)
                 .then((jwt) => {
                     AuthActions.saveJWT(jwt);
-                    browserHistory.push(window.location.pathname);
+                    router.navigate('home');
                     NotificationActions.hideLoading();
                 })
                 .catch((error) => {
-                    browserHistory.push(window.location.pathname);
+                    router.navigate('home');
                     NotificationActions.hideLoading();
                     if(authCode) {
                         NotificationActions.error('Une erreur s\'est produite pendant votre authentification via EtuUTT', error);

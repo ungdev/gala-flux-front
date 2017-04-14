@@ -1,8 +1,8 @@
 import AppDispatcher from '../dispatchers/AppDispatcher.js';
-import { browserHistory } from 'react-router';
 import * as constants from '../config/constants';
 import NotificationActions from './NotificationActions';
 import AuthService from '../services/AuthService'
+import router from '../router'
 
 /**
  * Create or update the token in the localStorage
@@ -32,7 +32,7 @@ function saveJWT (jwt) {
 function logout() {
     localStorage.removeItem(constants.jwtName);
     localStorage.removeItem(constants.firstJwtName);
-    browserHistory.push('/');
+    router.navigate('home');
     NotificationActions.snackbar('À bientôt !');
 
     AppDispatcher.dispatch({

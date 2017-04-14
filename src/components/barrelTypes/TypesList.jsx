@@ -108,7 +108,7 @@ export default class TypesList extends React.Component {
         };
 
         return (
-            <div className="hideContainer">
+            <div className="container-hide">
                 <div style={style.container}>
                     <List>
                         {

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import { browserHistory } from 'react-router';
 
 import AppBar from 'material-ui/AppBar';
 import AuthMenu from './AuthMenu.jsx';
@@ -19,7 +18,7 @@ export default class AppNavbar extends React.Component {
             <AppBar
                 title="Flux"
                 titleStyle={styles.title}
-                onTitleTouchTap={_ => browserHistory.push('/')}
+                onTitleTouchTap={_ => router.navigate('home')}
                 iconElementLeft={<MainDrawer />}
                 iconElementRight={<AuthMenu />}
             />

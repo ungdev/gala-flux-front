@@ -1,31 +1,93 @@
 import React from 'react';
 
+import TeamStore from '../../stores/TeamStore';
+import NotificationActions from '../../actions/NotificationActions'
+
+import SelectableList from '../partials/SelectableList.jsx'
 import { List, ListItem, makeSelectable } from 'material-ui/List';
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import NewTeam from './NewTeam.jsx';
 
-let SelectableList = makeSelectable(List);
 
+/**
+ * This component will show a clickable list of teams
+ * @param {string} selectedId id of the selected team
+ * @param {function(Team)} onTeamSelection event emitted when a team is selected
+ */
 export default class TeamList extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            teams: props.teams,
-            selectedId: (props.selected.team ? props.selected.team.id : null),
+            teams: [],
+            selectedId: props.selectedId,
             showCreateDialog: false,
         };
 
         // binding
         this._toggleCreateDialog = this._toggleCreateDialog.bind(this);
+        this._loadData = this._loadData.bind(this);
+        this._unloadData = this._unloadData.bind(this);
+        this._updateData = this._updateData.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            teams: nextProps.teams,
-            selectedId: (nextProps.selected.team ? nextProps.selected.team.id : null)
+            selectedId: nextProps.selectedId
+        });
+    }
+
+    componentDidMount() {
+        // Load data from store
+        this._loadData();
+
+        // listen the stores changes
+        TeamStore.addChangeListener(this._updateData);
+    }
+
+    componentWillUnmount() {
+        // clear store
+        this._unloadData();
+
+        // remove the stores listeners
+        TeamStore.removeChangeListener(this._updateData);
+    }
+
+    /**
+     * Load data from all stores and update state
+     */
+    _loadData() {
+        let newState = {};
+        // Load team in store
+        TeamStore.loadData(null)
+        .then(data => {
+            // save the component token
+            this.TeamStoreToken = data.token;
+
+            // Save the new state value
+            newState.teams = data.result;
+            this.setState(newState);
+        })
+        .catch(error => {
+            NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des équipes', error);
+        });
+    }
+
+    /**
+     * clear stores
+     */
+    _unloadData() {
+        TeamStore.unloadData(this.TeamStoreToken);
+    }
+
+    /**
+     * Update data according to stores without adding new filter to it
+     */
+    _updateData() {
+        this.setState({
+            teams: TeamStore.find(),
         });
     }
 
@@ -51,7 +113,7 @@ export default class TeamList extends React.Component {
         };
 
         return (
-            <div className="hide-container">
+            <div className="container-hide">
                 <div style={style.container}>
                     <SelectableList value={this.state.selectedId}>
                         {
@@ -61,7 +123,7 @@ export default class TeamList extends React.Component {
                                             key={i}
                                             primaryText={team.name}
                                             secondaryText={team.role}
-                                            onTouchTap={_ => this.props.showTeam(team)}
+                                            onTouchTap={_ => this.props.onTeamSelection(team)}
                                         />
                             })
                         }

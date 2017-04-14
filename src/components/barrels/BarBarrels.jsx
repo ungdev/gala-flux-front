@@ -135,8 +135,8 @@ export default class BarBarrels extends React.Component {
         };
 
         return (
-            <Row className="hideContainer">
-                <Col sm={4} className="hideContainer">
+            <Row className="container-hide">
+                <Col sm={4} className="container-hide">
                     <h2>En stock</h2>
                     <div>
                         {
@@ -159,7 +159,7 @@ export default class BarBarrels extends React.Component {
                         }
                     </div>
                 </Col>
-                <Col sm={4} className="hideContainer">
+                <Col sm={4} className="container-hide">
                     <h2>Entamé</h2>
                     <div>
                         {
@@ -181,7 +181,7 @@ export default class BarBarrels extends React.Component {
                         }
                     </div>
                 </Col>
-                <Col sm={4} className="hideContainer">
+                <Col sm={4} className="container-hide">
                     <h2>Terminé</h2>
                     <div>
                         {
