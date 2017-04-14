@@ -19,55 +19,53 @@ require('../styles/App.scss');
 
 export default class App extends React.Component {
 
-        constructor(props) {
-            super(props);
+    constructor(props) {
+        super(props);
 
-            this.state = {
-                team: AuthStore.team,
-                homepage: LoginHomepage,
-            };
+        this.state = {
+            team: AuthStore.team,
+            homepage: LoginHomepage,
+        };
 
-            this.router = props.router;
+        this.router = props.router;
 
-            // binding
-            this._handleAuthStoreChange = this._handleAuthStoreChange.bind(this);
-        }
+        // binding
+        this._handleAuthStoreChange = this._handleAuthStoreChange.bind(this);
+    }
 
-        componentDidMount() {
+    componentDidMount() {
 
-            // listen the stores changes
-            AuthStore.addChangeListener(this._handleAuthStoreChange);
+        // listen the stores changes
+        AuthStore.addChangeListener(this._handleAuthStoreChange);
 
-            // init
-            this._handleAuthStoreChange();
+        // init
+        this._handleAuthStoreChange();
 
-        }
+    }
 
-        componentWillUnmount() {
-            AuthStore.removeChangeListener(this._handleAuthStoreChange);
-        }
+    componentWillUnmount() {
+        AuthStore.removeChangeListener(this._handleAuthStoreChange);
+    }
 
-        /**
-         * Set the state with the new data of the store
-         */
-        _handleAuthStoreChange() {
-            this.setState({
-                team: AuthStore.team
-            });
+    /**
+     * Set the state with the new data of the store
+     */
+    _handleAuthStoreChange() {
+        this.setState({
+            team: AuthStore.team
+        });
 
-            if (this.state.team) {
-                if (this.state.team.group === "bar") {
-                    this.setState({homepage: BarHomepage});
-                } else {
-                    this.setState({homepage: AdminHomepage});
-                }
-            }
-            else {
-                this.setState({homepage: LoginHomepage});
+        if (this.state.team) {
+            if (this.state.team.group === "bar") {
+                this.setState({homepage: BarHomepage});
+            } else {
+                this.setState({homepage: AdminHomepage});
             }
         }
-
-
+        else {
+            this.setState({homepage: LoginHomepage});
+        }
+    }
 
     render() {
         return (

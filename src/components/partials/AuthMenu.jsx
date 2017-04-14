@@ -2,6 +2,7 @@ import React from 'react';
 
 import AuthStore from '../../stores/AuthStore';
 import AuthActions from '../../actions/AuthActions';
+import AuthService from '../../services/AuthService';
 
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import Popover from 'material-ui/Popover';
@@ -58,7 +59,11 @@ class AuthMenu extends React.Component {
      */
     _logout() {
         this._closeMenu();
-        AuthActions.logout();
+        AuthService.logout()
+            .then(AuthActions.logout())
+            .catch((error) => {
+                NotificationActions.error("Une erreur s'est produite lors de la deconnexion", error);
+            });
     }
 
     /**
