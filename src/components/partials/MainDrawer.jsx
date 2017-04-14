@@ -7,6 +7,7 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
+import AdminMenu from './AdminMenu.jsx';
 
 class MainDrawer extends React.Component {
 
@@ -14,21 +15,36 @@ class MainDrawer extends React.Component {
         super(props);
 
         this.state = {
-            open: false
+            open: false,
+            route: router.getState(),
         };
 
         this._palette = props.muiTheme.palette;
 
         // binding
         this._handleToggle = this._handleToggle.bind(this);
+        this._handleChange = this._handleChange.bind(this);
+    }
+
+    componentDidMount() {
+        // Re-render every route change
+        router.addListener((route) => {
+            this.setState({
+                route: route,
+            });
+        })
+
+        // Init route
+        this.setState({
+            route: router.getState(),
+        });
     }
 
     _handleToggle() {
         this.setState({open: !this.state.open});
     }
 
-    _handleClick(route) {
-        router.navigate(route);
+    _handleChange(route) {
         this.setState({open: false});
     }
 
@@ -50,9 +66,7 @@ class MainDrawer extends React.Component {
                     open={this.state.open}
                     onRequestChange={(open) => this.setState({open})}
                 >
-                    <MenuItem onTouchTap={_ => this._handleClick('home')}>home</MenuItem>
-                    <MenuItem onTouchTap={_ => this._handleClick('admin.teams')}>Teams</MenuItem>
-                    <MenuItem onTouchTap={_ => this._handleClick('admin.barrels')}>Barrels</MenuItem>
+                    <AdminMenu route={this.state.route} onChange={this._handleChange}/>
                 </Drawer>
             </div>
         );

@@ -2,13 +2,8 @@ import React from 'react';
 import { routeNode } from 'react-router5';
 
 import { Tabs, Tab } from 'material-ui/Tabs';
-import Drawer from 'material-ui/Drawer';
-import MenuItem from 'material-ui/MenuItem';
-import {List, ListItem} from 'material-ui/List';
-import Divider from 'material-ui/Divider';
 
-import SelectableList from '../partials/SelectableList.jsx';
-
+import AdminMenu from '../partials/AdminMenu.jsx';
 
 import AlertPage from '../adminPages/AlertPage.jsx';
 import ChatPage from '../adminPages/ChatPage.jsx';
@@ -26,117 +21,107 @@ class AdminHomepage extends React.Component {
         super(props);
 
         this.state = {
-            tab: null,
-            subtab: null,
             route: props.route,
         };
         this.router = props.router;
 
         // binding
         this._handleTabChange = this._handleTabChange.bind(this);
-        this._handleSubtabChange = this._handleSubtabChange.bind(this);
-        this._handeRouteUpdate = this._handeRouteUpdate.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
-        this._handeRouteUpdate(nextProps.route);
-    }
-
-    componentDidMount() {
-        this.router.addListener((route) => {
-            this._handeRouteUpdate(route);
-        })
-        this._handeRouteUpdate(this.props.route)
-    }
-
-    _handeRouteUpdate(route) {
-        let routeArray = route.name.split('.');
         this.setState({
-            tab: routeArray[0],
-            subtab: routeArray[1],
-            route: route,
+            route: nextProps.route,
         });
     }
 
-    _handleTabChange(value) {
-        this.router.navigate(value);
-        this.setState({tab: value});
+    componentDidMount() {
+        // Re-render every route change
+        this.router.addListener((route) => {
+            this.setState({
+                route: route,
+            });
+        })
+
+        // Init route
+        this.setState({
+            route: this.props.route,
+        });
     }
 
-    _handleSubtabChange(value) {
-        this.router.navigate('admin.' + value);
-        this.setState({subtab: value});
+
+    /**
+     * On tab change, navigate to new uri
+     * The new route will automatically show the corresponding page
+     */
+    _handleTabChange(value) {
+        this.router.navigate(value);
     }
 
     render() {
         return (
-            <Tabs contentContainerClassName="AdminPage__content" onChange={this._handleTabChange} value={this.state.tab}>
-                <Tab label="Dashboard" value="home">
-                    {this.state.tab == 'home' &&
-                        <div className="AdminPage__splitscreen">
-                            <AlertPage />
-                            <ChatPage />
-                        </div>
-                    }
-                </Tab>
-                <Tab label="Bars" value="bars">
-                    {this.state.tab == 'bars' &&
-                        <h2 className="headline">Bars</h2>
-                    }
-                </Tab>
-                <Tab label="Gestion du stock" value="stock">
-                    {this.state.tab == 'stock' &&
-                        <h2 className="headline">Etat du stock</h2>
-                    }
-                </Tab>
-                <Tab label="Administration" value="admin">
+            <div className="AdminPage">
+                <Tabs onChange={this._handleTabChange} value={this.state.route.name}>
+                    <Tab label="Dashboard" value="home"/>
+                    <Tab label="Bars" value="bars"/>
+                    <Tab label="Gestion du stock" value="stock"/>
+                    <Tab label="Administration" value="admin"/>
+                </Tabs>
                     {(() => {
-                        if(this.state.tab == 'admin') {
+                        switch(this.state.route.name) {
 
-                            let menu = (<div className="AdminPage__splitscreen__menu">
-                                <SelectableList onChange={this._handleSubtabChange} value={this.state.subtab}>
-                                    <ListItem value="teams">Équipes et utilisateurs</ListItem>
-                                    <ListItem value="barrels">Gestion des fûts</ListItem>
-                                    <ListItem value="alerts">Gestion des boutons d'alerte</ListItem>
-                                </SelectableList>
-                            </div>);
+                            default:
+                            case 'home':
+                                return (
+                                    <div className="AdminPage__splitscreen">
+                                        <AlertPage />
+                                        <ChatPage />
+                                    </div>
+                                );
 
-                            switch (this.state.subtab) {
-                                case 'teams':
-                                    return (
-                                        <div className="AdminPage__splitscreen">
-                                            {menu}
-                                            <TeamListPage route={this.state.route} />
-                                            <TeamDetailsPage route={this.state.route} />
-                                        </div>
-                                    );
-                                case 'barrels':
-                                    return (
-                                        <div className="AdminPage__splitscreen">
-                                            {menu}
-                                            <BarrelsListPage />
-                                            <BarrelsTypesPage />
-                                        </div>
-                                    );
-                                case 'alerts':
-                                    return (
-                                        <div className="AdminPage__splitscreen">
-                                            {menu}
-                                            <AlertButtonsPage />
-                                        </div>
-                                    );
-                                default:
-                                    return (
-                                        <div className="AdminPage__splitscreen">
-                                            {menu}
-                                            <div></div>
-                                        </div>
-                                    );
-                            }
+                            case 'bars':
+                                return (
+                                    <div className="AdminPage__splitscreen">
+                                        <h2 className="headline">Bars</h2>
+                                    </div>
+                                );
+
+                            case 'stock':
+                                return (
+                                    <div className="AdminPage__splitscreen">
+                                        <h2 className="headline">Etat du stock</h2>
+                                    </div>
+                                );
+
+                            case 'admin':
+                            case 'admin.teams':
+                                return (
+                                    <div className="AdminPage__splitscreen">
+                                        <AdminMenu route={this.state.route} className="AdminPage__splitscreen__menu" />
+                                        <TeamListPage route={this.state.route} />
+                                        <TeamDetailsPage route={this.state.route} />
+                                    </div>
+                                );
+
+                            case 'admin.barrels':
+                                return (
+                                    <div className="AdminPage__splitscreen">
+                                        <AdminMenu route={this.state.route} className="AdminPage__splitscreen__menu" />
+                                        <BarrelsListPage />
+                                        <BarrelsTypesPage />
+                                    </div>
+                                );
+
+                            case 'admin.alerts':
+                                return (
+                                    <div className="AdminPage__splitscreen">
+                                        <AdminMenu route={this.state.route} className="AdminPage__splitscreen__menu" />
+                                        <AlertButtonsPage />
+                                    </div>
+                                );
                         }
                     })()}
-                </Tab>
-            </Tabs>
+            </div>
         );
     }
 }

@@ -10,17 +10,6 @@
 @import '../Colors';
 
 /**
- * Content under appbar+tabs
- */
-.AdminPage__content {
-    width: 100%;
-    position: fixed;
-    top: $AppBarHeight + $TabsHeight;
-    bottom: 0px;
-    overflow: auto;
-}
-
-/**
  * Container of a splitscreen view (with independant scrooling) under appbar+tabs
  * Each child of this element will split the screen vertically and be scrollable
  */
@@ -57,4 +46,12 @@
     flex-grow: 0;
     border-right: 0;
     box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16), 0px 3px 10px rgba(0, 0, 0, 0.23);
+
+    .AdminMenu__item {
+        padding-left: 0 !important;
+    }
+
+    .AdminMenu__mainItem {
+        display: none !important;
+    }
 }
