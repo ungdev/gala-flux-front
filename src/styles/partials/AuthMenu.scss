@@ -1,0 +1,74 @@
+@import '../Constants';
+
+.AuthMenu {
+    .AuthMenu__button {
+        background: none;
+        color: $theme-alternateTextColor;
+        padding: 0;
+        outline: none;
+        cursor: pointer;
+        border: 0;
+
+        white-space: nowrap;
+        overflow: hidden;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 48px;
+
+        .AuthMenu__button__avatar {
+            margin-left: 10px;
+        }
+
+        .AuthMenu__button__details {
+            text-align: right;
+            display: inline-block;
+        }
+    }
+}
+
+.AuthMenu__menuDetails {
+    margin: 15px 15px 0 15px;
+
+    > hr {
+        margin-top: 15px !important;
+    }
+
+    // This is usefull only if AuthMenu__button__details is hidden
+    display: none;
+}
+
+
+
+/**
+ * Reduce size for xs
+ */
+@media only screen and (max-width: $screen-max-xs) {
+    .AppNavbar {
+        height: $AppBarHeight-xs;
+
+        > div {
+            margin-top: 0 !important;
+        }
+        > h1 {
+            height: $AppBarHeight-xs !important;
+            line-height: $AppBarHeight-xs !important;
+            font-size: 20px !important;
+            font-weight: normal !important;
+        }
+
+        .AuthMenu__button__avatar {
+            height: 30px !important;
+            width: 30px !important;
+        }
+
+        .AuthMenu__button__details {
+            display: none !important;
+        }
+    }
+
+    .AuthMenu__menuDetails {
+        display: block;
+    }
+}

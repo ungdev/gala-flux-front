@@ -8,16 +8,10 @@ require('../../styles/partials/AppNavbar.scss');
 export default class AppNavbar extends React.Component {
 
     render() {
-        const styles = {
-            title: {
-                cursor: 'pointer',
-            }
-        };
-
         return (
             <AppBar
                 title="Flux"
-                titleStyle={styles.title}
+                className="AppNavbar"
                 onTitleTouchTap={_ => router.navigate('home')}
                 iconElementLeft={<MainDrawer />}
                 iconElementRight={<AuthMenu />}

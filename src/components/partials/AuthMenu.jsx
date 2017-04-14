@@ -1,14 +1,19 @@
 import React from 'react';
 
+import * as constants from '../../config/constants';
 import AuthStore from '../../stores/AuthStore';
 import AuthActions from '../../actions/AuthActions';
 
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import Popover from 'material-ui/Popover';
+import Avatar from 'material-ui/Avatar';
+import Divider from 'material-ui/Divider';
 import AccountCircleIcon from 'material-ui/svg-icons/action/account-circle';
 
 import LoginAs from './LoginAs.jsx';
 import { Menu, MenuItem } from 'material-ui/Menu';
+
+require('../../styles/partials/AuthMenu.scss');
 
 class AuthMenu extends React.Component {
 
@@ -109,46 +114,22 @@ class AuthMenu extends React.Component {
     }
 
     render() {
-        const style = {
-            userButton: {
-                background: 'none',
-                color: this._palette.alternateTextColor,
-                padding: 0,
-                outline: 'none',
-                cursor: 'pointer',
-                border: 0,
-
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '48px',
-            },
-            icon: {
-                color: this._palette.alternateTextColor,
-                marginLeft: '10px',
-            },
-            userDetails: {
-                textAlign: 'right',
-                display: 'inline-block',
-            },
-        };
 
         // Disable if not authenticated
         if(!this.state.user || !this.state.team) {
             return null;
         }
 
+        let avatarUri = constants.avatarBasePath + this.state.user.id;
+
         return (
-            <div>
-                <button onTouchTap={this._openMenu} style={style.userButton}>
-                    <div style={style.userDetails}>
+            <div className="AuthMenu">
+                <button onTouchTap={this._openMenu} className="AuthMenu__button">
+                    <div className="AuthMenu__button__details">
                         <strong>{this.state.team.name}</strong><br/>
                         {this.state.user.name}
                     </div>
-                    <AccountCircleIcon style={style.icon} />
+                    <Avatar src={avatarUri} backgroundColor="white" className="AuthMenu__button__avatar" />
                 </button>
                 <Popover
                     anchorEl={this.state.menuAnchor}
@@ -157,11 +138,16 @@ class AuthMenu extends React.Component {
                     targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
                     anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                 >
+                    <div className="AuthMenu__menuDetails">
+                        <strong>{this.state.team.name}</strong><br/>
+                        {this.state.user.name}
+                        <Divider/>
+                    </div>
                     <Menu>
                         <MenuItem onTouchTap={this._logout}>Se déconnecter</MenuItem>
 
                         { this.state.canLoginAs ?
-                            <MenuItem onTouchTap={this._openLoginAs} style={style.loginAs}>Se connecter en tant que ...</MenuItem>
+                            <MenuItem onTouchTap={this._openLoginAs}>Se connecter en tant que ...</MenuItem>
                         :''}
 
                         { this.state.loginAs ?

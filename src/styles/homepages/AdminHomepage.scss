@@ -10,6 +10,22 @@
 @import '../Colors';
 
 /**
+* Tabs
+*/
+.AdminPage__tabs {}
+
+/**
+ * Content under appbar+tabs
+ */
+.AdminPage__content {
+    width: 100%;
+    position: fixed;
+    top: $AppBarHeight + $TabsHeight;
+    bottom: 0px;
+    overflow: auto;
+}
+
+/**
  * Container of a splitscreen view (with independant scrooling) under appbar+tabs
  * Each child of this element will split the screen vertically and be scrollable
  */
@@ -53,5 +69,27 @@
 
     .AdminMenu__mainItem {
         display: none !important;
+    }
+}
+
+
+/**
+ * Hide menu enable drawer
+ */
+@media only screen and (max-width: $screen-max-sm) {
+    .AdminPage__splitscreen__menu {
+        display: none;
+    }
+}
+
+/**
+ * Hide tabs
+ */
+@media only screen and (max-width: $screen-max-xs) {
+    .AdminPage__tabs {
+        display: none !important;
+    }
+    .AdminPage__content, .AdminPage__splitscreen {
+        top: $AppBarHeight-xs + $TabsHeight-xs;
     }
 }

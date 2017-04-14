@@ -61,7 +61,7 @@ class AdminHomepage extends React.Component {
     render() {
         return (
             <div className="AdminPage">
-                <Tabs onChange={this._handleTabChange} value={this.state.route.name}>
+                <Tabs className="AdminPage__tabs" onChange={this._handleTabChange} value={this.state.route.name}>
                     <Tab label="Dashboard" value="home"/>
                     <Tab label="Bars" value="bars"/>
                     <Tab label="Gestion du stock" value="stock"/>
