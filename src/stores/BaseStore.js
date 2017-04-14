@@ -55,6 +55,11 @@ export default class BaseStore extends EventEmitter {
             // No need to ask the server if there is no filter
             if(Array.isArray(filters) && filters.length === 0) {
                 this._setModelData([]);
+
+                resolve({
+                    result: [],
+                    token: componentToken
+                });
             }
             else {
                 // Check if the new filter already exist
@@ -63,7 +68,6 @@ export default class BaseStore extends EventEmitter {
                     for (let index in this._filters) {
                         if (index !== 'length' && index != componentToken &&
                         (this._filters[index] === null || Object.is(this._filters[index], this._filters[componentToken]))) {
-                            console.log(this._filters, index, componentToken, '0', 0);
                             fetch = false;
                             break;
                         }
@@ -73,7 +77,6 @@ export default class BaseStore extends EventEmitter {
                     // If there a filter has been deleted, then only refresh if there is no "null" filter
                     for (let index in this._filters) {
                         if (index !== 'length' && this._filters[index] === null) {
-                            console.log(this._filters, index);
                             fetch = false;
                             break;
                         }
@@ -82,7 +85,6 @@ export default class BaseStore extends EventEmitter {
 
                 // Fetch from the server only if it use usefull
                 if(fetch) {
-                    console.log('fetch', this._modelName, this.getFiltersSet());
                     this._fetchMethod(this.getFiltersSet())
                         .then(result => {
                             this._setModelData(result);
@@ -114,9 +116,16 @@ export default class BaseStore extends EventEmitter {
      * @returns {Promise}
      */
     loadData(filters) {
+        // Convert filter to array if it's a simple condition
+        if(filters !== null && !Array.isArray(filters)) {
+            filters = [filters];
+        }
+
+        // Add to the filter list
         const componentToken = this._filters.length;
         this._filters.length++;
         this._filters[componentToken] = filters;
+
         // refresh the store with the new filters
         return this.fetchData(componentToken);
     }

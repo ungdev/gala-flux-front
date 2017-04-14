@@ -37,6 +37,9 @@ export default class TypesList extends React.Component {
         // fill the store
         BarrelTypeStore.loadData(null)
             .then(data => {
+                // ensure that last token doen't exist anymore.
+                BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
+
                 // save the component token
                 this.BarrelTypeStoreToken = data.token;
             })

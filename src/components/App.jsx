@@ -51,7 +51,6 @@ export default class App extends React.Component {
          * Set the state with the new data of the store
          */
         _handleAuthStoreChange() {
-            console.log('_handleAuthStoreChange');
             this.setState({
                 team: AuthStore.team
             });

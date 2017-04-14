@@ -42,12 +42,18 @@ export default class ButtonList extends React.Component {
         // fill stores
         AlertButtonStore.loadData(null)
             .then(data => {
+                // ensure that last token doen't exist anymore.
+                AlertButtonStore.unloadData(this.AlertButtonStoreToken);
+
                 // save the component token
                 this.AlertButtonStoreToken = data.token;
             })
             .catch(error => console.log("load alert buttons error", error));
         TeamStore.loadData(null)
             .then(data => {
+                // ensure that last token doen't exist anymore.
+                TeamStore.unloadData(this.TeamStoreToken);
+
                 // save the component token
                 this.TeamStoreToken = data.token;
             })

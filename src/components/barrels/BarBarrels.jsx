@@ -33,6 +33,9 @@ export default class BarBarrels extends React.Component {
         // fill the stores
         BarrelStore.loadData(null)
             .then(data => {
+                // ensure that last token doen't exist anymore.
+                BarrelStore.unloadData(this.BarrelStoreToken);
+
                 // save the component token
                 this.BarrelStoreToken = data.token;
                 // get distinct barrel types id and create objects with their id
@@ -42,6 +45,9 @@ export default class BarBarrels extends React.Component {
                 }
                 BarrelTypeStore.loadData(types)
                     .then(data => {
+                        // ensure that last token doen't exist anymore.
+                        BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
+
                         // save the component token
                         this.BarrelTypeStoreToken = data.token;
                     })

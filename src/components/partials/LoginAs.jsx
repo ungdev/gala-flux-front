@@ -34,6 +34,9 @@ export default class LoginAs extends React.Component {
         // fill the stores
         UserStore.loadData(null)
             .then(data => {
+                // ensure that last token doen't exist anymore.
+                UserStore.unloadData(this.UserStoreToken);
+
                 // save the component token
                 this.UserStoreToken = data.token;
                 // get distinct teams id and create objects with their id
@@ -41,14 +44,18 @@ export default class LoginAs extends React.Component {
                 for (let i in teams) {
                     teams[i] = {id: teams[i]};
                 }
-                TeamStore.loadData(teams)
-                    .then(data => {
-                        // save the component token
-                        this.TeamStoreToken = data.token;
-                    })
-                    .catch(error => console.log("load teams error", error));
+
+
+                return TeamStore.loadData(teams)
             })
-            .catch(error => console.log("load users error", error));
+            .then(data => {
+                // ensure that last token doen't exist anymore.
+                TeamStore.unloadData(this.TeamStoreToken);
+
+                // save the component token
+                this.TeamStoreToken = data.token;
+            })
+            .catch(error => console.log("load users/team error", error));
         // listen the store change
         UserStore.addChangeListener(this._setUsers);
         TeamStore.addChangeListener(this._setUsers);

@@ -24,6 +24,8 @@ export default class MessageList extends React.Component {
         // file the store
         ChatStore.loadData(null)
             .then(data => {
+                // ensure that last token doen't exist anymore.
+                ChatStore.unloadData(this.ChatStoreToken);
                 // save the component token
                 this.ChatStoreToken = data.token;
             })
