@@ -58,20 +58,31 @@ export default class BaseStore extends EventEmitter {
             }
             else {
                 // Check if the new filter already exist
-                let exist = false;
-                if(componentToken) {
+                let fetch = true;
+                if(componentToken !== null) {
                     for (let index in this._filters) {
-                        if (index !== 'length' &&
-                        index !== componentToken &&
-                        Object.is(this._filters[index], this._filters[componentToken])) {
-                            exist = true;
+                        if (index !== 'length' && index != componentToken &&
+                        (this._filters[index] === null || Object.is(this._filters[index], this._filters[componentToken]))) {
+                            console.log(this._filters, index, componentToken, '0', 0);
+                            fetch = false;
+                            break;
+                        }
+                    }
+                }
+                else {
+                    // If there a filter has been deleted, then only refresh if there is no "null" filter
+                    for (let index in this._filters) {
+                        if (index !== 'length' && this._filters[index] === null) {
+                            console.log(this._filters, index);
+                            fetch = false;
                             break;
                         }
                     }
                 }
 
-                // Fetch from the server only if the new filter doens't already exist
-                if(exist) {
+                // Fetch from the server only if it use usefull
+                if(fetch) {
+                    console.log('fetch', this._modelName, this.getFiltersSet());
                     this._fetchMethod(this.getFiltersSet())
                         .then(result => {
                             this._setModelData(result);
