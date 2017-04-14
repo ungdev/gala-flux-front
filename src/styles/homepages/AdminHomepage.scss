@@ -82,14 +82,22 @@
     }
 }
 
-/**
- * Hide tabs
- */
 @media only screen and (max-width: $screen-max-xs) {
+    /**
+     * Hide tabs
+     */
     .AdminPage__tabs {
         display: none !important;
     }
     .AdminPage__content, .AdminPage__splitscreen {
         top: $AppBarHeight-xs + $TabsHeight-xs;
+    }
+
+
+    /**
+     * Hide secondary part of the splitscreen
+     */
+    .AdminPage__splitscreen__secondary {
+        display: none;
     }
 }

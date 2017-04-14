@@ -6,7 +6,7 @@ export default class BarrelsTypesPage extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className={this.props.className}>
                 <h2>Types de fût</h2>
                 <TypesList />
             </div>

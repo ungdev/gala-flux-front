@@ -42,7 +42,9 @@ export default class TeamListPage extends React.Component {
 
     render() {
         return (
-            <TeamsList onTeamSelection={this._handleTeamSelection} selectedId={this.state.selectedId} />
+            <div className={this.props.className}>
+                <TeamsList onTeamSelection={this._handleTeamSelection} selectedId={this.state.selectedId} />
+            </div>
         );
     }
 }

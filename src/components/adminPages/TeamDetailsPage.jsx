@@ -25,7 +25,9 @@ export default class TeamDetailsPage extends React.Component {
 
     render() {
         return (
-            <TeamDetails id={this.state.id} />
+            <div className={this.props.className}>
+                <TeamDetails id={this.state.id} />
+            </div>
         );
     }
 }

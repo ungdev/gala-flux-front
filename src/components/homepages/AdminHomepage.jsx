@@ -68,14 +68,16 @@ class AdminHomepage extends React.Component {
                     <Tab label="Administration" value="admin"/>
                 </Tabs>
                     {(() => {
-                        switch(this.state.route.name) {
+                        let name = this.state.route.name;
+                        switch(name) {
 
                             default:
                             case 'home':
+                            case 'chat':
                                 return (
                                     <div className="AdminPage__splitscreen">
-                                        <AlertPage />
-                                        <ChatPage />
+                                        <AlertPage className={name != 'home' ? 'AdminPage__splitscreen__secondary':''}/>
+                                        <ChatPage className={name != 'chat' ? 'AdminPage__splitscreen__secondary':''}/>
                                     </div>
                                 );
 
@@ -95,20 +97,28 @@ class AdminHomepage extends React.Component {
 
                             case 'admin':
                             case 'admin.teams':
+                            case 'admin.teams.id':
                                 return (
                                     <div className="AdminPage__splitscreen">
                                         <AdminMenu route={this.state.route} className="AdminPage__splitscreen__menu" />
-                                        <TeamListPage route={this.state.route} />
-                                        <TeamDetailsPage route={this.state.route} />
+                                        <TeamListPage
+                                            route={this.state.route}
+                                            className={name != 'admin.teams' && name != 'admin' ? 'AdminPage__splitscreen__secondary':''}
+                                            />
+                                        <TeamDetailsPage
+                                            route={this.state.route}
+                                            className={name != 'admin.teams.id' ? 'AdminPage__splitscreen__secondary':''}
+                                            />
                                     </div>
                                 );
 
                             case 'admin.barrels':
+                            case 'admin.barrels.types':
                                 return (
                                     <div className="AdminPage__splitscreen">
                                         <AdminMenu route={this.state.route} className="AdminPage__splitscreen__menu" />
-                                        <BarrelsListPage />
-                                        <BarrelsTypesPage />
+                                        <BarrelsListPage className={name != 'admin.barrels' ? 'AdminPage__splitscreen__secondary':''}/>
+                                        <BarrelsTypesPage className={name != 'admin.barrels.types' ? 'AdminPage__splitscreen__secondary':''}/>
                                     </div>
                                 );
 

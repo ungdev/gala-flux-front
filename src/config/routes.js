@@ -9,10 +9,12 @@
 export default [
     { name: 'home',          path: '/' },
     { name: 'bars',          path: '/bars' },
+    { name: 'chat',          path: '/chat' },
     { name: 'stock',         path: '/stock' },
     { name: 'admin',         path: '/admin' },
         { name: 'admin.teams',   path: '/team' },
             { name: 'admin.teams.id',   path: '/:id' },
         { name: 'admin.barrels', path: '/barrel' },
+            { name: 'admin.barrels.types', path: '/types' },
         { name: 'admin.alerts',  path: '/alerts' },
 ];

@@ -12,7 +12,7 @@ export default class AlertButtonsPage extends React.Component {
         };
 
         return (
-            <div>
+            <div className={this.props.className}>
                 <h1 style={style.title}>
                     Gestion des boutons d'alerte
                 </h1>
