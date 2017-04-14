@@ -1,7 +1,21 @@
+@import '../Constants';
+
 .AdminMenu__mainItem {
-    font-weight: bold !important;
 }
 
 .AdminMenu__item {
     padding-left: 16px !important;
+}
+
+
+@media only screen and (min-width: $screen-min-sm) {
+    .AdminMenu__show-xs {
+        display: none !important;
+    }
+}
+
+@media only screen and (max-width: $screen-max-xs) {
+    .AdminMenu__hide-xs {
+        display: none !important;
+    }
 }

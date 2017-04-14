@@ -151,7 +151,6 @@ class UserService {
             req.onload = () => {
                 if (req.status == 200) {
                     let img = new Blob([req.response], {type: 'image/png'});
-                    console.log(img)
                     return resolve(img);
                 }
                 else {

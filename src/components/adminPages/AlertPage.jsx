@@ -5,7 +5,9 @@ import Alerts from '../log/Alerts.jsx';
 export default class AlertPage extends React.Component {
     render() {
         return (
-            <Alerts />
+            <div className={this.props.className}>
+                <Alerts />
+            </div>
         );
     }
 }
