@@ -53,23 +53,45 @@ export default class BaseStore extends EventEmitter {
             let filters = this.getFiltersSet();
 
             // No need to ask the server if there is no filter
-            if(Array.isArray(filters) && filters.length == 0) {
+            if(Array.isArray(filters) && filters.length === 0) {
                 this._setModelData([]);
             }
             else {
-                this._fetchMethod(this.getFiltersSet())
-                    .then(result => {
-                        this._setModelData(result);
+                // Check if the new filter already exist
+                let exist = false;
+                if(componentToken) {
+                    for (let index in this._filters) {
+                        if (index !== 'length' &&
+                        index !== componentToken &&
+                        Object.is(this._filters[index], this._filters[componentToken])) {
+                            exist = true;
+                            break;
+                        }
+                    }
+                }
 
-                        // listen model changes
-                        iosocket.on(this._modelName, this._handleModelEvents);
+                // Fetch from the server only if the new filter doens't already exist
+                if(exist) {
+                    this._fetchMethod(this.getFiltersSet())
+                        .then(result => {
+                            this._setModelData(result);
 
-                        resolve({
-                            result: this.find(this._filters[componentToken]),
-                            token: componentToken
-                        });
-                    })
-                    .catch(error => reject(error));
+                            // listen model changes
+                            iosocket.on(this._modelName, this._handleModelEvents);
+
+                            resolve({
+                                result: this.find(this._filters[componentToken]),
+                                token: componentToken
+                            });
+                        })
+                        .catch(error => reject(error));
+                }
+                else {
+                    resolve({
+                        result: this.find(this._filters[componentToken]),
+                        token: componentToken
+                    });
+                }
             }
         });
     }
