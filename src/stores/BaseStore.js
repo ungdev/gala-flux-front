@@ -128,7 +128,7 @@ export default class BaseStore extends EventEmitter {
      * @param {number|null} token: the component's token
      */
     unloadData(token) {
-        if(this._filters[token]) {
+        if(this._filters[token] !== undefined) {
             // Delete filter
             delete this._filters[token];
             // reload only the data needed
