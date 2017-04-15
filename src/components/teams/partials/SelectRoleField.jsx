@@ -1,20 +1,19 @@
 import React from 'react';
 
+import NotificationActions from '../../../actions/NotificationActions';
+import AuthService from '../../../services/AuthService';
+import TeamStore from '../../../stores/TeamStore';
+
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
-export default class SelectRole extends React.Component {
+export default class SelectRoleField extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            // TODO get from API
-            options: [
-                "bar",
-                "admin",
-                "log"
-            ],
+            options: [],
             selected: props.selected,
         }
     }
@@ -23,16 +22,27 @@ export default class SelectRole extends React.Component {
         this.setState({ selected: nextProps.selected });
     }
 
+    componentDidMount() {
+        AuthService.getRoles()
+        .then((roles) => {
+            roles = Object.keys(roles);
+            roles.sort((a,b) => {return a.localeCompare(b)});
+            this.setState({ options: roles });
+        })
+        .catch((error) => {
+            NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des permissions', error);
+        });
+    }
+
     render() {
         return (
-
-
             <SelectField
                 floatingLabelText="Autorisations"
                 value={this.state.selected}
                 onChange={(e, index, value) => this.props.onChange(value)}
-                autoWidth={false}
-                required={true}
+                errorText={this.props.errorText}
+                fullWidth={this.props.fullWidth}
+                maxHeight={200}
             >
                 {
                     this.state.options.map((option, i) => {

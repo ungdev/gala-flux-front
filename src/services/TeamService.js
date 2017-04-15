@@ -33,6 +33,7 @@ class TeamService {
      * @return {Promise}
      */
     getTeams(filters) {
+        console.log('get teams filters', filters);
         return new Promise((resolve, reject) => {
             iosocket.request({
                 method: 'get',
@@ -69,18 +70,17 @@ class TeamService {
     /**
      * Make a request to create a new team
      *
-     * @callback doneCallback
-     *
      * @param {object} data
-     * @param {doneCallback} callback
+     * @return {Promise}
      */
-    createTeam(data, callback) {
-        iosocket.request({
-            method: 'post',
-            url: '/team',
-            data
-        }, (resData, jwres) => {
-            jwres.error ? callback(jwres.error) : callback();
+    createTeam(data) {
+        return new Promise((resolve, reject) => {
+            iosocket.post('/team', data, (resData, jwres) => {
+                if(jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 

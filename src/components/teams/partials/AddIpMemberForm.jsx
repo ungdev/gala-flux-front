@@ -7,10 +7,10 @@ import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
 
-import UserService from '../../services/UserService';
-import NotificationActions from '../../actions/NotificationActions';
+import UserService from '../../../services/UserService';
+import NotificationActions from '../../../actions/NotificationActions';
 
-export default class AddIpMember extends React.Component {
+export default class AddIpMemberForm extends React.Component {
 
     constructor(props) {
         super(props);
@@ -27,6 +27,7 @@ export default class AddIpMember extends React.Component {
         // binding
         this._handleFieldChange = this._handleFieldChange.bind(this);
         this._handleSubmit = this._handleSubmit.bind(this);
+        this.submit = this.submit.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -48,7 +49,7 @@ export default class AddIpMember extends React.Component {
     /**
      * Call the UserService to create user
      *
-     * @param {Object} user EtuUTT user object
+     * @param {Event} e Event like form submit that will be stopped
      */
     _handleSubmit(e) {
         if(e) {
@@ -105,32 +106,17 @@ export default class AddIpMember extends React.Component {
         });
     }
 
+    /**
+     * External call for _handleSubmit
+     */
+    submit() {
+        this._handleSubmit();
+    }
+
     render() {
 
-        const actions = [
-            <FlatButton
-                label="Fermer"
-                secondary={true}
-                onTouchTap={this.props.close}
-            />,
-            <FlatButton
-                label="Ajouter"
-                primary={true}
-                type="submit"
-                onTouchTap={this._handleSubmit}
-            />,
-        ];
-
         return (
-
-            <Dialog
-                title={'Ajout d\'un membre IP'}
-                open={this.props.show}
-                actions={actions}
-                autoScrollBodyContent={true}
-                modal={false}
-                onRequestClose={this.props.close}
-            >
+            <div>
                 Pour ajouter un membre à l'équipe <strong>{this.state.team.name}</strong> qui
                 se connectera automatiquement en fonction de son ip, il vous
                 suffit d'entrer l'ip et le nom du compte dans le formulaire ci-dessous.<br/>
@@ -160,7 +146,7 @@ export default class AddIpMember extends React.Component {
                         </Col>
                     </Row>
                 </form>
-            </Dialog>
+            </div>
         );
     }
 

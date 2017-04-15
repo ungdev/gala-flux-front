@@ -7,8 +7,8 @@ import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
 
-import SelectGroup from './formElements/SelectGroup.jsx';
-import SelectRole from './formElements/SelectRole.jsx';
+import SelectGroupField from './partials/SelectGroupField.jsx';
+import SelectRoleField from './partials/SelectRoleField.jsx';
 
 export default class UpdateTeam extends React.Component {
 
@@ -114,7 +114,7 @@ export default class UpdateTeam extends React.Component {
                             onChange={e => this._setTeamAttribute('name', e.target.value)}
                             required={true}
                         /><br/>
-                        <SelectRole
+                        <SelectRoleField
                             selected={this.state.team.role}
                             onChange={v => this._setTeamAttribute('role', v)}
                         /><br/>
@@ -125,7 +125,7 @@ export default class UpdateTeam extends React.Component {
                             value={this.state.team.location}
                             onChange={e => this._setTeamAttribute('location', e.target.value)}
                         /><br/>
-                        <SelectGroup
+                    <SelectGroupField
                             value={this.state.team.group}
                             onChange={v => this._setTeamAttribute('group', v)}
                         />

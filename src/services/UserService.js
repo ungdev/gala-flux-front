@@ -36,6 +36,7 @@ class UserService {
      * @return {Promise}
      */
     getUsers(filters) {
+        console.log('getUsers filter', filters)
         return new Promise((resolve, reject) => {
             iosocket.request({
                 method: 'get',
