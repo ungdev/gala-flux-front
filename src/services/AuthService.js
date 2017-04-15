@@ -1,7 +1,4 @@
-import AuthActions from '../actions/AuthActions';
-import NotificationActions from '../actions/NotificationActions';
 import {ApiError} from '../errors';
-import jwtDecode from 'jwt-decode';
 
 /**
  * Class used to make requests about authentication.
@@ -73,8 +70,6 @@ class AuthService {
      * redirected back here with an authorization code in the URL.
      * We have to send this authorization code to the server.
      * If all is ok, the server send us a JWT.
-     *
-     * @callback errorCallback
      *
      * @param authorizationCode
      * @return {Promise} Promise for the jwt
@@ -148,8 +143,6 @@ class AuthService {
      * Try to authenticate the user with an other account, by user id.
      * In case of success, the server responds with a JWT.
      *
-     * @callback callback
-     *
      * @param {String} id : the user id
      * @return {Promise} Promise for the jwt
      */
@@ -164,6 +157,25 @@ class AuthService {
                 }
                 return resolve(jwres.body.jwt);
             });
+        });
+    }
+
+    /**
+     * Inform the server that the user clicked on logout
+     *
+     * @returns {Promise}
+     */
+    logout() {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'post',
+                url: '/logout'
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve();
+            })
         });
     }
 

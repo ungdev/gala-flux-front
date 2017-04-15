@@ -3,12 +3,13 @@ import React from 'react';
 import * as constants from '../../config/constants';
 import AuthStore from '../../stores/AuthStore';
 import AuthActions from '../../actions/AuthActions';
+import NotificationActions from '../../actions/NotificationActions';
+import AuthService from '../../services/AuthService';
 
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import Popover from 'material-ui/Popover';
 import Avatar from 'material-ui/Avatar';
 import Divider from 'material-ui/Divider';
-import AccountCircleIcon from 'material-ui/svg-icons/action/account-circle';
 
 import LoginAs from './LoginAs.jsx';
 import { Menu, MenuItem } from 'material-ui/Menu';
@@ -63,7 +64,11 @@ class AuthMenu extends React.Component {
      */
     _logout() {
         this._closeMenu();
-        AuthActions.logout();
+        AuthService.logout()
+            .then(AuthActions.logout())
+            .catch((error) => {
+                NotificationActions.error("Une erreur s'est produite lors de la deconnexion", error);
+            });
     }
 
     /**
