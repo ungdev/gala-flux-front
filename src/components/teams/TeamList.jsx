@@ -1,6 +1,7 @@
 import React from 'react';
 
 import TeamStore from '../../stores/TeamStore';
+import AuthStore from '../../stores/AuthStore';
 import NotificationActions from '../../actions/NotificationActions'
 
 import SelectableList from '../partials/SelectableList.jsx'
@@ -119,12 +120,15 @@ export default class TeamList extends React.Component {
                         }
                     </SelectableList>
                 </div>
-                <FloatingActionButton
-                    className="FloatingButton"
-                    onTouchTap={this._toggleCreateDialog}
-                >
-                    <ContentAddIcon />
-                </FloatingActionButton>
+
+                { AuthStore.can('team/admin') &&
+                    <FloatingActionButton
+                        className="FloatingButton"
+                        onTouchTap={this._toggleCreateDialog}
+                    >
+                        <ContentAddIcon />
+                    </FloatingActionButton>
+                }
 
                 <NewTeamDialog
                     show={this.state.showCreateDialog}

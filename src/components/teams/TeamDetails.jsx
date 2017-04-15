@@ -3,6 +3,7 @@ import React from 'react';
 import TeamStore from '../../stores/TeamStore';
 import UserStore from '../../stores/UserStore';
 import NotificationActions from '../../actions/NotificationActions'
+import AuthStore from '../../stores/AuthStore';
 
 import { List, ListItem } from 'material-ui/List';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -134,7 +135,9 @@ export default class TeamDetails extends React.Component {
      * Show or hide the update team dialog
      */
     _toggleUpdateTeamDialog() {
-        this.setState({ showUpdateTeamDialog: !this.state.showUpdateTeamDialog });
+        if(AuthStore.can('team/admin')) {
+            this.setState({ showUpdateTeamDialog: !this.state.showUpdateTeamDialog });
+        }
     }
 
     /**
@@ -142,10 +145,12 @@ export default class TeamDetails extends React.Component {
      * @param {User} member Selected member (optional)
      */
     _toggleUpdateMemberDialog(member) {
-        this.setState({
-            showUpdateMemberDialog: (!this.state.showUpdateMemberDialog && member != false),
-            selectedMember: member ? member : null,
-        });
+        if(AuthStore.can('user/admin') || (AuthStore.can('user/team') && this.state.team.id == AuthStore.user.team)) {
+            this.setState({
+                showUpdateMemberDialog: (!this.state.showUpdateMemberDialog && member != false),
+                selectedMember: member ? member : null,
+            });
+        }
     }
 
     /**
@@ -209,20 +214,24 @@ export default class TeamDetails extends React.Component {
                         }
                     </div>
 
-                    <FloatingActionButton
-                        className="FloatingButton--secondary"
-                        onTouchTap={this._toggleUpdateTeamDialog}
-                        secondary={true}
-                    >
-                        <EditorModeEditIcon />
-                    </FloatingActionButton>
+                    { AuthStore.can('team/admin') &&
+                        <FloatingActionButton
+                            className="FloatingButton--secondary"
+                            onTouchTap={this._toggleUpdateTeamDialog}
+                            secondary={true}
+                        >
+                            <EditorModeEditIcon />
+                        </FloatingActionButton>
+                    }
 
-                    <FloatingActionButton
-                        className="FloatingButton"
-                        onTouchTap={this._toggleAddMemberDialog}
-                    >
-                        <ContentAddIcon />
-                    </FloatingActionButton>
+                    { (AuthStore.can('user/admin') || (AuthStore.can('user/team') && this.state.team.id == AuthStore.user.team)) &&
+                        <FloatingActionButton
+                            className="FloatingButton"
+                            onTouchTap={this._toggleAddMemberDialog}
+                        >
+                            <ContentAddIcon />
+                        </FloatingActionButton>
+                    }
 
 
                     <AddMemberDialog

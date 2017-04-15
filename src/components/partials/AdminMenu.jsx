@@ -1,6 +1,8 @@
 import React from 'react';
 import router from '../../router';
 
+import AuthStore from '../../stores/AuthStore';
+
 import { ListItem } from 'material-ui/List';
 import SelectableList from './SelectableList.jsx';
 
@@ -54,7 +56,11 @@ export default class AdminMenu extends React.Component {
 
                     <ListItem value="admin" className="AdminMenu__mainItem">Administration</ListItem>
 
-                    <ListItem value="admin.teams" className="AdminMenu__item">Équipes et utilisateurs</ListItem>
+
+                    { ((AuthStore.can('team/read') || AuthStore.can('team/admin')) &&
+                        (AuthStore.can('user/read') || AuthStore.can('user/team') || AuthStore.can('user/admin'))) &&
+                        <ListItem value="admin.teams" className="AdminMenu__item">Équipes et utilisateurs</ListItem>
+                    }
 
                     <ListItem value="admin.barrels" className="AdminMenu__item AdminMenu__hide-xs">Gestion des fûts</ListItem>
                     <ListItem value="admin.barrels.types" className="AdminMenu__item AdminMenu__show-xs">Types de fûts</ListItem>
