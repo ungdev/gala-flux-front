@@ -33,7 +33,6 @@ class TeamService {
      * @return {Promise}
      */
     getTeams(filters) {
-        console.log('get teams filters', filters);
         return new Promise((resolve, reject) => {
             iosocket.request({
                 method: 'get',
@@ -59,11 +58,13 @@ class TeamService {
      * @param {doneCallback} callback
      */
     deleteTeam(teamId, callback) {
-        iosocket.request({
-            method: 'delete',
-            url: '/team/' + teamId
-        }, (resData, jwres) => {
-            jwres.error ? callback(jwres.error) : callback();
+        return new Promise((resolve, reject) => {
+            iosocket.delete('/team/' + teamId, (resData, jwres) => {
+                if(jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 
