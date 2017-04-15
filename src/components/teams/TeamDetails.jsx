@@ -113,6 +113,10 @@ export default class TeamDetails extends React.Component {
     _unloadData() {
         TeamStore.unloadData(this.TeamStoreToken);
         UserStore.unloadData(this.UserStoreToken);
+        this.setState({
+            team: null,
+            members: null,
+        });
     }
 
     /**
