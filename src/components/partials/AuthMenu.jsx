@@ -3,6 +3,7 @@ import React from 'react';
 import * as constants from '../../config/constants';
 import AuthStore from '../../stores/AuthStore';
 import AuthActions from '../../actions/AuthActions';
+import NotificationActions from '../../actions/NotificationActions';
 
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import Popover from 'material-ui/Popover';
