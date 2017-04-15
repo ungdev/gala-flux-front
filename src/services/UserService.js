@@ -36,7 +36,6 @@ class UserService {
      * @return {Promise}
      */
     getUsers(filters) {
-        console.log('getUsers filter', filters)
         return new Promise((resolve, reject) => {
             iosocket.request({
                 method: 'get',
@@ -57,18 +56,16 @@ class UserService {
      * @callback errorCallback
      *
      * @param {String} uid : the user id
-     * @param {errorCallback} err
+     * @return {Promise} A promise to end of creation
      */
-    deleteUser(uid, err) {
-        iosocket.request({
-            method: 'delete',
-            url: '/user/' + uid
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                err(jwres);
-            } else {
-                AUTH_JWT_SAVED.log("ok delete user : ", jwres);
-            }
+    deleteUser(uid) {
+        return new Promise((resolve, reject) => {
+            iosocket.delete('/user/' + uid, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 
@@ -79,19 +76,16 @@ class UserService {
     *
     * @param {String} uid : the user id
     * @param {object} data : the attributes to update
-    * @param {erroCallback} err
+    * @return {Promise} A promise to end of creation
     */
-    updateUser(uid, data, err) {
-        iosocket.request({
-            method: 'put',
-            url: '/user/' + uid,
-            data
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                err(jwres);
-            } else {
-                console.log("ok update user : ", jwres);
-            }
+    updateUser(uid, data) {
+        return new Promise((resolve, reject) => {
+            iosocket.put('/user/' + uid, data, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 

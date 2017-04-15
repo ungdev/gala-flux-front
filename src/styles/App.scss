@@ -93,3 +93,15 @@ html, body, .container-hide {
 .Dialog__DeleteButon {
     float: left;
 }
+
+
+/**
+ * Label used over a field. It is usefull for custom fields  or fields that doesn't provide a label
+ */
+ .FieldLabel {
+    margin-top: 16px;
+    margin-bottom: 5px;
+    color: rgba(0, 0, 0, 0.3);
+    font-size: 13px;
+    display: block;
+ }

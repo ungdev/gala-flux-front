@@ -9,8 +9,9 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import EditorModeEditIcon from 'material-ui/svg-icons/editor/mode-edit';
 import Divider from 'material-ui/Divider';
-import TeamMember from './TeamMember.jsx';
+import MemberListItem from './partials/MemberListItem.jsx';
 import UpdateTeamDialog from './dialogs/UpdateTeamDialog.jsx';
+import UpdateMemberDialog from './dialogs/UpdateMemberDialog.jsx';
 import AddMemberDialog from './dialogs/AddMemberDialog.jsx';
 import CenteredMessage from '../partials/CenteredMessage.jsx';
 
@@ -27,12 +28,15 @@ export default class TeamDetails extends React.Component {
         this.state = {
             team: null,
             members: null,
-            showUpdateDialog: false,
+            showUpdateTeamDialog: false,
+            showUpdateMemberDialog: false,
             showAddMemberDialog: false,
+            selectedMember: null,
         };
 
         // binding
-        this._toggleUpdateDialog = this._toggleUpdateDialog.bind(this);
+        this._toggleUpdateTeamDialog = this._toggleUpdateTeamDialog.bind(this);
+        this._toggleUpdateMemberDialog = this._toggleUpdateMemberDialog.bind(this);
         this._toggleAddMemberDialog = this._toggleAddMemberDialog.bind(this);
         this._loadData = this._loadData.bind(this);
         this._unloadData = this._unloadData.bind(this);
@@ -123,12 +127,22 @@ export default class TeamDetails extends React.Component {
 
 
     /**
-     * Show or hide the update dialog
+     * Show or hide the update team dialog
      */
-    _toggleUpdateDialog() {
-        this.setState({ showUpdateDialog: !this.state.showUpdateDialog });
+    _toggleUpdateTeamDialog() {
+        this.setState({ showUpdateTeamDialog: !this.state.showUpdateTeamDialog });
     }
 
+    /**
+     * Show or hide the update member dialog
+     * @param {User} member Selected member (optional)
+     */
+    _toggleUpdateMemberDialog(member) {
+        this.setState({
+            showUpdateMemberDialog: (!this.state.showUpdateMemberDialog && member != false),
+            selectedMember: member ? member : null,
+        });
+    }
 
     /**
      * Show or hide AddMember dialog
@@ -149,22 +163,22 @@ export default class TeamDetails extends React.Component {
                             <ListItem
                                 primaryText="Nom de l'équipe"
                                 secondaryText={this.state.team.name}
-                                onTouchTap={this._toggleUpdateDialog}
+                                onTouchTap={this._toggleUpdateTeamDialog}
                             />
                             <ListItem
                                 primaryText="Emplacement"
                                 secondaryText={this.state.team.location}
-                                onTouchTap={this._toggleUpdateDialog}
+                                onTouchTap={this._toggleUpdateTeamDialog}
                             />
                             <ListItem
                                 primaryText="Autorisations"
                                 secondaryText={this.state.team.role}
-                                onTouchTap={this._toggleUpdateDialog}
+                                onTouchTap={this._toggleUpdateTeamDialog}
                             />
                             <ListItem
                                 primaryText="Groupe de discussion"
                                 secondaryText={this.state.team.group}
-                                onTouchTap={this._toggleUpdateDialog}
+                                onTouchTap={this._toggleUpdateTeamDialog}
                             />
                         </List>
 
@@ -178,7 +192,11 @@ export default class TeamDetails extends React.Component {
                                 <List>
                                     {
                                         this.state.members.map((member, i) => {
-                                            return <TeamMember member={member} key={i}/>
+                                            return <MemberListItem
+                                                member={member}
+                                                key={i}
+                                                onSelection={(member) => this._toggleUpdateMemberDialog(member)}
+                                            />
                                         })
                                     }
                                 </List>
@@ -189,7 +207,7 @@ export default class TeamDetails extends React.Component {
 
                     <FloatingActionButton
                         className="FloatingButton--secondary"
-                        onTouchTap={this._toggleUpdateDialog}
+                        onTouchTap={this._toggleUpdateTeamDialog}
                         secondary={true}
                     >
                         <EditorModeEditIcon />
@@ -209,9 +227,14 @@ export default class TeamDetails extends React.Component {
                         team={this.state.team}
                     />
                     <UpdateTeamDialog
-                        show={this.state.showUpdateDialog}
-                        close={this._toggleUpdateDialog}
+                        show={this.state.showUpdateTeamDialog}
+                        close={this._toggleUpdateTeamDialog}
                         team={this.state.team}
+                    />
+                    <UpdateMemberDialog
+                        show={this.state.showUpdateMemberDialog}
+                        close={() => this._toggleUpdateMemberDialog()}
+                        member={this.state.selectedMember}
                     />
                 </div>
             );
