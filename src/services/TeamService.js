@@ -94,12 +94,13 @@ class TeamService {
      * @param {doneCallback} callback
      */
     updateTeam(teamId, data, callback) {
-        iosocket.request({
-            method: 'put',
-            url: '/team/' + teamId,
-            data
-        }, (resData, jwres) => {
-            jwres.error ? callback(jwres.error) : callback();
+        return new Promise((resolve, reject) => {
+            iosocket.put('/team/' + teamId, data, (resData, jwres) => {
+                if(jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 

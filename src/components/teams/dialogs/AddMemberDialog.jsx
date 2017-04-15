@@ -18,9 +18,6 @@ export default class AddMemberDialog extends React.Component {
             team: props.team,
             value: 'etuutt',
         };
-
-        // binding
-        // this._addToTeam = this._addToTeam.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {

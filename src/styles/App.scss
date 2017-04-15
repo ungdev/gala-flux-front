@@ -85,3 +85,11 @@ html, body, .container-hide {
     padding-left: 16px;
     margin-bottom: 0;
 }
+
+
+/**
+ * In dialogs delete buttons should be placed on the left of the action bar
+ */
+.Dialog__DeleteButon {
+    float: left;
+}

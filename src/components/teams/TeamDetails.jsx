@@ -10,7 +10,7 @@ import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import EditorModeEditIcon from 'material-ui/svg-icons/editor/mode-edit';
 import Divider from 'material-ui/Divider';
 import TeamMember from './TeamMember.jsx';
-import UpdateTeam from './UpdateTeam.jsx';
+import UpdateTeamDialog from './dialogs/UpdateTeamDialog.jsx';
 import AddMemberDialog from './dialogs/AddMemberDialog.jsx';
 import CenteredMessage from '../partials/CenteredMessage.jsx';
 
@@ -208,7 +208,7 @@ export default class TeamDetails extends React.Component {
                         close={this._toggleAddMemberDialog}
                         team={this.state.team}
                     />
-                    <UpdateTeam
+                    <UpdateTeamDialog
                         show={this.state.showUpdateDialog}
                         close={this._toggleUpdateDialog}
                         team={this.state.team}
