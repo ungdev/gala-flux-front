@@ -8,7 +8,6 @@ import browserPlugin from 'router5/plugins/browser';
 // Config
 import routes from './config/routes';
 
-
 /**
  * Singleton instance of router5
  */

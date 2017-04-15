@@ -125,7 +125,7 @@ export default class BarBarrels extends React.Component {
             };
             // put each barrel of the user's team in the matching state
             for (let barrel of BarrelStore.find({place: AuthStore.user.team})) {
-                barrels[barrel.state].push(barrel[i]);
+                barrels[barrel.state].push(barrel);
             }
 
             this.setState({ barrels });
