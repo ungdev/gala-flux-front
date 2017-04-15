@@ -7,28 +7,10 @@ class UserStore extends BaseStore {
         super('user', UserService.getUsers);
 
         this.subscribe(() => this._handleActions.bind(this));
-
-        this._handleUserEvents = this._handleUserEvents.bind(this);
     }
 
     get users() {
         return this.getUnIndexedData();
-    }
-
-    /**
-     * Handle webSocket events about the User model
-     *
-     * @param {object} e : the event
-     */
-    _handleUserEvents(e) {
-        switch (e.verb) {
-            case "destroyed":
-                this._delete(e.id);
-                break;
-            case "updated":
-                this._set(e.id, e.data);
-                break;
-        }
     }
 
     /**

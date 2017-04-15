@@ -7,31 +7,10 @@ class BarrelStore extends BaseStore {
         super('barrel', BarrelService.getBarrels);
 
         this.subscribe(() => this._handleActions.bind(this));
-
-        this._handleModelEvents = this._handleModelEvents.bind(this);
     }
 
     get barrels() {
         return this.getUnIndexedData();
-    }
-
-    /**
-     * Handle webSocket events about the Barrel model
-     *
-     * @param {object} e : the event
-     */
-    _handleModelEvents(e) {
-        switch (e.verb) {
-            case "destroyed":
-                this._delete(e.id);
-                break;
-            case "updated":
-                this._set(e.id, e.data);
-                break;
-            case "created":
-                this._set(e.id, e.data);
-                break;
-        }
     }
 
     /**

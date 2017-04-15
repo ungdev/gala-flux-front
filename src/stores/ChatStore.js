@@ -7,24 +7,10 @@ class ChatStore extends BaseStore {
         super('message', ChatService.getMessages);
 
         this.subscribe(() => this._handleActions.bind(this));
-        this._handleModelEvents = this._handleModelEvents.bind(this);
     }
 
     get messages() {
         return this.getUnIndexedData();
-    }
-
-    /**
-     * Handle webSocket events about the Message model
-     *
-     * @param {object} e: the event
-     */
-    _handleModelEvents(e) {
-        switch (e.verb) {
-            case "created":
-                this._set(e.id, e.data);
-                break;
-        }
     }
 
     _handleActions(action) {

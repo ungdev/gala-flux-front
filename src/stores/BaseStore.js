@@ -19,6 +19,7 @@ export default class BaseStore extends EventEmitter {
         // binding
         this._delete = this._delete.bind(this);
         this._set = this._set.bind(this);
+        this._handleModelEvents = this._handleModelEvents.bind(this);
     }
 
     subscribe(actionSubscribe) {
@@ -268,5 +269,24 @@ export default class BaseStore extends EventEmitter {
         }
 
         return out;
+    }
+
+    /**
+     * Handle webSocket events about the model
+     *
+     * @param {object} e : the event
+     */
+    _handleModelEvents(e) {
+        switch (e.verb) {
+            case "created":
+                this._set(e.id, e.data);
+                break;
+            case "updated":
+                this._set(e.id, e.data);
+                break;
+            case "destroyed":
+                this._delete(e.id);
+                break;
+        }
     }
 }
