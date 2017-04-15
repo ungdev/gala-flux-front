@@ -36,6 +36,9 @@ export default class EditBarrel extends React.Component {
         // fill the store
         TeamStore.loadData(null)
             .then(data => {
+                // ensure that last token doen't exist anymore.
+                TeamStore.unloadData(this.TeamStoreToken);
+
                 // save the component token
                 this.TeamStoreToken = data.token;
             })
@@ -48,7 +51,7 @@ export default class EditBarrel extends React.Component {
 
     componentWillUnmount() {
         // clear store
-        TeamStore.unloadData(this._setTeams);
+        TeamStore.unloadData(this.TeamStoreToken);
         // remove the stores listeners
         TeamStore.removeChangeListener(this._setTeams);
     }

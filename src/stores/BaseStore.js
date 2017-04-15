@@ -19,6 +19,7 @@ export default class BaseStore extends EventEmitter {
         // binding
         this._delete = this._delete.bind(this);
         this._set = this._set.bind(this);
+        this._handleModelEvents = this._handleModelEvents.bind(this);
     }
 
     subscribe(actionSubscribe) {
@@ -50,19 +51,62 @@ export default class BaseStore extends EventEmitter {
     fetchData(componentToken) {
 
         return new Promise((resolve, reject) => {
-            this._fetchMethod(this.getFiltersSet())
-                .then(result => {
-                    this._setModelData(result);
+            let filters = this.getFiltersSet();
 
-                    // listen model changes
-                    iosocket.on(this._modelName, this._handleModelEvents);
+            // No need to ask the server if there is no filter
+            if(Array.isArray(filters) && filters.length === 0) {
+                this._setModelData([]);
 
+                resolve({
+                    result: [],
+                    token: componentToken
+                });
+            }
+            else {
+                // Check if the new filter already exist
+                let fetch = true;
+                if(componentToken !== null) {
+                    for (let index in this._filters) {
+                        if (index !== 'length' && index != componentToken &&
+                        (this._filters[index] === null || Object.is(this._filters[index], this._filters[componentToken]))) {
+                            fetch = false;
+                            break;
+                        }
+                    }
+                }
+                else {
+                    // If there a filter has been deleted, then only refresh if there is no "null" filter
+                    for (let index in this._filters) {
+                        if (index !== 'length' && this._filters[index] === null) {
+                            fetch = false;
+                            break;
+                        }
+                    }
+                }
+
+                // Fetch from the server only if it use usefull
+                if(fetch) {
+                    this._fetchMethod(this.getFiltersSet())
+                        .then(result => {
+                            this._setModelData(result);
+
+                            // listen model changes
+                            iosocket.on(this._modelName, this._handleModelEvents);
+
+                            resolve({
+                                result: this.find(this._filters[componentToken]),
+                                token: componentToken
+                            });
+                        })
+                        .catch(error => reject(error));
+                }
+                else {
                     resolve({
                         result: this.find(this._filters[componentToken]),
                         token: componentToken
                     });
-                })
-                .catch(error => reject(error));
+                }
+            }
         });
     }
 
@@ -73,22 +117,33 @@ export default class BaseStore extends EventEmitter {
      * @returns {Promise}
      */
     loadData(filters) {
+        // Convert filter to array if it's a simple condition
+        if(filters !== null && !Array.isArray(filters)) {
+            filters = [filters];
+        }
+
+        // Add to the filter list
         const componentToken = this._filters.length;
         this._filters.length++;
         this._filters[componentToken] = filters;
+
         // refresh the store with the new filters
         return this.fetchData(componentToken);
     }
 
     /**
      * Remove the data used only for the component which has this token
+     * This function can be called safely with a null token
      *
      * @param {number|null} token: the component's token
      */
     unloadData(token) {
-        delete this._filters[token];
-        // reload only the data needed
-        this.fetchData();
+        if(this._filters[token] !== undefined) {
+            // Delete filter
+            delete this._filters[token];
+            // reload only the data needed
+            this.fetchData();
+        }
     }
 
     /**
@@ -214,5 +269,24 @@ export default class BaseStore extends EventEmitter {
         }
 
         return out;
+    }
+
+    /**
+     * Handle webSocket events about the model
+     *
+     * @param {object} e : the event
+     */
+    _handleModelEvents(e) {
+        switch (e.verb) {
+            case "created":
+                this._set(e.id, e.data);
+                break;
+            case "updated":
+                this._set(e.id, e.data);
+                break;
+            case "destroyed":
+                this._delete(e.id);
+                break;
+        }
     }
 }

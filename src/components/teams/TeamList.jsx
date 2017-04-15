@@ -63,6 +63,9 @@ export default class TeamList extends React.Component {
         // Load team in store
         TeamStore.loadData(null)
         .then(data => {
+            // ensure that last token doen't exist anymore.
+            TeamStore.unloadData(this.TeamStoreToken);
+
             // save the component token
             this.TeamStoreToken = data.token;
 

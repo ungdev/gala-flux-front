@@ -38,6 +38,9 @@ export default class BarrelsList extends React.Component {
         // fill the store
         BarrelStore.loadData(null)
             .then(data => {
+                // ensure that last token doen't exist anymore.
+                BarrelStore.unloadData(this.BarrelStoreToken);
+
                 // save the component token
                 this.BarrelStoreToken = data.token;
             })

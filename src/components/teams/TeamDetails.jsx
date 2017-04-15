@@ -70,24 +70,33 @@ export default class TeamDetails extends React.Component {
      * @param {strnig} id
      */
     _loadData(id) {
+        // Load only if a team is specified
+        if(!id) {
+            return;
+        }
+
         let newState = {};
         // Load team in store
         TeamStore.loadData({id: id})
         .then(data => {
+            // ensure that last token doen't exist anymore.
+            TeamStore.unloadData(this.TeamStoreToken);
+
             // save the component token
             this.TeamStoreToken = data.token;
-            newState.team = data.result[0];
 
             // Load members in store
-            return UserStore.loadData({team: id})
+            return UserStore.loadData({team: id});
         })
         .then(data => {
+            // ensure that last token doen't exist anymore.
+            UserStore.unloadData(this.UserStoreToken);
+
             // save the component token
             this.UserStoreToken = data.token;
-            newState.members = data.result;
 
-            // Finally set state with new data
-            this.setState(newState);
+            // Finally update component state
+            this._updateData();
         })
         .catch(error => {
             NotificationActions.error('Une erreur s\'est produite pendant le chargement des informations sur l\'équipe', error);
