@@ -23,7 +23,7 @@ export default class AppNavbar extends React.Component {
         // Re-render every route change
         router.addListener((route) => {
             this._handleRouteUpdate(route);
-        })
+        });
 
         // Init route
         this._handleRouteUpdate(router.getState());
@@ -32,7 +32,7 @@ export default class AppNavbar extends React.Component {
     _handleRouteUpdate(route) {
         for (let routeConf of routes) {
             if(routeConf.name === route.name && routeConf.title) {
-                this.setState({title: routeConf.title})
+                this.setState({title: routeConf.title});
                 return;
             }
         }

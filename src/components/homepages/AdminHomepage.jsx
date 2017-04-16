@@ -7,6 +7,7 @@ import AdminMenu from '../partials/AdminMenu.jsx';
 
 import AlertPage from '../adminPages/AlertPage.jsx';
 import ChatPage from '../adminPages/ChatPage.jsx';
+import StockPage from '../adminPages/StockPage.jsx';
 import BarrelsListPage from '../adminPages/BarrelsListPage.jsx';
 import BarrelsTypesPage from '../adminPages/BarrelsTypesPage.jsx';
 import AlertButtonsPage from '../adminPages/AlertButtonsPage.jsx';
@@ -37,11 +38,11 @@ class AdminHomepage extends React.Component {
 
     componentDidMount() {
         // Re-render every route change
-        this.router.addListener((route) => {
+        this.router.addListener(route => {
             this.setState({
                 route: route,
             });
-        })
+        });
 
         // Init route
         this.setState({
@@ -90,9 +91,7 @@ class AdminHomepage extends React.Component {
 
                             case 'stock':
                                 return (
-                                    <div className="AdminPage__splitscreen">
-                                        <h2 className="headline">Etat du stock</h2>
-                                    </div>
+                                    <StockPage />
                                 );
 
                             case 'admin':
