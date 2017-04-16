@@ -4,6 +4,7 @@ import BarrelStore from '../../stores/BarrelStore';
 import BarrelTypeStore from '../../stores/BarrelTypeStore';
 import TeamStore from '../../stores/TeamStore';
 
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
@@ -25,20 +26,11 @@ export default class StockPage extends React.Component {
             }
         };
 
-        this._barrelStates = [
-            {
-                value: "new",
-                name: "neuf"
-            },
-            {
-                value: "opened",
-                name: "entamé"
-            },
-            {
-                value: "empty",
-                name: "vide"
-            }
-        ];
+        this._barrelStates = {
+            "new": "neuf",
+            "opened": "entamé",
+            "empty": "vide"
+        };
 
         this.BarrelStoreToken = null;
         this.BarrelTypeStoreToken = null;
@@ -54,7 +46,7 @@ export default class StockPage extends React.Component {
         // fill the stores
         BarrelStore.loadData(null)
             .then(data => {
-                // ensure that last token doen't exist anymore.
+                // ensure that last token doesn't exist anymore.
                 BarrelStore.unloadData(this.BarrelStoreToken);
                 // save the component token
                 this.BarrelStoreToken = data.token;
@@ -62,7 +54,7 @@ export default class StockPage extends React.Component {
                 return BarrelTypeStore.loadData(null);
             })
             .then(data => {
-                // ensure that last token doen't exist anymore.
+                // ensure that last token doesn't exist anymore.
                 BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
                 // save the component token
                 this.BarrelTypeStoreToken = data.token;
@@ -70,7 +62,7 @@ export default class StockPage extends React.Component {
                 return TeamStore.loadData([{role: "bar"}]);
             })
             .then(data => {
-                // ensure that last token doen't exist anymore.
+                // ensure that last token doesn't exist anymore.
                 TeamStore.unloadData(this.TeamStoreToken);
                 // save the component token
                 this.TeamStoreToken = data.token;
@@ -143,6 +135,21 @@ export default class StockPage extends React.Component {
     }
 
     render() {
+
+        const filters = this.state.filters;
+        filters.rgx = new RegExp(filters.reference);
+
+        const states = [];
+        for (let state in this._barrelStates) {
+            states.push(<MenuItem
+                            key={state}
+                            insetChildren={true}
+                            checked={filters.states.includes(state)}
+                            value={state}
+                            primaryText={this._barrelStates[state]}
+                        />)
+        }
+
         return (
             <div>
                 <SelectField
@@ -196,17 +203,7 @@ export default class StockPage extends React.Component {
                     value={this.state.filters.states}
                     onChange={(e, i, v) => this._setFilters("states", v)}
                 >
-                    {
-                        this._barrelStates.map((state, i) => {
-                            return <MenuItem
-                                key={i}
-                                insetChildren={true}
-                                checked={this.state.filters.states.includes(state.value)}
-                                value={state.value}
-                                primaryText={state.name}
-                            />
-                        })
-                    }
+                    {states}
                 </SelectField>
 
                 <TextField
@@ -214,6 +211,40 @@ export default class StockPage extends React.Component {
                     value={this.state.filters.reference}
                     onChange={e => this._setFilters("reference", e.target.value)}
                 />
+
+                <Table multiSelectable={true}>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderColumn>Référence</TableHeaderColumn>
+                            <TableHeaderColumn>Type</TableHeaderColumn>
+                            <TableHeaderColumn>Etat</TableHeaderColumn>
+                            <TableHeaderColumn>Emplacement</TableHeaderColumn>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {
+                            this.state.barrels.map(barrel => {
+                                if (!filters.types.length || filters.types.includes(barrel.type)) {
+                                    if (!filters.locations.length || filters.locations.includes(barrel.place)) {
+                                        if (!filters.states.length || filters.states.includes(barrel.state)) {
+                                            if (barrel.reference.match(filters.rgx)) {
+                                                let type = BarrelTypeStore.findById(barrel.type);
+                                                let place = TeamStore.findById(barrel.place);
+                                                return  <TableRow key={barrel.id}>
+                                                            <TableRowColumn>{barrel.reference}</TableRowColumn>
+                                                            <TableRowColumn>{type && type.name}</TableRowColumn>
+                                                            <TableRowColumn>{this._barrelStates[barrel.state]}</TableRowColumn>
+                                                            <TableRowColumn>{place && place.name}</TableRowColumn>
+                                                        </TableRow>
+                                            }
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                    </TableBody>
+                </Table>
+
             </div>
         );
     }
