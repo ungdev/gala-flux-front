@@ -62,26 +62,18 @@ export default class EditBarrelType extends React.Component {
      * Call the barrel type service to delete this barrel type
      */
     _deleteBarrelType() {
-        BarrelTypeService.deleteBarrelType(this.state.type.id ,(error, result) => {
-            if (error) {
-                console.log("delete barrel type error", error);
-            } else {
-                this.props.close();
-            }
-        });
+        BarrelTypeService.deleteBarrelType(this.state.type.id)
+            .then(_ => this.props.close())
+            .catch(error => console.log("delete barrel type error ", error));
     }
 
     /**
      * Call the barrel type service to update this barrel type with the new data
      */
     _submitForm() {
-        BarrelTypeService.updateBarrelType(this.state.type.id, this.state.type, (error, result) => {
-            if (error) {
-                console.log("update barrel type error", error);
-            } else {
-                this.props.close();
-            }
-        });
+        BarrelTypeService.updateBarrelType(this.state.type.id, this.state.type)
+            .then(_ => this.props.close())
+            .catch(error => console.log("update barrel type error ", error));
     }
 
     render() {

@@ -41,7 +41,7 @@ export default class BarBarrels extends React.Component {
                 // get distinct barrel types id and create objects with their id
                 let types = [...new Set(data.result.map(barrel => barrel.type))];
                 for (let i in types) {
-                    types[i] = {id: types[i]}
+                    types[i] = {id: types[i]};
                 }
                 BarrelTypeStore.loadData(types)
                     .then(data => {
@@ -105,11 +105,8 @@ export default class BarBarrels extends React.Component {
      */
     _updateBarrelState(barrel, newState) {
         barrel.state = newState;
-        BarrelService.updateBarrel(barrel.id, barrel, (error, result) => {
-            if (error) {
-                console.log("update barrel state error", error);
-            }
-        });
+        BarrelService.updateBarrel(barrel.id, barrel)
+            .catch(error => console.log("update barrel state error", error));
     }
 
     /**

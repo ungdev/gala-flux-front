@@ -80,32 +80,31 @@ export default class TeamDetails extends React.Component {
             return;
         }
 
-        let newState = {};
         // Load team in store
         TeamStore.loadData({id: id})
-        .then(data => {
-            // ensure that last token doen't exist anymore.
-            TeamStore.unloadData(this.TeamStoreToken);
+            .then(data => {
+                // ensure that last token doen't exist anymore.
+                TeamStore.unloadData(this.TeamStoreToken);
 
-            // save the component token
-            this.TeamStoreToken = data.token;
+                // save the component token
+                this.TeamStoreToken = data.token;
 
-            // Load members in store
-            return UserStore.loadData({team: id});
-        })
-        .then(data => {
-            // ensure that last token doen't exist anymore.
-            UserStore.unloadData(this.UserStoreToken);
+                // Load members in store
+                return UserStore.loadData({team: id});
+            })
+            .then(data => {
+                // ensure that last token doen't exist anymore.
+                UserStore.unloadData(this.UserStoreToken);
 
-            // save the component token
-            this.UserStoreToken = data.token;
+                // save the component token
+                this.UserStoreToken = data.token;
 
-            // Finally update component state
-            this._updateData();
-        })
-        .catch(error => {
-            NotificationActions.error('Une erreur s\'est produite pendant le chargement des informations sur l\'équipe', error);
-        });
+                // Finally update component state
+                this._updateData();
+            })
+            .catch(error => {
+                NotificationActions.error('Une erreur s\'est produite pendant le chargement des informations sur l\'équipe', error);
+            });
     }
 
     /**

@@ -29,36 +29,42 @@ class BarrelService {
     /**
      * Make a request to delete a barrel
      *
-     * @callback doneCallback
-     *
      * @param {String} barrelId : the barrel to delete
-     * @param {doneCallback} callback
+     * @return {Promise}
      */
-    deleteBarrel(barrelId, callback) {
-        iosocket.request({
-            method: 'delete',
-            url: '/barrel/' + barrelId
-        }, (resData, jwres) => {
-            jwres.error ? callback(jwres.error) : callback(null, resData);
+    deleteBarrel(barrelId) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'delete',
+                url: '/barrel/' + barrelId
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 
     /**
      * Make a request to update a barrel
      *
-     * @callback doneCallback
-     *
      * @param {string} barrelId
      * @param {object} data
-     * @param {doneCallback} callback
+     * @return {Promise}
      */
-    updateBarrel(barrelId, data, callback) {
-        iosocket.request({
-            method: 'put',
-            url: '/barrel/' + barrelId,
-            data
-        }, (resData, jwres) => {
-            jwres.error ? callback(jwres.error) : callback(null, resData);
+    updateBarrel(barrelId, data) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'put',
+                url: '/barrel/' + barrelId,
+                data
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 

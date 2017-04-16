@@ -3,7 +3,7 @@ import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import { Grid, Row, Col } from 'react-flexbox-grid';
+import { Row, Col } from 'react-flexbox-grid';
 
 import SelectGroupField from '../partials/SelectGroupField.jsx';
 import SelectRoleField from '../partials/SelectRoleField.jsx';
@@ -55,41 +55,41 @@ export default class NewTeamDialog extends React.Component {
         }
         // Submit
         TeamService.createTeam(this.state.values)
-        .then((team) => {
-            this.setState({ values: {
-                name: '',
-                role: '',
-                group: '',
-                location: '',
-            } });
-            NotificationActions.snackbar('L\'équipe ' + team.name + ' a bien été créé.');
-            this.focusField.focus();
-        })
-        .catch((error) => {
-            let errors = {};
-            if(error.status === 'UnknownRole') {
-                errors.role = 'Ce champ est vide ou contient une invalide.';
-            }
-            else if(error.status === 'ValidationError' && error.formErrors) {
-                for (let field in error.formErrors) {
-                    if(error.formErrors[field][0].rule == 'string') {
-                        errors[field] = 'Ce champ est vide ou contient une invalide.';
-                    }
-                    else if(error.formErrors[field][0].rule == 'unique') {
-                        errors[field] = 'Il existe déjà une équipe avec cette valeur.';
-                    }
-                    else {
-                        errors[field] = error.formErrors[field][0].message;
-                        console.warn('Validation message not translated. ', error.formErrors[field]);
+            .then(team => {
+                this.setState({ values: {
+                    name: '',
+                    role: '',
+                    group: '',
+                    location: '',
+                } });
+                NotificationActions.snackbar('L\'équipe ' + team.name + ' a bien été créé.');
+                this.focusField.focus();
+            })
+            .catch(error => {
+                let errors = {};
+                if(error.status === 'UnknownRole') {
+                    errors.role = 'Ce champ est vide ou contient une invalide.';
+                }
+                else if(error.status === 'ValidationError' && error.formErrors) {
+                    for (let field in error.formErrors) {
+                        if(error.formErrors[field][0].rule == 'string') {
+                            errors[field] = 'Ce champ est vide ou contient une invalide.';
+                        }
+                        else if(error.formErrors[field][0].rule == 'unique') {
+                            errors[field] = 'Il existe déjà une équipe avec cette valeur.';
+                        }
+                        else {
+                            errors[field] = error.formErrors[field][0].message;
+                            console.warn('Validation message not translated. ', error.formErrors[field]);
+                        }
                     }
                 }
-            }
-            this.setState({ errors: errors });
+                this.setState({ errors: errors });
 
-            if(!errors) {
-                NotificationActions.error('Une erreur s\'est produite pendant la création de l\'équipe', error);
-            }
-        });
+                if(!errors) {
+                    NotificationActions.error('Une erreur s\'est produite pendant la création de l\'équipe', error);
+                }
+            });
     }
 
     render() {

@@ -2,7 +2,6 @@ import React from 'react';
 
 import NotificationActions from '../../../actions/NotificationActions';
 import AuthService from '../../../services/AuthService';
-import TeamStore from '../../../stores/TeamStore';
 
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -15,7 +14,7 @@ export default class SelectRoleField extends React.Component {
         this.state = {
             options: [],
             selected: props.selected,
-        }
+        };
     }
 
     componentWillReceiveProps(nextProps) {
@@ -24,14 +23,14 @@ export default class SelectRoleField extends React.Component {
 
     componentDidMount() {
         AuthService.getRoles()
-        .then((roles) => {
-            roles = Object.keys(roles);
-            roles.sort((a,b) => {return a.localeCompare(b)});
-            this.setState({ options: roles });
-        })
-        .catch((error) => {
-            NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des permissions', error);
-        });
+            .then(roles => {
+                roles = Object.keys(roles);
+                roles.sort((a,b) => {return a.localeCompare(b)});
+                this.setState({ options: roles });
+            })
+            .catch(error => {
+                NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des permissions', error);
+            });
     }
 
     render() {

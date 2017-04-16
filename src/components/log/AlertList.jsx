@@ -1,6 +1,6 @@
 import React from 'react';
 import Alert from './Alert.jsx';
-import { Grid, Row, Col } from 'react-flexbox-grid';
+import { Row } from 'react-flexbox-grid';
 require('../../styles/log/AlertList.scss');
 
 export default class AlertList extends React.Component {

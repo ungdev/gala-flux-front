@@ -47,10 +47,9 @@ class AuthService {
      * Try to authenticate with oauth (EtuUTT) : Step 1
      * Do a webSocket request to get the EtuUTT redirection link.
      *
-     * @callback success
-     * @callback error
+     * @return {Promise}
      */
-    authWithEtuUTT(success, error) {
+    authWithEtuUTT() {
         return new Promise((resolve, reject) => {
             iosocket.request({
                 method: 'get',

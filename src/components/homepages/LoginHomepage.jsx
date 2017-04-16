@@ -1,8 +1,11 @@
 import React from 'react';
 
-import RaisedButton from 'material-ui/RaisedButton';
 import AuthService from '../../services/AuthService';
+
 import NotificationActions from '../../actions/NotificationActions';
+
+import RaisedButton from 'material-ui/RaisedButton';
+
 require('../../styles/homepages/LoginHomepage.scss');
 
 export default class LoginHomepage extends React.Component {

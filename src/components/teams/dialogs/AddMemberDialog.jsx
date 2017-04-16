@@ -2,9 +2,7 @@ import React from 'react';
 
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import {List, ListItem} from 'material-ui/List';
 import { Tabs, Tab } from 'material-ui/Tabs';
-import Avatar from 'material-ui/Avatar';
 
 import AddEtuuttMemberForm from "../partials/AddEtuuttMemberForm.jsx";
 import AddIpMemberForm from "../partials/AddIpMemberForm.jsx";

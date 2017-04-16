@@ -1,8 +1,5 @@
 import React from 'react';
-import { routeNode } from 'react-router5';
 
-import TeamStore from '../../stores/TeamStore';
-import UserStore from '../../stores/UserStore';
 import router from '../../router';
 
 import TeamsList from '../teams/TeamList.jsx';

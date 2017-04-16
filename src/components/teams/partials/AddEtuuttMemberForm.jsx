@@ -1,9 +1,6 @@
 import React from 'react';
 
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
 import {List, ListItem} from 'material-ui/List';
-import { Tabs, Tab } from 'material-ui/Tabs';
 import Avatar from 'material-ui/Avatar';
 
 import SearchField from "../../partials/SearchField.jsx";
@@ -71,36 +68,36 @@ export default class AddEtuuttMemberForm extends React.Component {
             login: user.login,
             name: user.name,
         })
-        .then((user) => {
-            createdUser = user;
-            return UserService.downloadPngFromURI(avatarUri);
-        })
-        .then((blob) => {
-            return UserService.uploadAvatar(createdUser.id, blob);
-        })
-        .then(() => {
-            this.setState({ query: '', users: [] });
-            NotificationActions.snackbar('L\'utilisateur ' + user.name + ' a bien été ajouté à l\'équipe ' + this.state.team.name);
-            this.searchField.focus();
-        })
-        .catch((error) => {
-            if(!createdUser) {
-                if(error.status === 'ValidationError'
-                && error.formErrors && error.formErrors.login && error.formErrors.login[0]
-                && error.formErrors.login[0].rule == 'unique') {
-                    NotificationActions.error('Cet utilisateur est déjà assigné à une équipe. Pour le changer d\'équipe vous devez d\'abord le supprimer de son équipe actuelle.', error);
-                }
-                else {
-                    NotificationActions.error('Une erreur s\'est produite pendant la création de l\'utilisateur', error);
-                }
-            }
-            else {
-                NotificationActions.error('L\'utilisateur a été créé, mais il n\'a pas été possible de sauvegarder son avatar.', error);
+            .then(user => {
+                createdUser = user;
+                return UserService.downloadPngFromURI(avatarUri);
+            })
+            .then(blob => {
+                return UserService.uploadAvatar(createdUser.id, blob);
+            })
+            .then(_ => {
                 this.setState({ query: '', users: [] });
                 NotificationActions.snackbar('L\'utilisateur ' + user.name + ' a bien été ajouté à l\'équipe ' + this.state.team.name);
                 this.searchField.focus();
-            }
-        });
+            })
+            .catch(error => {
+                if(!createdUser) {
+                    if(error.status === 'ValidationError'
+                    && error.formErrors && error.formErrors.login && error.formErrors.login[0]
+                    && error.formErrors.login[0].rule === 'unique') {
+                        NotificationActions.error('Cet utilisateur est déjà assigné à une équipe. Pour le changer d\'équipe vous devez d\'abord le supprimer de son équipe actuelle.', error);
+                    }
+                    else {
+                        NotificationActions.error('Une erreur s\'est produite pendant la création de l\'utilisateur', error);
+                    }
+                }
+                else {
+                    NotificationActions.error('L\'utilisateur a été créé, mais il n\'a pas été possible de sauvegarder son avatar.', error);
+                    this.setState({ query: '', users: [] });
+                    NotificationActions.snackbar('L\'utilisateur ' + user.name + ' a bien été ajouté à l\'équipe ' + this.state.team.name);
+                    this.searchField.focus();
+                }
+            });
     }
 
     render() {

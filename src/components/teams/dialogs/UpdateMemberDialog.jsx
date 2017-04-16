@@ -7,11 +7,8 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import Avatar from 'material-ui/Avatar';
-import Subheader from 'material-ui/Subheader';
 import { Row, Col } from 'react-flexbox-grid';
 
-import SelectGroupField from '../partials/SelectGroupField.jsx';
-import SelectRoleField from '../partials/SelectRoleField.jsx';
 import Confirm from '../../partials/Confirm.jsx';
 import NotificationActions from '../../../actions/NotificationActions';
 
@@ -77,36 +74,36 @@ export default class UpdateMemberDialog extends React.Component {
 
         // Submit
         UserService.updateUser(this.state.id, this.state.values)
-        .then((user) => {
-            NotificationActions.snackbar('L\'utilisateur ' + user.name + ' a bien été modifié.');
-            this.focusField.focus();
-            this.props.close();
-        })
-        .catch((error) => {
-            let errors = {};
-            if(error.status === 'ValidationError' && error.formErrors) {
-                for (let field in error.formErrors) {
-                    if(error.formErrors[field][0].rule == 'string') {
-                        errors[field] = 'Ce champ est vide ou contient une valeur invalide.';
-                    }
-                    else if(error.formErrors[field][0].rule == 'unique') {
-                        errors[field] = 'Il existe déjà un utilisateur avec cette valeur.';
-                    }
-                    else if(error.formErrors[field][0].rule == 'required') {
-                        errors[field] = 'Ce champ ne peut pas être vide.';
-                    }
-                    else {
-                        errors[field] = error.formErrors[field][0].message;
-                        console.warn('Validation message not translated. ', error.formErrors[field]);
+            .then(user => {
+                NotificationActions.snackbar('L\'utilisateur ' + user.name + ' a bien été modifié.');
+                this.focusField.focus();
+                this.props.close();
+            })
+            .catch(error => {
+                let errors = {};
+                if(error.status === 'ValidationError' && error.formErrors) {
+                    for (let field in error.formErrors) {
+                        if(error.formErrors[field][0].rule == 'string') {
+                            errors[field] = 'Ce champ est vide ou contient une valeur invalide.';
+                        }
+                        else if(error.formErrors[field][0].rule == 'unique') {
+                            errors[field] = 'Il existe déjà un utilisateur avec cette valeur.';
+                        }
+                        else if(error.formErrors[field][0].rule == 'required') {
+                            errors[field] = 'Ce champ ne peut pas être vide.';
+                        }
+                        else {
+                            errors[field] = error.formErrors[field][0].message;
+                            console.warn('Validation message not translated. ', error.formErrors[field]);
+                        }
                     }
                 }
-            }
-            this.setState({ errors: errors });
+                this.setState({ errors: errors });
 
-            if(!errors) {
-                NotificationActions.error('Une erreur s\'est produite pendant la modification de l\'user', error);
-            }
-        });
+                if(!errors) {
+                    NotificationActions.error('Une erreur s\'est produite pendant la modification de l\'user', error);
+                }
+            });
     }
 
     /**

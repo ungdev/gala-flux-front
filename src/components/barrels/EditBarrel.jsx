@@ -78,26 +78,18 @@ export default class EditBarrel extends React.Component {
      * Call the barrel service to delete this barrel
      */
     _deleteBarrel() {
-        BarrelService.deleteBarrel(this.state.barrel.id ,(error, result) => {
-            if (error) {
-                console.log("delete barrel error", error);
-            } else {
-                this.props.close();
-            }
-        });
+        BarrelService.deleteBarrel(this.state.barrel.id)
+            .then(_ => this.props.close())
+            .catch(error => console.log("delete barrel error: ", error));
     }
 
     /**
      * Call the barrel service to update this barrel with the new data
      */
     _submitForm() {
-        BarrelService.updateBarrel(this.state.barrel.id, this.state.barrel, (error, result) => {
-            if (error) {
-                console.log("update barrel error", error);
-            } else {
-                this.props.close();
-            }
-        });
+        BarrelService.updateBarrel(this.state.barrel.id, this.state.barrel)
+            .then(_ => this.props.close())
+            .catch(error => console.log("update barrel error ", error));
     }
 
     render() {

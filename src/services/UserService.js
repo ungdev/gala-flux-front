@@ -6,7 +6,6 @@ import * as constants from '../config/constants';
  */
 class UserService {
 
-
     /**
      * Pull user data from the server
      *
@@ -89,7 +88,6 @@ class UserService {
         });
     }
 
-
     /**
      * Make a request to create a new user
      *
@@ -128,10 +126,11 @@ class UserService {
         });
     }
 
-
     /**
      * Download image (used for downloading avatar from EtuTT)
+     *
      * @param {string} uri Absolute uri
+     * @return {Primise}
      */
     downloadPngFromURI(uri) {
         return new Promise((resolve, reject) => {
@@ -144,11 +143,10 @@ class UserService {
             req.overrideMimeType('text/plain; charset=x-user-defined');
 
             req.onload = () => {
-                if (req.status == 200) {
-                    let img = new Blob([req.response], {type: 'image/png'});
+                if (req.status === 200) {
+                    const img = new Blob([req.response], {type: 'image/png'});
                     return resolve(img);
-                }
-                else {
+                } else {
                     return reject(new Error('Avatar download: ' + req.statusText));
                 }
             };
@@ -156,15 +154,16 @@ class UserService {
         });
     }
 
-
     /**
      * Upload an avatar for an user
-     * @param {string} id User id
-     * @param {blob} img Image as a blob
+     *
+     * @param {string} id: User id
+     * @param {Blob} img: Image as a blob
+     * @return {Promise}
      */
     uploadAvatar(id, img) {
         return new Promise((resolve, reject) => {
-            let req = new XMLHttpRequest();
+            const req = new XMLHttpRequest();
             req.open('POST', constants.webSocketUri + '/user/avatar/' + id, true);
             req.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem(constants.jwtName));
 
@@ -172,8 +171,8 @@ class UserService {
             formData.append("avatar", img);
 
             req.onload = () => {
-                if (req.status == 200) {
-                    let img = new Blob([req.response], {type: 'image/png'});
+                if (req.status === 200) {
+                    const img = new Blob([req.response], {type: 'image/png'});
                     return resolve(img);
                 }
                 else {

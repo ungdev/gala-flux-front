@@ -16,9 +16,8 @@ export default class MessageForm extends React.Component {
      */
     _handleKeyDown(e) {
         if (e.key  === "Enter" && e.target.value) {
-            ChatService.sendMessage(e.target.value, err => {
-                console.log("post message error : ", err);
-            });
+            ChatService.sendMessage(e.target.value)
+                .catch(error => console.log("create message error : ", error));
             e.target.value = '';
         }
     }
