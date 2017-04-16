@@ -71,7 +71,7 @@ export default class UpdateTeamDialog extends React.Component {
         }
 
         // Submit
-        TeamService.updateTeam(this.state.id, this.state.values)
+        TeamService.update(this.state.id, this.state.values)
             .then(team => {
                 NotificationActions.snackbar('L\'équipe ' + team.name + ' a bien été modifié.');
                 this.focusField.focus();
@@ -111,7 +111,7 @@ export default class UpdateTeamDialog extends React.Component {
      */
     _handleDelete() {
         // Submit
-        TeamService.deleteTeam(this.state.id)
+        TeamService.destroy(this.state.id)
         .then(() => {
             NotificationActions.snackbar('L\'équipe a bien été supprimé.');
             this.props.close();
