@@ -1,13 +1,14 @@
 import React from 'react';
 
 import TeamStore from '../../stores/TeamStore';
+import AuthStore from '../../stores/AuthStore';
 import NotificationActions from '../../actions/NotificationActions'
 
 import SelectableList from '../partials/SelectableList.jsx'
 import { List, ListItem, makeSelectable } from 'material-ui/List';
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import NewTeam from './NewTeam.jsx';
+import NewTeamDialog from './dialogs/NewTeamDialog.jsx';
 
 
 /**
@@ -102,22 +103,9 @@ export default class TeamList extends React.Component {
     }
 
     render() {
-        const style = {
-            container: {
-                position: 'relative',
-                height: '100%',
-                overflow: 'auto',
-            },
-            floatingButton: {
-                position: 'absolute',
-                right: '36px',
-                bottom: '36px',
-            },
-        };
-
         return (
-            <div className="container-hide">
-                <div style={style.container}>
+            <div className="FloatingButtonContainer">
+                <div>
                     <SelectableList value={this.state.selectedId}>
                         {
                             this.state.teams.map((team, i) => {
@@ -133,15 +121,16 @@ export default class TeamList extends React.Component {
                     </SelectableList>
                 </div>
 
-                <FloatingActionButton
-                    style={style.floatingButton}
-                    secondary={true}
-                    onTouchTap={this._toggleCreateDialog}
-                >
-                    <ContentAddIcon />
-                </FloatingActionButton>
+                { AuthStore.can('team/admin') &&
+                    <FloatingActionButton
+                        className="FloatingButton"
+                        onTouchTap={this._toggleCreateDialog}
+                    >
+                        <ContentAddIcon />
+                    </FloatingActionButton>
+                }
 
-                <NewTeam
+                <NewTeamDialog
                     show={this.state.showCreateDialog}
                     close={this._toggleCreateDialog}
                 />

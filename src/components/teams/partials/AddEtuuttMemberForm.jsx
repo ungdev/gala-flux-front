@@ -3,13 +3,14 @@ import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import {List, ListItem} from 'material-ui/List';
+import { Tabs, Tab } from 'material-ui/Tabs';
 import Avatar from 'material-ui/Avatar';
 
-import SearchField from "../partials/SearchField.jsx";
-import UserService from '../../services/UserService';
-import NotificationActions from '../../actions/NotificationActions';
+import SearchField from "../../partials/SearchField.jsx";
+import UserService from '../../../services/UserService';
+import NotificationActions from '../../../actions/NotificationActions';
 
-export default class AddEtuuttMember extends React.Component {
+export default class AddEtuuttMemberForm extends React.Component {
 
     constructor(props) {
         super(props);
@@ -104,30 +105,15 @@ export default class AddEtuuttMember extends React.Component {
 
     render() {
 
-        const actions = [
-            <FlatButton
-                label="Fermer"
-                secondary={true}
-                onTouchTap={this.props.close}
-            />,
-        ];
-
         return (
-            <Dialog
-                title={'Ajout d\'un membre à partir d\'EtuUTT'}
-                open={this.props.show}
-                actions={actions}
-                autoScrollBodyContent={true}
-                modal={false}
-                onRequestClose={this.props.close}
-            >
+            <div>
                 Pour ajouter un membre à l'équipe <strong>{this.state.team.name}</strong> qui se connectera à partir d'EtuUTT,
                 vous devez le trouver à l'aide du champ de recherche ci-dessous.
                 Vous pouvez rechercher par prénom, nom, surnom, numéro étudiant, login UTT et email.<br/>
 
                 <SearchField
                     errorText={this.state.error}
-                    floatingLabelText="Rechercher un compte EtuUTT"
+                    floatingLabelText="Recherche EtuUTT"
                     onSubmit={this._handleSubmit}
                     loading={this.state.loading}
                     value={this.state.query}
@@ -151,7 +137,7 @@ export default class AddEtuuttMember extends React.Component {
                     }
                 </List>
                 : ''}
-            </Dialog>
+            </div>
         );
     }
 
