@@ -97,7 +97,7 @@ export default class NewButton extends React.Component {
                 messagePlaceholder: state.formData.placeholder.value,
                 category: state.formData.category.value,
             };
-            AlertButtonService.createAlertButton(data)
+            AlertButtonService.create(data)
                 .then(data => this.props.close())
                 .catch(error => console.log("create alert button error : ", error));
         } else {

@@ -3,15 +3,15 @@ import AppDispatcher from '../dispatchers/AppDispatcher';
 
 export default class BaseStore extends EventEmitter {
 
-    constructor(modelName, fetchMethod) {
+    constructor(modelName, service) {
         super();
 
         // the fetched data
         this._modelData = [];
         // the model name
         this._modelName = modelName;
-        // the method to fetch the data of this model
-        this._fetchMethod = fetchMethod;
+        // the service of this model
+        this._service = service;
 
         // the data to fetch
         this._filters = {length: 0};
@@ -86,7 +86,7 @@ export default class BaseStore extends EventEmitter {
 
                 // Fetch from the server only if it use usefull
                 if(fetch) {
-                    this._fetchMethod(this.getFiltersSet())
+                    this._service.get(this.getFiltersSet())
                         .then(result => {
                             this._setModelData(result);
 

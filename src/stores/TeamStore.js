@@ -4,7 +4,7 @@ import TeamService from '../services/TeamService';
 class TeamStore extends BaseStore {
 
     constructor() {
-        super('team', TeamService.getTeams);
+        super('team', TeamService);
 
         this.subscribe(() => this._handleActions.bind(this));
     }

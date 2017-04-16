@@ -4,7 +4,7 @@ import UserService from '../services/UserService';
 class UserStore extends BaseStore {
 
     constructor() {
-        super('user', UserService.getUsers);
+        super('user', UserService);
 
         this.subscribe(() => this._handleActions.bind(this));
     }

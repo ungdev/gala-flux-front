@@ -63,7 +63,7 @@ export default class AddEtuuttMemberForm extends React.Component {
     _addToTeam(user) {
         let createdUser = null;
         let avatarUri = user.avatar;
-        UserService.createUser({
+        UserService.create({
             team: this.state.team.id,
             login: user.login,
             name: user.name,

@@ -104,7 +104,7 @@ export default class NewBarrelType extends React.Component {
                 liters: state.formData.liters.value,
             };
 
-            BarrelTypeService.createBarrelType(data)
+            BarrelTypeService.create(data)
                 .then(_ => this.props.close())
                 .catch(error => console.log("create barrel error : ", error));
         } else {

@@ -66,7 +66,7 @@ export default class AddIpMemberForm extends React.Component {
         }
 
         // Submit
-        UserService.createUser({
+        UserService.create({
             team: this.state.team.id,
             name: this.state.values.name,
             ip: this.state.values.ip,
