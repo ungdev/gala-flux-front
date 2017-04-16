@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';

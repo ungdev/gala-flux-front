@@ -71,13 +71,9 @@ export default class CreateBarrels extends React.Component {
      * Call the Service to create a new barrel type
      */
     _submitForm() {
-        BarrelTypeService.saveBarrels(this.state.formData, (error, barrels) => {
-            if (error) {
-                console.log("save barrels error", error);
-            } else {
-                this.setState({ created: barrels.data })
-            }
-        });
+        BarrelTypeService.saveBarrels(this.state.formData)
+            .then(barrels => this.setState({ created: barrels.data }))
+            .catch(error => console.log("save barrels erro: ", error));
     }
 
     render() {

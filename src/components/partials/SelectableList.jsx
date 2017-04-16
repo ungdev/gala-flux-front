@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import {List, ListItem, makeSelectable} from 'material-ui/List';
+import {List, makeSelectable} from 'material-ui/List';
 
 
 /**

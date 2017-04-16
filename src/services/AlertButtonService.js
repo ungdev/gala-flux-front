@@ -18,7 +18,7 @@ class AlertButtonService {
                 data: {filters},
                 url: '/alertbutton'
             }, (resData, jwres) => {
-                if(jwres.error) {
+                if (jwres.error) {
                     return reject(new ApiError(jwres));
                 }
                 return resolve(resData);
@@ -29,54 +29,63 @@ class AlertButtonService {
     /**
      * Make a request to create an alert button
      *
-     * @callback callback
-     *
      * @param {Object} data : the new alert button data
-     * @param {callback} callback
+     * @return {Promise}
      */
-    createAlertButton(data, callback) {
-        iosocket.request({
-            method: 'post',
-            url: '/alertbutton',
-            data
-        }, (resData, jwres) => {
-            jwres.error ? callback(jwres.error) : callback(null, resData);
+    createAlertButton(data) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'post',
+                url: '/alertbutton',
+                data
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 
     /**
      * Make a request to delete this alert button
      *
-     * @callback doneCallback
-     *
      * @param {String} id : the alert button to delete
-     * @param {callback} callback
+     * @return {Promise}
      */
-    deleteAlertButton(id, callback) {
-        iosocket.request({
-            method: 'delete',
-            url: '/alertbutton/' + id
-        }, (resData, jwres) => {
-            jwres.error ? callback(jwres.error) : callback(null, resData);
+    deleteAlertButton(id) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'delete',
+                url: '/alertbutton/' + id
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 
     /**
      * Make a request to update this alert button
      *
-     * @callback doneCallback
-     *
      * @param {String} id : the alert button to delete
      * @param {object} data : the alert button attributes
-     * @param {callback} callback
+     * @return {Promise}
      */
-    updateAlertButton(id, data, callback) {
-        iosocket.request({
-            method: 'put',
-            url: '/alertbutton/' + id,
-            data
-        }, (resData, jwres) => {
-            jwres.error ? callback(jwres.error) : callback(null, resData);
+    updateAlertButton(id, data) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'put',
+                url: '/alertbutton/' + id,
+                data
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 

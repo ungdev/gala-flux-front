@@ -52,12 +52,10 @@ class TeamService {
     /**
      * Make a request to delete this team
      *
-     * @callback doneCallback
-     *
      * @param {String} teamId : the team to delete
-     * @param {doneCallback} callback
+     * @return {Promise}
      */
-    deleteTeam(teamId, callback) {
+    deleteTeam(teamId) {
         return new Promise((resolve, reject) => {
             iosocket.delete('/team/' + teamId, (resData, jwres) => {
                 if(jwres.error) {
@@ -92,9 +90,9 @@ class TeamService {
      *
      * @param {string} teamId
      * @param {object} data
-     * @param {doneCallback} callback
+     * @return {Promise}
      */
-    updateTeam(teamId, data, callback) {
+    updateTeam(teamId, data) {
         return new Promise((resolve, reject) => {
             iosocket.put('/team/' + teamId, data, (resData, jwres) => {
                 if(jwres.error) {

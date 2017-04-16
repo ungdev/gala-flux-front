@@ -1,13 +1,8 @@
 import React from 'react';
-import { routeNode } from 'react-router5';
-
-import TeamStore from '../../stores/TeamStore';
-import UserStore from '../../stores/UserStore';
 
 import TeamDetails from '../teams/TeamDetails.jsx';
 
 export default class TeamDetailsPage extends React.Component {
-
 
     constructor(props) {
         super(props);

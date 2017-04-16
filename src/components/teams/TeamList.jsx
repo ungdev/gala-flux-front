@@ -2,10 +2,10 @@ import React from 'react';
 
 import TeamStore from '../../stores/TeamStore';
 import AuthStore from '../../stores/AuthStore';
-import NotificationActions from '../../actions/NotificationActions'
+import NotificationActions from '../../actions/NotificationActions';
 
-import SelectableList from '../partials/SelectableList.jsx'
-import { List, ListItem, makeSelectable } from 'material-ui/List';
+import SelectableList from '../partials/SelectableList.jsx';
+import { ListItem } from 'material-ui/List';
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import NewTeamDialog from './dialogs/NewTeamDialog.jsx';
@@ -63,20 +63,20 @@ export default class TeamList extends React.Component {
         let newState = {};
         // Load team in store
         TeamStore.loadData(null)
-        .then(data => {
-            // ensure that last token doen't exist anymore.
-            TeamStore.unloadData(this.TeamStoreToken);
+            .then(data => {
+                // ensure that last token doen't exist anymore.
+                TeamStore.unloadData(this.TeamStoreToken);
 
-            // save the component token
-            this.TeamStoreToken = data.token;
+                // save the component token
+                this.TeamStoreToken = data.token;
 
-            // Save the new state value
-            newState.teams = data.result;
-            this.setState(newState);
-        })
-        .catch(error => {
-            NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des équipes', error);
-        });
+                // Save the new state value
+                newState.teams = data.result;
+                this.setState(newState);
+            })
+            .catch(error => {
+                NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des équipes', error);
+            });
     }
 
     /**

@@ -1,9 +1,5 @@
 import React from 'react';
 
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import {List, ListItem} from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
 
@@ -75,7 +71,7 @@ export default class AddIpMemberForm extends React.Component {
             name: this.state.values.name,
             ip: this.state.values.ip,
         })
-        .then((user) => {
+        .then(user => {
             this.setState({ values: {
                 name: 'PC',
                 ip: '',
@@ -83,7 +79,7 @@ export default class AddIpMemberForm extends React.Component {
             NotificationActions.snackbar('L\'utilisateur ' + user.name + ' a bien été ajouté à l\'équipe ' + this.state.team.name);
             this.focusField.focus();
         })
-        .catch((error) => {
+        .catch(error => {
             let errors = {};
             if(error.status === 'ValidationError' && error.formErrors) {
                 for (let field in error.formErrors) {
@@ -100,7 +96,7 @@ export default class AddIpMemberForm extends React.Component {
                 }
                 this.setState({ errors: errors });
             }
-            if(!errors) {
+            if (!errors) {
                 NotificationActions.error('Une erreur s\'est produite pendant la création de l\'utilisateur', error);
             }
         });

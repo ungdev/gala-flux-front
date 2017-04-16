@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Col } from 'react-flexbox-grid';
+import { Col } from 'react-flexbox-grid';
 
 require('../../styles/log/Alert.scss');
 

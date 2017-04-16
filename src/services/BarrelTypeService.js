@@ -7,9 +7,6 @@ class BarrelTypeService {
 
     /**
      * Make a webSocket request to get the barrel types
-     * Then call the callback with the result
-     *
-     * @callback callback
      *
      * @param {Array|null} filters
      * @return {Promise}
@@ -32,72 +29,84 @@ class BarrelTypeService {
     /**
      * Make a request to delete this barrel type
      *
-     * @callback doneCallback
-     *
      * @param {String} typeId : the barrel type to delete
-     * @param {doneCallback} callback
+     * @return {Promise}
      */
-    deleteBarrelType(typeId, callback) {
-        iosocket.request({
-            method: 'delete',
-            url: '/barreltype/' + typeId
-        }, (resData, jwres) => {
-            jwres.error ? callback(jwres.error) : callback(null, resData);
+    deleteBarrelType(typeId) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'delete',
+                url: '/barreltype/' + typeId
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 
     /**
      * Make a request to create a new barrel type
      *
-     * @callback doneCallback
-     *
      * @param {object} data
-     * @param {doneCallback} callback
+     * @return {Promise}
      */
-    createBarrelType(data, callback) {
-        iosocket.request({
-            method: 'post',
-            url: '/barreltype',
-            data
-        }, (resData, jwres) => {
-            jwres.error ? callback(jwres.error) : callback(null, resData);
+    createBarrelType(data) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'post',
+                url: '/barreltype',
+                data
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 
     /**
      * Make a request to update a barrel type
      *
-     * @callback doneCallback
-     *
      * @param {string} typeId
      * @param {object} data
-     * @param {doneCallback} callback
+     * @return {Promise}
      */
-    updateBarrelType(typeId, data, callback) {
-        iosocket.request({
-            method: 'put',
-            url: '/barreltype/' + typeId,
-            data
-        }, (resData, jwres) => {
-            jwres.error ? callback(jwres.error) : callback(null, resData);
+    updateBarrelType(typeId, data) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'put',
+                url: '/barreltype/' + typeId,
+                data
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 
     /**
      * Make a request to create barrels
      *
-     * @callback doneCallback
-     *
      * @param {object} data
-     * @param {doneCallback} callback
+     * @return {Promise}
      */
-    saveBarrels(data, callback) {
-        iosocket.request({
-            method: 'post',
-            url: '/barreltype/barrel',
-            data
-        }, (resData, jwres) => {
-            jwres.error ? callback(jwres.error) : callback(null, resData);
+    saveBarrels(data) {
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'post',
+                url: '/barreltype/barrel',
+                data
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                return resolve(resData);
+            });
         });
     }
 
