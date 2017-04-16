@@ -1,0 +1,18 @@
+.BarrelChipContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.BarrelChip {
+
+    margin: 3px 2px !important;
+
+    .BarrelChip__shortname {
+        font-size: 13px !important;
+    }
+
+    .BarrelChip__number {
+        margin-left: -5px;
+        font-size: 13px;
+    }
+}
