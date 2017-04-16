@@ -2,7 +2,6 @@ import React from 'react';
 
 import Avatar from 'material-ui/Avatar';
 import Chip from 'material-ui/Chip';
-import ContentUndoIcon from 'material-ui/svg-icons/content/undo';
 import * as color from 'material-ui/styles/colors';
 
 require('../../../styles/barrels/BarrelChip.scss');
@@ -91,7 +90,7 @@ export default class BarrelChip extends React.Component {
                 backgroundColor={background}
                 onRequestDelete={this.props.onRequestDelete}
                 onTouchTap={this._handleClick}
-                title={(this.state.type.name)}
+                title={tooltip}
                 key={this.state.barrel.id}
             >
                 <Avatar className="BarrelChip__shortname"  backgroundColor={avatarBackground}>
