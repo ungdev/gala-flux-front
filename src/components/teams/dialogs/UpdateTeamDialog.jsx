@@ -72,37 +72,37 @@ export default class UpdateTeamDialog extends React.Component {
 
         // Submit
         TeamService.updateTeam(this.state.id, this.state.values)
-        .then((team) => {
-            NotificationActions.snackbar('L\'équipe ' + team.name + ' a bien été modifié.');
-            this.focusField.focus();
-            this.props.close();
-        })
-        .catch((error) => {
-            console.log('error', error)
-            let errors = {};
-            if(error.status === 'UnknownRole') {
-                errors.role = 'Ce champ est vide ou contient une invalide.';
-            }
-            else if(error.status === 'ValidationError' && error.formErrors) {
-                for (let field in error.formErrors) {
-                    if(error.formErrors[field][0].rule == 'string') {
-                        errors[field] = 'Ce champ est vide ou contient une invalide.';
-                    }
-                    else if(error.formErrors[field][0].rule == 'unique') {
-                        errors[field] = 'Il existe déjà une équipe avec cette valeur.';
-                    }
-                    else {
-                        errors[field] = error.formErrors[field][0].message;
-                        console.warn('Validation message not translated. ', error.formErrors[field]);
+            .then(team => {
+                NotificationActions.snackbar('L\'équipe ' + team.name + ' a bien été modifié.');
+                this.focusField.focus();
+                this.props.close();
+            })
+            .catch(error => {
+                console.log('error', error);
+                let errors = {};
+                if(error.status === 'UnknownRole') {
+                    errors.role = 'Ce champ est vide ou contient une invalide.';
+                }
+                else if(error.status === 'ValidationError' && error.formErrors) {
+                    for (let field in error.formErrors) {
+                        if(error.formErrors[field][0].rule == 'string') {
+                            errors[field] = 'Ce champ est vide ou contient une invalide.';
+                        }
+                        else if(error.formErrors[field][0].rule == 'unique') {
+                            errors[field] = 'Il existe déjà une équipe avec cette valeur.';
+                        }
+                        else {
+                            errors[field] = error.formErrors[field][0].message;
+                            console.warn('Validation message not translated. ', error.formErrors[field]);
+                        }
                     }
                 }
-            }
-            this.setState({ errors: errors });
+                this.setState({ errors: errors });
 
-            if(!Object.keys(errors).length) {
-                NotificationActions.error('Une erreur s\'est produite pendant la modification de l\'équipe', error);
-            }
-        });
+                if(!Object.keys(errors).length) {
+                    NotificationActions.error('Une erreur s\'est produite pendant la modification de l\'équipe', error);
+                }
+            });
     }
 
     /**

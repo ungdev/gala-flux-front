@@ -1,5 +1,4 @@
 import React from 'react';
-
 import ChatStore from '../../stores/ChatStore';
 import Message from './Message.jsx';
 
