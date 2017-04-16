@@ -4,7 +4,7 @@ import ChatService from '../services/ChatService';
 class ChatStore extends BaseStore {
 
     constructor() {
-        super('message', ChatService.getMessages);
+        super('message', ChatService);
 
         this.subscribe(() => this._handleActions.bind(this));
     }

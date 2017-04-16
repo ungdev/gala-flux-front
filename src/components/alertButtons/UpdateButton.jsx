@@ -43,7 +43,7 @@ export default class UpdateButton extends React.Component {
      * In case of success, close the update dialog (because the button doesn't exists anymore)
      */
     _deleteButton() {
-        AlertButtonService.deleteAlertButton(this.state.button.id)
+        AlertButtonService.destroy(this.state.button.id)
             .then(data => this.props.close())
             .catch(error => console.log("delete button err : ", error));
     }
@@ -52,7 +52,7 @@ export default class UpdateButton extends React.Component {
      * Call the Alert Button service to update this button
      */
     _updateButton() {
-        AlertButtonService.updateAlertButton(this.state.button.id, this.state.button)
+        AlertButtonService.update(this.state.button.id, this.state.button)
             .then(data => this.props.close())
             .catch(error => console.log("update button err : ", error));
     }

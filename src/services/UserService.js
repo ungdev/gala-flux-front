@@ -1,10 +1,14 @@
-import {ApiError} from '../errors';
+import BaseService from './BaseService';
 import * as constants from '../config/constants';
 
 /**
  * Class used for all about Authentication
  */
-class UserService {
+class UserService extends BaseService {
+
+    constructor() {
+        super('user');
+    }
 
     /**
      * Pull user data from the server
@@ -21,86 +25,6 @@ class UserService {
             }, (resData, jwres) => {
                 if(jwres.error) {
                     return reject(jwres.error);
-                }
-                return resolve(resData);
-            });
-        });
-    }
-
-    /**
-     * Make a webSocket request to get the users
-     * Then return the data
-     *
-     * @param {Array|null} filters
-     * @return {Promise}
-     */
-    getUsers(filters) {
-        return new Promise((resolve, reject) => {
-            iosocket.request({
-                method: 'get',
-                data: {filters},
-                url: '/user'
-            }, (resData, jwres) => {
-                if(jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve(resData);
-            });
-        });
-    }
-
-    /**
-     * Make a webSocket request to delete a user
-     *
-     * @callback errorCallback
-     *
-     * @param {String} uid : the user id
-     * @return {Promise} A promise to end of creation
-     */
-    deleteUser(uid) {
-        return new Promise((resolve, reject) => {
-            iosocket.delete('/user/' + uid, (resData, jwres) => {
-                if (jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve(resData);
-            });
-        });
-    }
-
-    /**
-    * Make a webSocket request to update a user
-    *
-    * @callback erroCallback
-    *
-    * @param {String} uid : the user id
-    * @param {object} data : the attributes to update
-    * @return {Promise} A promise to end of creation
-    */
-    updateUser(uid, data) {
-        return new Promise((resolve, reject) => {
-            iosocket.put('/user/' + uid, data, (resData, jwres) => {
-                if (jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve(resData);
-            });
-        });
-    }
-
-    /**
-     * Make a request to create a new user
-     *
-     * @callback doneCallback
-     *
-     * @param {object} data
-     * @return {Promise} A promise to end of creation
-     */
-    createUser(data) {
-        return new Promise((resolve, reject) => {
-            iosocket.post('/user', data, (resData, jwres) => {
-                if (jwres.error) {
-                    return reject(new ApiError(jwres));
                 }
                 return resolve(resData);
             });

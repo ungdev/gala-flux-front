@@ -4,7 +4,7 @@ import BarrelService from '../services/BarrelService';
 class BarrelStore extends BaseStore {
 
     constructor() {
-        super('barrel', BarrelService.getBarrels);
+        super('barrel', BarrelService);
 
         this.subscribe(() => this._handleActions.bind(this));
     }

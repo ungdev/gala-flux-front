@@ -4,7 +4,7 @@ import BarrelTypeService from '../services/BarrelTypeService';
 class BarrelTypeStore extends BaseStore {
 
     constructor() {
-        super('barreltype', BarrelTypeService.getBarrelTypes);
+        super('barreltype', BarrelTypeService);
 
         this.subscribe(() => this._handleActions.bind(this));
     }

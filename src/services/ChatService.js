@@ -1,9 +1,13 @@
-import {ApiError} from '../errors';
+import BaseService from './BaseService';
 
 /**
  * Class used for all about Authentication
  */
-class ChatService {
+class ChatService extends BaseService {
+
+    constructor() {
+        super('message');
+    }
 
     /**
      * Send a new message to the server
@@ -19,27 +23,6 @@ class ChatService {
                 data: {text}
             }, (resData, jwres) => {
                 if (jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve(resData);
-            });
-        });
-    }
-
-    /**
-     * Make a webSocket request to get the messages
-     *
-     * @param {Array|null} filters
-     * @return {Promise}
-     */
-    getMessages(filters) {
-        return new Promise((resolve, reject) => {
-            iosocket.request({
-                method: 'get',
-                data: {filters},
-                url: '/message'
-            }, (resData, jwres) => {
-                if(jwres.error) {
                     return reject(new ApiError(jwres));
                 }
                 return resolve(resData);

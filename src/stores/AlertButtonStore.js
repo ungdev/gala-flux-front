@@ -5,7 +5,7 @@ import AlertButtonService from '../services/AlertButtonService';
 class AlertButtonStore extends BaseStore {
 
     constructor() {
-        super('alertbutton', AlertButtonService.getAlertButtons);
+        super('alertbutton', AlertButtonService);
 
         this.subscribe(() => this._handleActions.bind(this));
     }

@@ -105,7 +105,7 @@ export default class BarBarrels extends React.Component {
      */
     _updateBarrelState(barrel, newState) {
         barrel.state = newState;
-        BarrelService.updateBarrel(barrel.id, barrel)
+        BarrelService.update(barrel.id, barrel)
             .catch(error => console.log("update barrel state error", error));
     }
 
