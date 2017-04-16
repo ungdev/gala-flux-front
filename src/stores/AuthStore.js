@@ -57,32 +57,32 @@ class AuthStore extends BaseStore {
 
         // get the roles->permission association
         AuthService.getRoles()
-        .then((data) => {
-            this._roles = data;
-            this.emitChange();
-        })
-        .catch((error) => {
-            NotificationActions.error('Impossible de récupérer les droits configurés sur le serveur.', error, null, true);
-        });
+            .then(data => {
+                this._roles = data;
+                this.emitChange();
+            })
+            .catch(error => {
+                NotificationActions.error('Impossible de récupérer les droits configurés sur le serveur.', error, null, true);
+            });
 
         // Init current user and team
-        UserService.getUser(this.jwt.userId)
-        .then((user) => {
-            this._user = user;
-            iosocket.on('user', (e) => this._handleUserEvents(e));
-            this.emitChange();
-            return TeamService.getTeam(this.user.team);
-        })
-        .then((team) => {
-            this._team = team;
-            this._permissions = this.roles[this.team.role];
-            iosocket.on('team', (e) => this._handleTeamEvents(e));
-            this.emitChange();
-            AuthActions.authenticated(this.user, this.team);
-        })
-        .catch((error) => {
-            NotificationActions.error('Impossible de récupérer les informations sur l\'utilisateur actuel. Veuillez vous reconnecter.', error, null, true);
-        });
+        UserService.getById(this.jwt.userId)
+            .then(user => {
+                this._user = user;
+                iosocket.on('user', (e) => this._handleUserEvents(e));
+                this.emitChange();
+                return TeamService.getById(this.user.team);
+            })
+            .then(team => {
+                this._team = team;
+                this._permissions = this.roles[this.team.role];
+                iosocket.on('team', (e) => this._handleTeamEvents(e));
+                this.emitChange();
+                AuthActions.authenticated(this.user, this.team);
+            })
+            .catch(error => {
+                NotificationActions.error('Impossible de récupérer les informations sur l\'utilisateur actuel. Veuillez vous reconnecter.', error, null, true);
+            });
     }
 
     /**

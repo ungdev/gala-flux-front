@@ -39,6 +39,19 @@ export default class BaseService {
     }
 
     /**
+     *
+     *
+     * @param id
+     * @returns {Promise}
+     */
+    getById(id) {
+        return this._makeRequest({
+            method: 'get',
+            url: this._baseUrl + '/' + id
+        });
+    }
+
+    /**
      * Make a create request
      *
      * @param {object} data: the new object values
