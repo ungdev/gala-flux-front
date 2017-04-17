@@ -23,9 +23,10 @@ export default class LocationSelect extends React.Component {
         return (
             <SelectField
                 multiple={this.props.multiple}
-                hintText="Emplacements"
+                hintText={this.props.multiple && "Emplacements"}
                 value={this.props.value}
                 onChange={this.props.setValue}
+                fullWidth={true}
             >
                 <MenuItem
                     key={0}
