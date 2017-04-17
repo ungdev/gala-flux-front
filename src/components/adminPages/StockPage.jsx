@@ -4,13 +4,13 @@ import BarrelStore from '../../stores/BarrelStore';
 import BarrelTypeStore from '../../stores/BarrelTypeStore';
 import TeamStore from '../../stores/TeamStore';
 
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import MoveDialog from '../stock/MoveDialog.jsx';
 import LocationSelect from '../stock/LocationSelect.jsx';
+import BarrelChip from '../barrels/partials/BarrelChip.jsx';
 
 export default class StockPage extends React.Component {
 
@@ -32,12 +32,6 @@ export default class StockPage extends React.Component {
             showMoveDialog: false
         };
 
-        this._barrelStates = {
-            "new": "neuf",
-            "opened": "entamé",
-            "empty": "vide"
-        };
-
         this.BarrelStoreToken = null;
         this.BarrelTypeStoreToken = null;
         this.TeamStoreToken = null;
@@ -48,6 +42,7 @@ export default class StockPage extends React.Component {
         this._setTeams = this._setTeams.bind(this);
         this._toggleMoveDialog = this._toggleMoveDialog.bind(this);
         this._filteredBarrels = this._filteredBarrels.bind(this);
+        this._handleBarrelSelection = this._handleBarrelSelection.bind(this);
     }
 
     componentDidMount() {
@@ -67,7 +62,7 @@ export default class StockPage extends React.Component {
                 // save the component token
                 this.BarrelTypeStoreToken = data.token;
 
-                return TeamStore.loadData([{role: "bar"}]);
+                return TeamStore.loadData(null);
             })
             .then(data => {
                 // ensure that last token doesn't exist anymore.
@@ -95,7 +90,7 @@ export default class StockPage extends React.Component {
         // remove the listeners
         BarrelStore.removeChangeListener(this._setBarrels);
         BarrelTypeStore.removeChangeListener(this._setBarrelTypes);
-        TeamStore.removeChangeListener(this._setBarrels);
+        TeamStore.removeChangeListener(this._setTeams);
     }
 
     /**
@@ -117,18 +112,7 @@ export default class StockPage extends React.Component {
      * Get the team name of each barrel in the same time.
      */
     _setBarrels() {
-
-        const barrels = BarrelStore.barrels;
-
-        if (TeamStore.teams) {
-            // for each barrel, get the place data
-            for (let barrel of barrels) {
-                let team = TeamStore.findById(barrel.place);
-                barrel.team = team ? team.name : "reserve";
-            }
-        }
-
-        this.setState({ barrels });
+        this.setState({ barrels: BarrelStore.barrels });
     }
 
     /**
@@ -152,17 +136,29 @@ export default class StockPage extends React.Component {
         const filters = this.state.filters;
         filters.rgx = new RegExp(filters.reference);
 
-        return this.state.barrels.map(barrel => {
+        let barrels = {};
+
+        for (let barrel of this.state.barrels) {
             if (!filters.types.length || filters.types.includes(barrel.type)) {
                 if (!filters.locations.length || filters.locations.includes(barrel.place)) {
                     if (!filters.states.length || filters.states.includes(barrel.state)) {
                         if (barrel.reference.match(filters.rgx)) {
-                            return barrel;
+                            // the barrel match the filters
+                            if (!barrels[barrel.place]) {
+                                barrels[barrel.place] = {};
+                            }
+                            if (barrels[barrel.place][barrel.type]) {
+                                barrels[barrel.place][barrel.type].push(barrel);
+                            } else {
+                                barrels[barrel.place][barrel.type] = [barrel];
+                            }
                         }
                     }
                 }
             }
-        });
+        }
+
+        return barrels;
     }
 
     /**
@@ -178,34 +174,43 @@ export default class StockPage extends React.Component {
                 selectedBarrels: []
             });
         } else {
-            // get the selected barrels
-            let selectedBarrels = [];
-            if (this.state.selectedRows === "all") {
-                selectedBarrels = this._filteredBarrels();
-            } else if (this.state.selectedRows !== "none") {
-                for (let row of this.state.selectedRows) {
-                    selectedBarrels.push(this.state.barrels[row]);
-                }
-            }
-            // show the dialog and set the selected barrels in the state
+            // show the dialog
             this.setState({
-                showMoveDialog: true,
-                selectedBarrels
+                showMoveDialog: true
             });
         }
     }
 
-    render() {
-        const states = [];
-        for (let state in this._barrelStates) {
-            states.push(<MenuItem
-                            key={state}
-                            insetChildren={true}
-                            checked={this.state.filters.states.includes(state)}
-                            value={state}
-                            primaryText={this._barrelStates[state]}
-                        />)
+    /**
+     * When a barrel is selected, add or remove it from the selected barrels
+     * depending of the 'selected' boolean
+     *
+     * @param {object} clickedBarrel: the barrel
+     * @param {boolean} selected: is the barrel selected or not
+     */
+    _handleBarrelSelection(clickedBarrel, selected) {
+        let selectedBarrels = this.state.selectedBarrels;
+
+        if (selected) {
+            selectedBarrels.push(clickedBarrel);
+        } else {
+            selectedBarrels = selectedBarrels.filter(barrel => barrel !== clickedBarrel);
         }
+
+        this.setState({ selectedBarrels });
+    }
+
+    render() {
+        const styles = {
+            barrelChip: {
+                display: "inline-block"
+            },
+            barrelChipContainer: {
+                marginBottom: 20
+            }
+        };
+
+        const filteredBarrels = this._filteredBarrels();
 
         return (
             <div>
@@ -241,7 +246,9 @@ export default class StockPage extends React.Component {
                     value={this.state.filters.states}
                     onChange={(e, i, v) => this._setFilters("states", v)}
                 >
-                    {states}
+                    <MenuItem insetChildren={true} checked={this.state.filters.states.includes("new")} value={"new"} primaryText={"Neuf"} />
+                    <MenuItem insetChildren={true} checked={this.state.filters.states.includes("opened")} value={"opened"} primaryText={"Entamé"} />
+                    <MenuItem insetChildren={true} checked={this.state.filters.states.includes("empty")} value={"empty"} primaryText={"Terminé"} />
                 </SelectField>
 
                 <TextField
@@ -253,38 +260,40 @@ export default class StockPage extends React.Component {
                 <RaisedButton
                     label="Deplacer"
                     secondary={true}
-                    disabled={this.state.selectedRows === "none" || !this.state.selectedRows.length}
+                    disabled={this.state.selectedBarrels.length === 0}
                     onClick={this._toggleMoveDialog}
                 />
 
-                <Table
-                    multiSelectable={true}
-                    onRowSelection={rows => this.setState({ selectedRows: rows })}
-                >
-                    <TableHeader>
-                        <TableRow>
-                            <TableHeaderColumn>Référence</TableHeaderColumn>
-                            <TableHeaderColumn>Type</TableHeaderColumn>
-                            <TableHeaderColumn>Etat</TableHeaderColumn>
-                            <TableHeaderColumn>Emplacement</TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody deselectOnClickaway={false}>
-                        {
-                            this._filteredBarrels.map(barrel => {
-                                let type = BarrelTypeStore.findById(barrel.type);
-                                let place = TeamStore.findById(barrel.place);
-                                return  <TableRow key={barrel.id}>
-                                            <TableRowColumn>{barrel.reference}</TableRowColumn>
-                                            <TableRowColumn>{type && type.name}</TableRowColumn>
-                                            <TableRowColumn>{this._barrelStates[barrel.state]}</TableRowColumn>
-                                            <TableRowColumn>{place ? place.name : "reserve"}</TableRowColumn>
-                                        </TableRow>
+                {
+                    Object.keys(filteredBarrels).map(location => {
+                        let team = TeamStore.findById(location);
+                        return  <div key={location}>
+                                    <h2>{team ? team.name : "reserve"}</h2>
+                                    {
+                                        Object.keys(filteredBarrels[location]).map(typeId => {
+                                            let type = BarrelTypeStore.findById(typeId);
+                                            return  <div key={typeId} style={styles.barrelChipContainer}>
+                                                        <h3>{type.name}</h3>
+                                                        <div className="BarrelChipContainer">
+                                                            {
+                                                                filteredBarrels[location][typeId].map(barrel => {
+                                                                    return  <BarrelChip
+                                                                                onSelection={this._handleBarrelSelection}
+                                                                                key={barrel.id}
+                                                                                type={type}
+                                                                                barrel={barrel}
+                                                                                selectable={true}
+                                                                            />
+                                                                })
+                                                            }
+                                                        </div>
+                                                    </div>
+                                        })
+                                    }
+                                </div>
 
-                            })
-                        }
-                    </TableBody>
-                </Table>
+                    })
+                }
 
                 <MoveDialog
                     show={this.state.showMoveDialog}
