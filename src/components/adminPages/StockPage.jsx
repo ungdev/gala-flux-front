@@ -8,6 +8,8 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+import MoveDialog from '../stock/MoveDialog.jsx';
 
 export default class StockPage extends React.Component {
 
@@ -23,7 +25,10 @@ export default class StockPage extends React.Component {
                 locations: [],
                 states: [],
                 reference: ""
-            }
+            },
+            selectedRows: [],
+            selectedBarrels: [],
+            showMoveDialog: false
         };
 
         this._barrelStates = {
@@ -40,6 +45,7 @@ export default class StockPage extends React.Component {
         this._setBarrelTypes = this._setBarrelTypes.bind(this);
         this._setBarrels = this._setBarrels.bind(this);
         this._setTeams = this._setTeams.bind(this);
+        this._toggleMoveDialog = this._toggleMoveDialog.bind(this);
     }
 
     componentDidMount() {
@@ -134,6 +140,43 @@ export default class StockPage extends React.Component {
         this.setState(state);
     }
 
+    _toggleMoveDialog() {
+        if (this.state.showMoveDialog) {
+            this.setState({
+                showMoveDialog: false,
+                selectedBarrels: []
+            });
+        } else {
+            let selectedBarrels = [];
+
+            if (this.state.selectedRows === "all") {
+                const filters = this.state.filters;
+                filters.rgx = new RegExp(filters.reference);
+
+                selectedBarrels = this.state.barrels.map(barrel => {
+                    if (!filters.types.length || filters.types.includes(barrel.type)) {
+                        if (!filters.locations.length || filters.locations.includes(barrel.place)) {
+                            if (!filters.states.length || filters.states.includes(barrel.state)) {
+                                if (barrel.reference.match(filters.rgx)) {
+                                    return barrel;
+                                }
+                            }
+                        }
+                    }
+                });
+            } else if (this.state.selectedRows !== "none") {
+                for (let row of this.state.selectedRows) {
+                    selectedBarrels.push(this.state.barrels[row]);
+                }
+            }
+
+            this.setState({
+                showMoveDialog: true,
+                selectedBarrels
+            });
+        }
+    }
+
     render() {
 
         const filters = this.state.filters;
@@ -212,7 +255,17 @@ export default class StockPage extends React.Component {
                     onChange={e => this._setFilters("reference", e.target.value)}
                 />
 
-                <Table multiSelectable={true}>
+                <RaisedButton
+                    label="Deplacer"
+                    secondary={true}
+                    disabled={this.state.selectedRows === "none" || !this.state.selectedRows.length}
+                    onClick={this._toggleMoveDialog}
+                />
+
+                <Table
+                    multiSelectable={true}
+                    onRowSelection={rows => this.setState({ selectedRows: rows })}
+                >
                     <TableHeader>
                         <TableRow>
                             <TableHeaderColumn>Référence</TableHeaderColumn>
@@ -221,7 +274,7 @@ export default class StockPage extends React.Component {
                             <TableHeaderColumn>Emplacement</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>
+                    <TableBody deselectOnClickaway={false}>
                         {
                             this.state.barrels.map(barrel => {
                                 if (!filters.types.length || filters.types.includes(barrel.type)) {
@@ -234,7 +287,7 @@ export default class StockPage extends React.Component {
                                                             <TableRowColumn>{barrel.reference}</TableRowColumn>
                                                             <TableRowColumn>{type && type.name}</TableRowColumn>
                                                             <TableRowColumn>{this._barrelStates[barrel.state]}</TableRowColumn>
-                                                            <TableRowColumn>{place && place.name}</TableRowColumn>
+                                                            <TableRowColumn>{place ? place.name : "reserve"}</TableRowColumn>
                                                         </TableRow>
                                             }
                                         }
@@ -244,6 +297,13 @@ export default class StockPage extends React.Component {
                         }
                     </TableBody>
                 </Table>
+
+                <MoveDialog
+                    show={this.state.showMoveDialog}
+                    close={this._toggleMoveDialog}
+                    teams={this.state.teams}
+                    barrels={this.state.selectedBarrels}
+                />
 
             </div>
         );
