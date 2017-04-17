@@ -47,6 +47,7 @@ export default class StockPage extends React.Component {
         this._setBarrels = this._setBarrels.bind(this);
         this._setTeams = this._setTeams.bind(this);
         this._toggleMoveDialog = this._toggleMoveDialog.bind(this);
+        this._filteredBarrels = this._filteredBarrels.bind(this);
     }
 
     componentDidMount() {
@@ -142,36 +143,51 @@ export default class StockPage extends React.Component {
         this.setState(state);
     }
 
+    /**
+     * Get only the barrels in the state that matches the filters
+     *
+     * @returns {Array} array of barrels
+     */
+    _filteredBarrels() {
+        const filters = this.state.filters;
+        filters.rgx = new RegExp(filters.reference);
+
+        return this.state.barrels.map(barrel => {
+            if (!filters.types.length || filters.types.includes(barrel.type)) {
+                if (!filters.locations.length || filters.locations.includes(barrel.place)) {
+                    if (!filters.states.length || filters.states.includes(barrel.state)) {
+                        if (barrel.reference.match(filters.rgx)) {
+                            return barrel;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Toggle the boolean that show/hide the dialog to move barrels.
+     * If we display the dialog, get the selected barrels.
+     * Else, empty the array that contains the selected barrels.
+     */
     _toggleMoveDialog() {
         if (this.state.showMoveDialog) {
+            // hide the dialog and empty the selected barrels
             this.setState({
                 showMoveDialog: false,
                 selectedBarrels: []
             });
         } else {
+            // get the selected barrels
             let selectedBarrels = [];
-
             if (this.state.selectedRows === "all") {
-                const filters = this.state.filters;
-                filters.rgx = new RegExp(filters.reference);
-
-                selectedBarrels = this.state.barrels.map(barrel => {
-                    if (!filters.types.length || filters.types.includes(barrel.type)) {
-                        if (!filters.locations.length || filters.locations.includes(barrel.place)) {
-                            if (!filters.states.length || filters.states.includes(barrel.state)) {
-                                if (barrel.reference.match(filters.rgx)) {
-                                    return barrel;
-                                }
-                            }
-                        }
-                    }
-                });
+                selectedBarrels = this._filteredBarrels();
             } else if (this.state.selectedRows !== "none") {
                 for (let row of this.state.selectedRows) {
                     selectedBarrels.push(this.state.barrels[row]);
                 }
             }
-
+            // show the dialog and set the selected barrels in the state
             this.setState({
                 showMoveDialog: true,
                 selectedBarrels
@@ -180,15 +196,12 @@ export default class StockPage extends React.Component {
     }
 
     render() {
-        const filters = this.state.filters;
-        filters.rgx = new RegExp(filters.reference);
-
         const states = [];
         for (let state in this._barrelStates) {
             states.push(<MenuItem
                             key={state}
                             insetChildren={true}
-                            checked={filters.states.includes(state)}
+                            checked={this.state.filters.states.includes(state)}
                             value={state}
                             primaryText={this._barrelStates[state]}
                         />)
@@ -258,23 +271,16 @@ export default class StockPage extends React.Component {
                     </TableHeader>
                     <TableBody deselectOnClickaway={false}>
                         {
-                            this.state.barrels.map(barrel => {
-                                if (!filters.types.length || filters.types.includes(barrel.type)) {
-                                    if (!filters.locations.length || filters.locations.includes(barrel.place)) {
-                                        if (!filters.states.length || filters.states.includes(barrel.state)) {
-                                            if (barrel.reference.match(filters.rgx)) {
-                                                let type = BarrelTypeStore.findById(barrel.type);
-                                                let place = TeamStore.findById(barrel.place);
-                                                return  <TableRow key={barrel.id}>
-                                                            <TableRowColumn>{barrel.reference}</TableRowColumn>
-                                                            <TableRowColumn>{type && type.name}</TableRowColumn>
-                                                            <TableRowColumn>{this._barrelStates[barrel.state]}</TableRowColumn>
-                                                            <TableRowColumn>{place ? place.name : "reserve"}</TableRowColumn>
-                                                        </TableRow>
-                                            }
-                                        }
-                                    }
-                                }
+                            this._filteredBarrels.map(barrel => {
+                                let type = BarrelTypeStore.findById(barrel.type);
+                                let place = TeamStore.findById(barrel.place);
+                                return  <TableRow key={barrel.id}>
+                                            <TableRowColumn>{barrel.reference}</TableRowColumn>
+                                            <TableRowColumn>{type && type.name}</TableRowColumn>
+                                            <TableRowColumn>{this._barrelStates[barrel.state]}</TableRowColumn>
+                                            <TableRowColumn>{place ? place.name : "reserve"}</TableRowColumn>
+                                        </TableRow>
+
                             })
                         }
                     </TableBody>
