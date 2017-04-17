@@ -1,7 +1,11 @@
 import React from 'react';
 
+import BarrelService from '../../services/BarrelService';
+
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import Chip from 'material-ui/Chip';
+import LocationSelect from './LocationSelect.jsx';
 
 export default class MoveDialog extends React.Component {
 
@@ -10,10 +14,12 @@ export default class MoveDialog extends React.Component {
 
         this.state = {
             barrels: props.barrels,
-            teams: props.teams
+            teams: props.teams,
+            team: null
         };
 
         // binding
+        this._moveBarrels = this._moveBarrels.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -23,12 +29,9 @@ export default class MoveDialog extends React.Component {
         });
     }
 
-    componentDidMount() {
-
-    }
-
-    componentWillUnmount() {
-
+    _moveBarrels() {
+        BarrelService.moveBarrels(this.state.barrels, this.state.team)
+            .catch(error => console.log("Move barrels error", error));
     }
 
     render() {
@@ -36,6 +39,7 @@ export default class MoveDialog extends React.Component {
             <FlatButton
                 label="Déplacer"
                 primary={true}
+                onClick={this._moveBarrels}
             />,
             <FlatButton
                 label="Annuler"
@@ -43,6 +47,12 @@ export default class MoveDialog extends React.Component {
                 onClick={this.props.close}
             />
         ];
+
+        const styles = {
+            chip: {
+                display: "inline-block"
+            }
+        };
 
         return (
             <div>
@@ -55,10 +65,15 @@ export default class MoveDialog extends React.Component {
                         onRequestClose={this.props.close}
                         actions={actions}
                     >
+                        <LocationSelect
+                            teams={this.state.teams}
+                            value={this.state.team}
+                            setValue={(e, i, v) => this.setState({ team: v })}
+                        />
                         {
-                            this.state.barrels.map(barrel => {
-                                return barrel.reference
-                            }).join(', ')
+                            this.state.barrels.map((barrel, i) => {
+                                return <Chip key={i} style={styles.chip}>{barrel.reference}</Chip>
+                            })
                         }
                     </Dialog>
                 }
