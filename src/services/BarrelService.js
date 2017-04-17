@@ -9,6 +9,17 @@ class BarrelService extends BaseService {
         super('barrel');
     }
 
+    moveBarrels(barrels, location) {
+        return this._makeRequest({
+            method: 'put',
+            url: '/barrel/location',
+            data: {
+                barrels,
+                location
+            }
+        });
+    }
+
 }
 
 export default new BarrelService();

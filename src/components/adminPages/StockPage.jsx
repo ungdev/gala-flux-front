@@ -10,6 +10,7 @@ import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import MoveDialog from '../stock/MoveDialog.jsx';
+import LocationSelect from '../stock/LocationSelect.jsx';
 
 export default class StockPage extends React.Component {
 
@@ -115,6 +116,7 @@ export default class StockPage extends React.Component {
      * Get the team name of each barrel in the same time.
      */
     _setBarrels() {
+
         const barrels = BarrelStore.barrels;
 
         if (TeamStore.teams) {
@@ -178,7 +180,6 @@ export default class StockPage extends React.Component {
     }
 
     render() {
-
         const filters = this.state.filters;
         filters.rgx = new RegExp(filters.reference);
 
@@ -214,31 +215,12 @@ export default class StockPage extends React.Component {
                     }
                 </SelectField>
 
-                <SelectField
-                    multiple={true}
-                    hintText="Filtrer par emplacement"
+                <LocationSelect
+                    teams={this.state.teams}
                     value={this.state.filters.locations}
-                    onChange={(e, i, v) => this._setFilters("locations", v)}
-                >
-                    <MenuItem
-                        key={0}
-                        insetChildren={true}
-                        checked={this.state.filters.locations.includes(null)}
-                        value={null}
-                        primaryText={"reserve"}
-                    />
-                    {
-                        this.state.teams.map(team => {
-                            return <MenuItem
-                                key={team.id}
-                                insetChildren={true}
-                                checked={this.state.filters.locations.includes(team.id)}
-                                value={team.id}
-                                primaryText={team.name}
-                            />
-                        })
-                    }
-                </SelectField>
+                    setValue={(e, i, v) => this._setFilters("locations", v)}
+                    multiple={true}
+                />
 
                 <SelectField
                     multiple={true}
