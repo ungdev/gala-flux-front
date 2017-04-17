@@ -8,7 +8,7 @@ require('../../../styles/barrels/BarrelChip.scss');
 
 
 /**
- * This component will print a pin reprenting a barrel
+ * This component will print a pin representing a barrel
  * @param {Barrel} barrel
  * @param {BarrelType} type type of the barrel
  * @param {Team} team (optional) if given, the team name will be written in the tooltip
@@ -26,8 +26,8 @@ export default class BarrelChip extends React.Component {
             barrel: props.barrel,
             type: props.type,
             team: props.team,
-            selected: props.selected !== undefined ? props.selected : false,
-        }
+            selected: props.selected !== undefined ? props.selected : false
+        };
 
         // binding
         this._handleClick = this._handleClick.bind(this);
@@ -39,16 +39,15 @@ export default class BarrelChip extends React.Component {
             barrel: nextProps.barrel,
             type: nextProps.type,
             team: nextProps.team,
-            selected: nextProps.selected !== undefined ? nextProps.selected : false,
         });
     }
 
     _handleClick() {
-        if(this.props.onSelection) {
-            this.props.onSelection(this.state.barrel.id, !this.state.selected)
-        }
         if(this.props.selectable) {
-            this.setState({selected: !this.state.selected})
+            if(this.props.onSelection) {
+                this.props.onSelection(this.state.barrel, !this.state.selected);
+            }
+            this.setState({selected: !this.state.selected});
         }
     }
 
