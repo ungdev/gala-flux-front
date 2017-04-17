@@ -4,13 +4,13 @@ import BarrelStore from '../../stores/BarrelStore';
 import BarrelTypeStore from '../../stores/BarrelTypeStore';
 import TeamStore from '../../stores/TeamStore';
 
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import TextField from 'material-ui/TextField';
+import { Row, Col } from 'react-flexbox-grid';
 import RaisedButton from 'material-ui/RaisedButton';
 import MoveDialog from '../stock/MoveDialog.jsx';
-import LocationSelect from '../stock/LocationSelect.jsx';
-import BarrelChip from '../barrels/partials/BarrelChip.jsx';
+import Filters from '../stock/Filters.jsx';
+import StockList from '../stock/StockList.jsx';
+
+require('../../styles/stock/StockPage.scss');
 
 export default class StockPage extends React.Component {
 
@@ -43,6 +43,8 @@ export default class StockPage extends React.Component {
         this._toggleMoveDialog = this._toggleMoveDialog.bind(this);
         this._filteredBarrels = this._filteredBarrels.bind(this);
         this._handleBarrelSelection = this._handleBarrelSelection.bind(this);
+        this._setFilters = this._setFilters.bind(this);
+        this._resetFilters = this._resetFilters.bind(this);
     }
 
     componentDidMount() {
@@ -128,6 +130,20 @@ export default class StockPage extends React.Component {
     }
 
     /**
+     * Reset the filters in the state
+     */
+    _resetFilters() {
+        this.setState({
+            filters: {
+                types: [],
+                locations: [],
+                states: [],
+                reference: ""
+            }
+        });
+    }
+
+    /**
      * Get only the barrels in the state that matches the filters
      *
      * @returns {Array} array of barrels
@@ -201,99 +217,42 @@ export default class StockPage extends React.Component {
     }
 
     render() {
-        const styles = {
-            barrelChip: {
-                display: "inline-block"
-            },
-            barrelChipContainer: {
-                marginBottom: 20
-            }
-        };
-
-        const filteredBarrels = this._filteredBarrels();
 
         return (
-            <div>
-                <SelectField
-                    multiple={true}
-                    hintText="Filtrer par type"
-                    value={this.state.filters.types}
-                    onChange={(e, i, v) => this._setFilters("types", v)}
-                >
-                    {
-                        this.state.types.map(type => {
-                            return <MenuItem
-                                key={type.id}
-                                insetChildren={true}
-                                checked={this.state.filters.types.includes(type.id)}
-                                value={type.id}
-                                primaryText={type.name}
+            <div className="StockPage_container">
+                <div className="StockPage_filters_container">
+                    <Filters
+                        teams={this.state.teams}
+                        types={this.state.types}
+                        setFilters={this._setFilters}
+                        filters={this.state.filters}
+                    />
+
+                    <Row center="md">
+                        <Col xs={12} sm={6} md={3}>
+                            <RaisedButton
+                                label="Deplacer les fûts selectionnés"
+                                primary={true}
+                                disabled={this.state.selectedBarrels.length === 0}
+                                onClick={this._toggleMoveDialog}
+                                fullWidth={true}
                             />
-                        })
-                    }
-                </SelectField>
+                        </Col>
+                        <Col xs={12} sm={6} md={3}>
+                            <RaisedButton
+                                label="Reset les filtres"
+                                secondary={true}
+                                onClick={this._resetFilters}
+                                fullWidth={true}
+                            />
+                        </Col>
+                    </Row>
+                </div>
 
-                <LocationSelect
-                    teams={this.state.teams}
-                    value={this.state.filters.locations}
-                    setValue={(e, i, v) => this._setFilters("locations", v)}
-                    multiple={true}
+                <StockList
+                    barrels={this._filteredBarrels()}
+                    handleBarrelSelection={this._handleBarrelSelection}
                 />
-
-                <SelectField
-                    multiple={true}
-                    hintText="Filtrer par état"
-                    value={this.state.filters.states}
-                    onChange={(e, i, v) => this._setFilters("states", v)}
-                >
-                    <MenuItem insetChildren={true} checked={this.state.filters.states.includes("new")} value={"new"} primaryText={"Neuf"} />
-                    <MenuItem insetChildren={true} checked={this.state.filters.states.includes("opened")} value={"opened"} primaryText={"Entamé"} />
-                    <MenuItem insetChildren={true} checked={this.state.filters.states.includes("empty")} value={"empty"} primaryText={"Terminé"} />
-                </SelectField>
-
-                <TextField
-                    floatingLabelText="Filtrer par référence"
-                    value={this.state.filters.reference}
-                    onChange={e => this._setFilters("reference", e.target.value)}
-                />
-
-                <RaisedButton
-                    label="Deplacer"
-                    secondary={true}
-                    disabled={this.state.selectedBarrels.length === 0}
-                    onClick={this._toggleMoveDialog}
-                />
-
-                {
-                    Object.keys(filteredBarrels).map(location => {
-                        let team = TeamStore.findById(location);
-                        return  <div key={location}>
-                                    <h2>{team ? team.name : "reserve"}</h2>
-                                    {
-                                        Object.keys(filteredBarrels[location]).map(typeId => {
-                                            let type = BarrelTypeStore.findById(typeId);
-                                            return  <div key={typeId} style={styles.barrelChipContainer}>
-                                                        <h3>{type.name}</h3>
-                                                        <div className="BarrelChipContainer">
-                                                            {
-                                                                filteredBarrels[location][typeId].map(barrel => {
-                                                                    return  <BarrelChip
-                                                                                onSelection={this._handleBarrelSelection}
-                                                                                key={barrel.id}
-                                                                                type={type}
-                                                                                barrel={barrel}
-                                                                                selectable={true}
-                                                                            />
-                                                                })
-                                                            }
-                                                        </div>
-                                                    </div>
-                                        })
-                                    }
-                                </div>
-
-                    })
-                }
 
                 <MoveDialog
                     show={this.state.showMoveDialog}
