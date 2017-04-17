@@ -1,10 +1,29 @@
 import {ApiError} from '../errors';
 import AlertActions from '../actions/AlertActions';
+import BaseService from './BaseService';
 
-/**
- * Class used for all about Authentication
- */
-class AlertService {
+class AlertService extends BaseService {
+
+    /**
+     * Send a new alert to the server
+     *
+     * @callback errorCallback
+     *
+     * @param {string} text
+     * @param {errorCallback} error
+     */
+    sendAlert(text, error) {
+        iosocket.request({
+            method: 'post',
+            url: '/alert/create',
+            data: {text}
+        }, (resData, jwres) => {
+            if (jwres.error) {
+                return error(jwres);
+            }
+            AlertActions.newAlert(text);
+        });
+    }
 
     /**
      * Make a request to get all the alerts
