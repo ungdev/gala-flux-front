@@ -8,6 +8,7 @@ import AdminMenu from '../partials/AdminMenu.jsx';
 import AlertPage from '../adminPages/AlertPage.jsx';
 import ChatPage from '../adminPages/ChatPage.jsx';
 import StockPage from '../adminPages/StockPage.jsx';
+import BarPage from '../adminPages/BarPage.jsx';
 import BarrelsListPage from '../adminPages/BarrelsListPage.jsx';
 import BarrelsTypesPage from '../adminPages/BarrelsTypesPage.jsx';
 import AlertButtonsPage from '../adminPages/AlertButtonsPage.jsx';
@@ -85,7 +86,7 @@ class AdminHomepage extends React.Component {
                             case 'bars':
                                 return (
                                     <div className="AdminPage__splitscreen">
-                                        <h2 className="headline">Bars</h2>
+                                        <BarPage />
                                     </div>
                                 );
 
