@@ -1,5 +1,6 @@
 import React from 'react';
 
+import NotificationActions from '../../actions/NotificationActions';
 import BarrelService from '../../services/BarrelService';
 import BarrelTypeStore from '../../stores/BarrelTypeStore';
 
@@ -35,8 +36,11 @@ export default class MoveDialog extends React.Component {
      */
     _moveBarrels() {
         BarrelService.moveBarrels(this.state.barrels, this.state.team)
-            .then(_ => this.props.close(true))
-            .catch(error => console.log("Move barrels error", error));
+            .then(_ => {
+                this.props.close(true);
+                NotificationActions.snackbar("Les fûts ont bien été déplacés.");
+            })
+            .catch(error => NotificationActions.error("Erreur lors du déplacement des fûts.", error));
     }
 
     render() {
@@ -66,7 +70,7 @@ export default class MoveDialog extends React.Component {
                     <Dialog
                         title={"Déplacement de fûts"}
                         open={this.props.show}
-                        modal={true}
+                        modal={false}
                         onRequestClose={this.props.close}
                         actions={actions}
                     >
