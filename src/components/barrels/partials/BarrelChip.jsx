@@ -39,15 +39,13 @@ export default class BarrelChip extends React.Component {
             barrel: nextProps.barrel,
             type: nextProps.type,
             team: nextProps.team,
+            selected: nextProps.selected
         });
     }
 
     _handleClick() {
-        if(this.props.selectable) {
-            if(this.props.onSelection) {
-                this.props.onSelection(this.state.barrel, !this.state.selected);
-            }
-            this.setState({selected: !this.state.selected});
+        if (this.props.selectable && this.props.onSelection) {
+            this.props.onSelection(this.state.barrel, !this.state.selected);
         }
     }
 

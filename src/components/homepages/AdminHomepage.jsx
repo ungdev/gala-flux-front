@@ -91,7 +91,9 @@ class AdminHomepage extends React.Component {
 
                             case 'stock':
                                 return (
-                                    <StockPage />
+                                    <div className="AdminPage__splitscreen">
+                                        <StockPage />
+                                    </div>
                                 );
 
                             case 'admin':

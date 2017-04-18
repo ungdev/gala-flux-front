@@ -29,8 +29,12 @@ export default class MoveDialog extends React.Component {
         });
     }
 
+    /**
+     * Call the service method to update the location of the selected barrels
+     */
     _moveBarrels() {
         BarrelService.moveBarrels(this.state.barrels, this.state.team)
+            .then(_ => this.props.close(true))
             .catch(error => console.log("Move barrels error", error));
     }
 

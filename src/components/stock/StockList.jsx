@@ -12,13 +12,15 @@ export default class StockList extends React.Component {
         super(props);
 
         this.state = {
-            barrels: props.barrels
+            barrels: props.barrels,
+            selected: props.selected
         };
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            barrels: nextProps.barrels
+            barrels: nextProps.barrels,
+            selected: nextProps.selected
         });
     }
 
@@ -28,7 +30,7 @@ export default class StockList extends React.Component {
                 display: "inline-block"
             },
             barrelChipContainer: {
-                marginBottom: 20
+                marginBottom: 30
             },
             cardHeader: {
                 fontWeight: "bold",
@@ -54,7 +56,6 @@ export default class StockList extends React.Component {
                                             Object.keys(this.state.barrels[location]).map(typeId => {
                                                 let type = BarrelTypeStore.findById(typeId);
                                                 return  <div key={typeId} style={styles.barrelChipContainer}>
-                                                            <h3 className="headline">{type.name}</h3>
                                                             <div className="BarrelChipContainer">
                                                                 {
                                                                     this.state.barrels[location][typeId].map(barrel => {
@@ -64,6 +65,7 @@ export default class StockList extends React.Component {
                                                                                     type={type}
                                                                                     barrel={barrel}
                                                                                     selectable={true}
+                                                                                    selected={this.state.selected.includes(barrel)}
                                                                                 />
                                                                     })
                                                                 }
