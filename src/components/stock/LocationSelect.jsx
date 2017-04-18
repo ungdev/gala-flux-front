@@ -20,6 +20,7 @@ export default class LocationSelect extends React.Component {
     }
 
     render() {
+
         return (
             <SelectField
                 multiple={this.props.multiple}
@@ -27,13 +28,15 @@ export default class LocationSelect extends React.Component {
                 value={this.props.value}
                 onChange={this.props.setValue}
                 fullWidth={true}
+                floatingLabelFixed={true}
+                floatingLabelText="Emplacement"
             >
                 <MenuItem
                     key={0}
                     insetChildren={true}
                     checked={this.props.multiple ? this.props.value.includes(null) : this.props.value === null}
                     value={null}
-                    primaryText={"reserve"}
+                    primaryText={"Reserve"}
                 />
                 {
                     this.state.teams.map(team => {
