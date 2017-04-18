@@ -9,6 +9,9 @@ import RaisedButton from 'material-ui/RaisedButton';
 import MoveDialog from '../stock/MoveDialog.jsx';
 import Filters from '../stock/Filters.jsx';
 import StockList from '../stock/StockList.jsx';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import LocalShipping from 'material-ui/svg-icons/maps/local-shipping';
+import Navagiation from 'material-ui/svg-icons/maps/navigation';
 
 require('../../styles/stock/StockPage.scss');
 
@@ -181,20 +184,16 @@ export default class StockPage extends React.Component {
      * Toggle the boolean that show/hide the dialog to move barrels.
      * If we display the dialog, get the selected barrels.
      * Else, empty the array that contains the selected barrels.
+     *
+     * @param {boolean|undefined} emptySelected
      */
-    _toggleMoveDialog() {
-        if (this.state.showMoveDialog) {
-            // hide the dialog and empty the selected barrels
-            this.setState({
-                showMoveDialog: false,
-                selectedBarrels: []
-            });
-        } else {
-            // show the dialog
-            this.setState({
-                showMoveDialog: true
-            });
+    _toggleMoveDialog(emptySelected) {
+        let state = this.state;
+        if (emptySelected === true) {
+            state.selectedBarrels = [];
         }
+        state.showMoveDialog = !state.showMoveDialog;
+        this.setState(state);
     }
 
     /**
@@ -216,10 +215,17 @@ export default class StockPage extends React.Component {
         this.setState({ selectedBarrels });
     }
 
+    /**
+     * Scroll to the top of the page
+     */
+    static _scrollTop() {
+        document.getElementById('StockPage_Top').scrollTop = 0;
+    }
+
     render() {
 
         return (
-            <div className="StockPage_container">
+            <div className="StockPage_container" id="StockPage_Top">
                 <div className="StockPage_filters_container">
                     <Filters
                         teams={this.state.teams}
@@ -231,10 +237,10 @@ export default class StockPage extends React.Component {
                     <Row center="md">
                         <Col xs={12} sm={6} md={3}>
                             <RaisedButton
-                                label="Deplacer les fûts selectionnés"
+                                label={`Déselectionner les fûts ${(this.state.selectedBarrels.length ? `(${this.state.selectedBarrels.length })` : '')}`}
                                 primary={true}
                                 disabled={this.state.selectedBarrels.length === 0}
-                                onClick={this._toggleMoveDialog}
+                                onClick={_ => this.setState({ selectedBarrels: [] })}
                                 fullWidth={true}
                             />
                         </Col>
@@ -252,7 +258,25 @@ export default class StockPage extends React.Component {
                 <StockList
                     barrels={this._filteredBarrels()}
                     handleBarrelSelection={this._handleBarrelSelection}
+                    selected={this.state.selectedBarrels}
                 />
+
+
+                <FloatingActionButton
+                    className="FloatingButton--secondary"
+                    onClick={StockPage._scrollTop}
+                    secondary={true}
+                >
+                    <Navagiation  />
+                </FloatingActionButton>
+
+                <FloatingActionButton
+                    className="FloatingButton"
+                    disabled={this.state.selectedBarrels.length === 0}
+                    onClick={this._toggleMoveDialog}
+                >
+                    <LocalShipping  />
+                </FloatingActionButton>
 
                 <MoveDialog
                     show={this.state.showMoveDialog}
