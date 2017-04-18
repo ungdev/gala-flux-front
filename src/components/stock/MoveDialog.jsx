@@ -1,10 +1,11 @@
 import React from 'react';
 
 import BarrelService from '../../services/BarrelService';
+import BarrelTypeStore from '../../stores/BarrelTypeStore';
 
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import Chip from 'material-ui/Chip';
+import BarrelChip from '../barrels/partials/BarrelChip.jsx';
 import LocationSelect from './LocationSelect.jsx';
 
 export default class MoveDialog extends React.Component {
@@ -41,14 +42,14 @@ export default class MoveDialog extends React.Component {
     render() {
         const actions = [
             <FlatButton
-                label="Déplacer"
-                primary={true}
-                onClick={this._moveBarrels}
-            />,
-            <FlatButton
                 label="Annuler"
                 secondary={true}
                 onClick={this.props.close}
+            />,
+            <FlatButton
+                label="Déplacer"
+                primary={true}
+                onClick={this._moveBarrels}
             />
         ];
 
@@ -69,16 +70,26 @@ export default class MoveDialog extends React.Component {
                         onRequestClose={this.props.close}
                         actions={actions}
                     >
+                        <p>
+                            Les fûts sélectionnés vont être déplacés. Choisissez la destination.
+                        </p>
                         <LocationSelect
                             teams={this.state.teams}
                             value={this.state.team}
                             setValue={(e, i, v) => this.setState({ team: v })}
                         />
-                        {
-                            this.state.barrels.map((barrel, i) => {
-                                return <Chip key={i} style={styles.chip}>{barrel.reference}</Chip>
-                            })
-                        }
+                        <div className="BarrelChipContainer">
+                            {
+                                this.state.barrels.map((barrel, i) => {
+                                    return <BarrelChip
+                                                style={styles.chip}
+                                                key={i}
+                                                barrel={barrel}
+                                                type={BarrelTypeStore.findById(barrel.type)}
+                                            />
+                                })
+                            }
+                        </div>
                     </Dialog>
                 }
             </div>

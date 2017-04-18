@@ -28,8 +28,8 @@ export default class Filters extends React.Component {
 
     render() {
         return (
-            <Row className="container-hide">
-                <Col xs={12} sm={6} md={3} className="container-hide">
+            <Row>
+                <Col xs={12} sm={6} md={3}>
                     <SelectField
                         multiple={true}
                         hintText="Types de fût"
@@ -51,7 +51,7 @@ export default class Filters extends React.Component {
                     </SelectField>
                 </Col>
 
-                <Col xs={12} sm={6} md={3} className="container-hide">
+                <Col xs={12} sm={6} md={3}>
                     <LocationSelect
                         teams={this.state.teams}
                         value={this.state.filters.locations}
@@ -60,7 +60,7 @@ export default class Filters extends React.Component {
                     />
                 </Col>
 
-                <Col xs={12} sm={6} md={3} className="container-hide">
+                <Col xs={12} sm={6} md={3}>
                     <SelectField
                         multiple={true}
                         hintText="Etats"
@@ -74,7 +74,7 @@ export default class Filters extends React.Component {
                     </SelectField>
                 </Col>
 
-                <Col xs={12} sm={6} md={3} className="container-hide">
+                <Col xs={12} sm={6} md={3}>
                     <TextField
                         hintText="Rechercher une référence"
                         value={this.state.filters.reference}
