@@ -81,6 +81,7 @@ export default class MoveDialog extends React.Component {
                             teams={this.state.teams}
                             value={this.state.team}
                             setValue={(e, i, v) => this.setState({ team: v })}
+                            floatingLabel={true}
                         />
                         <div className="BarrelChipContainer">
                             {

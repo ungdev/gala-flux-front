@@ -28,8 +28,8 @@ export default class LocationSelect extends React.Component {
                 value={this.props.value}
                 onChange={this.props.setValue}
                 fullWidth={true}
-                floatingLabelFixed={true}
-                floatingLabelText="Emplacement"
+                floatingLabelFixed={this.props.floatingLabel}
+                floatingLabelText={this.props.floatingLabel ? "Emplacements" : null}
             >
                 <MenuItem
                     key={0}
