@@ -2,6 +2,7 @@
     margin-bottom: 20px;
     border: 2px solid rgb(55, 71, 79);
     position: relative;
+    background: #eeeeee !important;
 }
 
 .UsersLogged {
@@ -20,9 +21,11 @@
 }
 
 .CardInfo_bordered {
-    border: 1px solid #333;
+    border: 1px solid #eeeeee;
     padding: 4px 0;
-    border-radius: 1px;
+    border-radius: 2px;
+    background: rgb(55, 71, 79);
+    color: #fff;
 }
 
 .CardInfo_container {

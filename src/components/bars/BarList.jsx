@@ -162,7 +162,7 @@ export default class BarList extends React.Component {
                 <Row>
                 {
                     this.state.teams.map(team => {
-                        return <Col key={team.id} xs={12} sm={6} md={4}>
+                        return <Col key={team.id} xs sm={3}>
                                     <BarCard
                                         team={team}
                                         barrels={this.state.barrels[team.id]}
