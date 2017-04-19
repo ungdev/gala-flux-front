@@ -12,8 +12,9 @@ require('../../../styles/barrels/BarrelChip.scss');
  * @param {Barrel} barrel
  * @param {BarrelType} type type of the barrel
  * @param {Team} team (optional) if given, the team name will be written in the tooltip
- * @param {function()} onRequestDelete Will be called when the "delete" button is pressed
- * @param {function(id, selected)} onSelection Will be called when the chip is clicked
+ * @param {function(barrel)} onRequestDelete Will be called when the "delete" button is pressed
+ * @param {function(barrel, selected)} onSelection Will be called when the chip is clicked only in selection mode
+ * @param {function(barrel)} onClick Will be called when the chip is clicked
  * @param {boolean} selectable (default:false), Set to true if you want the chip to keep its selected color after click
  * @param {boolean} selected (default:false), Set to true if you want the chip to keep its selected color after click
  */
@@ -46,6 +47,9 @@ export default class BarrelChip extends React.Component {
     _handleClick() {
         if (this.props.selectable && this.props.onSelection) {
             this.props.onSelection(this.state.barrel, !this.state.selected);
+        }
+        if (this.props.onClick) {
+            this.props.onClick(this.state.barrel);
         }
     }
 
@@ -85,7 +89,7 @@ export default class BarrelChip extends React.Component {
             <Chip
                 className="BarrelChip"
                 backgroundColor={background}
-                onRequestDelete={this.props.onRequestDelete}
+                onRequestDelete={this.props.onRequestDelete ? (() => this.props.onRequestDelete(this.state.barrel)) : null}
                 onTouchTap={this._handleClick}
                 title={tooltip}
                 key={this.state.barrel.id}

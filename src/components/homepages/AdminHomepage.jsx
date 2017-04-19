@@ -9,7 +9,6 @@ import AlertPage from '../adminPages/AlertPage.jsx';
 import ChatPage from '../adminPages/ChatPage.jsx';
 import StockPage from '../adminPages/StockPage.jsx';
 import BarPage from '../adminPages/BarPage.jsx';
-import BarrelsListPage from '../adminPages/BarrelsListPage.jsx';
 import BarrelsTypesPage from '../adminPages/BarrelsTypesPage.jsx';
 import AlertButtonsPage from '../adminPages/AlertButtonsPage.jsx';
 import TeamListPage from '../adminPages/TeamListPage.jsx';
@@ -115,12 +114,10 @@ class AdminHomepage extends React.Component {
                                 );
 
                             case 'admin.barrels':
-                            case 'admin.barrels.types':
                                 return (
                                     <div className="AdminPage__splitscreen">
                                         <AdminMenu route={this.state.route} className="AdminPage__splitscreen__menu" />
-                                        <BarrelsListPage className={name != 'admin.barrels' ? 'AdminPage__splitscreen__secondary':''}/>
-                                        <BarrelsTypesPage className={name != 'admin.barrels.types' ? 'AdminPage__splitscreen__secondary':''}/>
+                                        <BarrelsTypesPage />
                                     </div>
                                 );
 
