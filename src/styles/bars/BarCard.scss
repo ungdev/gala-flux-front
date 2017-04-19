@@ -1,0 +1,43 @@
+.BarCard {
+    margin-bottom: 20px;
+    border: 2px solid rgb(55, 71, 79);
+    position: relative;
+}
+
+.UsersLogged {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+}
+
+.CardInfo {
+    display: flex;
+}
+
+.CardInfo > * {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.CardInfo_bordered {
+    border: 1px solid #333;
+    padding: 4px 0;
+    border-radius: 1px;
+}
+
+.CardInfo_container {
+    margin-top: 5px;
+    padding-top: 5px;
+    border-top: 1px solid #333;
+}
+
+.Barrels_profitability {
+    margin-top: 15px;
+}
+
+.CardInfo_title {
+    font-size: 14px;
+    color: rgb(55, 71, 79);
+    font-weight: 600;
+    margin-bottom: 5px;
+}
