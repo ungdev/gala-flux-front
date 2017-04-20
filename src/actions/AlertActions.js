@@ -2,17 +2,17 @@ import AppDispatcher from '../dispatchers/AppDispatcher.js';
 
 export default {
 
-    newMessage(message) {
+    newAlert(alert) {
         AppDispatcher.dispatch({
-            type: 'NEW_MESSAGE',
-            message
+            type: 'NEW_ALERT',
+            alert
         });
     },
 
-    getMessages(messages) {
+    getAlerts(alerts) {
         AppDispatcher.dispatch({
-            type: 'GET_MESSAGES',
-            messages
+            type: 'GET_ALERTS',
+            alerts
         });
     }
 }
