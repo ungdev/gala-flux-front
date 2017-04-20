@@ -81,6 +81,7 @@ export default class BarAlertButtons extends React.Component {
      */
     _setAlerts() {
         const storeAlerts = AlertStore.alerts;
+        console.log(storeAlerts);
         let alerts = {};
 
         // store them by button (because only one alert by button by team)

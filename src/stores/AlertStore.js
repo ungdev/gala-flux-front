@@ -20,6 +20,9 @@ class AlertStore extends BaseStore {
      */
     _handleActions(action) {
         switch(action.type) {
+            case "ALERT_CLOSED":
+                this._delete(action.id);
+                break;
             case "WEBSOCKET_DISCONNECTED":
                 this._modelData = [];
                 break;
