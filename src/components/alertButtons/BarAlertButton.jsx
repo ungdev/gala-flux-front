@@ -1,5 +1,7 @@
 import React from 'react';
 
+import AlertButtonService from '../../services/AlertButtonService';
+
 require('../../styles/bar/AlertButton.scss');
 
 export default class BarAlertButton extends React.Component {
@@ -11,6 +13,9 @@ export default class BarAlertButton extends React.Component {
             button: props.button,
             alert: props.alert
         };
+
+        // binding
+        this._createAlert = this._createAlert.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -18,6 +23,11 @@ export default class BarAlertButton extends React.Component {
             button: nextProps.button,
             alert: nextProps.alert
         });
+    }
+
+    _createAlert() {
+        AlertButtonService.createAlert(this.state.button.id)
+            .catch(error => console.log("create alert button error", error));
     }
 
     render() {
@@ -32,7 +42,7 @@ export default class BarAlertButton extends React.Component {
 
         return (
             <div>
-                <button className="AlertButton_button">
+                <button className="AlertButton_button" onClick={this._createAlert}>
                     {this.state.button.title}
                 </button>
             </div>
