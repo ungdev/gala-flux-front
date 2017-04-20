@@ -1,25 +1,40 @@
 import React from 'react';
 
+require('../../styles/bar/AlertButton.scss');
+
 export default class BarAlertButton extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            button: props.button
+            button: props.button,
+            alert: props.alert
         };
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            button: nextProps.button
+            button: nextProps.button,
+            alert: nextProps.alert
         });
     }
 
     render() {
-        return(
+
+        if (this.state.alert) {
+            return (
+                <div>
+                    alert !
+                </div>
+            );
+        }
+
+        return (
             <div>
-                {this.state.button.title}
+                <button className="AlertButton_button">
+                    {this.state.button.title}
+                </button>
             </div>
         );
     }

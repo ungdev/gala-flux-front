@@ -1,0 +1,18 @@
+@import '../Constants';
+
+.AlertButton_button {
+    background-color: #fff;
+    border: 1px solid rgb(217, 217, 217);
+    border-radius: 2px;
+    padding: 4px 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    width: 100%;
+}
+
+.AlertButton_button:hover {
+    cursor: pointer;
+    background-color: #e6e6e6;
+}
