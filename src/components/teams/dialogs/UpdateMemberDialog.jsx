@@ -51,8 +51,6 @@ export default class UpdateMemberDialog extends React.Component {
         });
     }
 
-
-
     /**
      * Called on field change
      *
