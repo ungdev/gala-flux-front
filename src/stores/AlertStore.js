@@ -5,7 +5,6 @@ class AlertStore extends BaseStore {
 
     constructor() {
         super('alert', AlertService);
-
         this.subscribe(() => this._handleActions.bind(this));
     }
 
@@ -28,7 +27,6 @@ class AlertStore extends BaseStore {
                 break;
         }
     }
-
 }
 
 export default new AlertStore();

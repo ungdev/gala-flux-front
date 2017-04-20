@@ -13,8 +13,11 @@ export default class AlertList extends React.Component {
         return (
             <div className="alert-list">
                 <Row className="alert-list__row">
-                    <Alert />
-                    <Alert />
+                    {
+                        this.props.alerts.map((alert, i) => {
+                            return <Alert alert={alert} key={i} />
+                        })
+                    }
                 </Row>
             </div>
         );
