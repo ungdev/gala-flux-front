@@ -58,9 +58,12 @@ export default class BarAlertButton extends React.Component {
 
         if (this.state.alert) {
             return (
-                <div>
-                    <button className="AlertButton_button" onClick={this._updateAlertSeverity}>
+                <div className="AlertButton_active_container">
+                    <button className="" onClick={this._updateAlertSeverity}>
                         !! {this.state.button.title}
+                    </button>
+                    <button onClick={_ => this._updateAlertSeverity("done")}>
+                        X
                     </button>
                 </div>
             );

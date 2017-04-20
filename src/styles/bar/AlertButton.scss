@@ -16,3 +16,11 @@
     cursor: pointer;
     background-color: #e6e6e6;
 }
+
+.AlertButton_active_container {
+    width: 100%;
+}
+
+.AlertButton_active_container > * {
+    display: inline-block;
+}
