@@ -4,6 +4,10 @@ import AlertActions from '../../actions/AlertActions.jsx';
 import AlertButtonService from '../../services/AlertButtonService';
 import AlertService from '../../services/AlertService';
 
+import Edit from 'material-ui/svg-icons/image/edit';
+import Clear from 'material-ui/svg-icons/content/clear';
+import TextField from 'material-ui/TextField';
+
 require('../../styles/bar/AlertButton.scss');
 
 export default class BarAlertButton extends React.Component {
@@ -13,12 +17,17 @@ export default class BarAlertButton extends React.Component {
 
         this.state = {
             button: props.button,
-            alert: props.alert
+            alert: props.alert,
+            showInput: false,
+            message: ""
         };
 
         // binding
         this._createAlert = this._createAlert.bind(this);
         this._updateAlertSeverity = this._updateAlertSeverity.bind(this);
+        this._toggleMessageInput = this._toggleMessageInput.bind(this);
+        this._handleMessage = this._handleMessage.bind(this);
+        this._handleKeyDown = this._handleKeyDown.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -28,12 +37,23 @@ export default class BarAlertButton extends React.Component {
         });
     }
 
+    _toggleMessageInput() {
+        this.setState({ showInput: !this.state.showInput });
+    }
+
     /**
      * Call the AlertButtonService to create a new alert
      */
     _createAlert() {
-        AlertButtonService.createAlert(this.state.button.id)
-            .catch(error => console.log("create alert button error", error));
+        if (this.state.button.message && this.state.message === "") {
+            this.setState({ showInput: true });
+        } else {
+            AlertButtonService.createAlert(this.state.button.id, this.state.message)
+                .then(_ => {
+                    this.setState({ showInput: false });
+                })
+                .catch(error => console.log("create alert button error", error));
+        }
     }
 
     /**
@@ -41,6 +61,7 @@ export default class BarAlertButton extends React.Component {
      */
     _updateAlertSeverity(severity) {
         if (!this.state.alert) return;
+
         if (severity !== "done" && severity !== "serious") {
             severity = this.state.alert.severity === "warning" ? "serious" : "done";
         }
@@ -52,28 +73,91 @@ export default class BarAlertButton extends React.Component {
                 }
             })
             .catch(error => console.log("failed to update the alert severity", error));
+
+    }
+
+    _handleMessage(e, v) {
+        this.setState({ message: v });
+    }
+
+    _handleKeyDown(e) {
+        if(e.key === 'Enter') {
+            this._createAlert();
+        }
     }
 
     render() {
 
+        const styles = {
+            smallIcon: {
+                width: 16,
+                height: 16,
+            },
+            button: {
+                width: 20,
+                height: 20
+            }
+        };
+
         if (this.state.alert) {
             return (
-                <div className="AlertButton_active_container">
-                    <button className="" onClick={this._updateAlertSeverity}>
-                        !! {this.state.button.title}
-                    </button>
-                    <button onClick={_ => this._updateAlertSeverity("done")}>
-                        X
-                    </button>
+                <div>
+                    <div className="AlertButton_active_container">
+                        <div className="AlertButton_progress"></div>
+                        <button className="AlertButton_button AlertButton_autowidth" onClick={this._updateAlertSeverity}>
+                            {this.state.button.title}
+                        </button>
+                        <button className="AlertButton_button AlertButton_active_action" onClick={this._toggleMessageInput}>
+                            <Edit style={styles.smallIcon} />
+                        </button>
+                        <button className="AlertButton_button AlertButton_active_action" onClick={_ => this._updateAlertSeverity("done")}>
+                            <Clear style={styles.smallIcon} />
+                        </button>
+                    </div>
+                    {
+                        this.state.showInput &&
+                        <div className="AlertButton_input_container">
+                            <TextField
+                                floatingLabelText={this.state.button.messagePlaceholder || "Précisez"}
+                                multiLine={true}
+                                rows={2}
+                                fullWidth={true}
+                                onChange={this._handleMessage}
+                                value={this.state.message}
+                            />
+                        </div>
+                    }
                 </div>
             );
         }
 
         return (
             <div>
-                <button className="AlertButton_button" onClick={this._createAlert}>
-                    {this.state.button.title}
-                </button>
+                <div className="AlertButton_active_container">
+                    <button className="AlertButton_button AlertButton_autowidth" onClick={this._createAlert}>
+                        {this.state.button.title}
+                    </button>
+                    {
+                        this.state.showInput &&
+                        <button className="AlertButton_button AlertButton_active_action" onClick={_ => this._toggleMessageInput("done")}>
+                            <Clear style={styles.smallIcon} />
+                        </button>
+                    }
+                </div>
+                {
+                    this.state.showInput &&
+                    <div className="AlertButton_input_container">
+                        <TextField
+                            floatingLabelText={this.state.button.messagePlaceholder || "Précisez"}
+                            multiLine={true}
+                            rows={2}
+                            fullWidth={true}
+                            onChange={this._handleMessage}
+                            value={this.state.message}
+                            onKeyDown={this._handleKeyDown}
+                        />
+                    </div>
+                }
             </div>
         );
     }

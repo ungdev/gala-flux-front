@@ -9,6 +9,9 @@
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
+}
+
+.fullWidth {
     width: 100%;
 }
 
@@ -19,8 +22,26 @@
 
 .AlertButton_active_container {
     width: 100%;
+    border: 1px solid black;
+    display: flex;
 }
 
 .AlertButton_active_container > * {
     display: inline-block;
+}
+
+.AlertButton_progress {
+    width: 20px;
+}
+
+.AlertButton_active_action {
+
+}
+
+.AlertButton_autowidth {
+    width: 100%
+}
+
+.AlertButton_input_container {
+    padding: 10px;
 }
