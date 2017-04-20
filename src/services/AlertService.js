@@ -13,15 +13,18 @@ class AlertService extends BaseService {
      * @param {errorCallback} error
      */
     sendAlert(text, error) {
-        iosocket.request({
-            method: 'post',
-            url: '/alert/create',
-            data: {text}
-        }, (resData, jwres) => {
-            if (jwres.error) {
-                return error(jwres);
-            }
-            AlertActions.newAlert(text);
+        return new Promise((resolve, reject) => {
+            iosocket.request({
+                method: 'post',
+                url: '/alert/create',
+                data: {text}
+            }, (resData, jwres) => {
+                if (jwres.error) {
+                    return reject(new ApiError(jwres));
+                }
+                AlertActions.newAlert(text);
+                return resolve(resData);
+            });
         });
     }
 
