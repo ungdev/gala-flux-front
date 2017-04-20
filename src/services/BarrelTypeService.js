@@ -10,16 +10,17 @@ class BarrelTypeService extends BaseService {
     }
 
     /**
-     * Make a request to create barrels
+     * Make a request to set the number of barrels for a type
      *
-     * @param {object} data
+     * @param {string} id Type id
+     * @param {integer} number Number of barrels wanted
      * @return {Promise}
      */
-    saveBarrels(data) {
+    setBarrelNumber(id, number) {
         return this._makeRequest({
             method: 'post',
             url: '/barreltype/barrel',
-            data
+            data: { id, number },
         });
     }
 

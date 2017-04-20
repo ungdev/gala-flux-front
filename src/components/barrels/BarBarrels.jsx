@@ -5,8 +5,10 @@ import BarrelStore from '../../stores/BarrelStore';
 import BarrelTypeStore from '../../stores/BarrelTypeStore';
 import AuthStore from '../../stores/AuthStore';
 
+import Subheader from 'material-ui/Subheader';
+
 import { Row, Col } from 'react-flexbox-grid';
-import BarBarrel from './BarBarrel.jsx';
+import BarrelChip from './partials/BarrelChip.jsx';
 
 export default class BarBarrels extends React.Component {
 
@@ -14,7 +16,11 @@ export default class BarBarrels extends React.Component {
         super();
 
         this.state = {
-            barrels: []
+            barrels: {
+                "new": {},
+                "opened": {},
+                "empty": {}
+            }
         };
 
         this.BarrelStoreToken = null;
@@ -116,45 +122,50 @@ export default class BarBarrels extends React.Component {
         // if the AuthStore.user attribute is not initialized yet, we don't know the user's team
         if (AuthStore.user && BarrelTypeStore.types) {
             const barrels = {
-                "new": [],
-                "opened": [],
-                "empty": []
+                "new": {},
+                "opened": {},
+                "empty": {}
             };
-            // put each barrel of the user's team in the matching state
+            // put each barrel of the user's team in the matching state indexed by type
             for (let barrel of BarrelStore.find({place: AuthStore.user.team})) {
-                barrels[barrel.state].push(barrel);
+                if(!barrels[barrel.state][barrel.type]) {
+                    barrels[barrel.state][barrel.type] = [];
+                }
+                barrels[barrel.state][barrel.type].push(barrel);
             }
 
             this.setState({ barrels });
         }
     }
 
-    render() {
-        // colors of the BarBarrel's avatars
-        const colors = {
-            new: "#00C853",
-            opened: "#FF6D00",
-            empty: "#DD2C00"
-        };
 
+    render() {
         return (
             <Row className="container-hide">
                 <Col sm={4} className="container-hide">
                     <h2>En stock</h2>
                     <div>
                         {
-                            this.state.barrels.new && this.state.barrels.new.length
+                            Object.keys(this.state.barrels.new).length
                                 ?
+                                    Object.keys(this.state.barrels.new).map((typeId, i) => {
+                                        let type = BarrelTypeStore.findById(typeId);
+                                        return <div key={i}>
+                                            <Subheader>{type ? type.name : ''}</Subheader>
+                                            <div className="BarrelChipContainer">
+                                            {
+                                                this.state.barrels.new[typeId].map((barrel, i) => {
+                                                    return <BarrelChip
+                                                                key={i}
+                                                                barrel={barrel}
+                                                                type={type}
+                                                                onClick={this._moveNextState}
+                                                            />
+                                                })
+                                            }
+                                            </div>
+                                        </div>
 
-                                    this.state.barrels.new.map((barrel, i) => {
-                                        let type = BarrelTypeStore.findById(barrel.type);
-                                        return  <BarBarrel
-                                                    key={i}
-                                                    barrel={barrel}
-                                                    typeName={type ? type.name : ""}
-                                                    color={colors.new}
-                                                    moveNextState={this._moveNextState}
-                                                />
                                     })
 
                                 :
@@ -166,19 +177,29 @@ export default class BarBarrels extends React.Component {
                     <h2>Entamé</h2>
                     <div>
                         {
-                            this.state.barrels.opened && this.state.barrels.opened.length
+                            Object.keys(this.state.barrels.opened).length
                                 ?
-                                    this.state.barrels.opened.map((barrel, i) => {
-                                        let type = BarrelTypeStore.findById(barrel.type);
-                                        return <BarBarrel
-                                                    key={i}
-                                                    barrel={barrel}
-                                                    typeName={type ? type.name : ""}
-                                                    color={colors.opened}
-                                                    backPreviousState={this._backPreviousState}
-                                                    moveNextState={this._moveNextState}
-                                                />
+                                    Object.keys(this.state.barrels.opened).map((typeId, i) => {
+                                        let type = BarrelTypeStore.findById(typeId);
+                                        return <div key={i}>
+                                            <Subheader>{type ? type.name : ''}</Subheader>
+                                            <div className="BarrelChipContainer">
+                                            {
+                                                this.state.barrels.opened[typeId].map((barrel, i) => {
+                                                    return <BarrelChip
+                                                                key={i}
+                                                                barrel={barrel}
+                                                                type={type}
+                                                                onClick={this._moveNextState}
+                                                                onRequestDelete={this._backPreviousState}
+                                                            />
+                                                })
+                                            }
+                                            </div>
+                                        </div>
+
                                     })
+
                                 :
                                     "Aucun fût ouvert."
                         }
@@ -188,18 +209,29 @@ export default class BarBarrels extends React.Component {
                     <h2>Terminé</h2>
                     <div>
                         {
-                            this.state.barrels.empty && this.state.barrels.empty.length
+                            Object.keys(this.state.barrels.empty).length
                                 ?
-                                    this.state.barrels.empty.map((barrel, i) => {
-                                        let type = BarrelTypeStore.findById(barrel.type);
-                                        return <BarBarrel
-                                                    key={i}
-                                                    barrel={barrel}
-                                                    typeName={type ? type.name : ""}
-                                                    color={colors.empty}
-                                                    backPreviousState={this._backPreviousState}
-                                                />
+                                    Object.keys(this.state.barrels.empty).map((typeId, i) => {
+                                        let type = BarrelTypeStore.findById(typeId);
+                                        return <div key={i}>
+                                            <Subheader>{type ? type.name : ''}</Subheader>
+                                            <div className="BarrelChipContainer">
+                                            {
+                                                this.state.barrels.empty[typeId].map((barrel, i) => {
+                                                    return <BarrelChip
+                                                                key={i}
+                                                                barrel={barrel}
+                                                                type={type}
+                                                                onClick={this._moveNextState}
+                                                                onRequestDelete={this._backPreviousState}
+                                                            />
+                                                })
+                                            }
+                                            </div>
+                                        </div>
+
                                     })
+
                                 :
                                     "Aucun fût terminé."
                         }

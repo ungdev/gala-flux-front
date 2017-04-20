@@ -52,8 +52,9 @@ export default class AdminMenu extends React.Component {
 
                     <ListItem value="bars" className="AdminMenu__mainItem">Bars</ListItem>
 
-                    <ListItem value="stock" className="AdminMenu__mainItem">Stocks</ListItem>
-
+                    { (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
+                        <ListItem value="stock" className="AdminMenu__mainItem">Stocks</ListItem>
+                    }
                     <ListItem value="admin" className="AdminMenu__mainItem">Administration</ListItem>
 
 
@@ -62,9 +63,10 @@ export default class AdminMenu extends React.Component {
                         <ListItem value="admin.teams" className="AdminMenu__item">Équipes et utilisateurs</ListItem>
                     }
 
-                    <ListItem value="admin.barrels" className="AdminMenu__item AdminMenu__hide-xs">Gestion des fûts</ListItem>
-                    <ListItem value="admin.barrels.types" className="AdminMenu__item AdminMenu__show-xs">Types de fûts</ListItem>
-                    <ListItem value="admin.barrels" className="AdminMenu__item AdminMenu__show-xs">Liste des fûts</ListItem>
+                    { (AuthStore.can('barrelType/admin') || AuthStore.can('barrel/restricted')
+                        || AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
+                        <ListItem value="admin.barrels" className="AdminMenu__item">Gestion des fûts</ListItem>
+                    }
 
                     <ListItem value="admin.alerts" className="AdminMenu__item">Gestion des boutons d'alerte</ListItem>
                 </SelectableList>
