@@ -3,6 +3,7 @@ import { Grid, Col } from 'react-flexbox-grid';
 import TeamStore from '../../stores/TeamStore';
 import AlertStore from '../../stores/AlertStore';
 import ReactTooltip from 'react-tooltip'
+import UpdateAlertDialog from './UpdateAlertDialog.jsx';
 
 require('../../styles/log/Alert.scss');
 
@@ -10,6 +11,18 @@ export default class Alert extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            showUpdateAlertDialog: false
+        }
+        this._toggleUpdateAlertDialog = this._toggleUpdateAlertDialog.bind(this);
+    }
+
+    _toggleUpdateAlertDialog() {
+        // TODO: check user permissions ?
+        this.setState({
+            showUpdateAlertDialog: !this.state.showUpdateAlertDialog
+        });
     }
 
     render() {
@@ -63,9 +76,17 @@ export default class Alert extends React.Component {
                             <span>{this.props.alert.message}</span>
                         </ReactTooltip>
                     </div>
-                    <div className="alert__action">
-                    </div>
+                    <button
+                        className="alert__action"
+                        onClick={() => this._toggleUpdateAlertDialog()}
+                    >
+                    </button>
                 </div>
+                <UpdateAlertDialog
+                    show={this.state.showUpdateAlertDialog}
+                    close={() => this._toggleUpdateAlertDialog()}
+                    alert={this.props.alert}
+                />
             </Col>
         );
     }

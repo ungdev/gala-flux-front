@@ -4,6 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import AlertList from './AlertList.jsx';
 import AlertStore from '../../stores/AlertStore';
 import TeamStore from '../../stores/TeamStore';
+import NotificationActions from '../../actions/NotificationActions';
 
 require('../../styles/log/Alerts.scss');
 
@@ -29,14 +30,15 @@ export default class Alerts extends React.Component {
             .then(data => {
                 AlertStore.unloadData(this.AlertStoreToken);
                 this.AlertStoreToken = data.token;
-                TeamStore.loadData(null)
-                    .then(data => {
-                        TeamStore.unloadData(this.TeamStoreToken);
-                        this.TeamStoreToken = data.token;
-                    })
-                    .catch(error => console.log("load teams error", error));
+                return TeamStore.loadData(null);
             })
-            .catch(error => console.log("load alerts error", error));
+            .then(data => {
+                TeamStore.unloadData(this.TeamStoreToken);
+                this.TeamStoreToken = data.token;
+            })
+            .catch(error => {
+                NotificationActions.error('Une erreur s\'est produite pendant le chargement des alertes', error);
+            });
         AlertStore.addChangeListener(this._setAlerts);
         TeamStore.addChangeListener(this._setAlerts);
     }

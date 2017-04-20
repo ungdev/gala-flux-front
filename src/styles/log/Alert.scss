@@ -39,6 +39,8 @@ $alert__action: 50px;
     width: #{$alert__action};
     background-color: #80deea;
     margin-left: auto;
+    border-style: none;
+    outline: none;
 }
 
 .alert__title p {
