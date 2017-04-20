@@ -15,5 +15,6 @@ export default [
         { name: 'admin.teams', path: '/team', title: 'Gestion des équipes' },
             { name: 'admin.teams.id', path: '/:id', title: 'Gestion des équipes' },
         { name: 'admin.barrels', path: '/barrel', title: 'Gestion des fûts' },
+        { name: 'admin.bottles', path: '/bottle', title: 'Gestion des bouteilles' },
         { name: 'admin.alerts', path: '/alerts', title: 'Gestion des alertes' },
 ];

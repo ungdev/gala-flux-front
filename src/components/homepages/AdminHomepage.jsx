@@ -14,6 +14,7 @@ import BarrelsTypesPage from '../adminPages/BarrelsTypesPage.jsx';
 import AlertButtonsPage from '../adminPages/AlertButtonsPage.jsx';
 import TeamListPage from '../adminPages/TeamListPage.jsx';
 import TeamDetailsPage from '../adminPages/TeamDetailsPage.jsx';
+import BottlesTypesPage from "../adminPages/BottlesTypesPage";
 
 require('../../styles/homepages/AdminHomepage.scss');
 
@@ -121,6 +122,14 @@ class AdminHomepage extends React.Component {
                                     <div className="AdminPage__splitscreen">
                                         <AdminMenu route={this.state.route} className="AdminPage__splitscreen__menu" />
                                         <BarrelsTypesPage />
+                                    </div>
+                                );
+
+                            case 'admin.bottles':
+                                return (
+                                    <div className="AdminPage__splitscreen">
+                                        <AdminMenu route={this.state.route} className="AdminPage__splitscreen__menu" />
+                                        <BottlesTypesPage.jsx />
                                     </div>
                                 );
 
