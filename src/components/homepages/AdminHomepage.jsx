@@ -4,6 +4,7 @@ import { routeNode } from 'react-router5';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
 import AdminMenu from '../partials/AdminMenu.jsx';
+import AuthStore from '../../stores/AuthStore.js';
 
 import AlertPage from '../adminPages/AlertPage.jsx';
 import ChatPage from '../adminPages/ChatPage.jsx';
@@ -65,7 +66,9 @@ class AdminHomepage extends React.Component {
                 <Tabs className="AdminPage__tabs" onChange={this._handleTabChange} value={this.state.route.name}>
                     <Tab label="Dashboard" value="home"/>
                     <Tab label="Bars" value="bars"/>
-                    <Tab label="Gestion du stock" value="stock"/>
+                    { (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
+                        <Tab label="Gestion du stock" value="stock"/>
+                    }
                     <Tab label="Administration" value="admin"/>
                 </Tabs>
                     {(() => {

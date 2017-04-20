@@ -3,6 +3,7 @@ import React from 'react';
 import BarrelStore from '../../stores/BarrelStore';
 import BarrelTypeStore from '../../stores/BarrelTypeStore';
 import TeamStore from '../../stores/TeamStore';
+import AuthStore from '../../stores/AuthStore';
 
 import { Row, Col } from 'react-flexbox-grid';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -270,20 +271,23 @@ export default class StockPage extends React.Component {
                     <Navagiation  />
                 </FloatingActionButton>
 
-                <FloatingActionButton
-                    className="FloatingButton"
-                    disabled={this.state.selectedBarrels.length === 0}
-                    onClick={this._toggleMoveDialog}
-                >
-                    <LocalShipping  />
-                </FloatingActionButton>
 
-                <MoveDialog
-                    show={this.state.showMoveDialog}
-                    close={this._toggleMoveDialog}
-                    teams={this.state.teams}
-                    barrels={this.state.selectedBarrels}
-                />
+                { AuthStore.can('barrel/admin') &&
+                    <FloatingActionButton
+                        className="FloatingButton"
+                        disabled={this.state.selectedBarrels.length === 0}
+                        onClick={this._toggleMoveDialog}
+                    >
+                        <LocalShipping  />
+                    </FloatingActionButton>
+                }
+
+                    <MoveDialog
+                        show={this.state.showMoveDialog}
+                        close={this._toggleMoveDialog}
+                        teams={this.state.teams}
+                        barrels={this.state.selectedBarrels}
+                    />
 
             </div>
         );

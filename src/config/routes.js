@@ -12,9 +12,8 @@ export default [
     { name: 'chat', path: '/chat', title: 'Chat' },
     { name: 'stock', path: '/stock', title: 'Gestion du stock' },
     { name: 'admin', path: '/admin', title: 'Administration' },
-        { name: 'admin.teams', path: '/team', title: 'Gestion des teams' },
-            { name: 'admin.teams.id', path: '/:id', title: 'Gestion des teams' },
-        { name: 'admin.barrels', path: '/barrel', title: 'Liste des fûts' },
-            { name: 'admin.barrels.types', path: '/types', title: 'Types de fûts' },
+        { name: 'admin.teams', path: '/team', title: 'Gestion des équipes' },
+            { name: 'admin.teams.id', path: '/:id', title: 'Gestion des équipes' },
+        { name: 'admin.barrels', path: '/barrel', title: 'Gestion des fûts' },
         { name: 'admin.alerts', path: '/alerts', title: 'Gestion des alertes' },
 ];

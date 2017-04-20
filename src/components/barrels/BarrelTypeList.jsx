@@ -125,10 +125,12 @@ export default class BarrelTypeList extends React.Component {
      * @param {BarrelType} type selected type object
      */
     _toggleUpdateBarrelTypeDialog(type) {
-        this.setState({
-            showUpdateBarrelTypeDialog: (!this.state.showUpdateBarrelTypeDialog && type != null),
-            selectedType: type,
-        });
+        if(AuthStore.can('barrelType/admin')) {
+            this.setState({
+                showUpdateBarrelTypeDialog: (!this.state.showUpdateBarrelTypeDialog && type != null),
+                selectedType: type,
+            });
+        }
     }
 
     render() {
@@ -150,7 +152,7 @@ export default class BarrelTypeList extends React.Component {
                     </SelectableList>
                 </div>
 
-                { AuthStore.can('team/admin') &&
+                { AuthStore.can('barrelType/admin') &&
                     <FloatingActionButton
                         className="FloatingButton"
                         onTouchTap={this._toggleNewBarrelTypeDialog}
