@@ -29,7 +29,6 @@ class ChatService extends BaseService {
             });
         });
     }
-
 }
 
 export default new ChatService();

@@ -16,7 +16,6 @@ import UpdateMemberDialog from './dialogs/UpdateMemberDialog.jsx';
 import AddMemberDialog from './dialogs/AddMemberDialog.jsx';
 import CenteredMessage from '../partials/CenteredMessage.jsx';
 
-
 /**
  * This component will show details of a team with a member list
  * @param {string} id id of the team
