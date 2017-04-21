@@ -116,7 +116,11 @@ export default class BarAlertButton extends React.Component {
             return (
                 <div>
                     <div className="AlertButton_active_container">
-                        <div className="AlertButton_progress"></div>
+                        <div className="AlertButton_progress">
+                            {
+                                this.state.alert.users && this.state.alert.users.length ? "!" : ""
+                            }
+                        </div>
                         <button className="AlertButton_button AlertButton_autowidth" onClick={this._updateAlertSeverity}>
                             {this.state.button.title}
                         </button>
