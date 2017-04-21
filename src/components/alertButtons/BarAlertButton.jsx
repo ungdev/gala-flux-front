@@ -19,12 +19,13 @@ export default class BarAlertButton extends React.Component {
             button: props.button,
             alert: props.alert,
             showInput: false,
-            message: ""
+            message: props.alert ? props.alert.message : ""
         };
 
         // binding
         this._createAlert = this._createAlert.bind(this);
         this._updateAlertSeverity = this._updateAlertSeverity.bind(this);
+        this._updateAlertMessage = this._updateAlertMessage.bind(this);
         this._toggleMessageInput = this._toggleMessageInput.bind(this);
         this._handleMessage = this._handleMessage.bind(this);
         this._handleKeyDown = this._handleKeyDown.bind(this);
@@ -33,7 +34,8 @@ export default class BarAlertButton extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({
             button: nextProps.button,
-            alert: nextProps.alert
+            alert: nextProps.alert,
+            message: nextProps.alert ? nextProps.alert.message : ""
         });
     }
 
@@ -76,13 +78,24 @@ export default class BarAlertButton extends React.Component {
 
     }
 
+    _updateAlertMessage() {
+        AlertService.update(this.state.alert.id, {message: this.state.message})
+            .then(_ => this.setState({ showInput: false }))
+            .catch(error => console.log("failed to update the alert message", error));
+    }
+
     _handleMessage(e, v) {
         this.setState({ message: v });
     }
 
     _handleKeyDown(e) {
         if(e.key === 'Enter') {
-            this._createAlert();
+            console.log(this.state.alert);
+            if (this.state.alert) {
+                this._updateAlertMessage();
+            } else {
+                this._createAlert();
+            }
         }
     }
 
@@ -124,6 +137,7 @@ export default class BarAlertButton extends React.Component {
                                 fullWidth={true}
                                 onChange={this._handleMessage}
                                 value={this.state.message}
+                                onKeyDown={this._handleKeyDown}
                             />
                         </div>
                     }
