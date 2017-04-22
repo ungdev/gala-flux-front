@@ -1,14 +1,21 @@
 @import '../Constants';
+@import '../Colors';
+
+.AlertButtons_container {
+    padding: 15px !important;
+    border-right: 2px solid #e6e6e6;
+}
 
 .AlertButton_button {
     background-color: #fff;
-    border: 1px solid rgb(217, 217, 217);
+    border: none;
     border-radius: 2px;
     padding: 4px 8px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
+    box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
 }
 
 .fullWidth {
@@ -22,20 +29,12 @@
 
 .AlertButton_active_container {
     width: 100%;
-    border: 1px solid black;
     display: flex;
+    margin-top: 4px;
 }
 
 .AlertButton_active_container > * {
     display: inline-block;
-}
-
-.AlertButton_status {
-    width: 20px;
-}
-
-.AlertButton_active_action {
-
 }
 
 .AlertButton_autowidth {
@@ -43,5 +42,35 @@
 }
 
 .AlertButton_input_container {
-    padding: 10px;
+    padding: 0 10px 10px 10px;
+    background: #e6e6e6;
+}
+
+.AlertButton_status {
+    width: 20px;
+    border-right: 2px solid #fff;
+}
+
+.green_background, button.green_background:hover {
+    background: color($green, 600);
+    color: #fff;
+}
+
+.orange_background, button.orange_background:hover {
+    background: color($orange, 600);
+    color: #fff;
+}
+
+.red_background, button.red_background:hover {
+    background: color($red, 600);
+    color: #fff;
+}
+
+.SmallIcon {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+.whiteIcon {
+    color: #fff !important;
 }

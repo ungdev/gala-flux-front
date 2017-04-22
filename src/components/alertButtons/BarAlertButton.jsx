@@ -6,9 +6,8 @@ import AlertService from '../../services/AlertService';
 
 import Edit from 'material-ui/svg-icons/image/edit';
 import Clear from 'material-ui/svg-icons/content/clear';
+import Check from 'material-ui/svg-icons/navigation/check';
 import TextField from 'material-ui/TextField';
-
-require('../../styles/bar/AlertButton.scss');
 
 export default class BarAlertButton extends React.Component {
 
@@ -118,33 +117,18 @@ export default class BarAlertButton extends React.Component {
 
     render() {
 
-        const styles = {
-            smallIcon: {
-                width: 16,
-                height: 16,
-            },
-            button: {
-                width: 20,
-                height: 20
-            }
-        };
-
         let alertButton = this.state.alert
             ?
                 (<div className="AlertButton_active_container">
-                    <div className="AlertButton_status">
-                        {
-                            this.state.alert.users && this.state.alert.users.length ? "!" : ""
-                        }
-                    </div>
-                    <button className="AlertButton_button AlertButton_autowidth" onClick={this._updateAlertSeverity}>
+                    <div className={`AlertButton_status ${this.state.alert.users && this.state.alert.users.length ? "green_background" : "red_background"} `}></div>
+                    <button className={`AlertButton_button AlertButton_autowidth ${this.state.alert.severity === "warning" ? "orange_background" : "red_background"}`} onClick={this._updateAlertSeverity}>
                         {this.state.button.title}
                     </button>
-                    <button className="AlertButton_button AlertButton_active_action" onClick={this._toggleMessageInput}>
-                        <Edit style={styles.smallIcon} />
+                    <button className="AlertButton_button" onClick={this._toggleMessageInput}>
+                        <Edit className="SmallIcon" />
                     </button>
-                    <button className="AlertButton_button AlertButton_active_action" onClick={_ => this._updateAlertSeverity("done")}>
-                        <Clear style={styles.smallIcon} />
+                    <button className="AlertButton_button green_background" onClick={_ => this._updateAlertSeverity("done")}>
+                        <Check className="SmallIcon whiteIcon" />
                     </button>
                 </div>)
             :
@@ -154,8 +138,8 @@ export default class BarAlertButton extends React.Component {
                     </button>
                     {
                         this.state.showInput &&
-                        <button className="AlertButton_button AlertButton_active_action" onClick={_ => this._toggleMessageInput("done")}>
-                            <Clear style={styles.smallIcon} />
+                        <button className="AlertButton_button red_background" onClick={_ => this._toggleMessageInput("done")}>
+                            <Clear className="SmallIcon" />
                         </button>
                     }
                 </div>);
@@ -176,6 +160,7 @@ export default class BarAlertButton extends React.Component {
                             onChange={this._handleInputChange}
                             value={this.state.message}
                             onKeyDown={this._handleKeyDown}
+                            autoFocus
                         />
                     </div>
                 }

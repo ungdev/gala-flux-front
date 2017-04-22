@@ -11,7 +11,7 @@ export default class BarHomepage extends React.Component {
         return (
             <div>
                 <Row>
-                    <Col xs={12} sm={3}>
+                    <Col xs={12} sm={3} className="AlertButtons_container">
                         <BarAlertButtons />
                     </Col>
                     <Col xs={12} sm={6}>

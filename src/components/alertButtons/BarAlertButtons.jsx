@@ -5,6 +5,8 @@ import AlertStore from '../../stores/AlertStore';
 
 import BarAlertButton from './BarAlertButton.jsx';
 
+require('../../styles/bar/AlertButton.scss');
+
 export default class BarAlertButtons extends React.Component {
 
     constructor() {
