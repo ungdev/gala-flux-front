@@ -27,7 +27,7 @@ export default class BarAlertButton extends React.Component {
         this._updateAlertSeverity = this._updateAlertSeverity.bind(this);
         this._updateAlertMessage = this._updateAlertMessage.bind(this);
         this._toggleMessageInput = this._toggleMessageInput.bind(this);
-        this._handleMessage = this._handleMessage.bind(this);
+        this._handleInputChange = this._handleInputChange.bind(this);
         this._handleKeyDown = this._handleKeyDown.bind(this);
     }
 
@@ -39,6 +39,9 @@ export default class BarAlertButton extends React.Component {
         });
     }
 
+    /**
+     * toggle the boolean to show/hide the message input
+     */
     _toggleMessageInput() {
         this.setState({ showInput: !this.state.showInput });
     }
@@ -59,7 +62,7 @@ export default class BarAlertButton extends React.Component {
     }
 
     /**
-     * Call the AlertService to update an alert
+     * Call the AlertService to update the severity of an alert
      */
     _updateAlertSeverity(severity) {
         if (!this.state.alert) return;
@@ -78,19 +81,33 @@ export default class BarAlertButton extends React.Component {
 
     }
 
+    /**
+     * Call the alert service to update the message of an alert
+     */
     _updateAlertMessage() {
         AlertService.update(this.state.alert.id, {message: this.state.message})
             .then(_ => this.setState({ showInput: false }))
             .catch(error => console.log("failed to update the alert message", error));
     }
 
-    _handleMessage(e, v) {
+    /**
+     * Update the message in the state when the input change
+     *
+     * @param e: event
+     * @param v: the input value
+     */
+    _handleInputChange(e, v) {
         this.setState({ message: v });
     }
 
+    /**
+     * Handle key down on the input text
+     * @param e: event
+     */
     _handleKeyDown(e) {
         if(e.key === 'Enter') {
-            console.log(this.state.alert);
+            // if an alert exists for this button, update the message
+            // else, create a new alert with this message
             if (this.state.alert) {
                 this._updateAlertMessage();
             } else {
@@ -112,46 +129,26 @@ export default class BarAlertButton extends React.Component {
             }
         };
 
-        if (this.state.alert) {
-            return (
-                <div>
-                    <div className="AlertButton_active_container">
-                        <div className="AlertButton_progress">
-                            {
-                                this.state.alert.users && this.state.alert.users.length ? "!" : ""
-                            }
-                        </div>
-                        <button className="AlertButton_button AlertButton_autowidth" onClick={this._updateAlertSeverity}>
-                            {this.state.button.title}
-                        </button>
-                        <button className="AlertButton_button AlertButton_active_action" onClick={this._toggleMessageInput}>
-                            <Edit style={styles.smallIcon} />
-                        </button>
-                        <button className="AlertButton_button AlertButton_active_action" onClick={_ => this._updateAlertSeverity("done")}>
-                            <Clear style={styles.smallIcon} />
-                        </button>
+        let alertButton = this.state.alert
+            ?
+                (<div className="AlertButton_active_container">
+                    <div className="AlertButton_status">
+                        {
+                            this.state.alert.users && this.state.alert.users.length ? "!" : ""
+                        }
                     </div>
-                    {
-                        this.state.showInput &&
-                        <div className="AlertButton_input_container">
-                            <TextField
-                                floatingLabelText={this.state.button.messagePlaceholder || "Précisez"}
-                                multiLine={true}
-                                rows={2}
-                                fullWidth={true}
-                                onChange={this._handleMessage}
-                                value={this.state.message}
-                                onKeyDown={this._handleKeyDown}
-                            />
-                        </div>
-                    }
-                </div>
-            );
-        }
-
-        return (
-            <div>
-                <div className="AlertButton_active_container">
+                    <button className="AlertButton_button AlertButton_autowidth" onClick={this._updateAlertSeverity}>
+                        {this.state.button.title}
+                    </button>
+                    <button className="AlertButton_button AlertButton_active_action" onClick={this._toggleMessageInput}>
+                        <Edit style={styles.smallIcon} />
+                    </button>
+                    <button className="AlertButton_button AlertButton_active_action" onClick={_ => this._updateAlertSeverity("done")}>
+                        <Clear style={styles.smallIcon} />
+                    </button>
+                </div>)
+            :
+                (<div className="AlertButton_active_container">
                     <button className="AlertButton_button AlertButton_autowidth" onClick={this._createAlert}>
                         {this.state.button.title}
                     </button>
@@ -161,7 +158,13 @@ export default class BarAlertButton extends React.Component {
                             <Clear style={styles.smallIcon} />
                         </button>
                     }
-                </div>
+                </div>);
+
+        return (
+            <div>
+                {
+                    alertButton
+                }
                 {
                     this.state.showInput &&
                     <div className="AlertButton_input_container">
@@ -170,7 +173,7 @@ export default class BarAlertButton extends React.Component {
                             multiLine={true}
                             rows={2}
                             fullWidth={true}
-                            onChange={this._handleMessage}
+                            onChange={this._handleInputChange}
                             value={this.state.message}
                             onKeyDown={this._handleKeyDown}
                         />
