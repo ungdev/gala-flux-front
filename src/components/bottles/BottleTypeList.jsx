@@ -1,39 +1,39 @@
 import React from 'react';
 
-import BarrelStore from '../../stores/BarrelStore';
-import BarrelTypeStore from '../../stores/BarrelTypeStore';
+import BottleStore from '../../stores/BottleStore';
+import BottleTypeStore from '../../stores/BottleTypeStore';
 import AuthStore from '../../stores/AuthStore';
 import NotificationActions from '../../actions/NotificationActions'
 
 import SelectableList from '../partials/SelectableList.jsx'
-import BarrelTypeListItem from './partials/BarrelTypeListItem.jsx'
+import BottleTypeListItem from './partials/BottleTypeListItem.jsx'
 import { List, ListItem, makeSelectable } from 'material-ui/List';
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Avatar from 'material-ui/Avatar';
-import UpdateBarrelTypeDialog from './dialogs/UpdateBottleTypeDialog.jsx';
-import NewBarrelTypeDialog from './dialogs/NewBottleTypeDialog.jsx';
+import UpdateBottleTypeDialog from './dialogs/UpdateBottleTypeDialog.jsx';
+import NewBottleTypeDialog from './dialogs/NewBottleTypeDialog.jsx';
 
 
 /**
- * This component will show a clickable list of BarrelTypes
+ * This component will show a clickable list of BottleTypes
  */
-export default class BarrelTypeList extends React.Component {
+export default class BottleTypeList extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            barrelTypes: [],
+            bottleTypes: [],
             counts: {},
-            showUpdateBarrelTypeDialog: false,
-            showNewBarrelTypeDialog: false,
+            showUpdateBottleTypeDialog: false,
+            showNewBottleTypeDialog: false,
             selectedType: null,
         };
 
         // binding
-        this._toggleNewBarrelTypeDialog = this._toggleNewBarrelTypeDialog.bind(this);
-        this._toggleUpdateBarrelTypeDialog = this._toggleUpdateBarrelTypeDialog.bind(this);
+        this._toggleNewBottleTypeDialog = this._toggleNewBottleTypeDialog.bind(this);
+        this._toggleUpdateBottleTypeDialog = this._toggleUpdateBottleTypeDialog.bind(this);
         this._loadData = this._loadData.bind(this);
         this._unloadData = this._unloadData.bind(this);
         this._updateData = this._updateData.bind(this);
@@ -44,8 +44,8 @@ export default class BarrelTypeList extends React.Component {
         this._loadData();
 
         // listen the stores changes
-        BarrelStore.addChangeListener(this._updateData);
-        BarrelTypeStore.addChangeListener(this._updateData);
+        BottleStore.addChangeListener(this._updateData);
+        BottleTypeStore.addChangeListener(this._updateData);
     }
 
     componentWillUnmount() {
@@ -53,8 +53,8 @@ export default class BarrelTypeList extends React.Component {
         this._unloadData();
 
         // remove the stores listeners
-        BarrelStore.removeChangeListener(this._updateData);
-        BarrelTypeStore.removeChangeListener(this._updateData);
+        BottleStore.removeChangeListener(this._updateData);
+        BottleTypeStore.removeChangeListener(this._updateData);
     }
 
     /**
@@ -62,29 +62,29 @@ export default class BarrelTypeList extends React.Component {
      */
     _loadData() {
         // Load data from store
-        BarrelTypeStore.loadData(null)
+        BottleTypeStore.loadData(null)
         .then(data => {
             // ensure that last token doen't exist anymore.
-            BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
+            BottleTypeStore.unloadData(this.BottleTypeStoreToken);
 
             // save the component token
-            this.BarrelTypeStoreToken = data.token;
+            this.BottleTypeStoreToken = data.token;
 
-            // Load Barrel counts per types
-            return BarrelStore.loadData(null);
+            // Load Bottle counts per types
+            return BottleStore.loadData(null);
         })
         .then(data => {
             // ensure that last token doen't exist anymore.
-            BarrelStore.unloadData(this.BarrelStoreToken);
+            BottleStore.unloadData(this.BottleStoreToken);
 
             // save the component token
-            this.BarrelStoreToken = data.token;
+            this.BottleStoreToken = data.token;
 
             // Save the new state value
             this._updateData();
         })
         .catch(error => {
-            NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des types de fûts', error);
+            NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des types de bouteilles', error);
         });
     }
 
@@ -92,7 +92,7 @@ export default class BarrelTypeList extends React.Component {
      * clear stores
      */
     _unloadData() {
-        BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
+        BottleTypeStore.unloadData(this.BottleTypeStoreToken);
     }
 
     /**
@@ -100,15 +100,15 @@ export default class BarrelTypeList extends React.Component {
      */
     _updateData() {
         let counts = {};
-        for (let barrel of BarrelStore.find()) {
-            if(!counts[barrel.type]) {
-                counts[barrel.type] = 0;
+        for (let bottle of BottleStore.find()) {
+            if(!counts[bottle.type]) {
+                counts[bottle.type] = 0;
             }
-            counts[barrel.type]++;
+            counts[bottle.type]++;
         }
 
         this.setState({
-            barrelTypes: BarrelTypeStore.find(),
+            bottleTypes: BottleTypeStore.find(),
             counts: counts,
         });
     }
@@ -116,18 +116,18 @@ export default class BarrelTypeList extends React.Component {
     /**
      * Show or hide the create dialog
      */
-    _toggleNewBarrelTypeDialog() {
-        this.setState({showNewBarrelTypeDialog: !this.state.showNewBarrelTypeDialog});
+    _toggleNewBottleTypeDialog() {
+        this.setState({showNewBottleTypeDialog: !this.state.showNewBottleTypeDialog});
     }
 
     /**
      * Show or hide the update dialog
-     * @param {BarrelType} type selected type object
+     * @param {BottleType} type selected type object
      */
-    _toggleUpdateBarrelTypeDialog(type) {
-        if(AuthStore.can('barrelType/admin')) {
+    _toggleUpdateBottleTypeDialog(type) {
+        if(AuthStore.can('bottleType/admin')) {
             this.setState({
-                showUpdateBarrelTypeDialog: (!this.state.showUpdateBarrelTypeDialog && type != null),
+                showUpdateBottleTypeDialog: (!this.state.showUpdateBottleTypeDialog && type != null),
                 selectedType: type,
             });
         }
@@ -137,44 +137,44 @@ export default class BarrelTypeList extends React.Component {
         return (
             <div className="FloatingButtonContainer">
                 <div>
-                    <h2 className="ListHeader">Types de fûts</h2>
+                    <h2 className="ListHeader">Types de bouteilles</h2>
                     <SelectableList value={this.state.selectedId}>
                         {
-                            this.state.barrelTypes.map((type, i) => {
-                                return  <BarrelTypeListItem
+                            this.state.bottleTypes.map((type, i) => {
+                                return  <BottleTypeListItem
                                         key={type.id}
                                         type={type}
                                         count={this.state.counts[type.id]}
-                                        onSelection={_ => this._toggleUpdateBarrelTypeDialog(type)}
+                                        onSelection={_ => this._toggleUpdateBottleTypeDialog(type)}
                                     />
                             })
                         }
                     </SelectableList>
                 </div>
 
-                { AuthStore.can('barrelType/admin') &&
+                { AuthStore.can('bottleType/admin') &&
                     <FloatingActionButton
                         className="FloatingButton"
-                        onTouchTap={this._toggleNewBarrelTypeDialog}
+                        onTouchTap={this._toggleNewBottleTypeDialog}
                     >
                         <ContentAddIcon />
                     </FloatingActionButton>
                 }
 
-                <NewBarrelTypeDialog
-                    show={this.state.showNewBarrelTypeDialog}
-                    close={this._toggleNewBarrelTypeDialog}
+                <NewBottleTypeDialog
+                    show={this.state.showNewBottleTypeDialog}
+                    close={this._toggleNewBottleTypeDialog}
                 />
 
-                <UpdateBarrelTypeDialog
-                    show={this.state.showUpdateBarrelTypeDialog}
+                <UpdateBottleTypeDialog
+                    show={this.state.showUpdateBottleTypeDialog}
                     type={this.state.selectedType}
                     count={
                         (this.state.selectedType && this.state.counts[this.state.selectedType.id])
                         ? this.state.counts[this.state.selectedType.id]
                         : 0
                     }
-                    close={this._toggleUpdateBarrelTypeDialog}
+                    close={this._toggleUpdateBottleTypeDialog}
                 />
             </div>
         );
