@@ -1,7 +1,7 @@
 import BaseService from './BaseService';
 
 /**
- * Class used for all about barrel types
+ * Class used for all about bottle types
  */
 class BottleTypeService extends BaseService {
 
