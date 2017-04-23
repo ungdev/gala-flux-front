@@ -1,7 +1,7 @@
 import BaseService from './BaseService';
 
 /**
- * Class used for all about barrel
+ * Class used for all about bottle
  */
 class BottleService extends BaseService {
 

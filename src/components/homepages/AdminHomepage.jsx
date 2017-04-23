@@ -11,10 +11,11 @@ import ChatPage from '../adminPages/ChatPage.jsx';
 import StockPage from '../adminPages/StockPage.jsx';
 import BarPage from '../adminPages/BarPage.jsx';
 import BarrelsTypesPage from '../adminPages/BarrelsTypesPage.jsx';
+import BottlesTypesPage from "../adminPages/BottlesTypesPage.jsx";
 import AlertButtonsPage from '../adminPages/AlertButtonsPage.jsx';
 import TeamListPage from '../adminPages/TeamListPage.jsx';
 import TeamDetailsPage from '../adminPages/TeamDetailsPage.jsx';
-import BottlesTypesPage from "../adminPages/BottlesTypesPage.jsx";
+
 
 require('../../styles/homepages/AdminHomepage.scss');
 
