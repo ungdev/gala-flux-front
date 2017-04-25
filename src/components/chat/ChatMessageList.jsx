@@ -27,33 +27,21 @@ export default class ChatMessageList extends React.Component {
         super();
 
         this.state = {
-            messages: []
+            messages: [],
         };
+
+        this.channel = '';
 
         this.ChatStoreToken = null;
         this.UserStoreToken = null;
         this.TeamStoreToken = null;
 
         this._updateData = this._updateData.bind(this);
+        this._handleNewChannel = this._handleNewChannel.bind(this);
     }
 
     componentDidMount() {
-        let messages = [];
-
-        // file the store
-        ChatStore.loadData(this.props.channel ? { channel: this.props.channel } : null)
-        .then(data => {
-            // ensure that last token doen't exist anymore.
-            ChatStore.unloadData(this.ChatStoreToken);
-            // save the component token
-            this.ChatStoreToken = data.token;
-
-            // Update messages
-            this._updateData();
-        })
-        .catch(error => {
-            NotificationActions.error('Une erreur s\'est produite pendant le chargement des messages', error);
-        });
+        this._handleNewChannel();
 
         // listen the store change
         ChatStore.addChangeListener(this._updateData);
@@ -73,11 +61,48 @@ export default class ChatMessageList extends React.Component {
         this.scrollArea.scrollTop = this.scrollArea.scrollHeight;
     }
 
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.channel != this.channel) {
+            this._handleNewChannel(nextProps);
+        }
+    }
+
     /**
-     * Update the messages in the state
+     * Update message list in the store then get it
      */
-    _updateData() {
-        let messages = ChatStore.find(this.props.channel ? { channel: this.props.channel } : null);
+    _handleNewChannel(props) {
+        // fill the store
+        if(!props) {
+            props = this.props;
+        }
+
+        ChatStore.loadData(props.channel ? { channel: props.channel } : { channel: ('public:'+AuthStore.team.name) })
+        .then(data => {
+            // ensure that last token doen't exist anymore.
+            ChatStore.unloadData(this.ChatStoreToken);
+
+            // save the component token
+            this.ChatStoreToken = data.token;
+
+            // Save current channel
+            this.channel = this.props.channel;
+
+            // Update messages
+            this._updateData(props);
+        })
+        .catch(error => {
+            NotificationActions.error('Une erreur s\'est produite pendant le chargement des messages', error);
+        });
+    }
+
+    /**
+     * Update message from store and request new data from user and team store
+     */
+    _updateData(props) {
+        if(!props) {
+            props = this.props;
+        }
+        let messages = ChatStore.find(props.channel ? { channel: props.channel } : { channel: ('public:'+AuthStore.team.name) });
 
         // Get user data
         UserStore.loadDataByRelation(messages, 'sender')
@@ -127,6 +152,7 @@ export default class ChatMessageList extends React.Component {
     }
 
     render() {
+        console.log('render')
         return (
             <div className="ChatMessageList" ref={(scrollArea) => { this.scrollArea = scrollArea; }}>
                 {
@@ -135,7 +161,7 @@ export default class ChatMessageList extends React.Component {
                         let user = UserStore.findById(messageGroup[0].sender);
                         let team = user ? TeamStore.findById(user.team) : null;
                         return (
-                            <div className={(AuthStore && user.id == AuthStore.user.id ? 'ChatMessageList__container--own' : 'ChatMessageList__container')} key={messageGroup[0].id}>
+                            <div className={(AuthStore.user && user.id == AuthStore.user.id ? 'ChatMessageList__container--own' : 'ChatMessageList__container')} key={messageGroup[0].id}>
                                 <Avatar
                                     className="ChatMessageList__avatar"
                                     src={(constants.avatarBasePath + messageGroup[0].sender)}

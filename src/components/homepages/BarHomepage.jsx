@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Chat from '../chat/Chat.jsx';
+import ChatPage from '../adminPages/ChatPage.jsx';
 import BarBarrels from '../barrels/BarBarrels.jsx';
 
 export default class BarHomepage extends React.Component {
@@ -9,7 +9,7 @@ export default class BarHomepage extends React.Component {
         return (
             <div>
                 <BarBarrels />
-                <Chat />
+                <ChatPage />
             </div>
         );
     }

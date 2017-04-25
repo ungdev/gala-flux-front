@@ -1,0 +1,26 @@
+@import '../Colors';
+@import '../Constants';
+
+.ChatMenu {
+    max-width: 128px;
+    flex-shrink: 0;
+    flex-grow: 0;
+
+    overflow: auto;
+
+
+    .ChatMenu__channel {
+        font-size: 13px !important;
+        overflow: hidden;
+        white-space: nowrap;
+
+        > div > div {
+            padding: 8px 16px !important;
+        }
+    }
+
+    .ChatMenu__subheader {
+        padding-top: 8px;
+        line-height: 28px !important;
+    }
+}

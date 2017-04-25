@@ -10,6 +10,7 @@ export default [
     { name: 'home', path: '/'},
     { name: 'bars', path: '/bars', title: 'Bars' },
     { name: 'chat', path: '/chat', title: 'Chat' },
+        { name: 'chat.channel', path: '/chat/:channel', title: 'Chat' },
     { name: 'stock', path: '/stock', title: 'Gestion du stock' },
     { name: 'admin', path: '/admin', title: 'Administration' },
         { name: 'admin.teams', path: '/team', title: 'Gestion des équipes' },
