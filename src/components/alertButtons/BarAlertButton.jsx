@@ -72,6 +72,7 @@ export default class BarAlertButton extends React.Component {
                     // if the alert is closed, remove it from the store
                     if (data.severity === "done") {
                         AlertActions.alertClosed(data.id);
+                        this.setState({ showInput: false });
                     }
                 })
                 .catch(error => console.log("failed to update the alert severity", error));
