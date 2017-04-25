@@ -31,11 +31,18 @@ export default class ChatMessageForm extends React.Component {
     }
 
     _handleChange(e) {
-        this.setState({value: e.target.value ? target.value : ''});
+        this.setState({value: e.target.value ? e.target.value : ''});
     }
 
     _handleSubmit(e) {
         e.preventDefault();
+
+        // Ignore if field is empty
+        if(!this.state.value) {
+            return;
+        }
+
+        // Create new message
         ChatService.create({
             text: this.state.value,
             channel: this.props.channel,
@@ -66,6 +73,7 @@ export default class ChatMessageForm extends React.Component {
                         type="submit"
                         className="ChatMessageForm__button"
                         primary={true}
+                        disabled={!this.state.value}
                         icon={<ContentSendIcon />}
                     />
                 </form>
