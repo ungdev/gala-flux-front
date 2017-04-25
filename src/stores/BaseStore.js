@@ -319,13 +319,29 @@ export default class BaseStore extends EventEmitter {
     _handleModelEvents(e) {
         switch (e.verb) {
             case "created":
-                this._set(e.id, e.data);
+                if(!this.findById(e.id)) {
+                    this._set(e.id, e.data);
+                }
+                else {
+                    console.warn('Received `created` socket event more than once for the store `' + this._modelName + '`', e)
+                }
                 break;
             case "updated":
+                if(this.findById(e.id)) {
+                    this._set(e.id, e.data);
+                }
+                else {
+                    console.warn('Received `updated` socket event for an unknown element for the store `' + this._modelName + '`', e)
+                }
                 this._set(e.id, e.data);
                 break;
             case "destroyed":
-                this._delete(e.id);
+                if(this.findById(e.id)) {
+                    this._delete(e.id);
+                }
+                else {
+                    console.warn('Received `destroyed` socket event for an unknown element for the store `' + this._modelName + '`', e)
+                }
                 break;
         }
     }
