@@ -1,5 +1,4 @@
-.chat {
-    padding: 10px;
-    flex-grow: 1;
-    flex-basis: 0;
+.Chat {
+    display: flex;
+    flex-direction: column;
 }

@@ -1,16 +1,17 @@
 import React from 'react';
 
-import MessageForm from './MessageForm.jsx';
-import MessageList from './MessageList.jsx';
+import ChatMessageForm from './ChatMessageForm.jsx';
+import ChatMessageList from './ChatMessageList.jsx';
+
 require('../../styles/chat/Chat.scss');
 
 export default class Chat extends React.Component {
 
     render() {
         return (
-            <div className="chat">
-                <MessageList />
-                <MessageForm />
+            <div className="Chat">
+                <ChatMessageList/>
+                <ChatMessageForm />
             </div>
         );
     }

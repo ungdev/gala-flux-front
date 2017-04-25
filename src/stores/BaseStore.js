@@ -49,7 +49,6 @@ export default class BaseStore extends EventEmitter {
      * @return {Promise}
      */
     fetchData(componentToken) {
-
         return new Promise((resolve, reject) => {
             let filters = this.getFiltersSet();
 
@@ -108,6 +107,29 @@ export default class BaseStore extends EventEmitter {
                 }
             }
         });
+    }
+
+
+    /**
+     * This will do exactly the same as loadData except that filter will be generated
+     * according to an object list and the name of the foreign key in theses objects.
+     * @param {Array} list Array of foreign objects containing a foreign key to this object
+     * @param {String} key Name of the foreign key in theses foreign object
+     * @returns {Promise}
+     */
+    loadDataByRelation(list, key) {
+        let filter = [];
+        let idList = [];
+        if(Array.isArray(list)) {
+            for (let foreignObject of list) {
+                if(idList.indexOf(foreignObject[key]) === -1) {
+                    idList.push(foreignObject[key]);
+                    filter.push({id: foreignObject[key]});
+                }
+            }
+        }
+
+        return this.loadData(filter);
     }
 
     /**
@@ -209,24 +231,42 @@ export default class BaseStore extends EventEmitter {
     }
 
     /**
+     * This will find data according to an object list and the name of the foreign key in theses objects.
+     * @param {Array} list Array of foreign objects containing a foreign key to this object
+     * @param {String} key Name of the foreign key in theses foreign object
+     * @returns {Promise}
+     */
+    findByRelation(list, key) {
+        return this.find([...new Set(list.map((foreignObject) => {
+            return {id: foreignObject[key]};
+        } ))]);
+    }
+
+    /**
      * Find list of elements that match filters
      *
-     * @param  {Object} filters: Object of filters
+     * @param  {Object|Array} filters: Object of filters or array of list of filter
      * @return {Array} Array of elements
      */
     find(filters) {
         let out = [];
+        if(!Array.isArray(filters)) {
+            filters = [filters];
+        }
 
         for (let i in this._modelData) {
-            let add = true;
-            for (let key in filters) {
-                if(this._modelData[i][key] !== filters[key]) {
-                    add = false;
+            for (let filter of filters) {
+                let match = true;
+                for (let key in filter) {
+                    if(this._modelData[i][key] !== filter[key]) {
+                        match = false;
+                        break;
+                    }
+                }
+                if(match) {
+                    out.push(this._modelData[i]);
                     break;
                 }
-            }
-            if(add) {
-                out.push(this._modelData[i]);
             }
         }
 
