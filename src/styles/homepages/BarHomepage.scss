@@ -1,0 +1,17 @@
+@import '../Constants';
+
+.BarHomePage {
+    /* avoid horizontal scroll */
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+
+    /* full height */
+    top: $AppBarHeight;
+    bottom: 0;
+    position: fixed;
+}
+
+.BarHomePage_col {
+    overflow-y: auto;
+    overflow-x: hidden;
+}

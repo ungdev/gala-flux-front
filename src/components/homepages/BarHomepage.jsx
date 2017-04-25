@@ -5,23 +5,23 @@ import Chat from '../chat/Chat.jsx';
 import BarBarrels from '../barrels/BarBarrels.jsx';
 import BarAlertButtons  from '../alertButtons/BarAlertButtons.jsx';
 
+require('../../styles/homepages/BarHomepage.scss');
+
 export default class BarHomepage extends React.Component {
 
     render() {
         return (
-            <div>
-                <Row>
-                    <Col xs={12} sm={3} className="AlertButtons_container">
-                        <BarAlertButtons />
-                    </Col>
-                    <Col xs={12} sm={6}>
-                        <BarBarrels />
-                    </Col>
-                    <Col xs={12} sm={3}>
-                        <Chat />
-                    </Col>
-                </Row>
-            </div>
+            <Row className="BarHomePage">
+                <Col xs={12} sm={3} className="AlertButtons_container BarHomePage_col">
+                    <BarAlertButtons />
+                </Col>
+                <Col xs={12} sm={6} className="BarHomePage_col">
+                    <BarBarrels />
+                </Col>
+                <Col xs={12} sm={3} className="BarHomePage_col">
+                    <Chat />
+                </Col>
+            </Row>
         );
     }
 }
