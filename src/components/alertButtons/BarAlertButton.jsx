@@ -4,7 +4,7 @@ import AlertActions from '../../actions/AlertActions.jsx';
 import AlertButtonService from '../../services/AlertButtonService';
 import AlertService from '../../services/AlertService';
 
-import Edit from 'material-ui/svg-icons/image/edit';
+import Comment from 'material-ui/svg-icons/communication/comment';
 import Clear from 'material-ui/svg-icons/content/clear';
 import Check from 'material-ui/svg-icons/navigation/check';
 import TextField from 'material-ui/TextField';
@@ -125,7 +125,7 @@ export default class BarAlertButton extends React.Component {
                         {this.state.button.title}
                     </button>
                     <button className="AlertButton_button" onClick={this._toggleMessageInput}>
-                        <Edit className="SmallIcon" />
+                        <Comment className="SmallIcon" />
                     </button>
                     <button className="AlertButton_button green_background" onClick={_ => this._updateAlertSeverity("done")}>
                         <Check className="SmallIcon whiteIcon" />
