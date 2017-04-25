@@ -76,7 +76,7 @@ export default class UpdateMemberDialog extends React.Component {
         }
 
         // Submit
-        UserService.updateUser(this.state.id, this.state.values)
+        UserService.update(this.state.id, this.state.values)
         .then((user) => {
             NotificationActions.snackbar('L\'utilisateur ' + user.name + ' a bien été modifié.');
             this.focusField.focus();
@@ -115,7 +115,7 @@ export default class UpdateMemberDialog extends React.Component {
      */
     _handleDelete() {
         // Submit
-        UserService.deleteUser(this.state.id)
+        UserService.destroy(this.state.id)
         .then(() => {
             NotificationActions.snackbar('L\'utilisateur a bien été supprimé.');
             this.setState({showDeleteDialog: false});
