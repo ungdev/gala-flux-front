@@ -5,9 +5,9 @@ import AlertButtonService from '../../services/AlertButtonService';
 import AlertService from '../../services/AlertService';
 
 import Comment from 'material-ui/svg-icons/communication/comment';
-import Clear from 'material-ui/svg-icons/content/clear';
 import Check from 'material-ui/svg-icons/navigation/check';
 import TextField from 'material-ui/TextField';
+import FlatButton from 'material-ui/FlatButton';
 
 export default class BarAlertButton extends React.Component {
 
@@ -28,6 +28,7 @@ export default class BarAlertButton extends React.Component {
         this._toggleMessageInput = this._toggleMessageInput.bind(this);
         this._handleInputChange = this._handleInputChange.bind(this);
         this._handleKeyDown = this._handleKeyDown.bind(this);
+        this._commentAlert = this._commentAlert.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -105,13 +106,19 @@ export default class BarAlertButton extends React.Component {
      */
     _handleKeyDown(e) {
         if(e.key === 'Enter') {
-            // if an alert exists for this button, update the message
-            // else, create a new alert with this message
-            if (this.state.alert) {
-                this._updateAlertMessage();
-            } else {
-                this._createAlert();
-            }
+            this._commentAlert();
+        }
+    }
+
+    /**
+     * if an alert exists for this button, update the message
+     * else, create a new alert with this message
+     */
+    _commentAlert() {
+        if (this.state.alert) {
+            this._updateAlertMessage();
+        } else {
+            this._createAlert();
         }
     }
 
@@ -125,7 +132,7 @@ export default class BarAlertButton extends React.Component {
                         {this.state.button.title}
                     </button>
                     <button className="AlertButton_button" onClick={this._toggleMessageInput}>
-                        <Comment className="SmallIcon" />
+                        <Comment className={`SmallIcon ${(this.state.alert && this.state.alert.message) && "greenIcon"}`} />
                     </button>
                     <button className="AlertButton_button green_background" onClick={_ => this._updateAlertSeverity("done")}>
                         <Check className="SmallIcon whiteIcon" />
@@ -136,12 +143,6 @@ export default class BarAlertButton extends React.Component {
                     <button className="AlertButton_button AlertButton_autowidth" onClick={this._createAlert}>
                         {this.state.button.title}
                     </button>
-                    {
-                        this.state.showInput &&
-                        <button className="AlertButton_button red_background" onClick={_ => this._toggleMessageInput("done")}>
-                            <Clear className="SmallIcon" />
-                        </button>
-                    }
                 </div>);
 
         return (
@@ -153,15 +154,20 @@ export default class BarAlertButton extends React.Component {
                     this.state.showInput &&
                     <div className="AlertButton_input_container">
                         <TextField
-                            floatingLabelText={this.state.button.messagePlaceholder || "Précisez"}
+                            floatingLabelText={this.state.button.messagePlaceholder || "Commentaire"}
                             multiLine={true}
                             rows={2}
                             fullWidth={true}
                             onChange={this._handleInputChange}
                             value={this.state.message}
                             onKeyDown={this._handleKeyDown}
+                            hintText={this.state.button.message ? "Commentaire obligatoire" : ""}
                             autoFocus
                         />
+                        <div className="AlertButton_input_actions">
+                            <FlatButton label="Annuler" secondary={true} onClick={_ => this._toggleMessageInput("done")} />
+                            <FlatButton label={this.state.button.message ? "Créer l'alerte" : "Envoyer"} primary={true} onClick={this._commentAlert} />
+                        </div>
                     </div>
                 }
             </div>

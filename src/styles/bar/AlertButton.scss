@@ -74,3 +74,12 @@
 .whiteIcon {
     color: #fff !important;
 }
+
+.greenIcon {
+    color: color($green, 600) !important;
+}
+
+.AlertButton_input_actions > * {
+    display: flex;
+    width: 50%;
+}
