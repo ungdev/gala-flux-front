@@ -66,17 +66,16 @@ export default class BarAlertButton extends React.Component {
     _updateAlertSeverity(severity) {
         if (!this.state.alert) return;
 
-        if (severity !== "done" && severity !== "serious") {
-            severity = this.state.alert.severity === "warning" ? "serious" : "done";
+        if (severity === "done" || severity === "serious") {
+            AlertService.update(this.state.alert.id, {severity})
+                .then(data => {
+                    // if the alert is closed, remove it from the store
+                    if (data.severity === "done") {
+                        AlertActions.alertClosed(data.id);
+                    }
+                })
+                .catch(error => console.log("failed to update the alert severity", error));
         }
-        AlertService.update(this.state.alert.id, {severity})
-            .then(data => {
-                // if the alert is closed, remove it from the store
-                if (data.severity === "done") {
-                    AlertActions.alertClosed(data.id);
-                }
-            })
-            .catch(error => console.log("failed to update the alert severity", error));
 
     }
 
@@ -121,7 +120,7 @@ export default class BarAlertButton extends React.Component {
             ?
                 (<div className="AlertButton_active_container">
                     <div className={`AlertButton_status ${this.state.alert.users && this.state.alert.users.length ? "green_background" : "red_background"} `}></div>
-                    <button className={`AlertButton_button AlertButton_autowidth ${this.state.alert.severity === "warning" ? "orange_background" : "red_background"}`} onClick={this._updateAlertSeverity}>
+                    <button className={`AlertButton_button AlertButton_autowidth ${this.state.alert.severity === "warning" ? "orange_background" : "red_background"}`} onClick={_ => this._updateAlertSeverity("serious")}>
                         {this.state.button.title}
                     </button>
                     <button className="AlertButton_button" onClick={this._toggleMessageInput}>
