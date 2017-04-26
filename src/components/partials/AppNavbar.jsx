@@ -1,6 +1,7 @@
 import React from 'react';
 import router from '../../router';
 import routes from '../../config/routes';
+import AuthStore from '../../stores/AuthStore';
 
 import AppBar from 'material-ui/AppBar';
 import MainDrawer from './MainDrawer.jsx';
@@ -50,7 +51,7 @@ export default class AppNavbar extends React.Component {
                 title={this.state.title}
                 className="AppNavbar"
                 onTitleTouchTap={_ => router.navigate('home')}
-                iconElementLeft={<MainDrawer />}
+                iconElementLeft={(AuthStore.can('ui/admin') ? <MainDrawer /> : null)}
                 iconElementRight={<AuthMenu />}
             />
         );

@@ -18,7 +18,7 @@ require('../../styles/chat/ChatMessageList.scss');
 
 /**
  * Show message list of specific channel
- * @param {string} channel If channel is not given, all authorized channel will be shown
+ * @param {string|null} channel If channel is null, all authorized channel will be shown
  *
  */
 export default class ChatMessageList extends React.Component {
@@ -76,7 +76,7 @@ export default class ChatMessageList extends React.Component {
             props = this.props;
         }
 
-        ChatStore.loadData(props.channel ? { channel: props.channel } : { channel: ('public:'+AuthStore.team.name) })
+        ChatStore.loadData(this._getChannelFilter(props))
         .then(data => {
             // ensure that last token doen't exist anymore.
             ChatStore.unloadData(this.ChatStoreToken);
@@ -102,7 +102,7 @@ export default class ChatMessageList extends React.Component {
         if(!props) {
             props = this.props;
         }
-        let messages = ChatStore.find(props.channel ? { channel: props.channel } : { channel: ('public:'+AuthStore.team.name) });
+        let messages = ChatStore.find(this._getChannelFilter(this.props));
 
         // Get user data
         UserStore.loadDataByRelation(messages, 'sender')
@@ -131,7 +131,8 @@ export default class ChatMessageList extends React.Component {
                 if(last && first && last.sender == message.sender &&
                 Math.abs((new Date(last.createdAt)).getTime() - (new Date(message.createdAt)).getTime()) < (5 * 60 * 1000) &&
                 Math.abs((new Date(first.createdAt)).getTime() - (new Date(message.createdAt)).getTime()) < (15 * 60 * 1000) &&
-                messagesGroups[messagesGroups.length - 1].length < 15) {
+                messagesGroups[messagesGroups.length - 1].length < 15
+                && last.channel == message.channel) {
                     messagesGroups[messagesGroups.length - 1].push(message);
                 }
                 else {
@@ -149,6 +150,23 @@ export default class ChatMessageList extends React.Component {
         .catch(error => {
             NotificationActions.error('Une erreur s\'est produite pendant le re-chargement des messages', error);
         });
+    }
+
+
+
+    /**
+     * Generate channel filter according to props
+     */
+    _getChannelFilter(props) {
+        if(props.channel === null) {
+            return null;
+        }
+        else if(props.channel) {
+            return { channel: props.channel };
+        }
+        else {
+            return { channel: ('public:'+AuthStore.team.name) };
+        }
     }
 
     render() {

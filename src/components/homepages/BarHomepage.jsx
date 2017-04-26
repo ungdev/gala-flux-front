@@ -1,6 +1,7 @@
 import React from 'react';
 
-import ChatPage from '../adminPages/ChatPage.jsx';
+import ChatMessageList from '../chat/ChatMessageList.jsx';
+import ChatMessageForm from '../chat/ChatMessageForm.jsx';
 import BarBarrels from '../barrels/BarBarrels.jsx';
 
 export default class BarHomepage extends React.Component {
@@ -9,7 +10,13 @@ export default class BarHomepage extends React.Component {
         return (
             <div>
                 <BarBarrels />
-                <ChatPage />
+
+                <div className="Chat">
+                    <div className="Chat__column">
+                        <ChatMessageList channel={null}/>
+                        <ChatMessageForm channel={null}/>
+                    </div>
+                </div>
             </div>
         );
     }
