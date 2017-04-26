@@ -1,5 +1,6 @@
 import React from 'react';
 
+import NotificationActions from '../../actions/NotificationActions';
 import AlertActions from '../../actions/AlertActions.jsx';
 import AlertButtonService from '../../services/AlertButtonService';
 import AlertService from '../../services/AlertService';
@@ -57,7 +58,7 @@ export default class BarAlertButton extends React.Component {
                 .then(_ => {
                     this.setState({ showInput: false });
                 })
-                .catch(error => console.log("create alert button error", error));
+                .catch(error => NotificationActions.error("Erreur lors de la création de l'alerte.", error));
         }
     }
 
@@ -76,7 +77,7 @@ export default class BarAlertButton extends React.Component {
                         this.setState({ showInput: false });
                     }
                 })
-                .catch(error => console.log("failed to update the alert severity", error));
+                .catch(error => NotificationActions.error("Erreur lors de la modification de l'alerte.", error));
         }
 
     }
@@ -87,7 +88,7 @@ export default class BarAlertButton extends React.Component {
     _updateAlertMessage() {
         AlertService.update(this.state.alert.id, {message: this.state.message})
             .then(_ => this.setState({ showInput: false }))
-            .catch(error => console.log("failed to update the alert message", error));
+            .catch(error => NotificationActions.error("Erreur lors de la modification du commentaire.", error));
     }
 
     /**
@@ -166,7 +167,7 @@ export default class BarAlertButton extends React.Component {
                         />
                         <div className="AlertButton_input_actions">
                             <FlatButton label="Annuler" secondary={true} onClick={_ => this._toggleMessageInput("done")} />
-                            <FlatButton label={this.state.button.message ? "Créer l'alerte" : "Envoyer"} primary={true} onClick={this._commentAlert} />
+                            <FlatButton label={(this.state.button.message && !this.state.alert) ? "Créer l'alerte" : "Envoyer"} primary={true} onClick={this._commentAlert} />
                         </div>
                     </div>
                 }
