@@ -24,3 +24,25 @@
         line-height: 28px !important;
     }
 }
+
+.AdminMenu {
+    .ChatMenu {
+        max-width: none;
+        margin-left: 16px;
+    }
+}
+
+
+@media only screen and (max-width: $screen-max-xs) {
+    /**
+     * Hide menu not in the drawer
+     */
+    .ChatMenu {
+        display: none;
+    }
+    .AdminMenu {
+        .ChatMenu {
+            display: block;
+        }
+    }
+}

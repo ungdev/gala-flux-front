@@ -152,7 +152,6 @@ export default class ChatMessageList extends React.Component {
     }
 
     render() {
-        console.log('render')
         return (
             <div className="ChatMessageList" ref={(scrollArea) => { this.scrollArea = scrollArea; }}>
                 {

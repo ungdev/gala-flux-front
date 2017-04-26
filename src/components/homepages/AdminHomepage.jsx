@@ -78,10 +78,11 @@ class AdminHomepage extends React.Component {
                             default:
                             case 'home':
                             case 'chat':
+                            case 'chat.channel':
                                 return (
                                     <div className="AdminPage__splitscreen">
                                         <AlertPage className={name != 'home' ? 'AdminPage__splitscreen__secondary':''}/>
-                                        <ChatPage className={name != 'chat' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
+                                        <ChatPage className={name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
                                     </div>
                                 );
 

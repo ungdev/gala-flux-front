@@ -32,7 +32,11 @@ export default class AppNavbar extends React.Component {
     _handleRouteUpdate(route) {
         for (let routeConf of routes) {
             if(routeConf.name === route.name && routeConf.title) {
-                this.setState({title: routeConf.title});
+                let title = routeConf.title;
+                if(typeof routeConf.title === 'function') {
+                    title = routeConf.title(route);
+                }
+                this.setState({title: title});
                 return;
             }
         }

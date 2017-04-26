@@ -17,6 +17,7 @@ require('../../styles/chat/ChatMenu.scss');
 /**
  * This component will print the list of available channels and let user change page
  * @param {object} route The route state
+ * @param {function(channel)} onChange will be called when an item is selelcted
  */
 export default class ChatMenu extends React.Component {
 
@@ -82,6 +83,9 @@ export default class ChatMenu extends React.Component {
 
     _handleChange(channel) {
         router.navigate('chat.channel', {channel: channel});
+        if(this.props.onChange) {
+            this.props.onChange(channel);
+        }
     }
 
     render() {
