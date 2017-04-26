@@ -4,18 +4,26 @@
 .AlertButtons_container {
     padding: 15px !important;
     border-right: 2px solid #e6e6e6;
+    background: #e6e6e6;
 }
 
 .AlertButton_button {
     background-color: #fff;
     border: none;
-    border-radius: 2px;
     padding: 4px 8px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
     box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
+}
+
+.AlertButton_iconButton {
+    border: none !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 4px 8px !important;
+    background-color: #fff !important;
 }
 
 .fullWidth {
@@ -41,9 +49,25 @@
     width: 100%
 }
 
+.AlertButton_input_blur {
+    z-index: 5;
+    background: $theme-primary1Color;
+    opacity: 0.6;
+    top:0;
+    left:0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.AlertButton_required {
+    z-index: 10;
+    position: relative;
+}
+
 .AlertButton_input_container {
     padding: 0 10px 10px 10px;
-    background: #e6e6e6;
+    background: #fff;
 }
 
 .AlertButton_status {
@@ -52,8 +76,8 @@
 }
 
 .green_background, button.green_background:hover {
-    background: color($green, 600);
-    color: #fff;
+    background: color($green, 600) !important;
+    color: #fff !important;
 }
 
 .orange_background, button.orange_background:hover {
