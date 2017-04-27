@@ -16,6 +16,7 @@ import BarHomepage from "./homepages/BarHomepage.jsx";
 import { BaseLink, withRoute } from 'react-router5';
 
 require('../styles/App.scss');
+require('../styles/fonts/roboto/roboto.scss');
 
 export default class App extends React.Component {
 
