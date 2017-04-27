@@ -18,6 +18,7 @@ require('../../styles/chat/ChatMenu.scss');
  * This component will print the list of available channels and let user change page
  * @param {object} route The route state
  * @param {function(channel)} onChange will be called when an item is selelcted
+ * @param {bool} selectDefault If true a default channel will be selected when route is not found (default: false)
  */
 export default class ChatMenu extends React.Component {
 
@@ -35,6 +36,7 @@ export default class ChatMenu extends React.Component {
 
         // binding
         this._handleChange = this._handleChange.bind(this);
+        this._updateChannel = this._updateChannel.bind(this);
     }
 
     componentDidMount() {
@@ -62,10 +64,21 @@ export default class ChatMenu extends React.Component {
         .catch((error) => {
             NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des channels', error);
         });
+
+        // Select channel
+        this._updateChannel(this.props.route);
     }
 
     componentWillReceiveProps(nextProps) {
-        let route = nextProps.route;
+        this._updateChannel(nextProps.route);
+    }
+
+
+    /**
+     * Update the channel according to the given route
+     * @param {Object} route
+     */
+    _updateChannel(route) {
         // Re-render every route change
         if(route.name == 'chat.channel') {
             if(this.state.channel != route.params.channel) {
@@ -74,9 +87,14 @@ export default class ChatMenu extends React.Component {
                 });
             }
         }
-        else if(AuthStore.team && this.state.channel != ('public:'+AuthStore.team.name)) {
+        else if(this.props.selectDefault && AuthStore.team && this.state.channel != ('public:'+AuthStore.team.name)) {
             this.setState({
                 channel: 'public:'+AuthStore.team.name,
+            });
+        }
+        else {
+            this.setState({
+                channel: '',
             });
         }
     }
@@ -134,6 +152,7 @@ export default class ChatMenu extends React.Component {
                             )
                         })
                     }
+                    <Divider className="show-xs"/>
                 </SelectableList>
             </div>
         );

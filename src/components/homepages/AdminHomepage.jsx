@@ -49,10 +49,49 @@ export default class AdminHomepage extends React.Component {
         router.navigate(value);
     }
 
+
+    /**
+     * Return the selected tab according to the route name
+     */
+    _tabFromRouteName(name) {
+        switch (name) {
+            case 'alert':
+                return 'alert';
+            case 'home':
+            case 'chat':
+            case 'chat.channel':
+                return 'home';
+            case 'bars':
+                return 'bars';
+            case 'stock':
+                return 'stock';
+            case 'admin':
+            case 'admin.teams':
+            case 'admin.teams.id':
+            case 'admin.barrels':
+            case 'admin.alerts':
+                return 'admin';
+        }
+    }
+
     render() {
         return (
             <div className="AdminPage">
-                <Tabs className="AdminPage__tabs" onChange={this._handleTabChange} value={this.state.route.name}>
+
+
+                {/* Tabs for tablet */}
+                <Tabs className="AdminPage__tabs show-sm" onChange={this._handleTabChange} value={this._tabFromRouteName(this.state.route.name)}>
+                    <Tab label="Chat" value="home"/>
+                    <Tab label="Alertes" value="alert"/>
+                    <Tab label="Bars" value="bars"/>
+                    { (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
+                        <Tab label="Gestion du stock" value="stock"/>
+                    }
+                    <Tab label="Administration" value="admin"/>
+                </Tabs>
+
+                {/* Tabs for desktop */}
+                <Tabs className="AdminPage__tabs hide-sm" onChange={this._handleTabChange} value={this._tabFromRouteName(this.state.route.name)}>
                     <Tab label="Dashboard" value="home"/>
                     <Tab label="Bars" value="bars"/>
                     { (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
@@ -60,18 +99,21 @@ export default class AdminHomepage extends React.Component {
                     }
                     <Tab label="Administration" value="admin"/>
                 </Tabs>
+
+
                     {(() => {
                         let name = this.state.route.name;
                         switch(name) {
 
                             default:
                             case 'home':
+                            case 'alert':
                             case 'chat':
                             case 'chat.channel':
                                 return (
                                     <div className="AdminPage__splitscreen">
-                                        <AlertPage className={name != 'home' ? 'AdminPage__splitscreen__secondary':''}/>
-                                        <ChatPage className={name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
+                                        <AlertPage className={name != 'alert' ? 'AdminPage__splitscreen__secondary':''}/>
+                                        <ChatPage className={name != 'home' && name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
                                     </div>
                                 );
 

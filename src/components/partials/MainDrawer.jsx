@@ -57,7 +57,7 @@ class MainDrawer extends React.Component {
         };
 
         return (
-            <div>
+            <div className="show-xs">
                 <IconButton iconStyle={style.icon} onTouchTap={this._handleToggle}>
                     <NavigationMenu/>
                 </IconButton>

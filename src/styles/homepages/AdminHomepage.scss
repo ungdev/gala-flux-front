@@ -65,16 +65,23 @@
 }
 
 
-/**
- * Hide menu enable drawer
- */
 @media only screen and (max-width: $screen-max-sm) {
-    .AdminPage__splitscreen__menu {
+    /**
+     * Hide secondary part of the splitscreen
+     */
+    .AdminPage__splitscreen__secondary {
         display: none;
     }
 }
 
 @media only screen and (max-width: $screen-max-xs) {
+    /**
+     * Hide menu enable drawer
+     */
+    .AdminPage__splitscreen__menu {
+        display: none;
+    }
+
     /**
      * Hide tabs
      */
@@ -83,13 +90,5 @@
     }
     .AdminPage__content, .AdminPage__splitscreen {
         top: $AppBarHeight-xs + $TabsHeight-xs;
-    }
-
-
-    /**
-     * Hide secondary part of the splitscreen
-     */
-    .AdminPage__splitscreen__secondary {
-        display: none;
     }
 }

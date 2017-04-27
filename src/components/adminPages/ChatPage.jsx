@@ -35,7 +35,7 @@ export default class ChatPage extends React.Component {
                         <ChatMessageList channel={channel}/>
                         <ChatMessageForm channel={channel}/>
                     </div>
-                    <ChatMenu route={this.state.route}/>
+                    <ChatMenu route={this.state.route} selectDefault={true}/>
                 </div>
             </div>
         );
