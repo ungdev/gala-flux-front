@@ -1,16 +1,13 @@
 import React from 'react';
 
-import BottleStore from '../../stores/BottleStore';
 import BottleTypeStore from '../../stores/BottleTypeStore';
 import AuthStore from '../../stores/AuthStore';
 import NotificationActions from '../../actions/NotificationActions'
 
 import SelectableList from '../partials/SelectableList.jsx'
 import BottleTypeListItem from './partials/BottleTypeListItem.jsx'
-import { List, ListItem, makeSelectable } from 'material-ui/List';
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import Avatar from 'material-ui/Avatar';
 import UpdateBottleTypeDialog from './dialogs/UpdateBottleTypeDialog.jsx';
 import NewBottleTypeDialog from './dialogs/NewBottleTypeDialog.jsx';
 
@@ -25,7 +22,6 @@ export default class BottleTypeList extends React.Component {
 
         this.state = {
             bottleTypes: [],
-            counts: {},
             showUpdateBottleTypeDialog: false,
             showNewBottleTypeDialog: false,
             selectedType: null,
@@ -35,7 +31,6 @@ export default class BottleTypeList extends React.Component {
         this._toggleNewBottleTypeDialog = this._toggleNewBottleTypeDialog.bind(this);
         this._toggleUpdateBottleTypeDialog = this._toggleUpdateBottleTypeDialog.bind(this);
         this._loadData = this._loadData.bind(this);
-        this._unloadData = this._unloadData.bind(this);
         this._updateData = this._updateData.bind(this);
     }
 
@@ -44,16 +39,14 @@ export default class BottleTypeList extends React.Component {
         this._loadData();
 
         // listen the stores changes
-        BottleStore.addChangeListener(this._updateData);
         BottleTypeStore.addChangeListener(this._updateData);
     }
 
     componentWillUnmount() {
         // clear store
-        this._unloadData();
+        BottleTypeStore.unloadData(this.BottleTypeStoreToken);
 
         // remove the stores listeners
-        BottleStore.removeChangeListener(this._updateData);
         BottleTypeStore.removeChangeListener(this._updateData);
     }
 
@@ -70,46 +63,21 @@ export default class BottleTypeList extends React.Component {
             // save the component token
             this.BottleTypeStoreToken = data.token;
 
-            // Load Bottle counts per types
-            return BottleStore.loadData(null);
-        })
-        .then(data => {
-            // ensure that last token doen't exist anymore.
-            BottleStore.unloadData(this.BottleStoreToken);
-
-            // save the component token
-            this.BottleStoreToken = data.token;
-
             // Save the new state value
             this._updateData();
+
         })
         .catch(error => {
-            NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des types de bouteilles', error);
+            NotificationActions.error("Une erreur s'est produite pendant le chargement de la liste des types de bouteilles", error);
         });
-    }
-
-    /**
-     * clear stores
-     */
-    _unloadData() {
-        BottleTypeStore.unloadData(this.BottleTypeStoreToken);
     }
 
     /**
      * Update data according to stores without adding new filter to it
      */
     _updateData() {
-        let counts = {};
-        for (let bottle of BottleStore.find()) {
-            if(!counts[bottle.type]) {
-                counts[bottle.type] = 0;
-            }
-            counts[bottle.type]++;
-        }
-
         this.setState({
-            bottleTypes: BottleTypeStore.find(),
-            counts: counts,
+            bottleTypes: BottleTypeStore.find()
         });
     }
 
@@ -144,7 +112,6 @@ export default class BottleTypeList extends React.Component {
                                 return  <BottleTypeListItem
                                         key={type.id}
                                         type={type}
-                                        count={this.state.counts[type.id]}
                                         onSelection={_ => this._toggleUpdateBottleTypeDialog(type)}
                                     />
                             })
@@ -169,11 +136,7 @@ export default class BottleTypeList extends React.Component {
                 <UpdateBottleTypeDialog
                     show={this.state.showUpdateBottleTypeDialog}
                     type={this.state.selectedType}
-                    count={
-                        (this.state.selectedType && this.state.counts[this.state.selectedType.id])
-                        ? this.state.counts[this.state.selectedType.id]
-                        : 0
-                    }
+                    count={0}
                     close={this._toggleUpdateBottleTypeDialog}
                 />
             </div>

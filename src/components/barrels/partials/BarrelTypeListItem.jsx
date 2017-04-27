@@ -18,8 +18,20 @@ export default class BarrelTypeListItem extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            type: props.type,
+            count: props.count
+        };
+
         // binding
         this._handleSelection = this._handleSelection.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            type: nextProps.type,
+            count: nextProps.count
+        });
     }
 
     /**
@@ -32,15 +44,15 @@ export default class BarrelTypeListItem extends React.Component {
     render() {
         let secondaryText = '';
         if(this.props.count !== undefined) {
-            secondaryText = (this.props.count > 1) ? this.props.count + ' fûts' :  this.props.count + ' fût';
+            secondaryText = (this.state.count > 1) ? this.state.count + ' fûts' :  this.state.count + ' fût';
         }
 
         return (
             <ListItem
                 className="BarrelTypeListItem"
-                primaryText={this.props.type.name}
+                primaryText={this.state.type.name}
                 secondaryText={secondaryText}
-                leftAvatar={<Avatar className="BarrelTypeListItem__avatar">{this.props.type.shortName}</Avatar>}
+                leftAvatar={<Avatar className="BarrelTypeListItem__avatar">{this.state.type.shortName}</Avatar>}
                 onTouchTap={this._handleSelection}
             />
         );

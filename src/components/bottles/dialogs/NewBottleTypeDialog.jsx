@@ -3,7 +3,7 @@ import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import { Grid, Row, Col } from 'react-flexbox-grid';
+import { Row, Col } from 'react-flexbox-grid';
 
 import BottleTypeService from '../../../services/BottleTypeService';
 import NotificationActions from '../../../actions/NotificationActions';
@@ -21,7 +21,7 @@ export default class NewBottleTypeDialog extends React.Component {
                 'quantityPerBox': '4',
                 'sellPrice': '0',
                 'supplierPrice': '0',
-                'originalStock': '',
+                'originalStock': '0',
             },
             errors: {},
             shortNameModified: false,
@@ -44,26 +44,26 @@ export default class NewBottleTypeDialog extends React.Component {
         let shortNameModified = this.state.shortNameModified;
 
         // Set shortName modification flag
-        if(field == 'shortName') {
-            shortNameModified = (value != '');
+        if(field === 'shortName') {
+            shortNameModified = (value !== '');
         }
-        else if(values.shortName == '') {
+        else if(values.shortName === '') {
             shortNameModified = false;
         }
 
         // Float number testing
         const numberAttributes = ["sellPrice", "supplierPrice", "quantityPerBox"];
-        if (numberAttributes.indexOf(field) != -1) {
+        if (numberAttributes.indexOf(field) !== -1) {
             values[field] = values[field].replace(',', '.').replace(/[^0-9\.]/, '');
         }
 
         // Integer number testing
-        if(!shortNameModified && field == 'count') {
+        if(!shortNameModified && field === 'count') {
             values[field] = values[field].replace(/[^0-9]/, '');
         }
 
         // Generate shortname
-        if(!shortNameModified && field == 'name') {
+        if(!shortNameModified && field === 'name') {
             let words = value.split(' ');
             if(words.length > 2 && words[2]) {
                 values.shortName = (words[0][0] + words[1][0] + words[2][0]).toUpperCase().trim();
@@ -77,7 +77,7 @@ export default class NewBottleTypeDialog extends React.Component {
         }
 
         // shortName testing
-        if (field == 'name' || field == 'shortName') {
+        if (field === 'name' || field === 'shortName') {
             values.shortName = values.shortName.toUpperCase().replace(/[^A-z]/, '');
         }
 
@@ -100,11 +100,6 @@ export default class NewBottleTypeDialog extends React.Component {
         // Submit
         BottleTypeService.create(this.state.values)
         .then((type) => {
-
-            // Set the bottle number
-            return BottleTypeService.setBottleNumber(type.id, this.state.values.originalStock);
-        })
-        .then(() => {
             this.setState({
                 values: {
                     'name': '',
@@ -112,7 +107,7 @@ export default class NewBottleTypeDialog extends React.Component {
                     'quantityPerBox': '4',
                     'sellPrice': '0',
                     'supplierPrice': '0',
-                    'originalStock': '',
+                    'originalStock': '0',
                 },
                 errors: {},
             });
@@ -232,7 +227,7 @@ export default class NewBottleTypeDialog extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Nombre de bouteilles"
+                                floatingLabelText="Nombre de caisses"
                                 errorText={this.state.errors.originalStock}
                                 value={this.state.values.originalStock}
                                 fullWidth={true}
