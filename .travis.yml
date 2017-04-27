@@ -9,6 +9,8 @@ cache:
         - node_modules
 
 script:
+    # Set API URI according to current branch
+    - if [[ $TRAVIS_BRANCH == 'master' ]] ; then ; FLUX_API_URI = "$FLUX_API_URI_PROD" ; else ; FLUX_API_URI = "$FLUX_API_URI_DEV" ; fi
     # Try to build
     - yarn run build
 deploy:
