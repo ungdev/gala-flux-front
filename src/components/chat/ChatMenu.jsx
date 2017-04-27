@@ -126,7 +126,7 @@ export default class ChatMenu extends React.Component {
 
                     { this.state.channels.group.length > 0 &&
                         <div>
-                            <Divider/>
+                            <Divider className="hide-xs"/>
                             <Subheader className="ChatMenu__subheader">Groupe</Subheader>
                         </div>
                     }
@@ -141,7 +141,7 @@ export default class ChatMenu extends React.Component {
 
                     { this.state.channels.private.length > 0 &&
                         <div>
-                            <Divider/>
+                            <Divider className="hide-xs"/>
                             <Subheader className="ChatMenu__subheader">Privé</Subheader>
                         </div>
                     }
@@ -152,7 +152,6 @@ export default class ChatMenu extends React.Component {
                             )
                         })
                     }
-                    <Divider className="show-xs"/>
                 </SelectableList>
             </div>
         );

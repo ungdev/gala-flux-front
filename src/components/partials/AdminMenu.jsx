@@ -48,7 +48,10 @@ export default class AdminMenu extends React.Component {
             <div className={this.props.className}>
                 <SelectableList onChange={this._handleChange} value={this.state.route.name} className="AdminMenu">
 
-                    <ChatMenu route={this.state.route} onChange={(channel) => this.props.onChange('chat.channel', {channel: channel})} />
+                    <ListItem value="chat" className="AdminMenu__mainItem">Chat</ListItem>
+                    <div className="show-xs">
+                        <ChatMenu route={this.state.route} onChange={(channel) => this.props.onChange('chat.channel', {channel: channel})} />
+                    </div>
 
                     <ListItem value="home" className="AdminMenu__mainItem">Alertes</ListItem>
 
