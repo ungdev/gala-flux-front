@@ -79,7 +79,7 @@ export default class UpdateAlertDialog extends React.Component {
             e.preventDefault();
         }
 
-        AlertService.updateAlert(this.state.alert.id, this.state.values)
+        AlertService.update(this.state.alert.id, this.state.values)
             .then((alert) => {
                 NotificationActions.snackbar('L\'alerte ' + alert.name + ' a bien été modifiée.');
                 this.focusField.focus();
