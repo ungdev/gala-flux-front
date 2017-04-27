@@ -15,8 +15,15 @@
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
+    border-radius: 2px;
+    transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
 }
+
+.AlertButton_button.green_background, .AlertButton_button.orange_background {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
 
 .AlertButton_iconButton {
     border: none !important;
@@ -24,6 +31,7 @@
     height: auto !important;
     padding: 4px 8px !important;
     background-color: #fff !important;
+    transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
 }
 
 .fullWidth {
@@ -34,19 +42,29 @@
     cursor: pointer;
     background-color: #e6e6e6;
 }
+.AlertButton_button:focus {
+    outline: none;
+}
 
 .AlertButton_active_container {
     width: 100%;
     display: flex;
     margin-top: 4px;
-}
+    box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
+    border-radius: 2px;
 
-.AlertButton_active_container > * {
-    display: inline-block;
+    > * {
+        display: inline-block;
+    }
+
+    > .AlertButton_iconButton:last-child {
+        border-top-right-radius: 2px;
+        border-bottom-right-radius: 2px;
+    }
 }
 
 .AlertButton_autowidth {
-    width: 100%
+    width: 100%;
 }
 
 .AlertButton_input_blur {
@@ -63,6 +81,14 @@
 .AlertButton_required {
     z-index: 10;
     position: relative;
+    box-shadow: rgba(0, 0, 0, 0.247059) 0px 14px 45px, rgba(0, 0, 0, 0.219608) 0px 10px 18px;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+
+    > .AlertButton_button {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
 }
 
 .AlertButton_input_container {
@@ -75,19 +101,28 @@
     border-right: 2px solid #fff;
 }
 
-.green_background, button.green_background:hover {
-    background: color($green, 600) !important;
+.green_background {
+    background: color($teal, 600) !important;
     color: #fff !important;
 }
+button.green_background:hover {
+    background: color($teal, 700) !important;
+}
 
-.orange_background, button.orange_background:hover {
+.orange_background {
     background: color($orange, 600);
     color: #fff;
 }
+.orange_background:hover {
+    background: color($orange, 700);
+}
 
-.red_background, button.red_background:hover {
+.red_background {
     background: color($red, 600);
     color: #fff;
+}
+button.red_background:hover {
+    background: color($red, 700);
 }
 
 .SmallIcon {

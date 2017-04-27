@@ -23,12 +23,9 @@
         flex-grow: 0;
         min-width: 48px !important;
 
-        > button {
+        * {
             height: 48px !important;
             width: 100%;
-        }
-
-        * {
             border-radius: 0 !important;
         }
     }
