@@ -8,15 +8,15 @@ These instructions will get you a copy of the project on your local machine for 
 
 ### Prerequisites
 
-#### Node Package Manager
-[get NPM here](https://www.npmjs.com/)
+* [Yarn](https://yarnpkg.com/lang/en/docs/install/)
+* NodeJS 7
 
 ### Installing
 
 After cloning the repository locally, install the project dependencies.
 
 ```
-npm install
+yarn install
 ```
 
 The *flux2-client* communicate with *flux2-server* using webSockets.
@@ -25,7 +25,7 @@ Look at */src/index.html* and change the server URL if necessary.
 Now you can run the app :
 
 ```
-npm start
+yarn dev
 ```
 
 ## Production deployment
@@ -67,7 +67,7 @@ FLUX_API_URI_DEV = https://api.flux-dev.uttnetgroup.fr
 
 - [React.js](https://facebook.github.io/react/) - A javascript library for building user interfaces
 - [Material ui](https://material-ui-1dab0.firebaseapp.com/#/layout/responsive-ui) - A set of React Components that implement Google's material design
-- [NPM](https://www.npmjs.com/) - The Javascript package manager
+- [Yarn](https://yarnpkg.com/) - Javascript package manager
 - [WebPack](https://webpack.js.org/concepts/) - A module bundler for modern Javascript applications.
 - [Babel](https://babeljs.io/) - A Javascript transpiler
 - [Sails socket client](http://sailsjs.com/documentation/reference/web-sockets/socket-client) - Client library of the Sails.js framework
