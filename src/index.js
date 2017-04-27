@@ -5,7 +5,6 @@ import ReactDOM from "react-dom";
 var socketIOClient = require('socket.io-client');
 var sailsIOClient = require('sails.io.js');
 window.io = sailsIOClient(socketIOClient);
-console.log(window.io)
 io.sails.autoConnect = false;
 
 // TapEvent

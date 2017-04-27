@@ -55,7 +55,8 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             "process.env": {
-                NODE_ENV: JSON.stringify("development")
+                NODE_ENV: JSON.stringify("development"),
+                FLUX_API_URI: JSON.stringify(process.env.FLUX_API_URI)
             }
         }),
         HtmlWebpackPluginConfig,

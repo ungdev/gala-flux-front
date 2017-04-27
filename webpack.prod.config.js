@@ -53,7 +53,8 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             "process.env": {
-                NODE_ENV: JSON.stringify("production")
+                NODE_ENV: JSON.stringify("production"),
+                FLUX_API_URI: JSON.stringify(process.env.FLUX_API_URI)
             }
         }),
         new UglifyJSPlugin({
