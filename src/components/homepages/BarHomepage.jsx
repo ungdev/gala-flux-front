@@ -1,7 +1,8 @@
 import React from 'react';
 
+import ChatMessageList from '../chat/ChatMessageList.jsx';
+import ChatMessageForm from '../chat/ChatMessageForm.jsx';
 import { Row, Col } from 'react-flexbox-grid';
-import Chat from '../chat/Chat.jsx';
 import BarBarrels from '../barrels/BarBarrels.jsx';
 import BarAlertButtons  from '../alertButtons/BarAlertButtons.jsx';
 
@@ -19,7 +20,8 @@ export default class BarHomepage extends React.Component {
                     <BarBarrels />
                 </Col>
                 <Col xs={12} sm={3} className="BarHomePage_col">
-                    <Chat />
+                    <ChatMessageList channel={null}/>
+                    <ChatMessageForm channel={null}/>
                 </Col>
             </Row>
         );

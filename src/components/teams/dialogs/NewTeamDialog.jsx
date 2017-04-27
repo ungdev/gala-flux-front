@@ -54,7 +54,7 @@ export default class NewTeamDialog extends React.Component {
             e.preventDefault();
         }
         // Submit
-        TeamService.createTeam(this.state.values)
+        TeamService.create(this.state.values)
         .then((team) => {
             this.setState({ values: {
                 name: '',

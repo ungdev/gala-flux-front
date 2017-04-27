@@ -2,6 +2,7 @@ import React from 'react';
 import router from '../../router';
 
 import AuthStore from '../../stores/AuthStore';
+import ChatMenu from '../chat/ChatMenu.jsx'
 
 import { ListItem } from 'material-ui/List';
 import SelectableList from './SelectableList.jsx';
@@ -49,6 +50,9 @@ export default class AdminMenu extends React.Component {
 
                     <ListItem value="home" className="AdminMenu__mainItem">Dashboard</ListItem>
                     <ListItem value="chat" className="AdminMenu__mainItem AdminMenu__show-xs">Chat</ListItem>
+                    <div className="AdminMenu__show-xs">
+                        <ChatMenu route={this.state.route} onChange={(channel) => this.props.onChange('chat.channel', {channel: channel})} />
+                    </div>
 
                     <ListItem value="bars" className="AdminMenu__mainItem">Bars</ListItem>
 
