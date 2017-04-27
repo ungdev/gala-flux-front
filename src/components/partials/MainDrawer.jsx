@@ -7,6 +7,8 @@ import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 import AdminMenu from './AdminMenu.jsx';
+import BarMenu from './BarMenu.jsx';
+import AuthStore from '../../stores/AuthStore';
 
 class MainDrawer extends React.Component {
 
@@ -65,7 +67,11 @@ class MainDrawer extends React.Component {
                     open={this.state.open}
                     onRequestChange={(open) => this.setState({open})}
                 >
-                    <AdminMenu route={this.state.route} onChange={this._handleChange}/>
+                    {AuthStore.can('ui/admin') ?
+                        <AdminMenu route={this.state.route} onChange={this._handleChange}/>
+                        :
+                        <BarMenu route={this.state.route} onChange={this._handleChange}/>
+                    }
                 </Drawer>
             </div>
         );

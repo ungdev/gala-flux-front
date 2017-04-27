@@ -1,17 +1,61 @@
 @import '../Constants';
 
 .BarHomePage {
-    /* avoid horizontal scroll */
-    margin-right: 0 !important;
-    margin-left: 0 !important;
-
-    /* full height */
     top: $AppBarHeight;
     bottom: 0;
     position: fixed;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+
+    > div {
+        display: flex;
+        flex-grow: 1;
+        flex-basis: 0;
+        flex-direction: column;
+        overflow: auto;
+    }
+
+    > .BarHomePage__alerts {
+        flex-grow: 0.8;
+    }
+
+    > .BarHomePage__stock {
+        flex-grow: 1.5;
+    }
+
+    > .BarHomePage__chat {
+        flex-grow: 1;
+    }
 }
 
-.BarHomePage_col {
-    overflow-y: auto;
-    overflow-x: hidden;
+
+/**
+ * Hide menu enable drawer
+ */
+@media only screen and (max-width: $screen-max-sm) {
+
+}
+
+
+@media only screen and (max-width: $screen-max-xs) {
+    /**
+     * Reduce size of the appbar
+     */
+    .BarHomePage {
+        top: $AppBarHeight-xs;
+
+        > .BarHomePage__alerts, > .BarHomePage__chat, > .BarHomePage__stock {
+            flex-grow: 1;
+        }
+    }
+
+
+    /**
+     * Show only primary view
+     */
+    .BarHomePage__col--secondary {
+        display: none !important;
+    }
 }

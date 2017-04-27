@@ -8,22 +8,44 @@ import BarAlertButtons  from '../alertButtons/BarAlertButtons.jsx';
 
 require('../../styles/homepages/BarHomepage.scss');
 
+/**
+ * @param {Object} route Route object given by the router
+ */
 export default class BarHomepage extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            route: props.route,
+        };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            route: nextProps.route,
+        });
+    }
+
     render() {
+        let name = 'chat';
+        if(this.state.route.name == 'stock' || this.state.route.name == 'alert') {
+            name = this.state.route.name;
+        }
+
         return (
-            <Row className="BarHomePage">
-                <Col xs={12} sm={3} className="AlertButtons_container BarHomePage_col">
+            <div className="BarHomePage">
+                <div className={('BarHomePage__alerts ' + (name != 'alert' ? 'BarHomePage__col--secondary':''))}>
                     <BarAlertButtons />
-                </Col>
-                <Col xs={12} sm={6} className="BarHomePage_col">
+                </div>
+                <div className={('BarHomePage__stock ' + (name != 'stock' ? 'BarHomePage__col--secondary':''))}>
                     <BarBarrels />
-                </Col>
-                <Col xs={12} sm={3} className="BarHomePage_col">
+                </div>
+                <div className={('BarHomePage__chat ' + (name != 'chat' ? 'BarHomePage__col--secondary':''))}>
                     <ChatMessageList channel={null}/>
                     <ChatMessageForm channel={null}/>
-                </Col>
-            </Row>
+                </div>
+            </div>
         );
     }
 }

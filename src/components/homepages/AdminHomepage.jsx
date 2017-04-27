@@ -1,5 +1,5 @@
 import React from 'react';
-import { routeNode } from 'react-router5';
+import router from '../../router';
 
 import { Tabs, Tab } from 'material-ui/Tabs';
 
@@ -17,7 +17,11 @@ import TeamDetailsPage from '../adminPages/TeamDetailsPage.jsx';
 
 require('../../styles/homepages/AdminHomepage.scss');
 
-class AdminHomepage extends React.Component {
+
+/**
+ * @param {Object} route Route object given by the router
+ */
+export default class AdminHomepage extends React.Component {
 
     constructor(props) {
         super(props);
@@ -25,7 +29,6 @@ class AdminHomepage extends React.Component {
         this.state = {
             route: props.route,
         };
-        this.router = props.router;
 
         // binding
         this._handleTabChange = this._handleTabChange.bind(this);
@@ -37,27 +40,13 @@ class AdminHomepage extends React.Component {
         });
     }
 
-    componentDidMount() {
-        // Re-render every route change
-        this.router.addListener(route => {
-            this.setState({
-                route: route,
-            });
-        });
-
-        // Init route
-        this.setState({
-            route: this.props.route,
-        });
-    }
-
 
     /**
      * On tab change, navigate to new uri
      * The new route will automatically show the corresponding page
      */
     _handleTabChange(value) {
-        this.router.navigate(value);
+        router.navigate(value);
     }
 
     render() {
@@ -138,4 +127,3 @@ class AdminHomepage extends React.Component {
         );
     }
 }
-export default routeNode('')(AdminHomepage);

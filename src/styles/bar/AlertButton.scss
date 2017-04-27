@@ -2,9 +2,9 @@
 @import '../Colors';
 
 .AlertButtons_container {
-    padding: 15px !important;
-    border-right: 2px solid #e6e6e6;
-    background: #e6e6e6;
+    padding: 16px !important;
+    background: $background-gray;
+    height: 100%;
 }
 
 .AlertButton_button {
