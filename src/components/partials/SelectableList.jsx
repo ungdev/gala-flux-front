@@ -47,6 +47,7 @@ function wrapState(ComposedComponent) {
         render() {
             return (
                 <ComposedComponent
+                    className={this.props.className}
                     value={this.state.value}
                     onChange={this._handleRequestChange}
                 >

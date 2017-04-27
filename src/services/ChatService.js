@@ -1,4 +1,5 @@
 import BaseService from './BaseService';
+import {ApiError} from '../errors';
 
 /**
  * Class used for all about Authentication
@@ -10,19 +11,14 @@ class ChatService extends BaseService {
     }
 
     /**
-     * Send a new message to the server
+     * Pull the current list of channels from the server
      *
-     * @param {string} text
-     * @return {Promise}
+     * @return {Promise}    Promise that resolve to the list of channels
      */
-    sendMessage(text) {
+    getChannels() {
         return new Promise((resolve, reject) => {
-            iosocket.request({
-                method: 'post',
-                url: '/testcreate',
-                data: {text}
-            }, (resData, jwres) => {
-                if (jwres.error) {
+            iosocket.get('/message/channels', (resData, jwres) => {
+                if(jwres.error) {
                     return reject(new ApiError(jwres));
                 }
                 return resolve(resData);

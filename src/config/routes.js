@@ -10,6 +10,14 @@ export default [
     { name: 'home', path: '/'},
     { name: 'bars', path: '/bars', title: 'Bars' },
     { name: 'chat', path: '/chat', title: 'Chat' },
+        { name: 'chat.channel', path: '/:channel', title: (route) => {
+            switch(route.params.channel.split(':')[0]) {
+                case 'public': return 'Publique : ' + route.params.channel.split(':')[1];
+                case 'group': return 'Groupe : ' + route.params.channel.split(':')[1];
+                case 'private': return 'Privé : ' + route.params.channel.split(':')[1];
+                default: return 'Chat';
+            }
+        }},
     { name: 'stock', path: '/stock', title: 'Gestion du stock' },
     { name: 'admin', path: '/admin', title: 'Administration' },
         { name: 'admin.teams', path: '/team', title: 'Gestion des équipes' },
