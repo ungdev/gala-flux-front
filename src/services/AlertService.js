@@ -1,5 +1,4 @@
 import {ApiError} from '../errors';
-import AlertActions from '../actions/AlertActions';
 import BaseService from './BaseService';
 
 /**
