@@ -19,7 +19,7 @@ After cloning the repository locally, install the project dependencies.
 npm install
 ```
 
-The *flux2-client* communicate with *flux2-server* using webSockets. 
+The *flux2-client* communicate with *flux2-server* using webSockets.
 Look at */src/index.html* and change the server URL if necessary.
 
 ```
@@ -31,8 +31,7 @@ Now you can run the app :
 ```
 npm start
 ```
-
-## Run the tests
+dokku config:set flux2-client-dev BUILDPACK_URL=https://github.com/hone/heroku-buildpack-static
 
 ## Built with
 

@@ -6,10 +6,11 @@ const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
     inject: 'body'
 });
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
     entry: './src/index.js',
-    devtool: 'source-map',
+    devtool: 'eval',
     output: {
         path: path.resolve('dist'),
         filename: 'app.js',
@@ -48,6 +49,11 @@ module.exports = {
         historyApiFallback: true,
     },
     plugins: [
+        new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: JSON.stringify("development")
+            }
+        }),
         HtmlWebpackPluginConfig,
         new ExtractTextPlugin({
             filename: 'public/style.css',
