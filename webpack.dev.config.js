@@ -10,7 +10,7 @@ const webpack = require('webpack');
 
 module.exports = {
     entry: './src/index.js',
-    devtool: 'eval',
+    devtool: 'eval-source-map',
     output: {
         path: path.resolve('dist'),
         filename: 'app.js',
@@ -39,6 +39,10 @@ module.exports = {
                 test: /\.jsx$/,
                 loader: 'babel-loader',
                 exclude: /node_modules/
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|svg)$/,
+                loader: 'file-loader?name=fonts/[name].[ext]'
             }
         ]
     },
