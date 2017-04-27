@@ -3,9 +3,9 @@ DOKKU_HOST=ung.utt.fr
 DOKKU_PROD=flux2-client
 DOKKU_DEV=flux2-client-dev
 
-if [[ -n $encrypted_799a7c5f264a_key ]] ; then
+if [[ -n $encrypted_e378bde8517e_key ]] ; then
     # Set up ssh key
-    openssl aes-256-cbc -K $encrypted_799a7c5f264a_key -iv $encrypted_799a7c5f264a_iv -in deploy_key.enc -out deploy_key -d
+    openssl aes-256-cbc -K $encrypted_e378bde8517e_key -iv $encrypted_e378bde8517e_iv -in deploy_key.enc -out deploy_key -d
     chmod 600 deploy_key
     mv deploy_key ~/.ssh/id_rsa
     eval $(ssh-agent)
