@@ -51,7 +51,7 @@ rm deploy_key deploy_key.pub
 git add deploy_key.enc
 ```
 
-On the dokku app, you have to `heroku-buildpack-static`
+On the dokku app, you have to use the buildpack `heroku-buildpack-static`
 
 ```
 dokku config:set flux2-client BUILDPACK_URL=https://github.com/hone/heroku-buildpack-static
