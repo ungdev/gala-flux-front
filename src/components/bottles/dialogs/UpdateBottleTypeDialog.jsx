@@ -3,7 +3,7 @@ import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import { Grid, Row, Col } from 'react-flexbox-grid';
+import { Row, Col } from 'react-flexbox-grid';
 
 import BottleTypeService from '../../../services/BottleTypeService';
 import NotificationActions from '../../../actions/NotificationActions';
@@ -28,7 +28,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
                 'quantityPerBox': props.type ? props.type.quantityPerBox : null,
                 'sellPrice': props.type ? props.type.sellPrice : null,
                 'supplierPrice': props.type ? props.type.supplierPrice : null,
-                'originalStock': (props.originalStock ? props.originalStock : 0),
+                'originalStock': (props.type ? props.type.originalStock : 0),
             },
             errors: {},
             shortNameModified: true,
@@ -54,7 +54,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
                     'quantityPerBox': props.type ? props.type.quantityPerBox : this.state.values.quantityPerBox,
                     'sellPrice': props.type ? props.type.sellPrice : this.state.values.sellPrice,
                     'supplierPrice': props.type ? props.type.supplierPrice : this.state.values.supplierPrice,
-                    'originalStock': (props.originalStock ? props.originalStock : this.state.values.originalStock),
+                    'originalStock': (props.type ? props.type.originalStock : this.state.values.originalStock),
                 },
                 errors: {},
             });
@@ -74,26 +74,26 @@ export default class UpdateBottleTypeDialog extends React.Component {
         let shortNameModified = this.state.shortNameModified;
 
         // Set shortName modification flag
-        if(field == 'shortName') {
-            shortNameModified = (value != '');
+        if(field === 'shortName') {
+            shortNameModified = (value !== '');
         }
-        else if(values.shortName == '') {
+        else if(values.shortName === '') {
             shortNameModified = false;
         }
 
         // Float number testing
         const numberAttributes = ["sellPrice", "supplierPrice", "quantityPerBox"];
-        if (numberAttributes.indexOf(field) != -1) {
+        if (numberAttributes.indexOf(field) !== -1) {
             values[field] = values[field].replace(',', '.').replace(/[^0-9\.]/, '');
         }
 
         // Integer number testing
-        if(!shortNameModified && field == 'count') {
+        if(!shortNameModified && field === 'count') {
             values[field] = values[field].replace(/[^0-9]/, '');
         }
 
         // Generate shortname
-        if(!shortNameModified && field == 'name') {
+        if(!shortNameModified && field === 'name') {
             let words = value.split(' ');
             if(words.length > 2 && words[2]) {
                 values.shortName = (words[0][0] + words[1][0] + words[2][0]).toUpperCase().trim();
@@ -107,7 +107,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
         }
 
         // shortName testing
-        if (field == 'name' || field == 'shortName') {
+        if (field === 'name' || field === 'shortName') {
             values.shortName = values.shortName.toUpperCase().replace(/[^A-z]/, '');
         }
 
@@ -141,18 +141,13 @@ export default class UpdateBottleTypeDialog extends React.Component {
         this.submitted = true;
         BottleTypeService.update(this.state.type.id, this.state.values)
         .then((type) => {
-
-            // Set the bottle number
-            return BottleTypeService.setBottleNumber(type.id, this.state.values.originalStock);
-        })
-        .then(() => {
             this.setState({
                 errors: {},
                 showReduceDialog: false,
             });
 
             this.submitted = false;
-            NotificationActions.snackbar('Les bouteilles ' + this.state.values.name + ' ont bien été modifiées.');
+            NotificationActions.snackbar('Le type ' + this.state.values.name + ' a bien été modifié.');
             this.focusField.focus();
             this.props.close();
         })
@@ -162,13 +157,13 @@ export default class UpdateBottleTypeDialog extends React.Component {
             let errors = {};
             if(error.status === 'ValidationError' && error.formErrors) {
                 for (let field in error.formErrors) {
-                    if(error.formErrors[field][0].rule == 'string') {
+                    if(error.formErrors[field][0].rule === 'string') {
                         errors[field] = 'Ce champ est vide ou contient une donnée invalide.';
                     }
-                    else if(error.formErrors[field][0].rule == 'unique') {
+                    else if(error.formErrors[field][0].rule === 'unique') {
                         errors[field] = 'Il existe déjà un autre type de bouteille avec cette valeur.';
                     }
-                    else if(error.formErrors[field][0].rule == 'required') {
+                    else if(error.formErrors[field][0].rule === 'required') {
                         errors[field] = 'Ce champ est obligatoire.';
                     }
                     else {
@@ -180,7 +175,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
             this.setState({ errors: errors });
 
             if(!Object.keys(errors).length) {
-                NotificationActions.error('Une erreur s\'est produite pendant la création du type de bouteille', error);
+                NotificationActions.error("Une erreur s'est produite pendant la création du type de bouteille", error);
             }
         });
     }

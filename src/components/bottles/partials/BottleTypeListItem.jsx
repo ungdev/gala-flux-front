@@ -18,8 +18,18 @@ export default class BottleTypeListItem extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            type: props.type,
+        };
+
         // binding
         this._handleSelection = this._handleSelection.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            type: nextProps.type
+        });
     }
 
     /**
@@ -31,16 +41,16 @@ export default class BottleTypeListItem extends React.Component {
 
     render() {
         let secondaryText = '';
-        if(this.props.originalStock !== undefined) {
-            secondaryText = (this.props.originalStock > 1) ? this.props.originalStock + ' fûts' :  this.props.originalStock + ' fût';
+        if(this.state.type.originalStock !== undefined) {
+            secondaryText = (this.state.type.originalStock > 1) ? this.state.type.originalStock + ' caisses' :  this.state.type.originalStock + ' caisse';
         }
 
         return (
             <ListItem
                 className="BottleTypeListItem"
-                primaryText={this.props.type.name}
+                primaryText={this.state.type.name}
                 secondaryText={secondaryText}
-                leftAvatar={<Avatar className="BottleTypeListItem__avatar">{this.props.type.shortName}</Avatar>}
+                leftAvatar={<Avatar className="BottleTypeListItem__avatar">{this.state.type.shortName}</Avatar>}
                 onTouchTap={this._handleSelection}
             />
         );

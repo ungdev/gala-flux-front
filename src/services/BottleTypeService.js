@@ -13,7 +13,7 @@ class BottleTypeService extends BaseService {
      * Make a request to set the number of bottles for a type
      *
      * @param {string} id Type id
-     * @param {integer} number Number of bottles wanted
+     * @param {number} number Number of bottles wanted
      * @return {Promise}
      */
     setBottleNumber(id, number) {
