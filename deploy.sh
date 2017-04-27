@@ -21,6 +21,8 @@ if [[ -n $encrypted_e378bde8517e_key ]] ; then
     cd deploy
     git init
     git add . -A
+    git config user.name "Travis"
+    git config user.email "ung@utt.fr"
     git commit -m "Deploy"
     # Deploy
     if [[ $TRAVIS_BRANCH == 'master' ]] ; then
@@ -28,5 +30,5 @@ if [[ -n $encrypted_e378bde8517e_key ]] ; then
     else
         git remote add dokku dokku@$DOKKU_HOST:$DOKKU_DEV
     fi
-    git push dokku HEAD:refs/heads/master -f
+    git push dokku master -f
 fi
