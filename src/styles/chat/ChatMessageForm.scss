@@ -2,7 +2,7 @@
 
 .ChatMessageForm {
     display: flex;
-    flex-basis: 32px;
+    flex-basis: 48px;
     flex-shrink: 0;
     flex-grow: 0;
     overflow: hidden;
@@ -12,8 +12,8 @@
         flex-grow: 1;
         border: 0;
         outline: 0;
-        padding: 0 5px;
-        height: 32px;
+        padding: 0 8px;
+        height: 48px;
     }
 
     .ChatMessageForm__button {
@@ -24,9 +24,8 @@
         min-width: 48px !important;
 
         > button {
-            height: 32px !important;
+            height: 48px !important;
             width: 100%;
-            line-height: 32px !important;
         }
 
         * {
