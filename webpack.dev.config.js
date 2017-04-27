@@ -6,10 +6,11 @@ const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
     inject: 'body'
 });
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
     entry: './src/index.js',
-    devtool: 'source-map',
+    devtool: 'eval-source-map',
     output: {
         path: path.resolve('dist'),
         filename: 'app.js',
@@ -38,6 +39,10 @@ module.exports = {
                 test: /\.jsx$/,
                 loader: 'babel-loader',
                 exclude: /node_modules/
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|svg)$/,
+                loader: 'file-loader?name=fonts/[name].[ext]'
             }
         ]
     },
@@ -48,6 +53,12 @@ module.exports = {
         historyApiFallback: true,
     },
     plugins: [
+        new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: JSON.stringify("development"),
+                FLUX_API_URI: JSON.stringify(process.env.FLUX_API_URI)
+            }
+        }),
         HtmlWebpackPluginConfig,
         new ExtractTextPlugin({
             filename: 'public/style.css',

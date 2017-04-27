@@ -1,0 +1,21 @@
+language: node_js
+sudo: false
+node_js:
+    - 7
+
+cache:
+    yarn: true
+    directories:
+        - node_modules
+
+script:
+    # Set API URI according to current branch
+    - 'if [[ $TRAVIS_BRANCH == "master" ]] ; then export FLUX_API_URI="$FLUX_API_URI_PROD" ; else export FLUX_API_URI="$FLUX_API_URI_DEV" ; fi'
+    # Try to build
+    - yarn run build
+deploy:
+    - provider: script
+      skip_cleanup: true
+      script: "./deploy.sh"
+      on:
+          all_branches: true
