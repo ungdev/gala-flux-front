@@ -24,6 +24,7 @@ export default class ChatMessageForm extends React.Component {
 
          this._handleChange = this._handleChange.bind(this);
          this._handleSubmit = this._handleSubmit.bind(this);
+         this.focus = this.focus.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -36,6 +37,7 @@ export default class ChatMessageForm extends React.Component {
 
     _handleSubmit(e) {
         e.preventDefault();
+        this.focus();
 
         // Ignore if field is empty
         if(!this.state.value) {
@@ -49,11 +51,17 @@ export default class ChatMessageForm extends React.Component {
         })
         .then(() => {
             this.setState({value: ''});
-            this.textInput.focus();
+            this.focus();
         })
         .catch(error => {
             NotificationActions.error('Une erreur s\'est produite pendant l\'envoi du message', error);
         });
+    }
+
+    focus() {
+        if(this.textInput) {
+            this.textInput.focus();
+        }
     }
 
     render() {
