@@ -143,3 +143,10 @@ button.red_background:hover {
     display: flex;
     width: 50%;
 }
+
+.AlertButton_input_label {
+    color: $theme-primary1Color;
+    font-size: 13px;
+    white-space: pre-line;
+    padding-top: 8px;
+}
