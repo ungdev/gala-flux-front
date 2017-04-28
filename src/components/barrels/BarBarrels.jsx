@@ -225,7 +225,6 @@ export default class BarBarrels extends React.Component {
                                                                 key={i}
                                                                 barrel={barrel}
                                                                 type={type}
-                                                                onClick={this._moveNextState}
                                                                 onRequestDelete={this._backPreviousState}
                                                             />
                                                 })
