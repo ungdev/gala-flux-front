@@ -93,7 +93,6 @@ export default class BarrelChip extends React.Component {
                 onTouchTap={((this.props.selectable && this.props.onSelection) || this.props.onClick) ? this._handleClick : undefined}
                 title={tooltip}
                 key={this.state.barrel.id}
-                style={{backgroundColor: background}}
             >
                 <Avatar className="BarrelChip__shortname"  backgroundColor={avatarBackground}>
                     {this.state.type.shortName}
