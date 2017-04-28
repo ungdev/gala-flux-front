@@ -13,6 +13,7 @@ import StockList from '../stock/StockList.jsx';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import LocalShipping from 'material-ui/svg-icons/maps/local-shipping';
 import Navagiation from 'material-ui/svg-icons/maps/navigation';
+import Paper from 'material-ui/Paper';
 
 require('../../styles/stock/StockPage.scss');
 
@@ -227,7 +228,7 @@ export default class StockPage extends React.Component {
 
         return (
             <div className="StockPage_container" id="StockPage_Top">
-                <div className="StockPage_filters_container">
+                <Paper className="StockPage_filters_container" zDepth="1">
                     <Filters
                         teams={this.state.teams}
                         types={this.state.types}
@@ -239,7 +240,6 @@ export default class StockPage extends React.Component {
                         <Col xs={12} sm={6} md={3}>
                             <RaisedButton
                                 label={`Déselectionner les fûts ${(this.state.selectedBarrels.length ? `(${this.state.selectedBarrels.length })` : '')}`}
-                                primary={true}
                                 disabled={this.state.selectedBarrels.length === 0}
                                 onClick={_ => this.setState({ selectedBarrels: [] })}
                                 fullWidth={true}
@@ -254,7 +254,7 @@ export default class StockPage extends React.Component {
                             />
                         </Col>
                     </Row>
-                </div>
+                </Paper>
 
                 <StockList
                     barrels={this._filteredBarrels()}
