@@ -23,19 +23,29 @@ class MainDrawer extends React.Component {
         // binding
         this._handleToggle = this._handleToggle.bind(this);
         this._handleChange = this._handleChange.bind(this);
+        this._handleRouteChange = this._handleRouteChange.bind(this);
     }
 
     componentDidMount() {
-        // Re-render every route change
-        router.addListener((route) => {
-            this.setState({
-                route: route,
-            });
-        })
+        router.addListener(this._handleRouteChange);
 
         // Init route
         this.setState({
             route: router.getState(),
+        });
+    }
+
+    componentWillUnmount() {
+        router.removeListener(this._handleRouteChange);
+    }
+
+    /**
+     * Re-render when the route change
+     * @param route
+     */
+    _handleRouteChange(route) {
+        this.setState({
+            route: route,
         });
     }
 
