@@ -141,7 +141,7 @@ export default class BarAlertButton extends React.Component {
     _handleKeyDown(e) {
         if (e.keyCode === 13) {
             e.preventDefault();
-            if(!e.ctrlKey) {
+            if(!e.ctrlKey && !e.shiftKey) {
                 this._commentAlert();
             }
             else {

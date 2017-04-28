@@ -24,6 +24,7 @@ export default class ChatMessageForm extends React.Component {
 
          this._handleChange = this._handleChange.bind(this);
          this._handleSubmit = this._handleSubmit.bind(this);
+         this._handleKeyDown = this._handleKeyDown.bind(this);
          this.focus = this.focus.bind(this);
     }
 
@@ -33,6 +34,22 @@ export default class ChatMessageForm extends React.Component {
 
     _handleChange(e) {
         this.setState({value: e.target.value ? e.target.value : ''});
+    }
+
+    /**
+     * Will submit on enter, and add new line on ctrl+enter
+     * @param e: event
+     */
+    _handleKeyDown(e) {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            if(!e.ctrlKey && !e.shiftKey) {
+                this._handleSubmit(e);
+            }
+            else {
+                this.setState({ value: this.state.value + '\n'});
+            }
+        }
     }
 
     _handleSubmit(e) {
@@ -65,16 +82,25 @@ export default class ChatMessageForm extends React.Component {
     }
 
     render() {
+
+        // Show multiline style only if there is more than one line in the field
+        let style = {};
+        if(this.state.value.indexOf('\n') !== -1) {
+            style.lineHeight = 'normal';
+        }
+
         return (
                 <form onSubmit={this._handleSubmit} className="ChatMessageForm">
-                    <input
+                    <textarea
                         className="ChatMessageForm__input"
                         type="text"
                         value={this.state.value}
                         onChange={this._handleChange}
+                        onKeyDown={this._handleKeyDown}
                         autoFocus={true}
                         ref={(input) => { this.textInput = input; }}
                         placeholder="Votre message.."
+                        style={style}
                     />
 
                     <RaisedButton
