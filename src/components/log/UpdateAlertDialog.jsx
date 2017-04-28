@@ -8,7 +8,6 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import { Row, Col } from 'react-flexbox-grid';
 
-import Confirm from '../partials/Confirm.jsx';
 import NotificationActions from '../../actions/NotificationActions';
 
 export default class UpdateAlertDialog extends React.Component {
