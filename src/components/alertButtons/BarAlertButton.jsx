@@ -161,7 +161,7 @@ export default class BarAlertButton extends React.Component {
                     alertButton
                 }
                 {
-                    this.state.showInput && commentRequired && <div className="AlertButton_input_blur"></div>
+                    this.state.showInput && commentRequired && <div className="AlertButton_input_blur" onTouchTap={_ => this._toggleMessageInput("done")}></div>
                 }
                 {
                     this.state.showInput &&
