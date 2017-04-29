@@ -228,7 +228,7 @@ export default class StockPage extends React.Component {
 
         return (
             <div className="StockPage_container" id="StockPage_Top">
-                <Paper className="StockPage_filters_container" zDepth="1">
+                <Paper className="StockPage_filters_container">
                     <Filters
                         teams={this.state.teams}
                         types={this.state.types}
