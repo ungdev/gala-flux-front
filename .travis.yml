@@ -11,6 +11,7 @@ cache:
 script:
     # Set API URI according to current branch
     - 'if [[ $TRAVIS_BRANCH == "master" ]] ; then export FLUX_API_URI="$FLUX_API_URI_PROD" ; else export FLUX_API_URI="$FLUX_API_URI_DEV" ; fi'
+    - 'if [[ $TRAVIS_BRANCH == "master" ]] ; then export DOKKU_APP_NAME=flux.uttnetgroup.fr ; else export DOKKU_APP_NAME=flux-dev.uttnetgroup.fr ; fi'
     # Try to build
     - yarn run build
 deploy:

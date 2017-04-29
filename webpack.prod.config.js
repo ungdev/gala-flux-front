@@ -55,7 +55,11 @@ module.exports = {
         new webpack.DefinePlugin({
             "process.env": {
                 NODE_ENV: JSON.stringify("production"),
-                FLUX_API_URI: JSON.stringify(process.env.FLUX_API_URI)
+                FLUX_API_URI: JSON.stringify(process.env.FLUX_API_URI),
+                TRAVIS_REPO_SLUG: JSON.stringify(process.env.TRAVIS_REPO_SLUG),
+                TRAVIS_BRANCH: JSON.stringify(process.env.TRAVIS_BRANCH),
+                TRAVIS_COMMIT: JSON.stringify(process.env.TRAVIS_COMMIT),
+                DOKKU_APP_NAME: JSON.stringify(process.env.DOKKU_APP_NAME),
             }
         }),
         new UglifyJSPlugin({
