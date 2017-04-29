@@ -175,8 +175,8 @@ export default class ChatMessageList extends React.Component {
                 {
                     // For each message, create a Message component
                     this.state.messages.map((messageGroup, i) => {
-                        let user = UserStore.findById(messageGroup[0].sender);
-                        let team = user ? TeamStore.findById(user.team) : null;
+                        let user = UserStore.findById(messageGroup[0].sender) || {name: 'Utilisateur supprimé'};
+                        let team = TeamStore.findById(user.team) || {name: 'Utilisateur supprimé'};
                         return (
                             <div className={(AuthStore.user && user.id == AuthStore.user.id ? 'ChatMessageList__container--own' : 'ChatMessageList__container')} key={messageGroup[0].id}>
                                 <Avatar
