@@ -7,10 +7,8 @@ import NotificationActions from '../../actions/NotificationActions'
 
 import SelectableList from '../partials/SelectableList.jsx'
 import BarrelTypeListItem from './partials/BarrelTypeListItem.jsx'
-import { List, ListItem, makeSelectable } from 'material-ui/List';
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import Avatar from 'material-ui/Avatar';
 import UpdateBarrelTypeDialog from './dialogs/UpdateBarrelTypeDialog.jsx';
 import NewBarrelTypeDialog from './dialogs/NewBarrelTypeDialog.jsx';
 
@@ -35,7 +33,6 @@ export default class BarrelTypeList extends React.Component {
         this._toggleNewBarrelTypeDialog = this._toggleNewBarrelTypeDialog.bind(this);
         this._toggleUpdateBarrelTypeDialog = this._toggleUpdateBarrelTypeDialog.bind(this);
         this._loadData = this._loadData.bind(this);
-        this._unloadData = this._unloadData.bind(this);
         this._updateData = this._updateData.bind(this);
     }
 
@@ -50,7 +47,7 @@ export default class BarrelTypeList extends React.Component {
 
     componentWillUnmount() {
         // clear store
-        this._unloadData();
+        BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
 
         // remove the stores listeners
         BarrelStore.removeChangeListener(this._updateData);
@@ -86,13 +83,6 @@ export default class BarrelTypeList extends React.Component {
         .catch(error => {
             NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des types de fûts', error);
         });
-    }
-
-    /**
-     * clear stores
-     */
-    _unloadData() {
-        BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
     }
 
     /**
