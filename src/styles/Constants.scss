@@ -3,12 +3,12 @@
 /**
  * Media queries
  */
-$screen-max-xs: 48em;
-$screen-min-sm: 48em;
-$screen-max-sm: 64em;
-$screen-min-md: 64em;
-$screen-max-md: 75em;
-$screen-min-lg: 75em;
+$screen-max-xs: 767px;
+$screen-min-sm: 768px;
+$screen-max-sm: 1023px;
+$screen-min-md: 1024px;
+$screen-max-md: 1199px;
+$screen-min-lg: 1200px;
 
 
 /**
@@ -37,3 +37,4 @@ $theme-borderColor: color($grey, 400);
 $theme-pickerHeaderColor: color($blue-grey, 800);
 // $theme-clockCircleColor: fade(c.darkBlack, 0.07);
 // $theme-shadowColor: c.fullBlack;
+$background-gray: #f1f1f1;

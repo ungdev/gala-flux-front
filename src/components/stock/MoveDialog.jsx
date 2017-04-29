@@ -3,6 +3,7 @@ import React from 'react';
 import NotificationActions from '../../actions/NotificationActions';
 import BarrelService from '../../services/BarrelService';
 import BarrelTypeStore from '../../stores/BarrelTypeStore';
+import TeamStore from '../../stores/TeamStore';
 
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -90,6 +91,7 @@ export default class MoveDialog extends React.Component {
                                                 style={styles.chip}
                                                 key={i}
                                                 barrel={barrel}
+                                                team={TeamStore.findById(barrel.place)}
                                                 type={BarrelTypeStore.findById(barrel.type)}
                                             />
                                 })

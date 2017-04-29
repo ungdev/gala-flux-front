@@ -100,7 +100,7 @@ export default class BarAlertButtons extends React.Component {
         const categories = Object.keys(this.state.buttons);
 
         return(
-            <div>
+            <div className="AlertButtons_container">
                 {
                     categories.map((category, i) => {
                         return  <div key={i}>

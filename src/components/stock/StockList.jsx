@@ -25,51 +25,37 @@ export default class StockList extends React.Component {
     }
 
     render() {
-        const styles = {
-            barrelChip: {
-                display: "inline-block"
-            },
-            barrelChipContainer: {
-                marginBottom: 30
-            },
-            cardHeader: {
-                fontWeight: "bold",
-                fontSize: 18
-            },
-            card: {
-                marginTop: 15
-            }
-        };
-
         return (
             <div>
                 {
                     Object.keys(this.state.barrels).map(location => {
                         let team = TeamStore.findById(location);
-                        return  <Card style={styles.card} key={location}>
+                        return  <Card className="StockPage__card" key={location}>
                                     <CardHeader
                                         title={team ? team.name : "Reserve"}
-                                        titleStyle={styles.cardHeader}
+                                        subtitle={team ? team.location : "QG Logistique"}
+                                        titleStyle={{
+                                            fontWeight: "bold",
+                                            fontSize: 18,
+                                        }}
                                     />
-                                    <CardText>
+                                    <CardText className="StockPage__card__body">
                                         {
                                             Object.keys(this.state.barrels[location]).map(typeId => {
                                                 let type = BarrelTypeStore.findById(typeId);
-                                                return  <div key={typeId} style={styles.barrelChipContainer}>
-                                                            <div className="BarrelChipContainer">
-                                                                {
-                                                                    this.state.barrels[location][typeId].map(barrel => {
-                                                                        return  <BarrelChip
-                                                                                    onSelection={this.props.handleBarrelSelection}
-                                                                                    key={barrel.id}
-                                                                                    type={type}
-                                                                                    barrel={barrel}
-                                                                                    selectable={true}
-                                                                                    selected={this.state.selected.includes(barrel)}
-                                                                                />
-                                                                    })
-                                                                }
-                                                            </div>
+                                                return  <div key={typeId} className="BarrelChipContainer">
+                                                            {
+                                                                this.state.barrels[location][typeId].map(barrel => {
+                                                                    return  <BarrelChip
+                                                                                onSelection={this.props.handleBarrelSelection}
+                                                                                key={barrel.id}
+                                                                                type={type}
+                                                                                barrel={barrel}
+                                                                                selectable={true}
+                                                                                selected={this.state.selected.includes(barrel)}
+                                                                            />
+                                                                })
+                                                            }
                                                         </div>
                                             })
                                         }

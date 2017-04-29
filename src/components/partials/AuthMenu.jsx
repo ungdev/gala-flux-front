@@ -94,9 +94,9 @@ class AuthMenu extends React.Component {
      *
      * @param event : used to get the position of the AuthMenu button
      */
-    _openMenu(event) {
-        this.setState({ openMenu: true, menuAnchor: event.currentTarget });
-        return false;
+    _openMenu(e) {
+        e.preventDefault();
+        this.setState({ openMenu: true, menuAnchor: e.currentTarget });
     }
 
     /**

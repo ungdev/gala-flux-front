@@ -1,7 +1,7 @@
 #!/bin/bash
 DOKKU_HOST=ung.utt.fr
-DOKKU_PROD=flux2-client
-DOKKU_DEV=flux2-client-dev
+DOKKU_PROD=flux.uttnetgroup.fr
+DOKKU_DEV=flux-dev.uttnetgroup.fr
 
 if [[ -n $encrypted_e378bde8517e_key ]] ; then
     # Set up ssh key

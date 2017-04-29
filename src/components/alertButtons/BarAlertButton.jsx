@@ -20,7 +20,8 @@ export default class BarAlertButton extends React.Component {
             button: props.button,
             alert: props.alert,
             showInput: false,
-            message: props.alert ? props.alert.message : ""
+            message: props.alert ? props.alert.message : "",
+            messageError: '',
         };
 
         // binding
@@ -30,6 +31,7 @@ export default class BarAlertButton extends React.Component {
         this._toggleMessageInput = this._toggleMessageInput.bind(this);
         this._handleInputChange = this._handleInputChange.bind(this);
         this._handleKeyDown = this._handleKeyDown.bind(this);
+        this._handleSubmit = this._handleSubmit.bind(this);
         this._commentAlert = this._commentAlert.bind(this);
     }
 
@@ -45,23 +47,30 @@ export default class BarAlertButton extends React.Component {
      * toggle the boolean to show/hide the message input
      */
     _toggleMessageInput() {
-        this.setState({ showInput: !this.state.showInput });
+        this.setState({ showInput: !this.state.showInput, messageError: '' });
     }
 
     /**
      * Call the AlertButtonService to create a new alert
      */
     _createAlert() {
-        // if comment required but no comment, show the input
-        if (this.state.button.message && this.state.message === "") {
-            this.setState({ showInput: true });
-        } else if (!this.state.button.message || (this.state.button.message && this.state.message.trim())) {
-            // if a message is required, check if it has a real content
+        // if comment required but no comment
+        if (this.state.button.message && this.state.message.trim() === "") {
+            // If input not shown, only show input, else print in field error
+            if(!this.state.showInput) {
+                this.setState({ showInput: true });
+            }
+            else {
+                this.setState({ showInput: true, messageError: 'Commentaire obligatoire' });
+            }
+
+        }
+        else {
             AlertButtonService.createAlert(this.state.button.id, this.state.message)
-                .then(_ => {
-                    this.setState({ showInput: false });
-                })
-                .catch(error => NotificationActions.error("Erreur lors de la création de l'alerte.", error));
+            .then(_ => {
+                this.setState({ showInput: false });
+            })
+            .catch(error => NotificationActions.error("Erreur lors de la création de l'alerte.", error));
         }
     }
 
@@ -93,9 +102,15 @@ export default class BarAlertButton extends React.Component {
      * Call the alert service to update the message of an alert
      */
     _updateAlertMessage() {
-        AlertService.update(this.state.alert.id, {message: this.state.message})
+        // if comment required but no comment empty print in field error
+        if (this.state.button.message && this.state.message.trim() === "") {
+            this.setState({ showInput: true, messageError: 'Commentaire obligatoire' });
+        }
+        else {
+            AlertService.update(this.state.alert.id, {message: this.state.message})
             .then(_ => this.setState({ showInput: false }))
             .catch(error => NotificationActions.error("Erreur lors de la modification du commentaire.", error));
+        }
     }
 
     /**
@@ -105,16 +120,33 @@ export default class BarAlertButton extends React.Component {
      * @param v: the input value
      */
     _handleInputChange(e, v) {
-        this.setState({ message: v });
+        this.setState({ message: v, messageError: ''  });
     }
 
     /**
-     * Handle key down on the input text
+     * Handle comment form submit on the input text
+     * @param e: event
+     */
+    _handleSubmit(e) {
+        if(e) {
+            e.preventDefault();
+        }
+        this._commentAlert();
+    }
+
+    /**
+     * Will submit on enter, and add new line on ctrl+enter
      * @param e: event
      */
     _handleKeyDown(e) {
-        if(e.key === 'Enter') {
-            this._commentAlert();
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            if(!e.ctrlKey && !e.shiftKey) {
+                this._commentAlert();
+            }
+            else {
+                this.setState({ message: this.state.message + '\n'});
+            }
         }
     }
 
@@ -161,21 +193,24 @@ export default class BarAlertButton extends React.Component {
                     alertButton
                 }
                 {
-                    this.state.showInput && commentRequired && <div className="AlertButton_input_blur"></div>
+                    this.state.showInput && commentRequired && <div className="AlertButton_input_blur" onTouchTap={_ => this._toggleMessageInput("done")}></div>
                 }
                 {
                     this.state.showInput &&
-                    <div className={`AlertButton_input_container ${commentRequired && "AlertButton_required"}`}>
+                    <form onSubmit={this._handleSubmit} className={`AlertButton_input_container ${commentRequired && "AlertButton_required"}`}>
+
+                        <div className="AlertButton_input_label">{this.state.button.messagePlaceholder || "Commentaire"}</div>
                         <TextField
-                            floatingLabelText={this.state.button.messagePlaceholder || "Commentaire"}
                             multiLine={true}
-                            rows={2}
+                            rows={1}
+                            rowsMax={4}
                             fullWidth={true}
+                            onKeyDown={this._handleKeyDown}
                             onChange={this._handleInputChange}
                             value={this.state.message}
-                            onKeyDown={this._handleKeyDown}
                             hintText={this.state.button.message ? "Commentaire obligatoire" : ""}
                             autoFocus
+                            errorText={this.state.messageError}
                         />
                         <div className="AlertButton_input_actions">
                             <FlatButton
@@ -185,11 +220,11 @@ export default class BarAlertButton extends React.Component {
                             />
                             <FlatButton
                                 primary={true}
-                                onClick={this._commentAlert}
+                                type="submit"
                                 label={commentRequired ? "Créer l'alerte" : "Envoyer"}
                             />
                         </div>
-                    </div>
+                    </form>
                 }
             </div>
         );

@@ -1,7 +1,7 @@
 @import '../Constants';
 
 .ChatMessageList {
-    background: #f1f1f1;
+    background: $background-gray;
     padding: 16px;
 
     overflow: auto;
@@ -43,6 +43,7 @@
         padding: 5px;
         font-size: 13px;
         display: block;
+        white-space: pre-line;
     }
 }
 
