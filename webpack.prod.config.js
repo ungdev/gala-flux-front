@@ -2,9 +2,10 @@ const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
-    template: './src/index.html',
+    template: './src/index.ejs',
     filename: 'index.html',
-    inject: 'body'
+    inject: 'body',
+    hash: true,
 });
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require('webpack');

@@ -9,3 +9,10 @@ export const webSocketUri = process.env.FLUX_API_URI || 'http://localhost:1337';
 
 // To show an user avatar, show an image with (avatarBasePath + userId) as src
 export const avatarBasePath = webSocketUri + '/user/avatar/';
+
+// build vars
+export const build = {
+    repo: process.env.TRAVIS_REPO_SLUG,
+    branch: process.env.TRAVIS_BRANCH,
+    commit: process.env.TRAVIS_COMMIT,
+}
