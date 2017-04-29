@@ -1,6 +1,7 @@
 import React from 'react';
 
 import UserStore from '../../stores/UserStore';
+import AlertService from '../../services/AlertService';
 
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -14,20 +15,15 @@ export default class UpdateAlertDialog extends React.Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
-            alert: (props.alert ? props.alert : null),
-            values: {
-                'assignedUsers': (props.alert ? props.alert.users : ''),
-                'severity': (props.alert ? props.alert.severity : '')
-            },
-            errors: {},
-            users: [],
-            selectedUser: 0
+            alert: props.alert,
+            users: []
         };
 
         this._handleSubmit = this._handleSubmit.bind(this);
         this._updateData = this._updateData.bind(this);
-        this._handleUserChange = this._handleUserChange.bind(this);
+        this._addSelectedUser = this._addSelectedUser.bind(this);
     }
 
     componentDidMount() {
@@ -60,12 +56,16 @@ export default class UpdateAlertDialog extends React.Component {
     _updateData() {
         let users = UserStore.users;
         users.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
-        users.unshift(null);
         this.setState({ users: users });
     }
 
-    _handleUserChange(event, index, value) {
-        this.setState({ selectedUser: value });
+    _addSelectedUser(e, i, v) {
+        const user = UserStore.findById(v);
+        if (user) {
+            let state = this.state;
+            state.alert.users.push(user);
+            this.setState(state);
+        }
     }
 
     /**
@@ -78,23 +78,25 @@ export default class UpdateAlertDialog extends React.Component {
             e.preventDefault();
         }
 
-        AlertService.update(this.state.alert.id, this.state.values)
-            .then((alert) => {
-                NotificationActions.snackbar('L\'alerte ' + alert.name + ' a bien été modifiée.');
+        AlertService.updateAssignedUsers(this.state.alert.id, this.state.alert.users)
+            .then(alert => {
+                NotificationActions.snackbar("L'alerte " + alert.name + " a bien été modifiée.");
                 this.focusField.focus();
                 this.props.close();
             })
-            .catch((error) => {
+            .catch(error => {
                 let errors = {};
                 this.setState({ errors: errors });
 
                 if(!errors) {
-                    NotificationActions.error('Une erreur s\'est produite pendant la modification de l\'alerte', error);
+                    NotificationActions.error("Une erreur s'est produite pendant la modification de l'alerte", error);
                 }
             });
+
     }
 
     render() {
+
         const actions = [
             <FlatButton
                 label="Annuler"
@@ -110,7 +112,7 @@ export default class UpdateAlertDialog extends React.Component {
 
         return (
             <Dialog 
-                title={'Modification de l\'état de l\'alerte "' + this.props.alert.title + '"'}
+                title={"Modification de l'état de l'alerte \"" + this.props.alert.title + "\""}
                 open={this.props.show}
                 actions={actions}
                 autoScrollBodyContent={true}
@@ -122,18 +124,26 @@ export default class UpdateAlertDialog extends React.Component {
                 <form onSubmit={this._handleSubmit}>
                     <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
                     <Row>
-                        <Col xs={12} sm={6}>
+                        <Col md={6} sm={12}>
                             <SelectField
-                                floatingLabelText="Assigné n°1"
-                                value={this.state.selectedUser}
-                                onChange={this._handleUserChange}
+                                floatingLabelText="Ajouter"
+                                onChange={this._addSelectedUser}
                             >
                                 {
                                     this.state.users.map((user, i) => {
-                                        return <MenuItem key={i} value={i} primaryText={user ? user.name : ''} />
+                                        return <MenuItem key={i} value={user.id} primaryText={user.name} />
                                     })
                                 }
                             </SelectField>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={6} sm={12}>
+                            {
+                                this.state.alert.users.map((user, i) => {
+                                    return <div key={i}>{user.name}</div>
+                                })
+                            }
                         </Col>
                     </Row>
                 </form>
