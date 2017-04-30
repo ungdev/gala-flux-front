@@ -52,7 +52,6 @@ export default class Alert extends React.Component {
     }
 
     render() {
-        //console.log(this.state.alert);
         return (
             <Col xs={12} sm={6} md={6} lg={6} className="alert">
                 <div className="alert__container">

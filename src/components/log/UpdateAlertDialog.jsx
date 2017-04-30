@@ -27,6 +27,7 @@ export default class UpdateAlertDialog extends React.Component {
         this._updateData = this._updateData.bind(this);
         this._addSelectedUser = this._addSelectedUser.bind(this);
         this._removeSelectedUser = this._removeSelectedUser.bind(this);
+        this._notAssigned = this._notAssigned.bind(this);
     }
 
     componentDidMount() {
@@ -84,6 +85,21 @@ export default class UpdateAlertDialog extends React.Component {
     }
 
     /**
+     * Check if the user is not already assigned to this alert
+     *
+     * @param {string} id: the user's id
+     * @return {boolean}: not assigned
+     */
+    _notAssigned(id) {
+        for (let user of this.state.alert.users) {
+            if (user.id === id) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Call the alert Service to update the alert
      *
      * @param {Event} e Event like form submit that will be stopped
@@ -118,7 +134,7 @@ export default class UpdateAlertDialog extends React.Component {
 
         return (
             <Dialog 
-                title={"Modification de l'état de l'alerte \"" + this.props.alert.title + "\""}
+                title={"Modification de l'état de l'alerte \"" + this.state.alert.title + "\""}
                 open={this.props.show}
                 actions={actions}
                 autoScrollBodyContent={true}
@@ -129,21 +145,23 @@ export default class UpdateAlertDialog extends React.Component {
                 <form onSubmit={this._handleSubmit}>
                     <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
                     <Row>
-                        <Col md={6} sm={12}>
+                        <Col sm={12}>
                             <SelectField
                                 floatingLabelText="Ajouter"
                                 onChange={this._addSelectedUser}
                             >
                                 {
                                     this.state.users.map((user, i) => {
-                                        return <MenuItem key={i} value={user.id} primaryText={user.name} />
+                                        if (this._notAssigned(user.id)) {
+                                            return <MenuItem key={i} value={user.id} primaryText={user.name} />;
+                                        }
                                     })
                                 }
                             </SelectField>
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={6} sm={12}>
+                        <Col sm={12}>
                             <List>
                                 {
                                     this.state.alert.users.map((user, i) => {
