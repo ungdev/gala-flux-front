@@ -1,7 +1,13 @@
 import React from 'react';
-import { Grid, Col } from 'react-flexbox-grid';
+
+import AlertService from '../../services/AlertService';
+import NotificationActions from '../../actions/NotificationActions';
+
+import { Col } from 'react-flexbox-grid';
 import ReactTooltip from 'react-tooltip'
 import UpdateAlertDialog from './UpdateAlertDialog.jsx';
+import Assignment from 'material-ui/svg-icons/action/assignment-ind';
+import Close from 'material-ui/svg-icons/navigation/close';
 
 require('../../styles/log/Alert.scss');
 
@@ -11,19 +17,42 @@ export default class Alert extends React.Component {
         super(props);
 
         this.state = {
-            showUpdateAlertDialog: false
+            showUpdateAlertDialog: false,
+            alert: props.alert,
+            filter: props.filter
         };
+
+        // binding
         this._toggleUpdateAlertDialog = this._toggleUpdateAlertDialog.bind(this);
+        this._closeAlert = this._closeAlert.bind(this);
     }
 
+    componentWillReceiveProps(props) {
+        this.setState({
+            filter: props.filter,
+            alert: props.alert
+        });
+    }
+
+    /**
+     * toggle the boolean to show the Dialog to assign users to this alert
+     */
     _toggleUpdateAlertDialog() {
-        // TODO: check user permissions ?
         this.setState({
             showUpdateAlertDialog: !this.state.showUpdateAlertDialog
         });
     }
 
+    /**
+     * Call the service method to close this alert
+     */
+    _closeAlert() {
+        AlertService.update(this.state.alert.id, {severity: "done"})
+            .catch(error => NotificationActions.error("Erreur lors de la modification de l'alerte.", error));
+    }
+
     render() {
+        //console.log(this.state.alert);
         return (
             <Col xs={12} sm={6} md={6} lg={6} className="alert">
                 <div className="alert__container">
@@ -31,12 +60,12 @@ export default class Alert extends React.Component {
                         <div
                             data-tip
                             className="alert__team-name"
-                            data-for={"team-" + this.props.alert.id}
+                            data-for={"team-" + this.state.alert.id}
                         >
-                            {this.props.alert.sender.name}
+                            {this.state.alert.sender.name}
                         </div>
                         <ReactTooltip
-                            id={"team-" + this.props.alert.id}
+                            id={"team-" + this.state.alert.id}
                             place="bottom"
                         >
                             <span>{this.props.alert.sender.name}</span>
@@ -46,44 +75,57 @@ export default class Alert extends React.Component {
                         <span
                             className="alert__title"
                             data-tip
-                            data-for={"title-" + this.props.alert.id}
+                            data-for={"title-" + this.state.alert.id}
                         >
                             <p>
-                                {this.props.alert.title}
+                                {this.state.alert.title}
                             </p>
                         </span>
                         <ReactTooltip
-                            id={"title-" + this.props.alert.id}
+                            id={"title-" + this.state.alert.id}
                             place="bottom"
                         >
-                            <span>{this.props.alert.title}</span>
+                            <span>{this.state.alert.title}</span>
                         </ReactTooltip>
                         <span
                             className="alert__description"
                             data-tip
-                            data-for={"message-" + this.props.alert.id}
+                            data-for={"message-" + this.state.alert.id}
                         >
                             <p>
-                                {this.props.alert.message}
+                                {this.state.alert.message}
                             </p>
                         </span>
                         <ReactTooltip
-                            id={"message-" + this.props.alert.id}
+                            id={"message-" + this.state.alert.id}
                             place="bottom"
                         >
-                            <span>{this.props.alert.message}</span>
+                            <span>{this.state.alert.message}</span>
                         </ReactTooltip>
                     </div>
-                    <button
-                        className="alert__action"
-                        onClick={() => this._toggleUpdateAlertDialog()}
-                    >
-                    </button>
+                    {
+                        this.state.filter !== 3 &&
+                        <button
+                            className="alert__action"
+                            onClick={this._closeAlert}
+                        >
+                            <Close />
+                        </button>
+                    }
+                    {
+                        this.state.filter !== 3 &&
+                        <button
+                            className="alert__action"
+                            onClick={this._toggleUpdateAlertDialog}
+                        >
+                            <Assignment />
+                        </button>
+                    }
                 </div>
                 <UpdateAlertDialog
                     show={this.state.showUpdateAlertDialog}
-                    close={() => this._toggleUpdateAlertDialog()}
-                    alert={this.props.alert}
+                    close={this._toggleUpdateAlertDialog}
+                    alert={this.state.alert}
                 />
             </Col>
         );

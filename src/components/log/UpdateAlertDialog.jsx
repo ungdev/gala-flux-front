@@ -95,19 +95,10 @@ export default class UpdateAlertDialog extends React.Component {
 
         AlertService.updateAssignedUsers(this.state.alert.id, this.state.alert.users)
             .then(alert => {
-                NotificationActions.snackbar("L'alerte " + alert.name + " a bien été modifiée.");
+                NotificationActions.snackbar("L'alerte \"" + alert.title + "\" a bien été modifiée.");
                 this.props.close();
             })
-            .catch(error => {
-                console.log(error);
-                let errors = {};
-                this.setState({ errors: errors });
-
-                if(!errors) {
-                    NotificationActions.error("Une erreur s'est produite pendant la modification de l'alerte", error);
-                }
-            });
-
+            .catch(error => NotificationActions.error("Une erreur s'est produite pendant la modification de l'alerte", error));
     }
 
     render() {

@@ -62,8 +62,11 @@ export default class Alerts extends React.Component {
         if (AlertStore.alerts.length && TeamStore.teams.length) {
             let alerts = [];
             for (let alert of AlertStore.alerts) {
-                alert.sender = TeamStore.findById(alert.sender);
-                alert.receiver = TeamStore.findById(alert.receiver);
+                // check if not already converted
+                if (typeof alert.sender !== 'object') {
+                    alert.sender = TeamStore.findById(alert.sender);
+                    alert.receiver = TeamStore.findById(alert.receiver);
+                }
                 alerts.push(alert);
             }
             this.setState({ alerts: alerts });
@@ -116,7 +119,7 @@ export default class Alerts extends React.Component {
                             backgroundColor={(this.state.selectedButton === 3 ? c.cyanA700 : '')}
                         />
                     </div>
-                    <AlertList alerts={this.state.filteredAlerts} />
+                    <AlertList alerts={this.state.filteredAlerts} filter={this.state.selectedButton} />
                 </div>
             </div>
         );
