@@ -389,9 +389,6 @@ export default class BaseStore extends EventEmitter {
                 if(this.findById(e.id)) {
                     this._delete(e.id);
                 }
-                else {
-                    console.warn('Received `destroyed` socket event for an unknown element for the store `' + this._modelName + '`', e);
-                }
                 break;
         }
     }
