@@ -8,6 +8,8 @@ import FlatButton from 'material-ui/FlatButton';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import { Row, Col } from 'react-flexbox-grid';
+import {List, ListItem} from 'material-ui/List';
+import Close from 'material-ui/svg-icons/navigation/close';
 
 import NotificationActions from '../../actions/NotificationActions';
 
@@ -24,6 +26,7 @@ export default class UpdateAlertDialog extends React.Component {
         this._handleSubmit = this._handleSubmit.bind(this);
         this._updateData = this._updateData.bind(this);
         this._addSelectedUser = this._addSelectedUser.bind(this);
+        this._removeSelectedUser = this._removeSelectedUser.bind(this);
     }
 
     componentDidMount() {
@@ -34,6 +37,12 @@ export default class UpdateAlertDialog extends React.Component {
     componentWillUnmount() {
         this._unloadData();
         UserStore.removeChangeListener(this._updateData);
+    }
+
+    componentWillReceiveProps(props) {
+        this.setState({
+            alert: props.alert
+        });
     }
 
     _loadData() {
@@ -68,6 +77,12 @@ export default class UpdateAlertDialog extends React.Component {
         }
     }
 
+    _removeSelectedUser(id) {
+        let state = this.state;
+        state.alert.users = state.alert.users.filter(user => user.id !== id);
+        this.setState(state);
+    }
+
     /**
      * Call the alert Service to update the alert
      *
@@ -81,10 +96,10 @@ export default class UpdateAlertDialog extends React.Component {
         AlertService.updateAssignedUsers(this.state.alert.id, this.state.alert.users)
             .then(alert => {
                 NotificationActions.snackbar("L'alerte " + alert.name + " a bien été modifiée.");
-                this.focusField.focus();
                 this.props.close();
             })
             .catch(error => {
+                console.log(error);
                 let errors = {};
                 this.setState({ errors: errors });
 
@@ -119,8 +134,7 @@ export default class UpdateAlertDialog extends React.Component {
                 modal={false}
                 onRequestClose={this.props.close}
             >
-                Vous pouvez modifier l'état de l'alerte <strong>{this.props.alert.title}</strong> à l'aide du formulaire ci-dessous.
-
+                Vous pouvez modifier l'état de l'alerte <strong>{this.state.alert.title}</strong> à l'aide du formulaire ci-dessous.
                 <form onSubmit={this._handleSubmit}>
                     <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
                     <Row>
@@ -139,11 +153,18 @@ export default class UpdateAlertDialog extends React.Component {
                     </Row>
                     <Row>
                         <Col md={6} sm={12}>
-                            {
-                                this.state.alert.users.map((user, i) => {
-                                    return <div key={i}>{user.name}</div>
-                                })
-                            }
+                            <List>
+                                {
+                                    this.state.alert.users.map((user, i) => {
+                                        return  <ListItem
+                                            key={i}
+                                            primaryText={user.name}
+                                            rightIcon={<Close />}
+                                            onClick={_ => this._removeSelectedUser(user.id)}
+                                        />;
+                                    })
+                                }
+                            </List>
                         </Col>
                     </Row>
                 </form>
