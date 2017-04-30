@@ -14,7 +14,8 @@ export default class BaseStore extends EventEmitter {
         this._service = service;
 
         // the data to fetch
-        this._filters = {length: 0};
+        this._filters = {};
+        this._filterLastId = 0;
 
         // binding
         this._delete = this._delete.bind(this);
@@ -66,7 +67,7 @@ export default class BaseStore extends EventEmitter {
                 let fetch = true;
                 if(componentToken !== null) {
                     for (let index in this._filters) {
-                        if (index !== 'length' && index != componentToken &&
+                        if (index != componentToken &&
                         (this._filters[index] === null || Object.is(this._filters[index], this._filters[componentToken]))) {
                             fetch = false;
                             break;
@@ -76,7 +77,7 @@ export default class BaseStore extends EventEmitter {
                 else {
                     // If there a filter has been deleted, then only refresh if there is no "null" filter
                     for (let index in this._filters) {
-                        if (index !== 'length' && this._filters[index] === null) {
+                        if (this._filters[index] === null) {
                             fetch = false;
                             break;
                         }
@@ -88,9 +89,6 @@ export default class BaseStore extends EventEmitter {
                     this._service.get(this.getFiltersSet())
                         .then(result => {
                             this._setModelData(result);
-
-                            // listen model changes
-                            iosocket.on(this._modelName, this._handleModelEvents);
 
                             resolve({
                                 result: this.find(this._filters[componentToken]),
@@ -145,12 +143,26 @@ export default class BaseStore extends EventEmitter {
         }
 
         // Add to the filter list
-        const componentToken = this._filters.length;
-        this._filters.length++;
+        this._filterLastId++;
+        const componentToken = this._filterLastId;
         this._filters[componentToken] = filters;
 
-        // refresh the store with the new filters
-        return this.fetchData(componentToken);
+        // If store was empty before, subscribe
+        if(Object.keys(this._filters).length == 1) {
+            // listen model changes
+            iosocket.on(this._modelName, this._handleModelEvents);
+
+            // Subscribe
+            return this._service.subscribe()
+            .then(_ => {
+                // refresh the store with the new filters
+                return this.fetchData(componentToken);
+            });
+        }
+        else {
+            // refresh the store with the new filters
+            return this.fetchData(componentToken);
+        }
     }
 
     /**
@@ -165,6 +177,15 @@ export default class BaseStore extends EventEmitter {
             delete this._filters[token];
             // reload only the data needed
             this.fetchData();
+
+            // If store is now empty
+            if(Object.keys(this._filters).length === 0) {
+                // unlisten model changes
+                iosocket.off(this._modelName, this._handleModelEvents);
+
+                // unsubscribe
+                this._service.unsubscribe();
+            }
         }
     }
 
@@ -201,8 +222,25 @@ export default class BaseStore extends EventEmitter {
      * @param {object} data: the item data
      */
     _set(id, data) {
-        this._modelData[id] = data;
-        this.emitChange();
+        // Test if data is different
+        let same = true;
+        if(this._modelData[id] && Object.keys(this._modelData[id]).length == Object.keys(data).length) {
+            for (let attr in this._modelData[id]) {
+                if(this._modelData[id][attr] != data[attr]) {
+                    same = false;
+                    break;
+                }
+            }
+        }
+        else {
+            same = false;
+        }
+
+        // Update and trigger redrawinf if necessary
+        if(!same) {
+            this._modelData[id] = data;
+            this.emitChange();
+        }
     }
 
     /**
@@ -250,27 +288,40 @@ export default class BaseStore extends EventEmitter {
      */
     find(filters) {
         let out = [];
-        if(!Array.isArray(filters)) {
-            filters = [filters];
-        }
 
         for (let i in this._modelData) {
-            for (let filter of filters) {
-                let match = true;
-                for (let key in filter) {
-                    if(this._modelData[i][key] !== filter[key]) {
-                        match = false;
-                        break;
-                    }
-                }
-                if(match) {
-                    out.push(this._modelData[i]);
-                    break;
-                }
+            if(this._match(this._modelData[i], filters)) {
+                out.push(this._modelData[i]);
             }
         }
 
         return out;
+    }
+
+    /**
+     * Helpper to check if an object match against the given filter
+     *
+     * @param  {Object} obj Object to test
+     * @param  {Object|Array} filters Object of filters or array of list of filter
+     * @return {Boolean} True if the object match
+     */
+    _match(obj, filters) {
+        if(!Array.isArray(filters)) {
+            filters = [filters];
+        }
+
+        for (let filter of filters) {
+            let match = true;
+            for (let key in filter) {
+                if(obj[key] !== filter[key]) {
+                    match = false;
+                    break;
+                }
+            }
+            if(match) {
+                return true;
+            }
+        }
     }
 
     /**
@@ -320,27 +371,23 @@ export default class BaseStore extends EventEmitter {
         switch (e.verb) {
             case "created":
                 if(!this.findById(e.id)) {
-                    this._set(e.id, e.data);
+                    // Add to the list only if it match our list
+                    if(this._match(e.data, this.getFiltersSet())) {
+                        this._set(e.id, e.data);
+                    }
                 }
                 else {
-                    console.warn('Received `created` socket event more than once for the store `' + this._modelName + '`', e)
+                    console.warn('Received `created` socket event more than once for the store `' + this._modelName + '`', e);
                 }
                 break;
             case "updated":
                 if(this.findById(e.id)) {
                     this._set(e.id, e.data);
                 }
-                else {
-                    console.warn('Received `updated` socket event for an unknown element for the store `' + this._modelName + '`', e)
-                }
-                this._set(e.id, e.data);
                 break;
             case "destroyed":
                 if(this.findById(e.id)) {
                     this._delete(e.id);
-                }
-                else {
-                    console.warn('Received `destroyed` socket event for an unknown element for the store `' + this._modelName + '`', e)
                 }
                 break;
         }

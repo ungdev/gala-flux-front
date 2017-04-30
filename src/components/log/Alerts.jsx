@@ -79,10 +79,10 @@ export default class Alerts extends React.Component {
             let filteredAlerts = [];
             switch (this.state.selectedButton) {
                 case 1:
-                    filteredAlerts = this.state.alerts.filter((alert) => alert.users.length === 0 );
+                    filteredAlerts = this.state.alerts.filter((alert) => alert.users && alert.users.length === 0 );
                     break;
                 case 2:
-                    filteredAlerts = this.state.alerts.filter((alert) => alert.users.length && alert.severity !== 'done' );
+                    filteredAlerts = this.state.alerts.filter((alert) => alert.users && alert.users.length && alert.severity !== 'done' );
                     break;
                 case 3:
                     filteredAlerts = this.state.alerts.filter((alert) => alert.severity === 'done' );

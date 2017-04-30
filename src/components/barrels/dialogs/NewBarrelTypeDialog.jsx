@@ -98,8 +98,10 @@ export default class NewBarrelTypeDialog extends React.Component {
             e.preventDefault();
         }
         // Submit
+        let typeName = '';
         BarrelTypeService.create(this.state.values)
         .then((type) => {
+            typeName = type.name;
 
             // Set the barrel number
             return BarrelTypeService.setBarrelNumber(type.id, this.state.values.count);
@@ -117,7 +119,7 @@ export default class NewBarrelTypeDialog extends React.Component {
                 errors: {},
             });
 
-            NotificationActions.snackbar('Le type de fût ' + type.name + ' a bien été créé.');
+            NotificationActions.snackbar('Le type de fût ' + typeName + ' a bien été créé.');
             this.focusField.focus();
         })
         .catch((error) => {
