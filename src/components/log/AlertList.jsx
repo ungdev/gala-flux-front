@@ -7,6 +7,18 @@ export default class AlertList extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            filter: props.filter,
+            alerts: props.alerts
+        };
+    }
+
+    componentWillReceiveProps(props) {
+        this.setState({
+            filter: props.filter,
+            alerts: props.alerts
+        });
     }
 
     render() {
@@ -14,8 +26,8 @@ export default class AlertList extends React.Component {
             <div className="alert-list">
                 <Row className="alert-list__row">
                     {
-                        this.props.alerts.map((alert, i) => {
-                            return <Alert alert={alert} key={i} />
+                        this.state.alerts.map((alert, i) => {
+                            return <Alert alert={alert} filter={this.state.filter} key={i} />
                         })
                     }
                 </Row>
