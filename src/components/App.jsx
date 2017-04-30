@@ -1,4 +1,5 @@
 import React, { createElement } from 'react';
+import router from '../router';
 
 import AuthStore from "../stores/AuthStore";
 
@@ -13,8 +14,6 @@ import AdminHomepage from "./homepages/AdminHomepage.jsx";
 import LoginHomepage from "./homepages/LoginHomepage.jsx";
 import BarHomepage from "./homepages/BarHomepage.jsx";
 
-import { BaseLink, withRoute } from 'react-router5';
-
 require('../styles/App.scss');
 require('../styles/fonts/roboto/roboto.scss');
 
@@ -26,15 +25,20 @@ export default class App extends React.Component {
         this.state = {
             team: AuthStore.team,
             homepage: LoginHomepage,
+            route: router.getState(),
         };
-
-        this.router = props.router;
 
         // binding
         this._handleAuthStoreChange = this._handleAuthStoreChange.bind(this);
     }
 
     componentDidMount() {
+        // Re-render every route change
+        router.addListener(route => {
+            this.setState({
+                route: route,
+            });
+        });
 
         // listen the stores changes
         AuthStore.addChangeListener(this._handleAuthStoreChange);
@@ -57,10 +61,10 @@ export default class App extends React.Component {
         });
 
         if (this.state.team) {
-            if (this.state.team.group === "bar") {
-                this.setState({homepage: BarHomepage});
-            } else {
+            if (AuthStore.can('ui/admin')) {
                 this.setState({homepage: AdminHomepage});
+            } else {
+                this.setState({homepage: BarHomepage});
             }
         }
         else {
@@ -73,7 +77,7 @@ export default class App extends React.Component {
             <div>
                 <AppNavbar />
                 <main className="main">
-                    {createElement(this.state.homepage)}
+                    {createElement(this.state.homepage, {route: this.state.route})}
                 </main>
                 <AppFooter />
                 <SnackbarNotification />

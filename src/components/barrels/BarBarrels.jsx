@@ -9,6 +9,9 @@ import Subheader from 'material-ui/Subheader';
 
 import { Row, Col } from 'react-flexbox-grid';
 import BarrelChip from './partials/BarrelChip.jsx';
+import CenteredMessage from '../partials/CenteredMessage.jsx';
+
+require('../../styles/barrels/BarBarrels.scss');
 
 export default class BarBarrels extends React.Component {
 
@@ -141,9 +144,9 @@ export default class BarBarrels extends React.Component {
 
     render() {
         return (
-            <Row>
+            <Row className="BarBarrels">
                 <Col xs={12} sm={4}>
-                    <h2>En stock</h2>
+                    <h3>En stock</h3>
                     <div>
                         {
                             Object.keys(this.state.barrels.new).length
@@ -151,7 +154,7 @@ export default class BarBarrels extends React.Component {
                                     Object.keys(this.state.barrels.new).map((typeId, i) => {
                                         let type = BarrelTypeStore.findById(typeId);
                                         return <div key={i}>
-                                            <Subheader>{type ? type.name : ''}</Subheader>
+                                            <h4>{type ? type.name : ''}</h4>
                                             <div className="BarrelChipContainer">
                                             {
                                                 this.state.barrels.new[typeId].map((barrel, i) => {
@@ -169,12 +172,12 @@ export default class BarBarrels extends React.Component {
                                     })
 
                                 :
-                                    "Aucun fût en stock."
+                                    <small>Aucun fût en stock.</small>
                         }
                     </div>
                 </Col>
                 <Col xs={12} sm={4}>
-                    <h2>Entamé</h2>
+                    <h3>Entamé</h3>
                     <div>
                         {
                             Object.keys(this.state.barrels.opened).length
@@ -182,7 +185,7 @@ export default class BarBarrels extends React.Component {
                                     Object.keys(this.state.barrels.opened).map((typeId, i) => {
                                         let type = BarrelTypeStore.findById(typeId);
                                         return <div key={i}>
-                                            <Subheader>{type ? type.name : ''}</Subheader>
+                                            <h4>{type ? type.name : ''}</h4>
                                             <div className="BarrelChipContainer">
                                             {
                                                 this.state.barrels.opened[typeId].map((barrel, i) => {
@@ -201,12 +204,12 @@ export default class BarBarrels extends React.Component {
                                     })
 
                                 :
-                                    "Aucun fût ouvert."
+                                <small>Aucun fût ouvert.</small>
                         }
                     </div>
                 </Col>
                 <Col xs={12} sm={4}>
-                    <h2>Terminé</h2>
+                    <h3>Terminé</h3>
                     <div>
                         {
                             Object.keys(this.state.barrels.empty).length
@@ -214,7 +217,7 @@ export default class BarBarrels extends React.Component {
                                     Object.keys(this.state.barrels.empty).map((typeId, i) => {
                                         let type = BarrelTypeStore.findById(typeId);
                                         return <div key={i}>
-                                            <Subheader>{type ? type.name : ''}</Subheader>
+                                            <h4>{type ? type.name : ''}</h4>
                                             <div className="BarrelChipContainer">
                                             {
                                                 this.state.barrels.empty[typeId].map((barrel, i) => {
@@ -222,7 +225,6 @@ export default class BarBarrels extends React.Component {
                                                                 key={i}
                                                                 barrel={barrel}
                                                                 type={type}
-                                                                onClick={this._moveNextState}
                                                                 onRequestDelete={this._backPreviousState}
                                                             />
                                                 })
@@ -233,7 +235,7 @@ export default class BarBarrels extends React.Component {
                                     })
 
                                 :
-                                    "Aucun fût terminé."
+                                <small>Aucun fût terminé.</small>
                         }
                     </div>
                 </Col>

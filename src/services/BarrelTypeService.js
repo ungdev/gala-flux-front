@@ -13,7 +13,7 @@ class BarrelTypeService extends BaseService {
      * Make a request to set the number of barrels for a type
      *
      * @param {string} id Type id
-     * @param {integer} number Number of barrels wanted
+     * @param {number} number Number of barrels wanted
      * @return {Promise}
      */
     setBarrelNumber(id, number) {

@@ -2,9 +2,10 @@ const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
-    template: './src/index.html',
+    template: './src/index.ejs',
     filename: 'index.html',
-    inject: 'body'
+    inject: 'body',
+    hash: true,
 });
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require('webpack');
@@ -54,7 +55,11 @@ module.exports = {
         new webpack.DefinePlugin({
             "process.env": {
                 NODE_ENV: JSON.stringify("production"),
-                FLUX_API_URI: JSON.stringify(process.env.FLUX_API_URI)
+                FLUX_API_URI: JSON.stringify(process.env.FLUX_API_URI),
+                TRAVIS_REPO_SLUG: JSON.stringify(process.env.TRAVIS_REPO_SLUG),
+                TRAVIS_BRANCH: JSON.stringify(process.env.TRAVIS_BRANCH),
+                TRAVIS_COMMIT: JSON.stringify(process.env.TRAVIS_COMMIT),
+                DOKKU_APP_NAME: JSON.stringify(process.env.DOKKU_APP_NAME),
             }
         }),
         new UglifyJSPlugin({

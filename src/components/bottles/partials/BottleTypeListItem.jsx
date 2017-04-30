@@ -5,22 +5,21 @@ import * as constants from '../../../config/constants';
 import { ListItem } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 
-require('../../../styles/barrels/BarrelTypeListItem.scss');
+require('../../../styles/bottles/BottleTypeListItem.scss');
 
 /**
- * This component show a ListItem for a BarrelType
- * @param {BarrelType} type
+ * This component show a ListItem for a BottleType
+ * @param {BottleType} type
  * @param {int} count Number of elements in this type
  * @param {function(Type)} onSelection callend on click
  */
-export default class BarrelTypeListItem extends React.Component {
+export default class BottleTypeListItem extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
             type: props.type,
-            count: props.count
         };
 
         // binding
@@ -29,8 +28,7 @@ export default class BarrelTypeListItem extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            type: nextProps.type,
-            count: nextProps.count
+            type: nextProps.type
         });
     }
 
@@ -43,16 +41,16 @@ export default class BarrelTypeListItem extends React.Component {
 
     render() {
         let secondaryText = '';
-        if(this.props.count !== undefined) {
-            secondaryText = (this.state.count > 1) ? this.state.count + ' fûts' :  this.state.count + ' fût';
+        if(this.state.type.originalStock !== undefined) {
+            secondaryText = (this.state.type.originalStock > 1) ? this.state.type.originalStock + ' caisses' :  this.state.type.originalStock + ' caisse';
         }
 
         return (
             <ListItem
-                className="BarrelTypeListItem"
+                className="BottleTypeListItem"
                 primaryText={this.state.type.name}
                 secondaryText={secondaryText}
-                leftAvatar={<Avatar className="BarrelTypeListItem__avatar">{this.state.type.shortName}</Avatar>}
+                leftAvatar={<Avatar className="BottleTypeListItem__avatar">{this.state.type.shortName}</Avatar>}
                 onTouchTap={this._handleSelection}
             />
         );

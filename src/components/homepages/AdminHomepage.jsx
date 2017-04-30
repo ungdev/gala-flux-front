@@ -1,5 +1,5 @@
 import React from 'react';
-import { routeNode } from 'react-router5';
+import router from '../../router';
 
 import { Tabs, Tab } from 'material-ui/Tabs';
 
@@ -11,13 +11,19 @@ import ChatPage from '../adminPages/ChatPage.jsx';
 import StockPage from '../adminPages/StockPage.jsx';
 import BarPage from '../adminPages/BarPage.jsx';
 import BarrelsTypesPage from '../adminPages/BarrelsTypesPage.jsx';
+import BottlesTypesPage from "../adminPages/BottlesTypesPage.jsx";
 import AlertButtonsPage from '../adminPages/AlertButtonsPage.jsx';
 import TeamListPage from '../adminPages/TeamListPage.jsx';
 import TeamDetailsPage from '../adminPages/TeamDetailsPage.jsx';
 
+
 require('../../styles/homepages/AdminHomepage.scss');
 
-class AdminHomepage extends React.Component {
+
+/**
+ * @param {Object} route Route object given by the router
+ */
+export default class AdminHomepage extends React.Component {
 
     constructor(props) {
         super(props);
@@ -25,7 +31,6 @@ class AdminHomepage extends React.Component {
         this.state = {
             route: props.route,
         };
-        this.router = props.router;
 
         // binding
         this._handleTabChange = this._handleTabChange.bind(this);
@@ -37,33 +42,58 @@ class AdminHomepage extends React.Component {
         });
     }
 
-    componentDidMount() {
-        // Re-render every route change
-        this.router.addListener(route => {
-            this.setState({
-                route: route,
-            });
-        });
-
-        // Init route
-        this.setState({
-            route: this.props.route,
-        });
-    }
-
 
     /**
      * On tab change, navigate to new uri
      * The new route will automatically show the corresponding page
      */
     _handleTabChange(value) {
-        this.router.navigate(value);
+        router.navigate(value);
+    }
+
+
+    /**
+     * Return the selected tab according to the route name
+     */
+    _tabFromRouteName(name) {
+        switch (name) {
+            case 'alert':
+                return 'alert';
+            case 'home':
+            case 'chat':
+            case 'chat.channel':
+                return 'home';
+            case 'bars':
+                return 'bars';
+            case 'stock':
+                return 'stock';
+            case 'admin':
+            case 'admin.teams':
+            case 'admin.teams.id':
+            case 'admin.barrels':
+            case 'admin.alerts':
+                return 'admin';
+        }
     }
 
     render() {
         return (
             <div className="AdminPage">
-                <Tabs className="AdminPage__tabs" onChange={this._handleTabChange} value={this.state.route.name}>
+
+
+                {/* Tabs for tablet */}
+                <Tabs className="AdminPage__tabs show-sm" onChange={this._handleTabChange} value={this._tabFromRouteName(this.state.route.name)}>
+                    <Tab label="Chat" value="home"/>
+                    <Tab label="Alertes" value="alert"/>
+                    <Tab label="Bars" value="bars"/>
+                    { (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
+                        <Tab label="Gestion du stock" value="stock"/>
+                    }
+                    <Tab label="Administration" value="admin"/>
+                </Tabs>
+
+                {/* Tabs for desktop */}
+                <Tabs className="AdminPage__tabs hide-sm" onChange={this._handleTabChange} value={this._tabFromRouteName(this.state.route.name)}>
                     <Tab label="Dashboard" value="home"/>
                     <Tab label="Bars" value="bars"/>
                     { (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
@@ -71,18 +101,21 @@ class AdminHomepage extends React.Component {
                     }
                     <Tab label="Administration" value="admin"/>
                 </Tabs>
+
+
                     {(() => {
                         let name = this.state.route.name;
                         switch(name) {
 
                             default:
                             case 'home':
+                            case 'alert':
                             case 'chat':
                             case 'chat.channel':
                                 return (
                                     <div className="AdminPage__splitscreen">
-                                        <AlertPage className={name != 'home' ? 'AdminPage__splitscreen__secondary':''}/>
-                                        <ChatPage className={name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
+                                        <AlertPage className={name != 'alert' ? 'AdminPage__splitscreen__secondary':''}/>
+                                        <ChatPage className={name != 'home' && name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
                                     </div>
                                 );
 
@@ -125,6 +158,14 @@ class AdminHomepage extends React.Component {
                                     </div>
                                 );
 
+                            case 'admin.bottles':
+                                return (
+                                    <div className="AdminPage__splitscreen">
+                                        <AdminMenu route={this.state.route} className="AdminPage__splitscreen__menu" />
+                                        <BottlesTypesPage />
+                                    </div>
+                                );
+
                             case 'admin.alerts':
                                 return (
                                     <div className="AdminPage__splitscreen">
@@ -138,4 +179,3 @@ class AdminHomepage extends React.Component {
         );
     }
 }
-export default routeNode('')(AdminHomepage);

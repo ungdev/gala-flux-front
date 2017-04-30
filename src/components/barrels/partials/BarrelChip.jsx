@@ -90,7 +90,7 @@ export default class BarrelChip extends React.Component {
                 className="BarrelChip"
                 backgroundColor={background}
                 onRequestDelete={this.props.onRequestDelete ? (() => this.props.onRequestDelete(this.state.barrel)) : null}
-                onTouchTap={this._handleClick}
+                onTouchTap={((this.props.selectable && this.props.onSelection) || this.props.onClick) ? this._handleClick : undefined}
                 title={tooltip}
                 key={this.state.barrel.id}
             >

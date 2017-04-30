@@ -48,16 +48,17 @@ export default class AdminMenu extends React.Component {
             <div className={this.props.className}>
                 <SelectableList onChange={this._handleChange} value={this.state.route.name} className="AdminMenu">
 
-                    <ListItem value="home" className="AdminMenu__mainItem">Dashboard</ListItem>
-                    <ListItem value="chat" className="AdminMenu__mainItem AdminMenu__show-xs">Chat</ListItem>
-                    <div className="AdminMenu__show-xs">
+                    <ListItem value="chat" className="AdminMenu__mainItem">Chat</ListItem>
+                    <div className="show-xs">
                         <ChatMenu route={this.state.route} onChange={(channel) => this.props.onChange('chat.channel', {channel: channel})} />
                     </div>
+
+                    <ListItem value="home" className="AdminMenu__mainItem">Alertes</ListItem>
 
                     <ListItem value="bars" className="AdminMenu__mainItem">Bars</ListItem>
 
                     { (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
-                        <ListItem value="stock" className="AdminMenu__mainItem">Stocks</ListItem>
+                        <ListItem value="stock" className="AdminMenu__mainItem">Gestion du stock</ListItem>
                     }
                     <ListItem value="admin" className="AdminMenu__mainItem">Administration</ListItem>
 
@@ -72,6 +73,9 @@ export default class AdminMenu extends React.Component {
                         <ListItem value="admin.barrels" className="AdminMenu__item">Gestion des fûts</ListItem>
                     }
 
+                    { (AuthStore.can('bottleType/admin')) &&
+                        <ListItem value="admin.bottles" className="AdminMenu__item">Gestion des bouteilles</ListItem>
+                    }
                     <ListItem value="admin.alerts" className="AdminMenu__item">Gestion des boutons d'alerte</ListItem>
                 </SelectableList>
             </div>

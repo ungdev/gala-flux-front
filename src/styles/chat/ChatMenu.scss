@@ -1,34 +1,40 @@
 @import '../Colors';
 @import '../Constants';
 
-.ChatMenu {
-    max-width: 128px;
-    flex-shrink: 0;
-    flex-grow: 0;
+.ChatPage {
+    .ChatMenu {
+        max-width: 128px;
+        flex-shrink: 0;
+        flex-grow: 0;
 
-    overflow: auto;
+        overflow: auto;
 
 
-    .ChatMenu__channel {
-        font-size: 13px !important;
-        overflow: hidden;
-        white-space: nowrap;
+        .ChatMenu__channel {
+            font-size: 13px !important;
+            overflow: hidden;
+            white-space: nowrap;
 
-        > div > div {
-            padding: 8px 16px !important;
+            > div > div {
+                padding: 8px 16px !important;
+            }
         }
-    }
 
-    .ChatMenu__subheader {
-        padding-top: 8px;
-        line-height: 28px !important;
+        .ChatMenu__subheader {
+            padding-top: 8px;
+            line-height: 28px !important;
+        }
     }
 }
 
 .AdminMenu {
-    .ChatMenu {
-        max-width: none;
-        margin-left: 16px;
+    .ChatMenu__channel {
+        padding-left: 32px !important;
+    }
+    .ChatMenu__subheader {
+        padding-left: 32px !important;
+        padding-top: 8px;
+        line-height: 28px !important;
     }
 }
 

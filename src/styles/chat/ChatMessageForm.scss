@@ -1,16 +1,20 @@
+@import '../Constants';
+
 .ChatMessageForm {
     display: flex;
-    flex-basis: 32px;
+    flex-basis: 48px;
     flex-shrink: 0;
     flex-grow: 0;
     overflow: hidden;
+    border-left: 1px solid $background-gray;
 
     .ChatMessageForm__input, .ChatMessageForm__input:focus {
         flex-grow: 1;
         border: 0;
         outline: 0;
-        padding: 0 5px;
-        height: 32px;
+        padding: 4px 8px;
+        height: 40px;
+        line-height: 40px;
     }
 
     .ChatMessageForm__button {
@@ -20,13 +24,9 @@
         flex-grow: 0;
         min-width: 48px !important;
 
-        > button {
-            height: 32px !important;
-            width: 100%;
-            line-height: 32px !important;
-        }
-
         * {
+            height: 48px !important;
+            width: 100%;
             border-radius: 0 !important;
         }
     }

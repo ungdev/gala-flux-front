@@ -138,6 +138,8 @@ export default class UpdateButton extends React.Component {
                             />
                             <TextField
                                 floatingLabelText="Message placeholder"
+                                multiLine={true}
+                                rows={2}
                                 value={button.messagePlaceholder || ""}
                                 onChange={e => this._setButtonAttribute("messagePlaceholder", e.target.value)}
                             />

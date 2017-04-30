@@ -105,3 +105,32 @@ html, body, .container-hide {
     font-size: 13px;
     display: block;
  }
+
+
+/**
+ * Hide/show helper
+ */
+ @media only screen and (max-width: $screen-max-xs) {
+    .hide-xs { display: none !important; }
+    .show-sm { display: none !important; }
+    .show-md { display: none !important; }
+    .show-lg { display: none !important; }
+}
+@media only screen and (min-width: $screen-min-sm) and (max-width: $screen-max-sm) {
+   .hide-sm { display: none !important; }
+   .show-xs { display: none !important; }
+   .show-md { display: none !important; }
+   .show-lg { display: none !important; }
+}
+@media only screen and (min-width: $screen-min-md) and (max-width: $screen-max-md) {
+   .hide-md { display: none !important; }
+   .show-xs { display: none !important; }
+   .show-sm { display: none !important; }
+   .show-lg { display: none !important; }
+}
+@media only screen and (min-width: $screen-min-lg) {
+   .hide-lg { display: none !important; }
+   .show-xs { display: none !important; }
+   .show-sm { display: none !important; }
+   .show-md { display: none !important; }
+}
