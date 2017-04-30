@@ -36,7 +36,7 @@ export default class BaseStore extends EventEmitter {
     }
 
     addChangeListener(cb) {
-        this.on('CHANGE', cb)
+        this.on('CHANGE', cb);
     }
 
     removeChangeListener(cb) {
@@ -265,7 +265,10 @@ export default class BaseStore extends EventEmitter {
      * @returns {object|undefined}
      */
     findById(id) {
-        return this._modelData[id];
+        if(this._modelData[id]) {
+            return Object.assign({}, this._modelData[id]);
+        }
+        return undefined;
     }
 
     /**
@@ -291,7 +294,7 @@ export default class BaseStore extends EventEmitter {
 
         for (let i in this._modelData) {
             if(this._match(this._modelData[i], filters)) {
-                out.push(this._modelData[i]);
+                out.push(Object.assign({}, this._modelData[i]));
             }
         }
 
@@ -340,7 +343,7 @@ export default class BaseStore extends EventEmitter {
                 }
             }
             if(add) {
-                return this._modelData[i];
+                return Object.assign({}, this._modelData[i]);
             }
         }
 
@@ -356,7 +359,7 @@ export default class BaseStore extends EventEmitter {
         let out = [];
 
         for (let i in this._modelData) {
-            out.push(this._modelData[i]);
+            out.push(Object.assign({}, this._modelData[i]));
         }
 
         return out;
