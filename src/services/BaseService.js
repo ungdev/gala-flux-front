@@ -25,6 +25,30 @@ export default class BaseService {
     }
 
     /**
+     * Subscribe to all model modifications
+     *
+     * @returns {Promise}
+     */
+    subscribe() {
+        return this._makeRequest({
+            method: 'post',
+            url: this._baseUrl + '/subscribe'
+        });
+    }
+
+    /**
+     * Unsubscribe from all model modifications
+     *
+     * @returns {Promise}
+     */
+    unsubscribe() {
+        return this._makeRequest({
+            method: 'post',
+            url: this._baseUrl + '/unsubscribe'
+        });
+    }
+
+    /**
      * Make a get request
      *
      * @param {object} filters:
