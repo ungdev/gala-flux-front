@@ -19,7 +19,7 @@ class AlertService extends BaseService {
     updateAssignedUsers(id, users) {
         return this._makeRequest({
             method: 'put',
-            url: `alert/${id}/users`,
+            url: this._baseUrl + '/' + id + '/users',
             data: {
                 users
             }

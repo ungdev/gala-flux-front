@@ -1,7 +1,5 @@
 import React from 'react';
 import { Grid, Col } from 'react-flexbox-grid';
-import TeamStore from '../../stores/TeamStore';
-import AlertStore from '../../stores/AlertStore';
 import ReactTooltip from 'react-tooltip'
 import UpdateAlertDialog from './UpdateAlertDialog.jsx';
 
@@ -14,7 +12,7 @@ export default class Alert extends React.Component {
 
         this.state = {
             showUpdateAlertDialog: false
-        }
+        };
         this._toggleUpdateAlertDialog = this._toggleUpdateAlertDialog.bind(this);
     }
 
