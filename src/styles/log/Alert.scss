@@ -39,6 +39,8 @@ $alert__action: 50px;
     width: #{$alert__action};
     background-color: #80deea;
     margin-left: auto;
+    border-style: none;
+    outline: none;
 }
 
 .alert__title p {
@@ -64,4 +66,9 @@ $alert__action: 50px;
 
 .alert__action {
     cursor: pointer;
+}
+
+.__react_component_tooltip {
+    max-width: 200px;
+    line-height: 16px;
 }

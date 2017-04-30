@@ -178,7 +178,7 @@ export default class ChatMessageList extends React.Component {
                         let user = UserStore.findById(messageGroup[0].sender) || {name: 'Utilisateur supprimé'};
                         let team = TeamStore.findById(user.team) || {name: 'Utilisateur supprimé'};
                         return (
-                            <div className={(AuthStore.user && user.id == AuthStore.user.id ? 'ChatMessageList__container--own' : 'ChatMessageList__container')} key={messageGroup[0].id}>
+                            <div className={(AuthStore.user && user.id === AuthStore.user.id ? 'ChatMessageList__container--own' : 'ChatMessageList__container')} key={messageGroup[0].id}>
                                 <Avatar
                                     className="ChatMessageList__avatar"
                                     src={(constants.avatarBasePath + messageGroup[0].sender)}
@@ -187,7 +187,7 @@ export default class ChatMessageList extends React.Component {
                                     />
                                 <div className="ChatMessageList__bubbles">
                                     <div className="ChatMessageList__bubbles__head">
-                                        {(team && user.id != AuthStore.user.id ? (team.name + ' - ') : '')}
+                                        {(team && user.id !== AuthStore.user.id ? (team.name + ' - ') : '')}
                                         <DateTime date={messageGroup[0].createdAt} />
                                     </div>
                                     {
