@@ -222,8 +222,25 @@ export default class BaseStore extends EventEmitter {
      * @param {object} data: the item data
      */
     _set(id, data) {
-        this._modelData[id] = data;
-        this.emitChange();
+        // Test if data is different
+        let same = true;
+        if(this._modelData[id] && Object.keys(this._modelData[id]).length == Object.keys(data).length) {
+            for (let attr in this._modelData[id]) {
+                if(this._modelData[id][attr] != data[attr]) {
+                    same = false;
+                    break;
+                }
+            }
+        }
+        else {
+            same = false;
+        }
+
+        // Update and trigger redrawinf if necessary
+        if(!same) {
+            this._modelData[id] = data;
+            this.emitChange();
+        }
     }
 
     /**
@@ -271,27 +288,40 @@ export default class BaseStore extends EventEmitter {
      */
     find(filters) {
         let out = [];
-        if(!Array.isArray(filters)) {
-            filters = [filters];
-        }
 
         for (let i in this._modelData) {
-            for (let filter of filters) {
-                let match = true;
-                for (let key in filter) {
-                    if(this._modelData[i][key] !== filter[key]) {
-                        match = false;
-                        break;
-                    }
-                }
-                if(match) {
-                    out.push(this._modelData[i]);
-                    break;
-                }
+            if(this._match(this._modelData[i], filters)) {
+                out.push(this._modelData[i]);
             }
         }
 
         return out;
+    }
+
+    /**
+     * Helpper to check if an object match against the given filter
+     *
+     * @param  {Object} obj Object to test
+     * @param  {Object|Array} filters Object of filters or array of list of filter
+     * @return {Boolean} True if the object match
+     */
+    _match(obj, filters) {
+        if(!Array.isArray(filters)) {
+            filters = [filters];
+        }
+
+        for (let filter of filters) {
+            let match = true;
+            for (let key in filter) {
+                if(obj[key] !== filter[key]) {
+                    match = false;
+                    break;
+                }
+            }
+            if(match) {
+                return true;
+            }
+        }
     }
 
     /**
@@ -341,27 +371,26 @@ export default class BaseStore extends EventEmitter {
         switch (e.verb) {
             case "created":
                 if(!this.findById(e.id)) {
-                    this._set(e.id, e.data);
+                    // Add to the list only if it match our list
+                    if(this._match(e.data, this.getFiltersSet())) {
+                        this._set(e.id, e.data);
+                    }
                 }
                 else {
-                    console.warn('Received `created` socket event more than once for the store `' + this._modelName + '`', e)
+                    console.warn('Received `created` socket event more than once for the store `' + this._modelName + '`', e);
                 }
                 break;
             case "updated":
                 if(this.findById(e.id)) {
                     this._set(e.id, e.data);
                 }
-                else {
-                    console.warn('Received `updated` socket event for an unknown element for the store `' + this._modelName + '`', e)
-                }
-                this._set(e.id, e.data);
                 break;
             case "destroyed":
                 if(this.findById(e.id)) {
                     this._delete(e.id);
                 }
                 else {
-                    console.warn('Received `destroyed` socket event for an unknown element for the store `' + this._modelName + '`', e)
+                    console.warn('Received `destroyed` socket event for an unknown element for the store `' + this._modelName + '`', e);
                 }
                 break;
         }
