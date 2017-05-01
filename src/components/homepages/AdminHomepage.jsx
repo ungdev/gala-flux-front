@@ -14,6 +14,7 @@ import BarrelsTypesPage from '../adminPages/BarrelsTypesPage.jsx';
 import BottlesTypesPage from "../adminPages/BottlesTypesPage.jsx";
 import AlertButtonsPage from '../adminPages/AlertButtonsPage.jsx';
 import TeamListPage from '../adminPages/TeamListPage.jsx';
+import FlashScreen from '../partials/FlashScreen.jsx';
 import TeamDetailsPage from '../adminPages/TeamDetailsPage.jsx';
 
 
@@ -30,10 +31,12 @@ export default class AdminHomepage extends React.Component {
 
         this.state = {
             route: props.route,
+            flashScreen: true
         };
 
         // binding
         this._handleTabChange = this._handleTabChange.bind(this);
+        this._hideFlashScreen = this._hideFlashScreen.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -76,10 +79,15 @@ export default class AdminHomepage extends React.Component {
         }
     }
 
+    _hideFlashScreen() {
+        if (this.state.flashScreen) {
+            this.setState({ flashScreen: false });
+        }
+    }
+
     render() {
         return (
             <div className="AdminPage">
-
 
                 {/* Tabs for tablet */}
                 <Tabs className="AdminPage__tabs show-sm" onChange={this._handleTabChange} value={this._tabFromRouteName(this.state.route.name)}>
@@ -113,9 +121,10 @@ export default class AdminHomepage extends React.Component {
                             case 'chat':
                             case 'chat.channel':
                                 return (
-                                    <div className="AdminPage__splitscreen">
+                                    <div className="AdminPage__splitscreen" onClick={this._hideFlashScreen}>
                                         <AlertPage className={name != 'alert' ? 'AdminPage__splitscreen__secondary':''}/>
                                         <ChatPage className={name != 'home' && name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
+                                        <FlashScreen show={this.state.flashScreen} />
                                     </div>
                                 );
 

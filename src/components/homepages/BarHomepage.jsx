@@ -2,9 +2,9 @@ import React from 'react';
 
 import ChatMessageList from '../chat/ChatMessageList.jsx';
 import ChatMessageForm from '../chat/ChatMessageForm.jsx';
-import { Row, Col } from 'react-flexbox-grid';
 import BarBarrels from '../barrels/BarBarrels.jsx';
 import BarAlertButtons  from '../alertButtons/BarAlertButtons.jsx';
+import FlashScreen from '../partials/FlashScreen.jsx';
 
 require('../../styles/homepages/BarHomepage.scss');
 
@@ -18,33 +18,43 @@ export default class BarHomepage extends React.Component {
 
         this.state = {
             route: props.route,
+            flashScreen: false
         };
+
+        this._hideFlashScreen = this._hideFlashScreen.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            route: nextProps.route,
+            route: nextProps.route
         });
+    }
+
+    _hideFlashScreen() {
+        if (this.state.flashScreen) {
+            this.setState({ flashScreen: false });
+        }
     }
 
     render() {
         let name = 'chat';
-        if(this.state.route.name == 'stock' || this.state.route.name == 'alert') {
+        if(this.state.route.name === 'stock' || this.state.route.name === 'alert') {
             name = this.state.route.name;
         }
 
         return (
-            <div className="BarHomePage">
-                <div className={('BarHomePage__alerts ' + (name != 'alert' ? 'BarHomePage__col--secondary':''))}>
+            <div className="BarHomePage" onClick={this._hideFlashScreen}>
+                <div className={('BarHomePage__alerts ' + (name !== 'alert' ? 'BarHomePage__col--secondary':''))}>
                     <BarAlertButtons />
                 </div>
-                <div className={('BarHomePage__stock ' + (name != 'stock' ? 'BarHomePage__col--secondary':''))}>
+                <div className={('BarHomePage__stock ' + (name !== 'stock' ? 'BarHomePage__col--secondary':''))}>
                     <BarBarrels />
                 </div>
-                <div className={('BarHomePage__chat ' + (name != 'chat' ? 'BarHomePage__col--secondary':''))}>
+                <div className={('BarHomePage__chat ' + (name !== 'chat' ? 'BarHomePage__col--secondary':''))}>
                     <ChatMessageList channel={null}/>
                     <ChatMessageForm channel={null}/>
                 </div>
+                <FlashScreen show={this.state.flashScreen} />
             </div>
         );
     }
