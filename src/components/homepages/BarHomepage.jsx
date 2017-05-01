@@ -1,12 +1,14 @@
 import React from 'react';
 
+import ChatStore from '../../stores/ChatStore';
+
 import ChatMessageList from '../chat/ChatMessageList.jsx';
 import ChatMessageForm from '../chat/ChatMessageForm.jsx';
 import BarBarrels from '../barrels/BarBarrels.jsx';
 import BarAlertButtons  from '../alertButtons/BarAlertButtons.jsx';
-import FlashScreen from '../partials/FlashScreen.jsx';
 
 require('../../styles/homepages/BarHomepage.scss');
+require('../../styles/FlashScreen.scss');
 
 /**
  * @param {Object} route Route object given by the router
@@ -21,7 +23,19 @@ export default class BarHomepage extends React.Component {
             flashScreen: false
         };
 
+        // binding
         this._hideFlashScreen = this._hideFlashScreen.bind(this);
+        this._flashScreen = this._flashScreen.bind(this);
+    }
+
+    componentDidMount() {
+        // Listen store change
+        ChatStore.addChangeListener(this._flashScreen);
+    }
+
+    componentWillUnmount() {
+        // remove the store change listener
+        ChatStore.removeChangeListener(this._flashScreen);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -34,6 +48,10 @@ export default class BarHomepage extends React.Component {
         if (this.state.flashScreen) {
             this.setState({ flashScreen: false });
         }
+    }
+
+    _flashScreen() {
+        this.setState({ flashScreen: true });
     }
 
     render() {
@@ -54,7 +72,10 @@ export default class BarHomepage extends React.Component {
                     <ChatMessageList channel={null}/>
                     <ChatMessageForm channel={null}/>
                 </div>
-                <FlashScreen show={this.state.flashScreen} />
+                {
+                    this.state.flashScreen &&
+                    <div className="flash_screen"></div>
+                }
             </div>
         );
     }

@@ -4,7 +4,8 @@ import router from '../../router';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
 import AdminMenu from '../partials/AdminMenu.jsx';
-import AuthStore from '../../stores/AuthStore.js';
+import AuthStore from '../../stores/AuthStore';
+import ChatStore from '../../stores/ChatStore';
 
 import AlertPage from '../adminPages/AlertPage.jsx';
 import ChatPage from '../adminPages/ChatPage.jsx';
@@ -14,11 +15,11 @@ import BarrelsTypesPage from '../adminPages/BarrelsTypesPage.jsx';
 import BottlesTypesPage from "../adminPages/BottlesTypesPage.jsx";
 import AlertButtonsPage from '../adminPages/AlertButtonsPage.jsx';
 import TeamListPage from '../adminPages/TeamListPage.jsx';
-import FlashScreen from '../partials/FlashScreen.jsx';
 import TeamDetailsPage from '../adminPages/TeamDetailsPage.jsx';
 
 
 require('../../styles/homepages/AdminHomepage.scss');
+require('../../styles/FlashScreen.scss');
 
 
 /**
@@ -37,6 +38,17 @@ export default class AdminHomepage extends React.Component {
         // binding
         this._handleTabChange = this._handleTabChange.bind(this);
         this._hideFlashScreen = this._hideFlashScreen.bind(this);
+        this._flashScreen = this._flashScreen.bind(this);
+    }
+
+    componentDidMount() {
+        // Listen store change
+        ChatStore.addChangeListener(this._flashScreen);
+    }
+
+    componentWillUnmount() {
+        // remove the store change listener
+        ChatStore.removeChangeListener(this._flashScreen);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -44,7 +56,6 @@ export default class AdminHomepage extends React.Component {
             route: nextProps.route,
         });
     }
-
 
     /**
      * On tab change, navigate to new uri
@@ -54,6 +65,9 @@ export default class AdminHomepage extends React.Component {
         router.navigate(value);
     }
 
+    _flashScreen() {
+        this.setState({ flashScreen: true });
+    }
 
     /**
      * Return the selected tab according to the route name
@@ -124,7 +138,10 @@ export default class AdminHomepage extends React.Component {
                                     <div className="AdminPage__splitscreen" onClick={this._hideFlashScreen}>
                                         <AlertPage className={name != 'alert' ? 'AdminPage__splitscreen__secondary':''}/>
                                         <ChatPage className={name != 'home' && name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
-                                        <FlashScreen show={this.state.flashScreen} />
+                                        {
+                                             this.state.flashScreen &&
+                                             <div className="flash_screen"></div>
+                                         }
                                     </div>
                                 );
 

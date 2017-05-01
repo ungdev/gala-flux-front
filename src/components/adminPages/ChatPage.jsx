@@ -28,7 +28,7 @@ export default class ChatPage extends React.Component {
 
     render() {
         let channel = this.state.route.name == 'chat.channel' ? this.state.route.params.channel : false;
-        console.log(channel);
+
         return (
             <div className={this.props.className}>
                 <div className="ChatPage">
