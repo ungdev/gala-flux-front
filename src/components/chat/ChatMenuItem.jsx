@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { ListItem } from 'material-ui/List';
-
 export default class ChatMenuItem extends React.Component {
 
     constructor(props) {
@@ -22,19 +20,17 @@ export default class ChatMenuItem extends React.Component {
 
     render() {
         return (
-            <ListItem
-                value={this.state.channel}
-                className="ChatMenu__channel"
-            >
+            <div onClick={this.props.messagesViewed} >
                 {
-                    this.state.newMessages &&
-                        <span>
-                            ({this.state.newMessages})
-                        </span>
+                    this.state.newMessages
+                        ?
+                            <span className="Notification_bubble">{this.state.newMessages}</span>
+                        :
+                            null
 
                 }
                 {this.state.channel.split(':')[1]}
-            </ListItem>
+            </div>
         );
     }
 

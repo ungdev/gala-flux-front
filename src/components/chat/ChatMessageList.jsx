@@ -62,7 +62,7 @@ export default class ChatMessageList extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.channel != this.channel) {
+        if(nextProps.channel !== this.channel) {
             this._handleNewChannel(nextProps);
         }
     }
@@ -151,8 +151,6 @@ export default class ChatMessageList extends React.Component {
             NotificationActions.error('Une erreur s\'est produite pendant le re-chargement des messages', error);
         });
     }
-
-
 
     /**
      * Generate channel filter according to props

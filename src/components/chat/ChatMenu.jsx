@@ -9,6 +9,7 @@ import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
 import SelectableList from '../partials/SelectableList.jsx';
 import ChatMenuItem from './ChatMenuItem.jsx';
+import { ListItem } from 'material-ui/List';
 
 require('../../styles/chat/ChatMenu.scss');
 
@@ -120,6 +121,14 @@ export default class ChatMenu extends React.Component {
         }
     }
 
+    /**
+     * Call the ChatStore method to reset the new messages counter of this channel
+     * @param {string} channel
+     */
+    _messagesViewed(channel) {
+        ChatStore.resetNewMessages(channel);
+    }
+
     render() {
 
         return (
@@ -132,7 +141,9 @@ export default class ChatMenu extends React.Component {
                     {
                         this.state.channels.public.map((channel, i) => {
                             return (
-                                <ChatMenuItem key={i} newMessages={this.state.newMessages[channel]} channel={channel} />
+                                <ListItem key={i} value={channel} className="ChatMenu__channel">
+                                    <ChatMenuItem  newMessages={this.state.newMessages[channel]} channel={channel} messagesViewed={_ => this._messagesViewed(channel)} />
+                                </ListItem>
                             )
                         })
                     }
@@ -147,7 +158,9 @@ export default class ChatMenu extends React.Component {
                     {
                         this.state.channels.group.map((channel, i) => {
                             return (
-                                <ChatMenuItem key={i} newMessages={this.state.newMessages[channel]} channel={channel} />
+                                <ListItem key={i} value={channel} className="ChatMenu__channel">
+                                    <ChatMenuItem  newMessages={this.state.newMessages[channel]} channel={channel} messagesViewed={_ => this._messagesViewed(channel)} />
+                                </ListItem>
                             )
                         })
                     }
@@ -162,7 +175,9 @@ export default class ChatMenu extends React.Component {
                     {
                         this.state.channels.private.map((channel, i) => {
                             return (
-                                <ChatMenuItem key={i} newMessages={this.state.newMessages[channel]} channel={channel} />
+                                <ListItem key={i} value={channel} className="ChatMenu__channel">
+                                    <ChatMenuItem  newMessages={this.state.newMessages[channel]} channel={channel} messagesViewed={_ => this._messagesViewed(channel)} />
+                                </ListItem>
                             )
                         })
                     }
