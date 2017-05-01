@@ -34,5 +34,30 @@
 }
 
 .alerts__container {
-    margin: 0 15px 15px 15px;
+    padding: 10px;
+}
+
+
+/**
+ * For big screen, but the filter paper on the bottom of the screen
+ */
+@media only screen and (min-width: $screen-min-sm) and (min-height: 768px) {
+    .alerts__container {
+        position: absolute;
+        top: 72px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: auto;
+    }
+
+    .alerts__filters {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        box-shadow: rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px !important;
+        height: 72px;
+        z-index: 50;
+    }
 }
