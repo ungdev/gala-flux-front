@@ -33,6 +33,35 @@ class ChatStore extends BaseStore {
     }
 
     /**
+     * fetch the messages in the database and compare them to the lasts viewed in the localStorage
+     *
+     */
+    _countNewMessages() {
+        // fetch all the messages
+        ChatService.get()
+            .then(messages => {
+                // read the last messages viewed
+                const lastMessages = JSON.parse(localStorage.getItem('lastMessages'));
+                const newMessages = {};
+
+                // for each messages, check if he is more recent than the last viewed
+                for (let message of messages) {
+                    if (lastMessages[message.channel] && lastMessages[message.channel].createdAt < message.createdAt) {
+                        if (newMessages[message.channel]) {
+                            newMessages[message.channel]++;
+                        } else {
+                            newMessages[message.channel] = 1;
+                        }
+                    }
+                }
+
+                this._newMessages = newMessages;
+                this.emitChange();
+            })
+            .catch(error => console.log("error loading missing messages :", error));
+    }
+
+    /**
      * set new messages of a given channel to 0
      * @param {string} channel
      */
@@ -48,17 +77,17 @@ class ChatStore extends BaseStore {
      * @param channel
      */
     _updateLocalStorage(channel) {
-        let lastViewed = localStorage.getItem('lastViewed');
+        let lastMessages = localStorage.getItem('lastMessages');
 
-        if (!lastViewed) {
-            lastViewed = {};
+        if (!lastMessages) {
+            lastMessages = {};
         } else {
-            lastViewed = JSON.parse(lastViewed);
+            lastMessages = JSON.parse(lastMessages);
         }
 
-        lastViewed[channel] = this._getLastChannelMessage(channel);
+        lastMessages[channel] = this._getLastChannelMessage(channel);
 
-        localStorage.setItem('lastViewed', JSON.stringify(lastViewed));
+        localStorage.setItem('lastMessages', JSON.stringify(lastMessages));
     }
 
     /**
@@ -134,6 +163,9 @@ class ChatStore extends BaseStore {
         switch(action.type) {
             case "MESSAGES_VIEWED":
                 this._resetNewMessages(action.channel);
+                break;
+            case "AUTH_JWT_SAVED":
+                this._countNewMessages();
                 break;
         }
     }
