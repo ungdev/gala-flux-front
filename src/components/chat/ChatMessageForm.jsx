@@ -2,6 +2,7 @@ import React from 'react';
 
 import ChatService from '../../services/ChatService';
 import ChatStore from '../../stores/ChatStore';
+import ChatActions from '../../actions/ChatActions';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import ContentSendIcon from 'material-ui/svg-icons/content/send';
@@ -93,7 +94,7 @@ export default class ChatMessageForm extends React.Component {
     _onTextAreaClick() {
         // if there was new messages for this channel, reset the new messages counter
         if (ChatStore.getNewMessages(this.state.channel)) {
-            ChatStore.resetNewMessages(this.state.channel);
+            ChatActions.viewMessages(this.state.channel);
         }
      }
 

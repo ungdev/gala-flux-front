@@ -14,5 +14,16 @@ export default {
             type: 'GET_MESSAGES',
             messages
         });
+    },
+
+    /**
+     * reset the new messages counter of a channel
+     */
+    viewMessages(channel) {
+        AppDispatcher.dispatch({
+            type: 'MESSAGES_VIEWED',
+            channel
+        });
     }
+
 }

@@ -3,6 +3,7 @@ import router from '../../router';
 
 import ChatService from '../../services/ChatService';
 import ChatStore from '../../stores/ChatStore';
+import ChatActions from '../../actions/ChatActions';
 import AuthStore from '../../stores/AuthStore';
 import NotificationActions from '../../actions/NotificationActions';
 import Divider from 'material-ui/Divider';
@@ -126,7 +127,7 @@ export default class ChatMenu extends React.Component {
      * @param {string} channel
      */
     _messagesViewed(channel) {
-        ChatStore.resetNewMessages(channel);
+        ChatActions.viewMessages(channel);
     }
 
     render() {

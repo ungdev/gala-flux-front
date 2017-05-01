@@ -7,6 +7,8 @@ class ChatStore extends BaseStore {
         super('message', ChatService);
 
         this._newMessages = {};
+
+        this.subscribe(() => this._handleActions.bind(this));
     }
 
     get messages() {
@@ -33,7 +35,7 @@ class ChatStore extends BaseStore {
      * set new messages of a given channel to 0
      * @param {string} channel
      */
-    resetNewMessages(channel) {
+    _resetNewMessages(channel) {
         this._newMessages[channel] = 0;
         this.emitChange();
     }
@@ -77,6 +79,19 @@ class ChatStore extends BaseStore {
                 if(this.findById(e.id)) {
                     this._delete(e.id);
                 }
+                break;
+        }
+    }
+
+    /**
+     * Handle Actions from BarrelActions
+     *
+     * @param {object} action : the action
+     */
+    _handleActions(action) {
+        switch(action.type) {
+            case "MESSAGES_VIEWED":
+                this._resetNewMessages(action.channel);
                 break;
         }
     }
