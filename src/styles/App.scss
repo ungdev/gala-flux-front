@@ -98,14 +98,21 @@ html, body, .container-hide {
 /**
  * Label used over a field. It is usefull for custom fields  or fields that doesn't provide a label
  */
- .FieldLabel {
+.FieldLabel {
     margin-top: 16px;
     margin-bottom: 5px;
     color: rgba(0, 0, 0, 0.3);
     font-size: 13px;
     display: block;
- }
+}
 
+
+/**
+ * Authorise to go back to line on \n in tooltips
+ */
+.__react_component_tooltip {
+    white-space: pre-line;
+}
 
 /**
  * Hide/show helper

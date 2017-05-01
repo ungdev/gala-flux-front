@@ -146,20 +146,22 @@ export default class Alert extends React.Component {
                                         return <div key={i}><Avatar src={(constants.avatarBasePath + id)} backgroundColor="#00AFCA" /></div>
                                     })}
                                 </div>
-                                <ReactTooltip
-                                    id={"avatar-" + this.state.alert.id}
-                                    place="bottom"
-                                >
-                                    <span>
-                                        {this.state.alert.users.map((id, i) => {
-                                            let user = UserStore.findById(id);
-                                            if(user) {
-                                                return <span key={i}>{user.name}<br/></span>
-                                            }
-                                            return <span key={i}>Quelqu'un<br/></span>
-                                        })}
-                                    </span>
-                                </ReactTooltip>
+                                <div style={{whiteSpace: 'pre-line'}}>
+                                    <ReactTooltip
+                                        id={"avatar-" + this.state.alert.id}
+                                        place="bottom"
+                                    >
+                                        <span style={{whiteSpace: 'pre-line'}} className="bite">
+                                            {this.state.alert.users.map((id, i) => {
+                                                let user = UserStore.findById(id);
+                                                if(user) {
+                                                    return <span key={i}>{user.name}<br/></span>
+                                                }
+                                                return <span key={i}>Quelqu'un<br/></span>
+                                            })}
+                                        </span>
+                                    </ReactTooltip>
+                                </div>
                             </div>
                         :
                             <AccountCircleIcon />
