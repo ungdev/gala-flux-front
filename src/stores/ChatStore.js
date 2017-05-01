@@ -1,5 +1,6 @@
 import BaseStore from './BaseStore';
 import ChatService from '../services/ChatService';
+import AuthStore from './AuthStore';
 
 class ChatStore extends BaseStore {
 
@@ -37,7 +38,45 @@ class ChatStore extends BaseStore {
      */
     _resetNewMessages(channel) {
         this._newMessages[channel] = 0;
+        this._updateLocalStorage(channel);
         this.emitChange();
+    }
+
+    /**
+     * Save the last message viewed of a channel in the localStorage
+     *
+     * @param channel
+     */
+    _updateLocalStorage(channel) {
+        let lastViewed = localStorage.getItem('lastViewed');
+
+        if (!lastViewed) {
+            lastViewed = {};
+        } else {
+            lastViewed = JSON.parse(lastViewed);
+        }
+
+        lastViewed[channel] = this._getLastChannelMessage(channel);
+
+        localStorage.setItem('lastViewed', JSON.stringify(lastViewed));
+    }
+
+    /**
+     * Return the last message of a given channel
+     *
+     * @param {string} channel: the channel name
+     * @returns {object|null}
+     */
+    _getLastChannelMessage(channel) {
+        let lastMessage = null;
+
+        for (let id in this._modelData) {
+            if (!lastMessage || (lastMessage.createdAt < this._modelData[id].createdAt)) {
+                lastMessage = this._modelData[id];
+            }
+        }
+
+        return lastMessage;
     }
 
     /**
@@ -45,9 +84,12 @@ class ChatStore extends BaseStore {
      * @param message
      */
     _handleNewMessage(message) {
-        // increment the number of unviewed messages for this channel
-        this._newMessages[message.channel] ? this._newMessages[message.channel]++ : this._newMessages[message.channel] = 1;
-        this.emitChange();
+        // it's new message only if the sender is not the authenticated user
+        if (AuthStore.user.id !== message.sender) {
+            // increment the number of unviewed messages for this channel
+            this._newMessages[message.channel] ? this._newMessages[message.channel]++ : this._newMessages[message.channel] = 1;
+            this.emitChange();
+        }
     }
 
     /**
