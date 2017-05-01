@@ -103,28 +103,29 @@
 }
 
 .green_background {
-    background: color($teal, 600) !important;
+    background: $background-ok !important;
     color: #fff !important;
 }
 button.green_background:hover {
-    background: color($teal, 700) !important;
+    background: $background-ok--hover !important;
 }
 
 .orange_background {
-    background: color($orange, 600);
+    background: $background-warning;
     color: #fff;
 }
 .orange_background:hover {
-    background: color($orange, 700);
+    background: $background-warning--hover;
 }
 
 .red_background {
-    background: color($red, 600);
+    background: $background-serious;
     color: #fff;
 }
 button.red_background:hover {
-    background: color($red, 700);
+    background: $background-serious--hover;
 }
+
 
 .SmallIcon {
     width: 16px !important;
@@ -136,7 +137,7 @@ button.red_background:hover {
 }
 
 .greenIcon {
-    color: color($green, 600) !important;
+    color: $background-ok !important;
 }
 
 .AlertButton_input_actions > * {

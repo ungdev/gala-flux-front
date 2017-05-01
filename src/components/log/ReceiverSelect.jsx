@@ -48,7 +48,7 @@ export default class ReceiverSelect extends React.Component {
                     insetChildren={true}
                     checked={this.props.value && this.props.value.includes(undefined)}
                     value={undefined}
-                    primaryText="Alertes automatiques"
+                    primaryText="Alertes auto"
                 />
                 {
                     this.state.teams.map(team => {

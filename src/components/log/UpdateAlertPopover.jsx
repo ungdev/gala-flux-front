@@ -2,8 +2,9 @@ import React from 'react';
 
 import UserStore from '../../stores/UserStore';
 import AlertService from '../../services/AlertService';
+import AuthStore from '../../stores/AuthStore';
 
-import Dialog from 'material-ui/Dialog';
+import Popover from 'material-ui/Popover';
 import FlatButton from 'material-ui/FlatButton';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -13,7 +14,14 @@ import Close from 'material-ui/svg-icons/navigation/close';
 
 import NotificationActions from '../../actions/NotificationActions';
 
-export default class UpdateAlertDialog extends React.Component {
+
+/**
+ * @param {function} onRequestClose Function that will be called to request popover close
+ * @param {boolean} open
+ * @param {object} anchor Anchor element
+ * @param {Alert} alert
+ */
+export default class UpdateAlertPopover extends React.Component {
 
     constructor(props) {
         super(props);
@@ -48,7 +56,8 @@ export default class UpdateAlertDialog extends React.Component {
 
     _loadData() {
         let newState = {};
-        UserStore.loadData(null)
+        if(this.state.alert) {
+            UserStore.loadData({team: (this.state.alert.receiver ? this.state.alert.receiver.id : AuthStore.team.id) })
             .then(data => {
                 UserStore.unloadData(this.UserStoreToken);
                 this.UserStoreToken = data.token;
@@ -57,6 +66,7 @@ export default class UpdateAlertDialog extends React.Component {
             .catch(error => {
                 NotificationActions.error('Une erreur s\'est produite pendant le chargement des utilisateurs', error);
             });
+        }
     }
 
     _unloadData() {
@@ -64,17 +74,26 @@ export default class UpdateAlertDialog extends React.Component {
     }
 
     _updateData() {
-        let users = UserStore.users;
+        let users = UserStore.find({team: (this.state.alert.receiver ? this.state.alert.receiver.id : AuthStore.team.id) });
         users.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
         this.setState({ users: users });
     }
 
-    _addSelectedUser(e, i, v) {
-        const user = UserStore.findById(v);
+    _addSelectedUser(user) {
+        // const user = UserStore.findById(v);
         if (user) {
             let state = this.state;
-            state.alert.users.push(user);
+            console.log(state.alert)
+            state.alert.users.push(user.id);
             this.setState(state);
+
+
+            AlertService.updateAssignedUsers(this.state.alert.id, this.state.alert.users)
+            .then(alert => {
+                NotificationActions.snackbar("L'alerte \"" + alert.title + "\" a bien été modifiée.");
+                this.props.close();
+            })
+            .catch(error => NotificationActions.error("Une erreur s'est produite pendant la modification de l'alerte", error));
         }
     }
 
@@ -133,51 +152,27 @@ export default class UpdateAlertDialog extends React.Component {
         ];
 
         return (
-            <Dialog 
-                title={"Modification de l'état de l'alerte \"" + this.state.alert.title + "\""}
-                open={this.props.show}
-                actions={actions}
-                autoScrollBodyContent={true}
-                modal={false}
-                onRequestClose={this.props.close}
+            <Popover
+              open={this.props.open}
+              anchorEl={this.props.anchor}
+              anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+              targetOrigin={{horizontal: 'left', vertical: 'top'}}
+              onRequestClose={this.props.onRequestClose}
             >
-                Vous pouvez modifier l'état de l'alerte <strong>{this.state.alert.title}</strong> à l'aide du formulaire ci-dessous.
-                <form onSubmit={this._handleSubmit}>
-                    <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                    <Row>
-                        <Col sm={12}>
-                            <SelectField
-                                floatingLabelText="Ajouter"
-                                onChange={this._addSelectedUser}
-                            >
-                                {
-                                    this.state.users.map((user, i) => {
-                                        if (this._notAssigned(user.id)) {
-                                            return <MenuItem key={i} value={user.id} primaryText={user.name} />;
-                                        }
-                                    })
-                                }
-                            </SelectField>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col sm={12}>
+
                             <List>
-                                {
-                                    this.state.alert.users.map((user, i) => {
+                                {this.state.users &&
+                                    this.state.users.map((user, i) => {
                                         return  <ListItem
                                             key={i}
                                             primaryText={user.name}
                                             rightIcon={<Close />}
-                                            onClick={_ => this._removeSelectedUser(user.id)}
+                                            onClick={_ => this._addSelectedUser(user)}
                                         />;
                                     })
                                 }
                             </List>
-                        </Col>
-                    </Row>
-                </form>
-            </Dialog>
+            </Popover>
         );
     }
 

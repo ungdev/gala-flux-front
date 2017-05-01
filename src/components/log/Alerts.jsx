@@ -30,9 +30,12 @@ export default class Alerts extends React.Component {
         this.TeamStoreToken = null;
 
         this._setAlerts = this._setAlerts.bind(this);
+                console.log('create');
+
     }
 
     componentDidMount() {
+            console.log('mount');
         AlertStore.loadData(null)
             .then(data => {
                 AlertStore.unloadData(this.AlertStoreToken);
@@ -64,6 +67,7 @@ export default class Alerts extends React.Component {
     }
 
     componentWillUnmount() {
+            console.log('unmount');
         AlertStore.unloadData(this.AlertStoreToken);
         TeamStore.unloadData(this.TeamStoreToken);
         AlertStore.removeChangeListener(this._setAlerts);
@@ -79,6 +83,7 @@ export default class Alerts extends React.Component {
     }
 
     _setAlerts() {
+        console.log(TeamStore.length);
         if (AlertStore.length && TeamStore.length) {
             let alerts = [];
             let alertsDone = [];
@@ -144,7 +149,7 @@ export default class Alerts extends React.Component {
                     </Row>
                 </Paper>
                 <div className="alerts__container">
-                    <AlertList alerts={this.state.filteredAlerts} filter={this.state.selectedButton} />
+                    <AlertList alerts={this.state.filteredAlerts} />
                 </div>
             </div>
         );

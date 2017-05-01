@@ -375,6 +375,7 @@ export default class BaseStore extends EventEmitter {
      * @param {object} e : the event
      */
     _handleModelEvents(e) {
+        console.debug('DB Event for ' + this._modelName, e);
         switch (e.verb) {
             case "created":
                 if(!this.findById(e.id)) {

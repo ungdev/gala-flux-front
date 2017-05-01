@@ -92,7 +92,7 @@ export default class ButtonList extends React.Component {
 
         // get distinct categories
         for (let button of buttons) {
-            if (categories.indexOf(button.category) === -1) {
+            if (!categories.includes(button.category)) {
                 categories.push(button.category);
             }
         }
