@@ -31,6 +31,10 @@ export default class BaseStore extends EventEmitter {
         return this._dispatchToken;
     }
 
+    get length() {
+        return Object.keys(this._modelData).length;
+    }
+
     emitChange() {
         this.emit('CHANGE');
     }

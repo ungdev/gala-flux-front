@@ -121,11 +121,6 @@ export default class Alert extends React.Component {
                         </button>
                     }
                 </div>
-                <UpdateAlertDialog
-                    show={this.state.showUpdateAlertDialog}
-                    close={this._toggleUpdateAlertDialog}
-                    alert={this.state.alert}
-                />
             </Col>
         );
     }
