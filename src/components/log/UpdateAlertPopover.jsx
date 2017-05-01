@@ -3,16 +3,20 @@ import React from 'react';
 import UserStore from '../../stores/UserStore';
 import AlertService from '../../services/AlertService';
 import AuthStore from '../../stores/AuthStore';
+import * as constants from '../../config/constants';
 
 import Popover from 'material-ui/Popover';
 import FlatButton from 'material-ui/FlatButton';
 import SelectField from 'material-ui/SelectField';
+import Avatar from 'material-ui/Avatar';
 import MenuItem from 'material-ui/MenuItem';
 import { Row, Col } from 'react-flexbox-grid';
 import {List, ListItem} from 'material-ui/List';
-import Close from 'material-ui/svg-icons/navigation/close';
+import CheckIcon from 'material-ui/svg-icons/navigation/check';
+import AccountCircleIcon from 'material-ui/svg-icons/action/account-circle';
 
 import NotificationActions from '../../actions/NotificationActions';
+require('../../styles/log/UpdateAlertPopover.scss');
 
 
 /**
@@ -28,14 +32,14 @@ export default class UpdateAlertPopover extends React.Component {
 
         this.state = {
             alert: props.alert,
-            users: []
+            users: [],
+            selectedUsers: [...props.alert.users],
+            showSubmit: false,
         };
 
         this._handleSubmit = this._handleSubmit.bind(this);
         this._updateData = this._updateData.bind(this);
-        this._addSelectedUser = this._addSelectedUser.bind(this);
-        this._removeSelectedUser = this._removeSelectedUser.bind(this);
-        this._notAssigned = this._notAssigned.bind(this);
+        this._handleSelection = this._handleSelection.bind(this);
     }
 
     componentDidMount() {
@@ -50,7 +54,9 @@ export default class UpdateAlertPopover extends React.Component {
 
     componentWillReceiveProps(props) {
         this.setState({
-            alert: props.alert
+            alert: props.alert,
+            selectedUsers: [...props.alert.users],
+            showSubmit: false,
         });
     }
 
@@ -76,62 +82,51 @@ export default class UpdateAlertPopover extends React.Component {
     _updateData() {
         let users = UserStore.find({team: (this.state.alert.receiver ? this.state.alert.receiver.id : AuthStore.team.id) });
         users.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+        users.unshift(null);
         this.setState({ users: users });
-    }
-
-    _addSelectedUser(user) {
-        // const user = UserStore.findById(v);
-        if (user) {
-            let state = this.state;
-            console.log(state.alert)
-            state.alert.users.push(user.id);
-            this.setState(state);
-
-
-            AlertService.updateAssignedUsers(this.state.alert.id, this.state.alert.users)
-            .then(alert => {
-                NotificationActions.snackbar("L'alerte \"" + alert.title + "\" a bien été modifiée.");
-                this.props.close();
-            })
-            .catch(error => NotificationActions.error("Une erreur s'est produite pendant la modification de l'alerte", error));
-        }
-    }
-
-    _removeSelectedUser(id) {
-        let state = this.state;
-        state.alert.users = state.alert.users.filter(user => user.id !== id);
-        this.setState(state);
     }
 
     /**
      * Check if the user is not already assigned to this alert
-     *
-     * @param {string} id: the user's id
-     * @return {boolean}: not assigned
+     * @param {Event} e
+     * @param {User} id the selected user
      */
-    _notAssigned(id) {
-        for (let user of this.state.alert.users) {
-            if (user.id === id) {
-                return false;
-            }
+    _handleSelection(e, user) {
+        let id = user ? user.id : null;
+        let selectedUsers = this.state.selectedUsers;
+        let showSubmit = this.state.showSubmit;
+        if(selectedUsers.includes(id)) {
+            selectedUsers = selectedUsers.filter(v => v != id);
         }
-        return true;
+        else {
+            selectedUsers.push(id);
+        }
+
+        // submit
+        if(e.ctrlKey) {
+            showSubmit = true;
+        }
+        else {
+            this._handleSubmit(selectedUsers);
+        }
+
+        // Save
+        this.setState({selectedUsers, showSubmit});
     }
 
     /**
      * Call the alert Service to update the alert
-     *
-     * @param {Event} e Event like form submit that will be stopped
+     * @param {Array} selectedUsers Optionnal selectedUsers, will take state version if undefined
      */
-    _handleSubmit(e) {
-        if (e) {
-            e.preventDefault();
+    _handleSubmit(selectedUsers) {
+        if(selectedUsers === undefined) {
+            selectedUsers = this.state.selectedUsers;
         }
 
-        AlertService.updateAssignedUsers(this.state.alert.id, this.state.alert.users)
+        // Submit
+        AlertService.updateAssignedUsers(this.state.alert.id, selectedUsers)
             .then(alert => {
-                NotificationActions.snackbar("L'alerte \"" + alert.title + "\" a bien été modifiée.");
-                this.props.close();
+                this.props.onRequestClose();
             })
             .catch(error => NotificationActions.error("Une erreur s'est produite pendant la modification de l'alerte", error));
     }
@@ -153,25 +148,45 @@ export default class UpdateAlertPopover extends React.Component {
 
         return (
             <Popover
-              open={this.props.open}
-              anchorEl={this.props.anchor}
-              anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-              targetOrigin={{horizontal: 'left', vertical: 'top'}}
-              onRequestClose={this.props.onRequestClose}
+                className="UpdateAlertPopover"
+                open={this.props.open}
+                anchorEl={this.props.anchor}
+                anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                onRequestClose={this.props.onRequestClose}
             >
+                <p><small>Info: <em>Ctrl+Click</em> permet<br/> selectionner plusieurs personnes</small></p>
 
-                            <List>
-                                {this.state.users &&
-                                    this.state.users.map((user, i) => {
-                                        return  <ListItem
-                                            key={i}
-                                            primaryText={user.name}
-                                            rightIcon={<Close />}
-                                            onClick={_ => this._addSelectedUser(user)}
-                                        />;
-                                    })
-                                }
-                            </List>
+                <List>
+                    {this.state.users &&
+                        this.state.users.map((user, i) => {
+                            if(this.state.selectedUsers.includes(user ? user.id : null)) {
+                                return <ListItem
+                                        key={i}
+                                        primaryText={user ? user.name : "Quelqu'un d'autre"}
+                                        leftAvatar={<Avatar backgroundColor="#00AFCA" ><CheckIcon color="white"/></Avatar>}
+                                        onClick={(e) => this._handleSelection(e, user)}
+                                    />;
+                            }
+                            else {
+                                return <ListItem
+                                        key={i}
+                                        primaryText={user ? user.name : "Quelqu'un d'autre"}
+                                        leftAvatar={<Avatar src={(constants.avatarBasePath + (user ? user.id : null))} backgroundColor="white" />}
+                                        onClick={(e) => this._handleSelection(e, user)}
+                                    />;
+                            }
+                        })
+                    }
+                </List>
+                { this.state.showSubmit &&
+                    <FlatButton
+                        label="Valider"
+                        secondary={true}
+                        onClick={() => this._handleSubmit()}
+                        fullWidth={true}
+                    />
+                }
             </Popover>
         );
     }

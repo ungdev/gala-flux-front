@@ -122,7 +122,6 @@ export default class BarBarrels extends React.Component {
      * Set the barrels in the store with the barrel of the user's team
      */
     _setBarrels() {
-        console.log('Update')
         // if the AuthStore.user attribute is not initialized yet, we don't know the user's team
         if (AuthStore.user && BarrelTypeStore.types) {
             const barrels = {
