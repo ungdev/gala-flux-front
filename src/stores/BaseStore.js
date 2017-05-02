@@ -31,16 +31,36 @@ export default class BaseStore extends EventEmitter {
         return this._dispatchToken;
     }
 
+    /**
+     * Emit a CHANGE event
+     * CHANGE means that the store has been updated
+     */
     emitChange() {
         this.emit('CHANGE');
     }
 
+    /**
+     * Emit a NEW event
+     * NEW means that a new object has been added in the store
+     */
+    emitNew() {
+        this.emit('NEW');
+    }
+
     addChangeListener(cb) {
-        this.on('CHANGE', cb)
+        this.on('CHANGE', cb);
+    }
+
+    addNewListener(cb) {
+        this.on('NEW', cb);
     }
 
     removeChangeListener(cb) {
         this.removeListener('CHANGE', cb);
+    }
+
+    removeNewListener(cb) {
+        this.removeListener('NEW', cb);
     }
 
     /**

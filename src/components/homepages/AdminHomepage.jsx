@@ -42,13 +42,13 @@ export default class AdminHomepage extends React.Component {
     }
 
     componentDidMount() {
-        // Listen store change
-        ChatStore.addChangeListener(this._flashScreen);
+        // Listen new messages events
+        ChatStore.addNewListener(this._flashScreen);
     }
 
     componentWillUnmount() {
-        // remove the store change listener
-        ChatStore.removeChangeListener(this._flashScreen);
+        // remove the store listener
+        ChatStore.removeNewListener(this._flashScreen);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -67,6 +67,12 @@ export default class AdminHomepage extends React.Component {
 
     _flashScreen() {
         this.setState({ flashScreen: true });
+    }
+
+    _hideFlashScreen() {
+        if (this.state.flashScreen) {
+            this.setState({ flashScreen: false });
+        }
     }
 
     /**
@@ -90,12 +96,6 @@ export default class AdminHomepage extends React.Component {
             case 'admin.barrels':
             case 'admin.alerts':
                 return 'admin';
-        }
-    }
-
-    _hideFlashScreen() {
-        if (this.state.flashScreen) {
-            this.setState({ flashScreen: false });
         }
     }
 

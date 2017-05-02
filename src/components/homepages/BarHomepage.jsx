@@ -29,13 +29,13 @@ export default class BarHomepage extends React.Component {
     }
 
     componentDidMount() {
-        // Listen store change
-        ChatStore.addChangeListener(this._flashScreen);
+        // Listen new messages events
+        ChatStore.addNewListener(this._flashScreen);
     }
 
     componentWillUnmount() {
-        // remove the store change listener
-        ChatStore.removeChangeListener(this._flashScreen);
+        // remove the store listener
+        ChatStore.removeNewListener(this._flashScreen);
     }
 
     componentWillReceiveProps(nextProps) {
