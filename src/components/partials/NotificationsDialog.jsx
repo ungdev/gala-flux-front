@@ -1,5 +1,7 @@
 import React from 'react';
 
+import AuthStore from '../../stores/AuthStore';
+
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Toggle from 'material-ui/Toggle';
@@ -9,36 +11,55 @@ export default class NotificationsDialog extends React.Component {
     constructor(props) {
         super(props);
 
-        // read current values for notification parameters
-        let currentNotificationSound = JSON.parse(localStorage.getItem('notificationSound'));
-        let currentNotificationFlash = JSON.parse(localStorage.getItem('notificationFlash'));
-
         this.state = {
-            sound: currentNotificationSound !== false,
-            flash: currentNotificationFlash !== false
+            notifications: {
+                sound: false,
+                flash: false
+            }
         };
 
         // binding
         this._updateParameters = this._updateParameters.bind(this);
-        this._toggleSound = this._toggleSound.bind(this);
-        this._toggleFlash = this._toggleFlash.bind(this);
+        this._toggleParameter = this._toggleParameter.bind(this);
+        this._setNotificationsConfiguration = this._setNotificationsConfiguration.bind(this);
+    }
+
+    componentDidMount() {
+        // Listen store events
+        AuthStore.addChangeListener(this._setNotificationsConfiguration);
+        // init the notifications object in the state
+        this._setNotificationsConfiguration();
+    }
+
+    componentWillUnmount() {
+        // remove the store listener
+        AuthStore.removeChangeListener(this._setNotificationsConfiguration);
+    }
+
+    /**
+     * Update the notifications in the component state with the values from AuthStore
+     */
+    _setNotificationsConfiguration() {
+        this.setState({ notifications: AuthStore.notifications });
     }
 
     /**
      * Update the notification parameters in the localStorage
      */
     _updateParameters() {
-        localStorage.setItem('notificationSound', this.state.sound);
-        localStorage.setItem('notificationFlash', this.state.flash);
+        AuthStore.notifications = this.state.notifications;
         this.props.close();
     }
 
-    _toggleSound() {
-        this.setState({ sound: !this.state.sound });
-    }
-
-    _toggleFlash() {
-        this.setState({ flash: !this.state.flash });
+    /**
+     * Toggle the value of a parameter of the notifications configuration
+     *
+     * @param {string} parameter: the parameter to toggle
+     */
+    _toggleParameter(parameter) {
+        let state = this.state;
+        state.notifications[parameter] = !state.notifications[parameter];
+        this.setState(state);
     }
 
     render() {
@@ -69,13 +90,13 @@ export default class NotificationsDialog extends React.Component {
                 <div>
                     <Toggle
                         label="Jouer un son lors des notifications"
-                        toggled={this.state.sound}
-                        onToggle={this._toggleSound}
+                        toggled={this.state.notifications.sound}
+                        onToggle={_ => this._toggleParameter('sound')}
                     />
                     <Toggle
                         label="Ecran clignotant lors des notifications"
-                        toggled={this.state.flash}
-                        onToggle={this._toggleFlash}
+                        toggled={this.state.notifications.flash}
+                        onToggle={_ => this._toggleParameter('flash')}
                     />
                 </div>
             </Dialog>
