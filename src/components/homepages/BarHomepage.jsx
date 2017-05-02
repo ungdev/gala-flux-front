@@ -1,5 +1,6 @@
 import React from 'react';
 
+import AuthStore from '../../stores/AuthStore';
 import ChatStore from '../../stores/ChatStore';
 
 import ChatMessageList from '../chat/ChatMessageList.jsx';
@@ -51,7 +52,10 @@ export default class BarHomepage extends React.Component {
     }
 
     _flashScreen() {
-        this.setState({ flashScreen: true });
+        // show the flash screen only if the user want it
+        if (AuthStore.notifications.flash) {
+            this.setState({ flashScreen: true });
+        }
     }
 
     render() {

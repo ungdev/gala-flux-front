@@ -35,7 +35,10 @@ class AuthStore extends BaseStore {
         this._permissions = null;
 
         // notification parameters
-        this._notifications = {};
+        this._notifications = {
+            sound: true,
+            flash: true
+        };
     }
 
 

@@ -32,7 +32,7 @@ export default class AdminHomepage extends React.Component {
 
         this.state = {
             route: props.route,
-            flashScreen: true
+            flashScreen: false
         };
 
         // binding
@@ -66,7 +66,11 @@ export default class AdminHomepage extends React.Component {
     }
 
     _flashScreen() {
-        this.setState({ flashScreen: true });
+        // show the flash screen only if the user want it
+        console.log(AuthStore.notifications);
+        if (AuthStore.notifications.flash) {
+            this.setState({ flashScreen: true });
+        }
     }
 
     _hideFlashScreen() {
