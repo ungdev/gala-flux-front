@@ -12,7 +12,6 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import {List, ListItem} from 'material-ui/List';
-import Edit from 'material-ui/svg-icons/image/edit';
 import CenteredMessage from '../partials/CenteredMessage.jsx'
 
 import NewButtonDialog from './NewButtonDialog.jsx';
@@ -149,7 +148,7 @@ export default class ButtonList extends React.Component {
 
                                         return  <ListItem
                                                 primaryText={button.title}
-                                                secondaryText={button.senderGroup + ' → ' + team}
+                                                secondaryText={<span>{(button.senderGroup || '')} → {team}</span>}
                                                 key={button.id}
                                                 onTouchTap={_ => this._toggleUpdateButtonDialog(button)}
                                             />

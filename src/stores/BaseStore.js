@@ -59,8 +59,6 @@ export default class BaseStore extends EventEmitter {
         // No need to ask the server if there is no filter
         if(Array.isArray(filters) && filters.length === 0) {
             this._setModelData([]);
-
-            console.log('dont get ' + this._modelName + ' because there is a no filters ');
             return Promise.resolve({
                 result: [],
                 token: componentToken
@@ -73,7 +71,6 @@ export default class BaseStore extends EventEmitter {
                 for (let index in this._filters) {
                     if (index != componentToken &&
                     (this._filters[index] === null || Object.is(this._filters[index], this._filters[componentToken]))) {
-                        console.log('dont get ' + this._modelName + ' because filter already exist ');
                         fetch = false;
                         break;
                     }
@@ -84,7 +81,6 @@ export default class BaseStore extends EventEmitter {
                 for (let index in this._filters) {
                     if (this._filters[index] === null) {
                         fetch = false;
-                        console.log('dont get ' + this._modelName + ' because there is a null filter ');
                         break;
                     }
                 }
@@ -93,7 +89,6 @@ export default class BaseStore extends EventEmitter {
             return new Promise((resolve, reject) => {
                 // Fetch from the server only if it use usefull
                 if(fetch) {
-                    console.log('get ', this._modelName, this.getFiltersSet());
                     this._service.get(this.getFiltersSet())
                         .then(result => {
                             this._setModelData(result);
@@ -154,8 +149,6 @@ export default class BaseStore extends EventEmitter {
         this._filterLastId++;
         const componentToken = this._filterLastId;
         this._filters[componentToken] = filters;
-
-            console.log('loadData', this._modelName, this._filters);
 
         // If store was empty before, subscribe
         if(Object.keys(this._filters).length == 1) {
