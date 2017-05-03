@@ -54,42 +54,46 @@ export default class BaseStore extends EventEmitter {
      * @return {Promise}
      */
     fetchData(componentToken) {
-        return new Promise((resolve, reject) => {
-            let filters = this.getFiltersSet();
+        let filters = this.getFiltersSet();
 
-            // No need to ask the server if there is no filter
-            if(Array.isArray(filters) && filters.length === 0) {
-                this._setModelData([]);
+        // No need to ask the server if there is no filter
+        if(Array.isArray(filters) && filters.length === 0) {
+            this._setModelData([]);
 
-                resolve({
-                    result: [],
-                    token: componentToken
-                });
+            console.log('dont get ' + this._modelName + ' because there is a no filters ');
+            return Promise.resolve({
+                result: [],
+                token: componentToken
+            });
+        }
+        else {
+            // Check if the new filter already exist
+            let fetch = true;
+            if(componentToken !== null) {
+                for (let index in this._filters) {
+                    if (index != componentToken &&
+                    (this._filters[index] === null || Object.is(this._filters[index], this._filters[componentToken]))) {
+                        console.log('dont get ' + this._modelName + ' because filter already exist ');
+                        fetch = false;
+                        break;
+                    }
+                }
             }
             else {
-                // Check if the new filter already exist
-                let fetch = true;
-                if(componentToken !== null) {
-                    for (let index in this._filters) {
-                        if (index != componentToken &&
-                        (this._filters[index] === null || Object.is(this._filters[index], this._filters[componentToken]))) {
-                            fetch = false;
-                            break;
-                        }
+                // If there a filter has been deleted, then only refresh if there is no "null" filter
+                for (let index in this._filters) {
+                    if (this._filters[index] === null) {
+                        fetch = false;
+                        console.log('dont get ' + this._modelName + ' because there is a null filter ');
+                        break;
                     }
                 }
-                else {
-                    // If there a filter has been deleted, then only refresh if there is no "null" filter
-                    for (let index in this._filters) {
-                        if (this._filters[index] === null) {
-                            fetch = false;
-                            break;
-                        }
-                    }
-                }
+            }
 
+            return new Promise((resolve, reject) => {
                 // Fetch from the server only if it use usefull
                 if(fetch) {
+                    console.log('get ', this._modelName, this.getFiltersSet());
                     this._service.get(this.getFiltersSet())
                         .then(result => {
                             this._setModelData(result);
@@ -107,8 +111,8 @@ export default class BaseStore extends EventEmitter {
                         token: componentToken
                     });
                 }
-            }
-        });
+            })
+        }
     }
 
 
@@ -151,22 +155,19 @@ export default class BaseStore extends EventEmitter {
         const componentToken = this._filterLastId;
         this._filters[componentToken] = filters;
 
+            console.log('loadData', this._modelName, this._filters);
+
         // If store was empty before, subscribe
         if(Object.keys(this._filters).length == 1) {
             // listen model changes
             iosocket.on(this._modelName, this._handleModelEvents);
 
             // Subscribe
-            return this._service.subscribe()
-            .then(_ => {
-                // refresh the store with the new filters
-                return this.fetchData(componentToken);
-            });
+            this._service.subscribe();
         }
-        else {
-            // refresh the store with the new filters
-            return this.fetchData(componentToken);
-        }
+
+        // refresh the store with the new filters
+        return this.fetchData(componentToken);
     }
 
     /**
