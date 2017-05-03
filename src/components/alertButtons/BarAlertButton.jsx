@@ -167,16 +167,15 @@ export default class BarAlertButton extends React.Component {
         // true if it's
         const commentRequired = this.state.button.message && !this.state.alert && this.state.showInput;
 
-        let alertButton = this.state.alert
-            ?
+        let alertButton = (this.state.alert && this.state.alert.severity != 'done') ?
                 (<div className="AlertButton_active_container">
                     <button className={`AlertButton_button AlertButton_autowidth ${this.state.alert.severity === "warning" ? "orange_background" : "red_background"}`} onClick={_ => this._updateAlertSeverity("serious")}>
                         {this.state.button.title}
                     </button>
-                    <IconButton tooltip="commenter" tooltipPosition="top-center" className="AlertButton_iconButton" onClick={this._toggleMessageInput}>
+                    <IconButton className="AlertButton_iconButton" onClick={this._toggleMessageInput}>
                         <Comment className={`SmallIcon ${(this.state.alert && this.state.alert.message) && "greenIcon"}`} />
                     </IconButton>
-                    <IconButton tooltip="clore" tooltipPosition="top-center" className="AlertButton_iconButton green_background" onClick={_ => this._updateAlertSeverity("done")}>
+                    <IconButton className="AlertButton_iconButton green_background" onClick={_ => this._updateAlertSeverity("done")}>
                         <Check className="SmallIcon whiteIcon" />
                     </IconButton>
                 </div>)

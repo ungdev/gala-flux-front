@@ -1,4 +1,5 @@
 import BaseStore from './BaseStore';
+import AuthStore from './AuthStore';
 import TeamService from '../services/TeamService';
 
 class TeamStore extends BaseStore {
@@ -11,6 +12,22 @@ class TeamStore extends BaseStore {
 
     get teams() {
         return this.getUnIndexedData();
+    }
+
+
+    /**
+     * Find a list of team which have the given permission
+     * @param {string} permission
+     * @return {array} List of teams
+     */
+    findByPermission(permission) {
+        let out = [];
+        for (let i in this._modelData) {
+            if(AuthStore.can(permission, this._modelData[i])) {
+                out.push(Object.assign({}, this._modelData[i]));
+            }
+        }
+        return out;
     }
 
     /**

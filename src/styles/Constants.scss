@@ -38,3 +38,10 @@ $theme-pickerHeaderColor: color($blue-grey, 800);
 // $theme-clockCircleColor: fade(c.darkBlack, 0.07);
 // $theme-shadowColor: c.fullBlack;
 $background-gray: #f1f1f1;
+
+$background-ok: color($teal, 600);
+$background-ok--hover: color($teal, 700);
+$background-warning: color($orange, 600);
+$background-warning--hover: color($orange, 700);
+$background-serious: color($red, 600);
+$background-serious--hover: color($red, 600);

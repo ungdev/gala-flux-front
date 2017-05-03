@@ -53,7 +53,7 @@ export default class AdminMenu extends React.Component {
                         <ChatMenu route={this.state.route} onChange={(channel) => this.props.onChange('chat.channel', {channel: channel})} />
                     </div>
 
-                    <ListItem value="home" className="AdminMenu__mainItem">Alertes</ListItem>
+                    <ListItem value="alert" className="AdminMenu__mainItem">Alertes</ListItem>
 
                     <ListItem value="bars" className="AdminMenu__mainItem">Bars</ListItem>
 

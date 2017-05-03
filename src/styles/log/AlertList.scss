@@ -3,5 +3,9 @@
 }
 
 .alert-list__row {
-    height: 60px;
+    padding: 0 0 0 8px;
+
+    > * {
+        padding: 0 8px 8px 0 !important;
+    }
 }
