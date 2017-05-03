@@ -54,7 +54,7 @@ export default class SelectGroupField extends React.Component {
             this.TeamStoreToken = data.token;
 
             // Save the new state value
-            this.setState({options: this._getGroups(data.result)});
+            this._updateData();
         })
         .catch(error => {
             NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des groupes de discussion', error);
@@ -73,25 +73,8 @@ export default class SelectGroupField extends React.Component {
      */
     _updateData() {
         this.setState({
-            options: this._getGroups(TeamStore.find()),
+            options: TeamStore.groups,
         });
-    }
-
-
-    /**
-     * Get a group list from team list
-     * @param {array} teams team list
-     * @return {array} role list
-     */
-    _getGroups(teams) {
-        let groups = [];
-        for (let team of teams) {
-            if(groups.indexOf(team.group) === -1) {
-                groups.push(team.group);
-            }
-        }
-        groups.sort((a,b) => {return a.localeCompare(b)});
-        return groups;
     }
 
     _handleUpdateInput(value) {

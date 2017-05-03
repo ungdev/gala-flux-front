@@ -10,7 +10,7 @@ const themeConfiguration = {
         primary2Color: c.blueGrey600,
         primary3Color: c.blueGrey400,
         accent1Color: c.cyanA700,
-        accent2Color: c.blue500,
+        accent2Color: c.grey100,
         accent3Color: c.cyan400,
         textColor: c.darkBlack,
         alternateTextColor: c.white,

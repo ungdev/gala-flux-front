@@ -1,17 +1,21 @@
 import React from 'react';
 
 import AlertButtonStore from '../../stores/AlertButtonStore';
+import AuthStore from '../../stores/AuthStore';
 import TeamStore from '../../stores/TeamStore';
+import NotificationActions from '../../actions/NotificationActions';
 
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import Subheader from 'material-ui/Subheader';
+import Divider from 'material-ui/Divider';
 import {List, ListItem} from 'material-ui/List';
-import Edit from 'material-ui/svg-icons/image/edit';
+import CenteredMessage from '../partials/CenteredMessage.jsx'
 
-import NewButton from './NewButton.jsx';
-import UpdateButton from './UpdateButton.jsx';
+import NewButtonDialog from './NewButtonDialog.jsx';
+import UpdateButtonDialog from './UpdateButtonDialog.jsx';
 
 export default class ButtonList extends React.Component {
 
@@ -19,176 +23,168 @@ export default class ButtonList extends React.Component {
         super();
 
         this.state = {
-            buttons: [],
-            teams: [],
-            categories: [],
-            selectedCategory: null,
+            buttons: {},
+            receiverTeams: [],
+            counts: {},
+            showUpdateButtonDialog: false,
+            showNewButtonDialog: false,
             selectedButton: null,
-            showCreateDialog: false,
-            showUpdateDialog: false
         };
 
         this.AlertButtonStoreToken = null;
         this.TeamStoreToken = null;
 
         // binding
-        this._toggleCreateDialog = this._toggleCreateDialog.bind(this);
-        this._toggleUpdateDialog = this._toggleUpdateDialog.bind(this);
-        this._setTeams = this._setTeams.bind(this);
-        this._setButtons = this._setButtons.bind(this);
+        this._toggleNewButtonDialog = this._toggleNewButtonDialog.bind(this);
+        this._toggleUpdateButtonDialog = this._toggleUpdateButtonDialog.bind(this);
+        this._loadData = this._loadData.bind(this);
+        this._updateData = this._updateData.bind(this);
     }
 
     componentDidMount() {
-        // fill stores
-        AlertButtonStore.loadData(null)
-            .then(data => {
-                // ensure that last token doen't exist anymore.
-                AlertButtonStore.unloadData(this.AlertButtonStoreToken);
+        // Load data from store
+        this._loadData();
 
-                // save the component token
-                this.AlertButtonStoreToken = data.token;
-            })
-            .catch(error => console.log("load alert buttons error", error));
-        TeamStore.loadData(null)
-            .then(data => {
-                // ensure that last token doen't exist anymore.
-                TeamStore.unloadData(this.TeamStoreToken);
-
-                // save the component token
-                this.TeamStoreToken = data.token;
-            })
-            .catch(error => console.log("load teams error", error));
-        // listen stores changes
-        AlertButtonStore.addChangeListener(this._setButtons);
-        TeamStore.addChangeListener(this._setTeams);
-        // init component state
-        this._setTeams();
-        this._setButtons();
+        // listen the stores changes
+        AlertButtonStore.addChangeListener(this._updateData);
+        TeamStore.addChangeListener(this._updateData);
     }
 
     componentWillUnmount() {
-        // clear the stores
-        AlertButtonStore.unloadData(this.AlertButtonStoreToken);
+        // clear store
         TeamStore.unloadData(this.TeamStoreToken);
+        AlertButtonStore.unloadData(this.AlertButtonStoreToken);
+
         // remove the stores listeners
-        AlertButtonStore.removeChangeListener(this._setButtons);
-        TeamStore.removeChangeListener(this._setTeams);
+        AlertButtonStore.removeChangeListener(this._updateData);
+        TeamStore.removeChangeListener(this._updateData);
     }
 
-    /**
-     * Update the teams in the component store where there is a change in the TeamStore
-     */
-    _setTeams() {
-        this.setState({ teams: TeamStore.teams });
-    }
 
     /**
-     * Handle AlertButtonStore changes
-     * update the buttons and categories in the state
+     * Load data from all stores and update state
      */
-    _setButtons() {
-        const buttons = AlertButtonStore.buttons;
-        let categories = [];
+    _loadData() {
+        // Load data from store
+        AlertButtonStore.loadData(null)
+        .then(data => {
+            // ensure that last token doen't exist anymore.
+            AlertButtonStore.unloadData(this.AlertButtonStoreToken);
+
+            // save the component token
+            this.AlertButtonStoreToken = data.token;
+
+            // Load Barrel counts per types
+            return TeamStore.loadData(null);
+        })
+        .then(data => {
+            // ensure that last token doen't exist anymore.
+            TeamStore.unloadData(this.TeamStoreToken);
+
+            // save the component token
+            this.TeamStoreToken = data.token;
+
+            // Save the new state value
+            this._updateData();
+        })
+        .catch(error => {
+            NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des boutons d\'alerte', error);
+        });
+    }
+
+
+
+    /**
+     * Update data according to stores without adding new filter to it
+     */
+    _updateData() {
+        const buttonsRaw = AlertButtonStore.buttons;
+        let buttons = {};
 
         // get distinct categories
-        for (let button of buttons) {
-            if (!categories.includes(button.category)) {
-                categories.push(button.category);
+        for (let button of buttonsRaw) {
+            if (!Array.isArray(buttons[button.category])) {
+                buttons[button.category] = [];
             }
+            buttons[button.category].push(button);
         }
 
-        this.setState({ buttons, categories });
+        this.setState({
+            receiverTeams: TeamStore.findByPermission('ui/receiveAlerts'),
+            buttons,
+        });
     }
 
     /**
      * Set the state properties to open/close the update dialog
      * @param {object|null} button : the button to update
      */
-    _toggleUpdateDialog(button) {
+    _toggleUpdateButtonDialog(button) {
         this.setState({
             selectedButton: button,
-            showUpdateDialog: !this.state.showUpdateDialog
+            showUpdateButtonDialog: !this.state.showUpdateButtonDialog
         });
     }
 
     /**
      * toggle the dialog to create a new AlertButton
      */
-    _toggleCreateDialog() {
-        this.setState({ showCreateDialog: !this.state.showCreateDialog })
+    _toggleNewButtonDialog() {
+        this.setState({ showNewButtonDialog: !this.state.showNewButtonDialog })
     }
 
+
     render() {
-
-        const style = {
-            container: {
-                maxWidth: 500,
-                marginLeft: "auto",
-                marginRight: "auto",
-                padding: 10
-            },
-            floatingButton: {
-                position: 'fixed',
-                right: 36,
-                bottom: 36,
-            }
-        };
-
         return (
-            <div style={style.container}>
-                <SelectField
-                    fullWidth={true}
-                    floatingLabelText="Categorie"
-                    value={this.state.selectedCategory}
-                    onChange={(e, i, v) => this.setState({ selectedCategory: v })}
-                >
-                    {
-                        this.state.categories.map((category, i) => {
-                            return <MenuItem key={i} value={category} primaryText={category} />
-                        })
-                    }
-                </SelectField>
+            <div className="FloatingButtonContainer">
+                {this.state.buttons && Object.keys(this.state.buttons).length > 0 ?
+                        <List>
+                            {Object.keys(this.state.buttons).sort((a,b) => {return a.localeCompare(b)}).map((category, i) => {
+                                return <div key={i}>
+                                    <Subheader>{category}</Subheader>
+                                    {this.state.buttons[category].map((button, i) => {
+                                        let team = TeamStore.findById(button.receiver);
+                                        team = team ? team.name : 'équipe supprimé';
 
-                <List>
-                    {
-                        this.state.buttons.map(button => {
-                            // if no category is selected, show all the buttons
-                            // else show only the buttons where the category his the selected category
-                            if (!this.state.selectedCategory || button.category === this.state.selectedCategory) {
-                                return  <ListItem
-                                            key={button.id}
-                                            primaryText={button.title}
-                                            rightIcon={<Edit />}
-                                            onClick={_ => this._toggleUpdateDialog(button)}
-                                        />;
-                            }
-                        })
-                    }
-                </List>
+                                        return  <ListItem
+                                                primaryText={button.title}
+                                                secondaryText={<span>{(button.senderGroup || '')} → {team}</span>}
+                                                key={button.id}
+                                                onTouchTap={_ => this._toggleUpdateButtonDialog(button)}
+                                            />
+                                    })}
+                                    <Divider/>
+                                </div>
+                            })}
+                        </List>
+                :
+                    <CenteredMessage>Il n'y a pas encore de boutons</CenteredMessage>
+                }
 
-                <FloatingActionButton
-                    style={style.floatingButton}
-                    secondary={true}
-                    onTouchTap={this._toggleCreateDialog}
-                >
-                    <ContentAddIcon />
-                </FloatingActionButton>
+                { AuthStore.can('alertButton/admin') &&
+                    <FloatingActionButton
+                        className="FloatingButton"
+                        onTouchTap={this._toggleNewButtonDialog}
+                    >
+                        <ContentAddIcon />
+                    </FloatingActionButton>
+                }
 
-                <NewButton
-                    show={this.state.showCreateDialog}
-                    close={this._toggleCreateDialog}
-                    teams={this.state.teams}
+                <NewButtonDialog
+                    show={this.state.showNewButtonDialog}
+                    close={this._toggleNewButtonDialog}
+                    teams={this.state.receiverTeams}
+                    categories={Object.keys(this.state.buttons)}
                 />
 
-                <UpdateButton
-                    show={this.state.showUpdateDialog}
-                    close={this._toggleUpdateDialog}
+                <UpdateButtonDialog
+                    show={this.state.showUpdateButtonDialog}
+                    close={this._toggleUpdateButtonDialog}
                     button={this.state.selectedButton}
-                    categories={this.state.categories}
-                    teams={this.state.teams}
+                    teams={this.state.receiverTeams}
+                    categories={Object.keys(this.state.buttons)}
                 />
             </div>
         );
     }
-
 }

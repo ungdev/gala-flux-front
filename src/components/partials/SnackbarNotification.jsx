@@ -49,7 +49,7 @@ export default class SnackbarNotification extends React.Component {
                 // Enable notification
                 this.preventMessage = true;
                 this.setState({ message: message });
-                console.log('Notification :', message);
+                console.info('Notification:', message);
             }
         }
     }

@@ -30,6 +30,22 @@ class TeamStore extends BaseStore {
         return out;
     }
 
+
+    /**
+     * Get available groups from team list
+     * @param {array} teams team list
+     * @return {array} role list
+     */
+    get groups() {
+        let groups = new Set();
+        for (let i in this._modelData) {
+            groups.add(this._modelData[i].group);
+        }
+        groups = [...groups];
+        groups.sort((a,b) =>  a.localeCompare(b));
+        return groups;
+    }
+
     /**
      * Handle Actions from TeamActions
      *
