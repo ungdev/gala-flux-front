@@ -13,8 +13,9 @@ export default class NotificationsDialog extends React.Component {
 
         this.state = {
             notifications: {
-                sound: false,
-                flash: false
+                sound: true,
+                flash: true,
+                desktop: true
             }
         };
 
@@ -97,6 +98,11 @@ export default class NotificationsDialog extends React.Component {
                         label="Ecran clignotant lors des notifications"
                         toggled={this.state.notifications.flash}
                         onToggle={_ => this._toggleParameter('flash')}
+                    />
+                    <Toggle
+                        label="Notifications sur votre ordinateur"
+                        toggled={this.state.notifications.desktop}
+                        onToggle={_ => this._toggleParameter('desktop')}
                     />
                 </div>
             </Dialog>

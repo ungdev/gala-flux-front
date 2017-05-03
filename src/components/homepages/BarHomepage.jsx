@@ -1,9 +1,8 @@
 import React from 'react';
 
-import AuthStore from '../../stores/AuthStore';
 import ChatStore from '../../stores/ChatStore';
 
-import Notification from '../partials/Notification.jsx';
+import FluxNotification from '../partials/FluxNotification.jsx';
 import ChatMessageList from '../chat/ChatMessageList.jsx';
 import ChatMessageForm from '../chat/ChatMessageForm.jsx';
 import BarBarrels from '../barrels/BarBarrels.jsx';
@@ -21,7 +20,7 @@ export default class BarHomepage extends React.Component {
 
         this.state = {
             route: props.route,
-            notify: false
+            notify: null
         };
 
         // binding
@@ -31,7 +30,7 @@ export default class BarHomepage extends React.Component {
 
     componentDidMount() {
         // Listen new messages events
-        ChatStore.addNewListener(this._showNotification);
+        ChatStore.addNewListener(_ => this._showNotification("Vous avez reçu un message !"));
     }
 
     componentWillUnmount() {
@@ -45,9 +44,9 @@ export default class BarHomepage extends React.Component {
         });
     }
 
-    _showNotification() {
+    _showNotification(message) {
         if (!this.state.notify) {
-            this.setState({ notify: true });
+            this.setState({ notify: message });
         }
     }
 
@@ -77,7 +76,7 @@ export default class BarHomepage extends React.Component {
                 </div>
                 {
                     this.state.notify &&
-                    <Notification />
+                    <FluxNotification message={this.state.notify} />
                 }
             </div>
         );

@@ -7,7 +7,7 @@ import AdminMenu from '../partials/AdminMenu.jsx';
 import AuthStore from '../../stores/AuthStore';
 import ChatStore from '../../stores/ChatStore';
 
-import Notification from '../partials/Notification.jsx';
+import FluxNotification from '../partials/FluxNotification.jsx';
 import AlertPage from '../adminPages/AlertPage.jsx';
 import ChatPage from '../adminPages/ChatPage.jsx';
 import StockPage from '../adminPages/StockPage.jsx';
@@ -30,7 +30,7 @@ export default class AdminHomepage extends React.Component {
 
         this.state = {
             route: props.route,
-            notify: false
+            notify: null
         };
 
         // binding
@@ -41,7 +41,7 @@ export default class AdminHomepage extends React.Component {
 
     componentDidMount() {
         // Listen new messages events
-        ChatStore.addNewListener(this._showNotification);
+        ChatStore.addNewListener(_ => this._showNotification("Vous avez reçu un message !"));
     }
 
     componentWillUnmount() {
@@ -63,9 +63,9 @@ export default class AdminHomepage extends React.Component {
         router.navigate(value);
     }
 
-    _showNotification() {
+    _showNotification(message) {
         if (!this.state.notify) {
-            this.setState({ notify: true });
+            this.setState({ notify: message });
         }
     }
 
@@ -140,7 +140,7 @@ export default class AdminHomepage extends React.Component {
                                         <ChatPage className={name != 'home' && name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
                                         {
                                             this.state.notify &&
-                                            <Notification />
+                                            <FluxNotification message={this.state.notify} />
                                         }
                                     </div>
                                 );

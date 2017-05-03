@@ -37,7 +37,8 @@ class AuthStore extends BaseStore {
         // notification parameters
         this._notifications = {
             sound: true,
-            flash: true
+            flash: true,
+            desktop: true
         };
     }
 
@@ -88,6 +89,7 @@ class AuthStore extends BaseStore {
                     this._notifications = {
                         flash: localStorageNotifications.flash === true,
                         sound: localStorageNotifications.sound === true,
+                        desktop: localStorageNotifications.desktop === true,
                     };
                 }
 
@@ -185,6 +187,7 @@ class AuthStore extends BaseStore {
         this._notifications = {
             flash: newConfiguration.flash === true,
             sound: newConfiguration.sound === true,
+            desktop: newConfiguration.desktop === true,
         };
         localStorage.setItem(LOCALSTORAGE_NOTIFICATIONS_ITEM, JSON.stringify(this._notifications));
         this.emitChange();
