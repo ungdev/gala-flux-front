@@ -69,6 +69,7 @@ class AuthStore extends BaseStore {
                 this._roles = data;
                 this.emitChange();
             })
+
             .catch(error => {
                 NotificationActions.error('Impossible de récupérer les droits configurés sur le serveur.', error, null, true);
             });

@@ -7,6 +7,7 @@ import AdminMenu from '../partials/AdminMenu.jsx';
 import AuthStore from '../../stores/AuthStore';
 import ChatStore from '../../stores/ChatStore';
 
+import Notification from '../partials/Notification.jsx';
 import AlertPage from '../adminPages/AlertPage.jsx';
 import ChatPage from '../adminPages/ChatPage.jsx';
 import StockPage from '../adminPages/StockPage.jsx';
@@ -17,10 +18,7 @@ import AlertButtonsPage from '../adminPages/AlertButtonsPage.jsx';
 import TeamListPage from '../adminPages/TeamListPage.jsx';
 import TeamDetailsPage from '../adminPages/TeamDetailsPage.jsx';
 
-
 require('../../styles/homepages/AdminHomepage.scss');
-require('../../styles/FlashScreen.scss');
-
 
 /**
  * @param {Object} route Route object given by the router
@@ -32,23 +30,23 @@ export default class AdminHomepage extends React.Component {
 
         this.state = {
             route: props.route,
-            flashScreen: false
+            notify: false
         };
 
         // binding
         this._handleTabChange = this._handleTabChange.bind(this);
-        this._hideFlashScreen = this._hideFlashScreen.bind(this);
-        this._flashScreen = this._flashScreen.bind(this);
+        this._showNotification = this._showNotification.bind(this);
+        this._hideNotification = this._hideNotification.bind(this);
     }
 
     componentDidMount() {
         // Listen new messages events
-        ChatStore.addNewListener(this._flashScreen);
+        ChatStore.addNewListener(this._showNotification);
     }
 
     componentWillUnmount() {
         // remove the store listener
-        ChatStore.removeNewListener(this._flashScreen);
+        ChatStore.removeNewListener(this._showNotification);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -65,17 +63,15 @@ export default class AdminHomepage extends React.Component {
         router.navigate(value);
     }
 
-    _flashScreen() {
-        // show the flash screen only if the user want it
-        console.log(AuthStore.notifications);
-        if (AuthStore.notifications.flash) {
-            this.setState({ flashScreen: true });
+    _showNotification() {
+        if (!this.state.notify) {
+            this.setState({ notify: true });
         }
     }
 
-    _hideFlashScreen() {
-        if (this.state.flashScreen) {
-            this.setState({ flashScreen: false });
+    _hideNotification() {
+        if (this.state.notify) {
+            this.setState({ notify: false });
         }
     }
 
@@ -139,13 +135,13 @@ export default class AdminHomepage extends React.Component {
                             case 'chat':
                             case 'chat.channel':
                                 return (
-                                    <div className="AdminPage__splitscreen" onClick={this._hideFlashScreen}>
+                                    <div className="AdminPage__splitscreen" onClick={this._hideNotification}>
                                         <AlertPage className={name != 'alert' ? 'AdminPage__splitscreen__secondary':''}/>
                                         <ChatPage className={name != 'home' && name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
                                         {
-                                             this.state.flashScreen &&
-                                             <div className="flash_screen"></div>
-                                         }
+                                            this.state.notify &&
+                                            <Notification />
+                                        }
                                     </div>
                                 );
 

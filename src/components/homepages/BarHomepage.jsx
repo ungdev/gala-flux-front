@@ -3,13 +3,13 @@ import React from 'react';
 import AuthStore from '../../stores/AuthStore';
 import ChatStore from '../../stores/ChatStore';
 
+import Notification from '../partials/Notification.jsx';
 import ChatMessageList from '../chat/ChatMessageList.jsx';
 import ChatMessageForm from '../chat/ChatMessageForm.jsx';
 import BarBarrels from '../barrels/BarBarrels.jsx';
 import BarAlertButtons  from '../alertButtons/BarAlertButtons.jsx';
 
 require('../../styles/homepages/BarHomepage.scss');
-require('../../styles/FlashScreen.scss');
 
 /**
  * @param {Object} route Route object given by the router
@@ -21,22 +21,22 @@ export default class BarHomepage extends React.Component {
 
         this.state = {
             route: props.route,
-            flashScreen: false
+            notify: false
         };
 
         // binding
-        this._hideFlashScreen = this._hideFlashScreen.bind(this);
-        this._flashScreen = this._flashScreen.bind(this);
+        this._showNotification = this._showNotification.bind(this);
+        this._hideNotification = this._hideNotification.bind(this)
     }
 
     componentDidMount() {
         // Listen new messages events
-        ChatStore.addNewListener(this._flashScreen);
+        ChatStore.addNewListener(this._showNotification);
     }
 
     componentWillUnmount() {
         // remove the store listener
-        ChatStore.removeNewListener(this._flashScreen);
+        ChatStore.removeNewListener(this._showNotification);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -45,16 +45,15 @@ export default class BarHomepage extends React.Component {
         });
     }
 
-    _hideFlashScreen() {
-        if (this.state.flashScreen) {
-            this.setState({ flashScreen: false });
+    _showNotification() {
+        if (!this.state.notify) {
+            this.setState({ notify: true });
         }
     }
 
-    _flashScreen() {
-        // show the flash screen only if the user want it
-        if (AuthStore.notifications.flash) {
-            this.setState({ flashScreen: true });
+    _hideNotification() {
+        if (this.state.notify) {
+            this.setState({ notify: false });
         }
     }
 
@@ -65,7 +64,7 @@ export default class BarHomepage extends React.Component {
         }
 
         return (
-            <div className="BarHomePage" onClick={this._hideFlashScreen}>
+            <div className="BarHomePage" onClick={this._hideNotification}>
                 <div className={('BarHomePage__alerts ' + (name !== 'alert' ? 'BarHomePage__col--secondary':''))}>
                     <BarAlertButtons />
                 </div>
@@ -77,8 +76,8 @@ export default class BarHomepage extends React.Component {
                     <ChatMessageForm channel={null}/>
                 </div>
                 {
-                    this.state.flashScreen &&
-                    <div className="flash_screen"></div>
+                    this.state.notify &&
+                    <Notification />
                 }
             </div>
         );
