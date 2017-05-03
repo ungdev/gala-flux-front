@@ -1,6 +1,7 @@
 import React from 'react';
 
 import AlertButtonStore from '../../stores/AlertButtonStore';
+import AuthStore from '../../stores/AuthStore';
 import AlertStore from '../../stores/AlertStore';
 
 import BarAlertButton from './BarAlertButton.jsx';
@@ -27,7 +28,7 @@ export default class BarAlertButtons extends React.Component {
 
     componentDidMount() {
         // fill the alert buttons store
-        AlertButtonStore.loadData(null)
+        AlertButtonStore.loadData([{senderGroup: (AuthStore.team ? AuthStore.team.group : '')}, {senderGroup: null}])
             .then(data => {
                 // ensure that last token doesn't exist anymore.
                 AlertButtonStore.unloadData(this.AlertButtonStoreToken);
@@ -65,7 +66,7 @@ export default class BarAlertButtons extends React.Component {
      * Update the buttons in the state with the buttons from the alert buttons store
      */
     _setButtons() {
-        const storeButtons = AlertButtonStore.buttons;
+        const storeButtons = AlertButtonStore.find([{senderGroup: (AuthStore.team ? AuthStore.team.group : '')}, {senderGroup: null}]);
         let buttons = {};
 
         for (let button of storeButtons) {

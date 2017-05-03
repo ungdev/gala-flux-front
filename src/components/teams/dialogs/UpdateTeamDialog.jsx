@@ -78,7 +78,6 @@ export default class UpdateTeamDialog extends React.Component {
             this.props.close();
         })
         .catch((error) => {
-            console.log('error', error)
             let errors = {};
             if(error.status === 'UnknownRole') {
                 errors.role = 'Ce champ est vide ou contient une invalide.';
