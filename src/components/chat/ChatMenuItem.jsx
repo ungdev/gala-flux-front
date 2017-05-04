@@ -20,7 +20,7 @@ export default class ChatMenuItem extends React.Component {
 
     render() {
         return (
-            <div onClick={this.props.messagesViewed} >
+            <div>
                 {
                     this.state.newMessages
                         ?

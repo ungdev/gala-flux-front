@@ -142,8 +142,8 @@ export default class ChatMenu extends React.Component {
                     {
                         this.state.channels.public.map((channel, i) => {
                             return (
-                                <ListItem key={i} value={channel} className="ChatMenu__channel">
-                                    <ChatMenuItem  newMessages={this.state.newMessages[channel]} channel={channel} messagesViewed={_ => this._messagesViewed(channel)} />
+                                <ListItem key={i} value={channel} className="ChatMenu__channel" onClick={_ => this._messagesViewed(channel)}>
+                                    <ChatMenuItem  newMessages={this.state.newMessages[channel]} channel={channel} />
                                 </ListItem>
                             )
                         })

@@ -21,6 +21,7 @@ export class ApiError extends Error {
         let code = jwres.statusCode;
         let status = 'UnexpectedError';
         let formErrors = {};
+        let userFormErrors = {};
 
         // Try to parse body
         if(jwres.body) {
@@ -33,6 +34,33 @@ export class ApiError extends Error {
                 status = 'ValidationError';
                 message = jwres.body.details;
                 formErrors = jwres.body.invalidAttributes;
+
+                // Parse and translate formErrors
+                for (let attr in formErrors) {
+                    // Rules are translated only if it has an user meaning.
+                    // eg: `required` is translated, but not `string`.
+                    // Only the first translated rule is returned
+                    for (let error of formErrors[attr]) {
+                        if(error.rule === 'required') {
+                            userFormErrors[attr] = 'Ce champ est obligatoire';
+                            break;
+                        }
+                        else if(error.rule === 'unique') {
+                            userFormErrors[attr] = 'Un autre élément utilise déjà cette valeur. Veuillez en choisir une autre.';
+                            break;
+                        }
+                        else if(error.rule === 'model') {
+                            userFormErrors[attr] = 'Cet élément n\'a pas pus être trouvé.';
+                            break;
+                        }
+                    }
+
+                    // If not translated, use the english version with a warning
+                    if(!userFormErrors[attr]) {
+                        userFormErrors[attr] = formErrors[attr][0].message;
+                        console.warn('Validation message not translated. ', formErrors[attr]);
+                    }
+                }
             }
         }
 
@@ -42,5 +70,6 @@ export class ApiError extends Error {
         this.code = code;
         this.status = status;
         this.formErrors = formErrors;
+        this.userFormErrors = userFormErrors;
     }
  }

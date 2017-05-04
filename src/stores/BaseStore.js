@@ -31,6 +31,10 @@ export default class BaseStore extends EventEmitter {
         return this._dispatchToken;
     }
 
+    get length() {
+        return Object.keys(this._modelData).length;
+    }
+
     /**
      * Emit a CHANGE event
      * CHANGE means that the store has been updated
@@ -70,40 +74,39 @@ export default class BaseStore extends EventEmitter {
      * @return {Promise}
      */
     fetchData(componentToken) {
-        return new Promise((resolve, reject) => {
-            let filters = this.getFiltersSet();
+        let filters = this.getFiltersSet();
 
-            // No need to ask the server if there is no filter
-            if(Array.isArray(filters) && filters.length === 0) {
-                this._setModelData([]);
-
-                resolve({
-                    result: [],
-                    token: componentToken
-                });
+        // No need to ask the server if there is no filter
+        if(Array.isArray(filters) && filters.length === 0) {
+            this._setModelData([]);
+            return Promise.resolve({
+                result: [],
+                token: componentToken
+            });
+        }
+        else {
+            // Check if the new filter already exist
+            let fetch = true;
+            if(componentToken !== null) {
+                for (let index in this._filters) {
+                    if (index != componentToken &&
+                    (this._filters[index] === null || Object.is(this._filters[index], this._filters[componentToken]))) {
+                        fetch = false;
+                        break;
+                    }
+                }
             }
             else {
-                // Check if the new filter already exist
-                let fetch = true;
-                if(componentToken !== null) {
-                    for (let index in this._filters) {
-                        if (index != componentToken &&
-                        (this._filters[index] === null || Object.is(this._filters[index], this._filters[componentToken]))) {
-                            fetch = false;
-                            break;
-                        }
+                // If there a filter has been deleted, then only refresh if there is no "null" filter
+                for (let index in this._filters) {
+                    if (this._filters[index] === null) {
+                        fetch = false;
+                        break;
                     }
                 }
-                else {
-                    // If there a filter has been deleted, then only refresh if there is no "null" filter
-                    for (let index in this._filters) {
-                        if (this._filters[index] === null) {
-                            fetch = false;
-                            break;
-                        }
-                    }
-                }
+            }
 
+            return new Promise((resolve, reject) => {
                 // Fetch from the server only if it use usefull
                 if(fetch) {
                     this._service.get(this.getFiltersSet())
@@ -123,8 +126,8 @@ export default class BaseStore extends EventEmitter {
                         token: componentToken
                     });
                 }
-            }
-        });
+            })
+        }
     }
 
 
@@ -173,16 +176,11 @@ export default class BaseStore extends EventEmitter {
             iosocket.on(this._modelName, this._handleModelEvents);
 
             // Subscribe
-            return this._service.subscribe()
-            .then(_ => {
-                // refresh the store with the new filters
-                return this.fetchData(componentToken);
-            });
+            this._service.subscribe();
         }
-        else {
-            // refresh the store with the new filters
-            return this.fetchData(componentToken);
-        }
+
+        // refresh the store with the new filters
+        return this.fetchData(componentToken);
     }
 
     /**
@@ -285,7 +283,10 @@ export default class BaseStore extends EventEmitter {
      * @returns {object|undefined}
      */
     findById(id) {
-        return this._modelData[id];
+        if(this._modelData[id]) {
+            return Object.assign({}, this._modelData[id]);
+        }
+        return undefined;
     }
 
     /**
@@ -311,7 +312,7 @@ export default class BaseStore extends EventEmitter {
 
         for (let i in this._modelData) {
             if(this._match(this._modelData[i], filters)) {
-                out.push(this._modelData[i]);
+                out.push(Object.assign({}, this._modelData[i]));
             }
         }
 
@@ -360,7 +361,7 @@ export default class BaseStore extends EventEmitter {
                 }
             }
             if(add) {
-                return this._modelData[i];
+                return Object.assign({}, this._modelData[i]);
             }
         }
 
@@ -376,7 +377,7 @@ export default class BaseStore extends EventEmitter {
         let out = [];
 
         for (let i in this._modelData) {
-            out.push(this._modelData[i]);
+            out.push(Object.assign({}, this._modelData[i]));
         }
 
         return out;
@@ -388,6 +389,7 @@ export default class BaseStore extends EventEmitter {
      * @param {object} e : the event
      */
     _handleModelEvents(e) {
+        console.log('DB Event for ' + this._modelName, e);
         switch (e.verb) {
             case "created":
                 if(!this.findById(e.id)) {

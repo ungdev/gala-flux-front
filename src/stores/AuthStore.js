@@ -59,7 +59,6 @@ class AuthStore extends BaseStore {
             this._loginAs = false;
             this._team = null;
             this._roles = null;
-            this._permissions = null;
             this.emitChange();
             return;
         }
@@ -94,7 +93,6 @@ class AuthStore extends BaseStore {
                 }
 
                 this._team = team;
-                this._permissions = this.roles[this.team.role];
                 iosocket.on('team', (e) => this._handleTeamEvents(e));
                 this.emitChange();
                 AuthActions.authenticated(this.user, this.team);
@@ -149,10 +147,14 @@ class AuthStore extends BaseStore {
      * Check if the authenticated user has the permission
      *
      * @param  {string} permission permission name
+     * @param  {Team} team If given, the permission will be tested on this team. Else on the user's team.
      * @return {boolean}            true if the user has the permission
      */
-    can(permission) {
-        return (this.permissions && this.permissions.indexOf(permission) !== -1);
+    can(permission, team) {
+        if(team) {
+            return (this.roles && this.roles[team.role] && this.roles[team.role].indexOf(permission) !== -1);
+        }
+        return (this.roles && this.permissions.indexOf(permission) !== -1);
     }
 
     get jwt() {
@@ -172,7 +174,7 @@ class AuthStore extends BaseStore {
     }
 
     get permissions() {
-        return this._permissions;
+        return (this._roles && this._team) ? this._roles[this._team.role] : [];
     }
 
     get roles() {

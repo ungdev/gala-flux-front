@@ -135,9 +135,11 @@ export default class AdminHomepage extends React.Component {
                             case 'chat':
                             case 'chat.channel':
                                 return (
-                                    <div className="AdminPage__splitscreen" onClick={this._hideNotification}>
-                                        <AlertPage className={name != 'alert' ? 'AdminPage__splitscreen__secondary':''}/>
-                                        <ChatPage className={name != 'home' && name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
+                                    <div onClick={this._hideNotification}>
+                                        <div className="AdminPage__splitscreen">
+                                            <AlertPage className={name != 'alert' ? 'AdminPage__splitscreen__secondary':''}/>
+                                            <ChatPage className={name != 'home' && name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
+                                        </div>
                                         {
                                             this.state.notify &&
                                             <FluxNotification message={this.state.notify} />

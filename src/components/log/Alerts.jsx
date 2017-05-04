@@ -1,10 +1,14 @@
 import React from 'react';
 import * as c from 'material-ui/styles/colors';
 import RaisedButton from 'material-ui/RaisedButton';
+import Paper from 'material-ui/Paper';
 import AlertList from './AlertList.jsx';
 import AlertStore from '../../stores/AlertStore';
 import TeamStore from '../../stores/TeamStore';
+import AuthStore from '../../stores/AuthStore';
 import NotificationActions from '../../actions/NotificationActions';
+import ReceiverSelect from './ReceiverSelect.jsx';
+import { Row, Col } from 'react-flexbox-grid';
 
 require('../../styles/log/Alerts.scss');
 
@@ -14,15 +18,19 @@ export default class Alerts extends React.Component {
         super(props);
 
         this.state = {
-            selectedButton: 1,
+            alertsDone: [],
             alerts: [],
             filteredAlerts: [],
+
+            receiverFilter: [],
+            isDoneFilter: false,
         };
 
         this.AlertStoreToken = null;
         this.TeamStoreToken = null;
 
         this._setAlerts = this._setAlerts.bind(this);
+
     }
 
     componentDidMount() {
@@ -35,6 +43,19 @@ export default class Alerts extends React.Component {
             .then(data => {
                 TeamStore.unloadData(this.TeamStoreToken);
                 this.TeamStoreToken = data.token;
+
+                // Init receiver filter
+                let receiverFilter = [];
+                if(AuthStore.can('ui/receiveAlerts')) {
+                    receiverFilter.push(AuthStore.team.id);
+                }
+                if(AuthStore.can('ui/receiveDefaultAlerts')) {
+                    receiverFilter.push(undefined);
+                }
+                this.setState({receiverFilter});
+
+                // First update of the component with data
+                this._setAlerts();
             })
             .catch(error => {
                 NotificationActions.error('Une erreur s\'est produite pendant le chargement des alertes', error);
@@ -52,74 +73,79 @@ export default class Alerts extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (this.state.alerts.length) {
-            if (prevState.selectedButton !== this.state.selectedButton) {
+            if (prevState.isDoneFilter !== this.state.isDoneFilter || prevState.receiverFilter.length !== this.state.receiverFilter.length ) {
                 this._setFilteredAlerts();
             }
         }
     }
 
     _setAlerts() {
-        if (AlertStore.alerts.length && TeamStore.teams.length) {
+        if (AlertStore.length && TeamStore.length) {
             let alerts = [];
+            let alertsDone = [];
             for (let alert of AlertStore.alerts) {
-                // check if not already converted
-                if (typeof alert.sender !== 'object') {
-                    alert.sender = TeamStore.findById(alert.sender);
-                    alert.receiver = TeamStore.findById(alert.receiver);
+                alert.sender = TeamStore.findById(alert.sender);
+                alert.receiver = TeamStore.findById(alert.receiver);
+                if(alert.severity !== 'done') {
+                    alerts.push(alert);
                 }
-                alerts.push(alert);
+                else {
+                    alertsDone.push(alert);
+                }
             }
-            this.setState({ alerts: alerts });
+            this.setState({ alerts, alertsDone });
             this._setFilteredAlerts();
         }
     }
 
     _setFilteredAlerts() {
-        if (this.state.alerts.length) {
-            let filteredAlerts = [];
-            switch (this.state.selectedButton) {
-                case 1:
-                    filteredAlerts = this.state.alerts.filter((alert) => alert.users && alert.users.length === 0 );
-                    break;
-                case 2:
-                    filteredAlerts = this.state.alerts.filter((alert) => alert.users && alert.users.length && alert.severity !== 'done' );
-                    break;
-                case 3:
-                    filteredAlerts = this.state.alerts.filter((alert) => alert.severity === 'done' );
-                default:
-                    break;
-            }
-            this.setState({ filteredAlerts: filteredAlerts });
+        if (this.state.alerts.length || this.state.alertsDone.length) {
+            let receiveDefaultTeams = TeamStore.findByPermission('ui/receiveDefaultAlerts');
+            let filteredAlerts = (this.state.isDoneFilter?this.state.alertsDone:this.state.alerts).filter((alert) => (
+                ((this.state.isDoneFilter && alert.severity === 'done') || (!this.state.isDoneFilter && alert.severity !== 'done')) &&
+                (this.state.receiverFilter.length == 0 ||
+                (this.state.receiverFilter.includes(alert.receiver ? alert.receiver.id : alert.receiver)))
+            ));
+            this.setState({filteredAlerts: filteredAlerts});
         }
-    }
-
-     _toggleUpdateDialog(e) {
-        this.setState({ selectedButton: e });
     }
 
     render() {
         return (
             <div className="alerts">
-                <div className="alert__header">Alertes</div>
+                <Paper className="alerts__filters">
+                    <Row center="sm">
+                        <Col xs={12} sm={4}>
+                            <RaisedButton
+                                label="En cours"
+                                onTouchTap={() => this.setState({isDoneFilter: false})}
+                                backgroundColor={(!this.state.isDoneFilter ? c.cyanA700 : '')}
+                                fullWidth={true}
+                            />
+                        </Col>
+
+                        <Col xs={12} sm={4}>
+                            <RaisedButton
+                                label="Terminées"
+                                onTouchTap={() => this.setState({isDoneFilter: true})}
+                                backgroundColor={(this.state.isDoneFilter ? c.cyanA700 : '')}
+                                fullWidth={true}
+                            />
+                        </Col>
+
+                        { AuthStore.can('alert/admin') &&
+                        <Col xs={12} sm={4}>
+                            <ReceiverSelect
+                                teams={TeamStore.findByPermission('ui/receiveAlerts')}
+                                value={this.state.receiverFilter}
+                                onChange={(v) => this.setState({ receiverFilter: v })}
+                            />
+                        </Col>
+                        }
+                    </Row>
+                </Paper>
                 <div className="alerts__container">
-                    <div className="alerts__buttons">
-                        <RaisedButton
-                            label="En attente"
-                            onTouchTap={this._toggleUpdateDialog.bind(this, 1)}
-                            backgroundColor={(this.state.selectedButton === 1 ? c.cyanA700 : '')}
-                        />
-                        <RaisedButton
-                            label="En cours de traitement"
-                            onTouchTap={this._toggleUpdateDialog.bind(this, 2)}
-                            backgroundColor={(this.state.selectedButton === 2 ? c.cyanA700 : '')}
-                        />
-                        <RaisedButton
-                            label="Terminées"
-                            onTouchTap={this._toggleUpdateDialog.bind(this, 3)}
-                            backgroundColor={(this.state.selectedButton === 3 ? c.cyanA700 : '')}
-                        />
-                    </div>
-                    <AlertList alerts={this.state.filteredAlerts} filter={this.state.selectedButton} />
+                    <AlertList alerts={this.state.filteredAlerts} />
                 </div>
             </div>
         );

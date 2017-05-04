@@ -63,16 +63,18 @@ export default class BarHomepage extends React.Component {
         }
 
         return (
-            <div className="BarHomePage" onClick={this._hideNotification}>
-                <div className={('BarHomePage__alerts ' + (name !== 'alert' ? 'BarHomePage__col--secondary':''))}>
-                    <BarAlertButtons />
-                </div>
-                <div className={('BarHomePage__stock ' + (name !== 'stock' ? 'BarHomePage__col--secondary':''))}>
-                    <BarBarrels />
-                </div>
-                <div className={('BarHomePage__chat ' + (name !== 'chat' ? 'BarHomePage__col--secondary':''))}>
-                    <ChatMessageList channel={null}/>
-                    <ChatMessageForm channel={null}/>
+            <div onClick={this._hideNotification}>
+                <div className="BarHomePage">
+                    <div className={('BarHomePage__alerts ' + (name !== 'alert' ? 'BarHomePage__col--secondary':''))}>
+                        <BarAlertButtons />
+                    </div>
+                    <div className={('BarHomePage__stock ' + (name !== 'stock' ? 'BarHomePage__col--secondary':''))}>
+                        <BarBarrels />
+                    </div>
+                    <div className={('BarHomePage__chat ' + (name !== 'chat' ? 'BarHomePage__col--secondary':''))}>
+                        <ChatMessageList channel={null}/>
+                        <ChatMessageForm channel={null}/>
+                    </div>
                 </div>
                 {
                     this.state.notify &&

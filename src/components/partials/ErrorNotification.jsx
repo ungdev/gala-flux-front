@@ -57,7 +57,7 @@ export default class ErrorNotification extends React.Component {
                 // Enable error
                 this.preventDialog = true;
                 this.setState({ errorMessage: errorMessage });
-                console.log('## Error notification ('+ errorMessage.message + '):', errorMessage);
+                console.error('Error notification ('+ errorMessage.message + '):', errorMessage);
 
                 // Enable timeout update
                 if(errorMessage.timeout > 0) {
@@ -65,16 +65,6 @@ export default class ErrorNotification extends React.Component {
                         this._updateTimeout()
                     }, 1000);
                 }
-
-                // Prevent from stopping the current function
-                process.nextTick(() => {
-                    if(errorMessage.error) {
-                        throw errorMessage.error;
-                    }
-                    else {
-                        throw new global.Error(errorMessage.message);
-                    }
-                })
             }
         }
     }

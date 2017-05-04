@@ -17,7 +17,9 @@ export default {
             type: 'ERROR',
             data: {message, error, details, refresh, timeout},
         });
-
+        if(console.trace) {
+            console.trace();
+        }
     },
 
 
