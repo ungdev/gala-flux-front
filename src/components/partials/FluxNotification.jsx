@@ -1,4 +1,5 @@
 import React from 'react';
+import Sound from 'react-sound';
 
 import AuthStore from '../../stores/AuthStore';
 
@@ -100,7 +101,16 @@ export default class FluxNotification extends React.Component {
         };
 
         return (
-            <div className="flash_screen" style={styles.flash}></div>
+            <div>
+                <div className="flash_screen" style={styles.flash}></div>
+                {
+                    this.state.config.sound &&
+                    <Sound
+                        url="/src/assets/sounds/notification.wav"
+                        playStatus={Sound.status.PLAYING}
+                    />
+                }
+            </div>
         );
     }
 

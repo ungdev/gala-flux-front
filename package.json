@@ -32,6 +32,7 @@
     "react-dom": "^15.4.2",
     "react-flexbox-grid": "^1.0.2",
     "react-router5": "^4.0.1",
+    "react-sound": "^0.6.0",
     "react-tap-event-plugin": "^2.0.1",
     "react-tooltip": "^3.3.0",
     "router5": "^4.5.2",
