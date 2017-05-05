@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
     template: './src/index.ejs',
     filename: 'index.html',
+    favicon: './src/assets/images/flux_logos/flux_favico.ico',
     inject: 'body',
     hash: true,
 });
@@ -45,6 +46,10 @@ module.exports = {
             {
                 test: /\.(woff|woff2|eot|ttf|svg)$/,
                 loader: 'file-loader?name=fonts/[name].[ext]'
+            },
+            {
+                test: /\.(ico|svg|png|wav)$/,
+                loader: 'file-loader?name=assets/[name].[ext]'
             }
         ]
     },

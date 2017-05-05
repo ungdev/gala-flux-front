@@ -5,6 +5,8 @@ import AuthStore from '../../stores/AuthStore';
 
 require('../../styles/FlashScreen.scss');
 
+import NOTIFICATION_SOUND from '../../assets/sounds/notification.wav';
+import DESKTOP_NOTIFICATION_ICON from '../../assets/images/flux_logos/flux_logo_small36.png';
 const DESKTOP_NOTIFICATION_MAX_DURATION = 8000;
 
 export default class FluxNotification extends React.Component {
@@ -80,7 +82,7 @@ export default class FluxNotification extends React.Component {
     _createDesktopNotification() {
         const title = this.state.message ? this.state.message : "Nouvelle activité";
         const options = {
-            icon: "/src/assets/images/flux_logos/flux_logo_small36.png"
+            icon: DESKTOP_NOTIFICATION_ICON
         };
 
         const notification = new Notification(title, options);
@@ -113,7 +115,7 @@ export default class FluxNotification extends React.Component {
                 {
                     this.state.config.sound &&
                     <Sound
-                        url="/src/assets/sounds/notification.wav"
+                        url={NOTIFICATION_SOUND}
                         playStatus={Sound.status.PLAYING}
                     />
                 }
