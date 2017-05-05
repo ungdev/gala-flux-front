@@ -79,9 +79,12 @@ export default class FluxNotification extends React.Component {
      */
     _createDesktopNotification() {
         const title = this.state.message ? this.state.message : "Nouvelle activité";
-        const notification = new Notification(title);
+        const options = {
+            icon: "/src/assets/images/flux_logos/flux_logo_small36.png"
+        };
 
-        // on click on the notification, focus on the Flux browser's tab and close the notification
+        const notification = new Notification(title, options);
+
         notification.onclick = _ => {
             window.focus();
             notification.close();
