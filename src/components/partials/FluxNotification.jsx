@@ -5,6 +5,8 @@ import AuthStore from '../../stores/AuthStore';
 
 require('../../styles/FlashScreen.scss');
 
+const DESKTOP_NOTIFICATION_MAX_DURATION = 8000;
+
 export default class FluxNotification extends React.Component {
 
     constructor(props) {
@@ -84,6 +86,8 @@ export default class FluxNotification extends React.Component {
             window.focus();
             notification.close();
         };
+
+        setTimeout(notification.close.bind(notification), DESKTOP_NOTIFICATION_MAX_DURATION);
     }
 
     /**

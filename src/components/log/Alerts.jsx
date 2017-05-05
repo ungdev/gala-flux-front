@@ -9,6 +9,7 @@ import AuthStore from '../../stores/AuthStore';
 import NotificationActions from '../../actions/NotificationActions';
 import ReceiverSelect from './ReceiverSelect.jsx';
 import { Row, Col } from 'react-flexbox-grid';
+import FluxNotification from '../partials/FluxNotification.jsx';
 
 require('../../styles/log/Alerts.scss');
 
@@ -24,13 +25,16 @@ export default class Alerts extends React.Component {
 
             receiverFilter: [],
             isDoneFilter: false,
+            newAlerts: {},
+            notify: null
         };
 
         this.AlertStoreToken = null;
         this.TeamStoreToken = null;
 
         this._setAlerts = this._setAlerts.bind(this);
-
+        this._setNewAlerts = this._setNewAlerts.bind(this);
+        this._handleFilter = this._handleFilter.bind(this);
     }
 
     componentDidMount() {
@@ -60,14 +64,19 @@ export default class Alerts extends React.Component {
             .catch(error => {
                 NotificationActions.error('Une erreur s\'est produite pendant le chargement des alertes', error);
             });
+
         AlertStore.addChangeListener(this._setAlerts);
+        AlertStore.addNewListener(this._setNewAlerts);
         TeamStore.addChangeListener(this._setAlerts);
     }
 
     componentWillUnmount() {
+        // clean stores
         AlertStore.unloadData(this.AlertStoreToken);
         TeamStore.unloadData(this.TeamStoreToken);
+        // remove listeners
         AlertStore.removeChangeListener(this._setAlerts);
+        AlertStore.removeNewListener(this._setNewAlerts);
         TeamStore.removeChangeListener(this._setAlerts);
     }
 
@@ -86,16 +95,23 @@ export default class Alerts extends React.Component {
             for (let alert of AlertStore.alerts) {
                 alert.sender = TeamStore.findById(alert.sender);
                 alert.receiver = TeamStore.findById(alert.receiver);
-                if(alert.severity !== 'done') {
+                if (alert.severity !== 'done') {
                     alerts.push(alert);
-                }
-                else {
+                } else {
                     alertsDone.push(alert);
                 }
             }
-            this.setState({ alerts, alertsDone });
+
+            this.setState({ alerts, alertsDone, newAlerts: AlertStore.newAlerts });
             this._setFilteredAlerts();
         }
+    }
+
+    _setNewAlerts() {
+        this.setState({
+            newAlerts: AlertStore.newAlerts,
+            notify: "Nouvelle alerte"
+        });
     }
 
     _setFilteredAlerts() {
@@ -103,50 +119,62 @@ export default class Alerts extends React.Component {
             let receiveDefaultTeams = TeamStore.findByPermission('ui/receiveDefaultAlerts');
             let filteredAlerts = (this.state.isDoneFilter?this.state.alertsDone:this.state.alerts).filter((alert) => (
                 ((this.state.isDoneFilter && alert.severity === 'done') || (!this.state.isDoneFilter && alert.severity !== 'done')) &&
-                (this.state.receiverFilter.length == 0 ||
+                (this.state.receiverFilter.length === 0 ||
                 (this.state.receiverFilter.includes(alert.receiver ? alert.receiver.id : alert.receiver)))
             ));
             this.setState({filteredAlerts: filteredAlerts});
         }
     }
 
+    /**
+     * Handle click on a filter button
+     * @param clicked
+     */
+    _handleFilter(clicked) {
+        this.setState({ isDoneFilter: clicked === 'done' });
+        AlertStore._resetNewAlerts(clicked);
+    }
+
     render() {
         return (
-            <div className="alerts">
+            <div className="alerts" onClick={_ => this.setState({ notify: false })}>
                 <Paper className="alerts__filters">
                     <Row center="sm">
                         <Col xs={12} sm={4}>
                             <RaisedButton
-                                label="En cours"
-                                onTouchTap={() => this.setState({isDoneFilter: false})}
+                                label={`En cours ${this.state.newAlerts.processing ? `(${this.state.newAlerts.processing})` : ''}`}
+                                onTouchTap={_ => this._handleFilter('processing')}
                                 backgroundColor={(!this.state.isDoneFilter ? c.cyanA700 : '')}
                                 fullWidth={true}
                             />
                         </Col>
-
                         <Col xs={12} sm={4}>
                             <RaisedButton
-                                label="Terminées"
-                                onTouchTap={() => this.setState({isDoneFilter: true})}
+                                label={`Terminées ${this.state.newAlerts.done ? `(${this.state.newAlerts.done})` : ''}`}
+                                onTouchTap={_ => this._handleFilter('done')}
                                 backgroundColor={(this.state.isDoneFilter ? c.cyanA700 : '')}
                                 fullWidth={true}
                             />
                         </Col>
-
-                        { AuthStore.can('alert/admin') &&
-                        <Col xs={12} sm={4}>
-                            <ReceiverSelect
-                                teams={TeamStore.findByPermission('ui/receiveAlerts')}
-                                value={this.state.receiverFilter}
-                                onChange={(v) => this.setState({ receiverFilter: v })}
-                            />
-                        </Col>
+                        {
+                            AuthStore.can('alert/admin') &&
+                            <Col xs={12} sm={4}>
+                                <ReceiverSelect
+                                    teams={TeamStore.findByPermission('ui/receiveAlerts')}
+                                    value={this.state.receiverFilter}
+                                    onChange={(v) => this.setState({ receiverFilter: v })}
+                                />
+                            </Col>
                         }
                     </Row>
                 </Paper>
                 <div className="alerts__container">
                     <AlertList alerts={this.state.filteredAlerts} />
                 </div>
+                {
+                    this.state.notify &&
+                    <FluxNotification message={this.state.notify} />
+                }
             </div>
         );
     }

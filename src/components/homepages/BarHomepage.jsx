@@ -25,7 +25,7 @@ export default class BarHomepage extends React.Component {
 
         // binding
         this._showNotification = this._showNotification.bind(this);
-        this._hideNotification = this._hideNotification.bind(this)
+        this._hideNotification = this._hideNotification.bind(this);
     }
 
     componentDidMount() {

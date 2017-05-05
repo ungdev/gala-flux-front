@@ -58,7 +58,7 @@ class ChatStore extends BaseStore {
                 this._newMessages = newMessages;
                 this.emitChange();
             })
-            .catch(error => console.log("error loading missing messages :", error));
+            .catch(error => console.log("error loading unviewed messages :", error));
     }
 
     /**
@@ -68,6 +68,7 @@ class ChatStore extends BaseStore {
     _resetNewMessages(channel) {
         this._newMessages[channel] = 0;
         this._updateLocalStorage(channel);
+        console.log("reset : ", this._newMessages);
         this.emitChange();
     }
 
