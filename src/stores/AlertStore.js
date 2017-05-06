@@ -1,6 +1,7 @@
 import BaseStore from './BaseStore';
 import AuthStore from './AuthStore';
 import AlertService from '../services/AlertService';
+import NotificationActions from '../actions/NotificationActions';
 
 class AlertStore extends BaseStore {
 
@@ -29,7 +30,7 @@ class AlertStore extends BaseStore {
         if (AuthStore.user.id !== alert.sender) {
             // increment the number of unviewed messages for this channel
             this._newAlerts.processing ? this._newAlerts.processing++ : this._newAlerts.processing = 1;
-            this.emitNew();
+            this.emitNew(alert);
             this.emitChange();
         }
     }
@@ -97,30 +98,32 @@ class AlertStore extends BaseStore {
         AlertService.get()
             .then(alerts => {
                 // read the date of the last alert viewed
-                const lastAlerts = JSON.parse(localStorage.getItem('lastAlerts'));
-                const newAlerts = {
-                    processing: 0,
-                    done: 0
-                };
+                if(localStorage.getItem('lastAlerts')) {
+                    const lastAlerts = JSON.parse(localStorage.getItem('lastAlerts'));
+                    const newAlerts = {
+                        processing: 0,
+                        done: 0
+                    };
 
-                // for each alerts, check if it is more recent than the last viewed
-                for (let alert of alerts) {
-                    // check if the alert is more recent than last viewed
-                    if (alert.severity === 'done') {
-                        if (alert.updatedAt > lastAlerts.done.updatedAt) {
-                            newAlerts.done++;
-                        }
-                    } else {
-                        if (alert.updatedAt > lastAlerts.processing.updatedAt) {
-                            newAlerts.processing++;
+                    // for each alerts, check if it is more recent than the last viewed
+                    for (let alert of alerts) {
+                        // check if the alert is more recent than last viewed
+                        if (alert.severity === 'done') {
+                            if (alert.updatedAt > lastAlerts.done.updatedAt) {
+                                newAlerts.done++;
+                            }
+                        } else {
+                            if (alert.updatedAt > lastAlerts.processing.updatedAt) {
+                                newAlerts.processing++;
+                            }
                         }
                     }
-                }
 
-                this._newAlerts = newAlerts;
-                this.emitChange();
+                    this._newAlerts = newAlerts;
+                    this.emitChange();
+                }
             })
-            .catch(error => console.log("error loading unviewed alerts :", error));
+            .catch(error => NotificationActions.error("Erreur lors de la lecture des alertes non vues.", error));
     }
 
     /**

@@ -17,6 +17,9 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import themeConfiguration from './config/theme';
 const muiTheme = getMuiTheme(themeConfiguration);
 
+// Configure sound manager
+soundManager.setup({debugMode: false});
+
 // Router
 import router from './router';
 import { RouterProvider } from 'react-router5';

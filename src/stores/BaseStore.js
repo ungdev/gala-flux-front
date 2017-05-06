@@ -47,8 +47,8 @@ export default class BaseStore extends EventEmitter {
      * Emit a NEW event
      * NEW means that a new object has been added in the store
      */
-    emitNew() {
-        this.emit('NEW');
+    emitNew(data) {
+        this.emit('NEW', data);
     }
 
     addChangeListener(cb) {

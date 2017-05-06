@@ -29,7 +29,7 @@ export default class ChatMenuItem extends React.Component {
                             null
 
                 }
-                {this.state.channel.split(':')[1]}
+                <div>{this.state.channel.split(':')[1]}</div>
             </div>
         );
     }

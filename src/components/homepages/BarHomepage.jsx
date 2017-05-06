@@ -1,6 +1,8 @@
 import React from 'react';
 
 import ChatStore from '../../stores/ChatStore';
+import UserStore from '../../stores/UserStore';
+import TeamStore from '../../stores/TeamStore';
 
 import FluxNotification from '../partials/FluxNotification.jsx';
 import ChatMessageList from '../chat/ChatMessageList.jsx';
@@ -30,7 +32,7 @@ export default class BarHomepage extends React.Component {
 
     componentDidMount() {
         // Listen new messages events
-        ChatStore.addNewListener(_ => this._showNotification("Vous avez reçu un message !"));
+        ChatStore.addNewListener(this._showNotification);
     }
 
     componentWillUnmount() {
@@ -46,7 +48,10 @@ export default class BarHomepage extends React.Component {
 
     _showNotification(message) {
         if (!this.state.notify) {
-            this.setState({ notify: message });
+            let user = UserStore.findById(message.sender);
+            let team = user ? TeamStore.findById(user.team) : null;
+            let contentPrefix = (user? user.name + (team?' ('+team.name+')':'') + ' : ' : '');
+            this.setState({ notify: { title: 'Vous avez reçu un message !', content: contentPrefix + message.text }});
         }
     }
 
@@ -78,7 +83,7 @@ export default class BarHomepage extends React.Component {
                 </div>
                 {
                     this.state.notify &&
-                    <FluxNotification message={this.state.notify} />
+                    <FluxNotification title={this.state.title} content={this.state.content} />
                 }
             </div>
         );

@@ -107,10 +107,11 @@ export default class Alerts extends React.Component {
         }
     }
 
-    _setNewAlerts() {
+    _setNewAlerts(alert) {
+        let team = TeamStore.findById(alert.sender);
         this.setState({
             newAlerts: AlertStore.newAlerts,
-            notify: "Nouvelle alerte"
+            notify: {title: 'Alerte' + (team?' de ' + team.name: ''), content: alert.title},
         });
     }
 
@@ -173,7 +174,7 @@ export default class Alerts extends React.Component {
                 </div>
                 {
                     this.state.notify &&
-                    <FluxNotification message={this.state.notify} />
+                    <FluxNotification title={this.state.notify.title} content={this.state.notify.content} />
                 }
             </div>
         );
