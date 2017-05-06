@@ -1,5 +1,6 @@
 import BaseStore from './BaseStore';
 import ChatService from '../services/ChatService';
+import NotificationActions from '../actions/NotificationActions';
 import AuthStore from './AuthStore';
 
 class ChatStore extends BaseStore {
@@ -41,24 +42,26 @@ class ChatStore extends BaseStore {
         ChatService.get()
             .then(messages => {
                 // read the last messages viewed
-                const lastMessages = JSON.parse(localStorage.getItem('lastMessages'));
-                const newMessages = {};
+                if(localStorage.getItem('lastMessages')) {
+                    const lastMessages = JSON.parse(localStorage.getItem('lastMessages'));
+                    const newMessages = {};
 
-                // for each messages, check if he is more recent than the last viewed
-                for (let message of messages) {
-                    if (lastMessages[message.channel] && lastMessages[message.channel].createdAt < message.createdAt) {
-                        if (newMessages[message.channel]) {
-                            newMessages[message.channel]++;
-                        } else {
-                            newMessages[message.channel] = 1;
+                    // for each messages, check if he is more recent than the last viewed
+                    for (let message of messages) {
+                        if (lastMessages[message.channel] && lastMessages[message.channel].createdAt < message.createdAt) {
+                            if (newMessages[message.channel]) {
+                                newMessages[message.channel]++;
+                            } else {
+                                newMessages[message.channel] = 1;
+                            }
                         }
                     }
-                }
 
-                this._newMessages = newMessages;
-                this.emitChange();
+                    this._newMessages = newMessages;
+                    this.emitChange();
+                }
             })
-            .catch(error => console.log("error loading unviewed messages :", error));
+            .catch(error => NotificationActions.error("Erreur lors de la lecture des messages non lus.", error));
     }
 
     /**
