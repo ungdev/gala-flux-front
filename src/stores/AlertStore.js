@@ -30,7 +30,7 @@ class AlertStore extends BaseStore {
         if (AuthStore.user.id !== alert.sender) {
             // increment the number of unviewed messages for this channel
             this._newAlerts.processing ? this._newAlerts.processing++ : this._newAlerts.processing = 1;
-            this.emitNew();
+            this.emitNew(alert);
             this.emitChange();
         }
     }
