@@ -1,16 +1,16 @@
 import React from 'react';
 import router from '../../router';
 
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-import ContentSendIcon from 'material-ui/svg-icons/content/send';
 import ChatService from '../../services/ChatService';
+import ChatStore from '../../stores/ChatStore';
+import ChatActions from '../../actions/ChatActions';
 import AuthStore from '../../stores/AuthStore';
 import NotificationActions from '../../actions/NotificationActions';
-import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
 import SelectableList from '../partials/SelectableList.jsx';
+import ChatMenuItem from './ChatMenuItem.jsx';
+import { ListItem } from 'material-ui/List';
 
 require('../../styles/chat/ChatMenu.scss');
 
@@ -29,14 +29,16 @@ export default class ChatMenu extends React.Component {
             channels: {
                 private: [],
                 group: [],
-                public: [],
+                public: []
             },
             channel: '',
+            newMessages: {}
         };
 
         // binding
         this._handleChange = this._handleChange.bind(this);
         this._updateChannel = this._updateChannel.bind(this);
+        this._updateNewMessages = this._updateNewMessages.bind(this);
     }
 
     componentDidMount() {
@@ -67,12 +69,26 @@ export default class ChatMenu extends React.Component {
 
         // Select channel
         this._updateChannel(this.props.route);
+
+        // Listen store change
+        ChatStore.addChangeListener(this._updateNewMessages);
+    }
+
+    componentWillUnmount() {
+        // remove the store change listener
+        ChatStore.addChangeListener(this._updateNewMessages);
     }
 
     componentWillReceiveProps(nextProps) {
         this._updateChannel(nextProps.route);
     }
 
+    /**
+     * Set the new messages counters in the state
+     */
+    _updateNewMessages() {
+        this.setState({ newMessages: ChatStore.newMessages });
+    }
 
     /**
      * Update the channel according to the given route
@@ -106,6 +122,14 @@ export default class ChatMenu extends React.Component {
         }
     }
 
+    /**
+     * Call the ChatStore method to reset the new messages counter of this channel
+     * @param {string} channel
+     */
+    _messagesViewed(channel) {
+        ChatActions.viewMessages(channel);
+    }
+
     render() {
 
         return (
@@ -118,7 +142,9 @@ export default class ChatMenu extends React.Component {
                     {
                         this.state.channels.public.map((channel, i) => {
                             return (
-                                <ListItem key={i} value={channel} className="ChatMenu__channel">{(channel.split(':')[1])}</ListItem>
+                                <ListItem key={i} value={channel} className="ChatMenu__channel" onClick={_ => this._messagesViewed(channel)}>
+                                    <ChatMenuItem  newMessages={this.state.newMessages[channel]} channel={channel} />
+                                </ListItem>
                             )
                         })
                     }
@@ -133,7 +159,9 @@ export default class ChatMenu extends React.Component {
                     {
                         this.state.channels.group.map((channel, i) => {
                             return (
-                                <ListItem key={i} value={channel} className="ChatMenu__channel">{(channel.split(':')[1])}</ListItem>
+                                <ListItem key={i} value={channel} className="ChatMenu__channel">
+                                    <ChatMenuItem  newMessages={this.state.newMessages[channel]} channel={channel} messagesViewed={_ => this._messagesViewed(channel)} />
+                                </ListItem>
                             )
                         })
                     }
@@ -148,7 +176,9 @@ export default class ChatMenu extends React.Component {
                     {
                         this.state.channels.private.map((channel, i) => {
                             return (
-                                <ListItem key={i} value={channel} className="ChatMenu__channel">{(channel.split(':')[1])}</ListItem>
+                                <ListItem key={i} value={channel} className="ChatMenu__channel">
+                                    <ChatMenuItem  newMessages={this.state.newMessages[channel]} channel={channel} messagesViewed={_ => this._messagesViewed(channel)} />
+                                </ListItem>
                             )
                         })
                     }

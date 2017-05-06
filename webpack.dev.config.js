@@ -4,6 +4,7 @@ const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
     template: './src/index.ejs',
     filename: 'index.html',
     inject: 'body',
+    favicon: './src/assets/images/flux_logos/flux_favico.ico',
     hash: true,
 });
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -44,6 +45,10 @@ module.exports = {
             {
                 test: /\.(woff|woff2|eot|ttf|svg)$/,
                 loader: 'file-loader?name=fonts/[name].[ext]'
+            },
+            {
+                test: /\.(ico|svg|png|wav)$/,
+                loader: 'file-loader?name=assets/[name].[ext]'
             }
         ]
     },

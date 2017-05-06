@@ -72,6 +72,12 @@ FLUX_API_URI_DEV = https://api.flux-dev.uttnetgroup.fr
 - [Babel](https://babeljs.io/) - A Javascript transpiler
 - [Sails socket client](http://sailsjs.com/documentation/reference/web-sockets/socket-client) - Client library of the Sails.js framework
 
+## Assets
+
+### Sounds
+
+- Notification - [link](https://www.freesound.org/people/elmasmalo1/sounds/377017/)
+
 ## Licence
 
 This project is licensed under the MIT License - see the LICENSE file for details

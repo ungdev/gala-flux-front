@@ -6,6 +6,8 @@ import TeamService from '../services/TeamService';
 import AuthActions from '../actions/AuthActions';
 import NotificationActions from '../actions/NotificationActions';
 
+const LOCALSTORAGE_NOTIFICATIONS_ITEM = 'notifications';
+
 class AuthStore extends BaseStore {
 
     constructor() {
@@ -31,6 +33,13 @@ class AuthStore extends BaseStore {
 
         // contain current user permissions
         this._permissions = null;
+
+        // notification parameters
+        this._notifications = {
+            sound: true,
+            flash: true,
+            desktop: true
+        };
     }
 
 
@@ -60,6 +69,7 @@ class AuthStore extends BaseStore {
                 this._roles = data;
                 this.emitChange();
             })
+
             .catch(error => {
                 NotificationActions.error('Impossible de récupérer les droits configurés sur le serveur.', error, null, true);
             });
@@ -73,6 +83,15 @@ class AuthStore extends BaseStore {
                 return TeamService.getById(this.user.team);
             })
             .then(team => {
+                const localStorageNotifications = JSON.parse(localStorage.getItem(LOCALSTORAGE_NOTIFICATIONS_ITEM));
+                if (localStorageNotifications) {
+                    this._notifications = {
+                        flash: localStorageNotifications.flash === true,
+                        sound: localStorageNotifications.sound === true,
+                        desktop: localStorageNotifications.desktop === true,
+                    };
+                }
+
                 this._team = team;
                 iosocket.on('team', (e) => this._handleTeamEvents(e));
                 this.emitChange();
@@ -161,6 +180,20 @@ class AuthStore extends BaseStore {
     get roles() {
         return this._roles;
     }
+
+    get notifications() {
+        return this._notifications;
+    }
+
+    set notifications(newConfiguration) {
+        this._notifications = {
+            flash: newConfiguration.flash === true,
+            sound: newConfiguration.sound === true,
+            desktop: newConfiguration.desktop === true,
+        };
+        localStorage.setItem(LOCALSTORAGE_NOTIFICATIONS_ITEM, JSON.stringify(this._notifications));
+        this.emitChange();
+    };
 
     set loginAs(v) {
         this._loginAs = v;

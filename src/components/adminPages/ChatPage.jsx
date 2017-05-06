@@ -28,12 +28,13 @@ export default class ChatPage extends React.Component {
 
     render() {
         let channel = this.state.route.name == 'chat.channel' ? this.state.route.params.channel : false;
+
         return (
             <div className={this.props.className}>
                 <div className="ChatPage">
                     <div className="ChatPage__column">
-                        <ChatMessageList channel={channel}/>
-                        <ChatMessageForm channel={channel}/>
+                        <ChatMessageList channel={channel} />
+                        <ChatMessageForm channel={channel} />
                     </div>
                     <ChatMenu route={this.state.route} selectDefault={true}/>
                 </div>

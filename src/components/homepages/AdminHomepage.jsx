@@ -4,8 +4,10 @@ import router from '../../router';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
 import AdminMenu from '../partials/AdminMenu.jsx';
-import AuthStore from '../../stores/AuthStore.js';
+import AuthStore from '../../stores/AuthStore';
+import ChatStore from '../../stores/ChatStore';
 
+import FluxNotification from '../partials/FluxNotification.jsx';
 import AlertPage from '../adminPages/AlertPage.jsx';
 import ChatPage from '../adminPages/ChatPage.jsx';
 import StockPage from '../adminPages/StockPage.jsx';
@@ -16,9 +18,7 @@ import AlertButtonsPage from '../adminPages/AlertButtonsPage.jsx';
 import TeamListPage from '../adminPages/TeamListPage.jsx';
 import TeamDetailsPage from '../adminPages/TeamDetailsPage.jsx';
 
-
 require('../../styles/homepages/AdminHomepage.scss');
-
 
 /**
  * @param {Object} route Route object given by the router
@@ -30,10 +30,23 @@ export default class AdminHomepage extends React.Component {
 
         this.state = {
             route: props.route,
+            notify: null
         };
 
         // binding
         this._handleTabChange = this._handleTabChange.bind(this);
+        this._showNotification = this._showNotification.bind(this);
+        this._hideNotification = this._hideNotification.bind(this);
+    }
+
+    componentDidMount() {
+        // Listen new messages events
+        ChatStore.addNewListener(_ => this._showNotification("Vous avez reçu un message !"));
+    }
+
+    componentWillUnmount() {
+        // remove the store listener
+        ChatStore.removeNewListener(this._showNotification);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -41,7 +54,6 @@ export default class AdminHomepage extends React.Component {
             route: nextProps.route,
         });
     }
-
 
     /**
      * On tab change, navigate to new uri
@@ -51,6 +63,17 @@ export default class AdminHomepage extends React.Component {
         router.navigate(value);
     }
 
+    _showNotification(message) {
+        if (!this.state.notify) {
+            this.setState({ notify: message });
+        }
+    }
+
+    _hideNotification() {
+        if (this.state.notify) {
+            this.setState({ notify: false });
+        }
+    }
 
     /**
      * Return the selected tab according to the route name
@@ -79,7 +102,6 @@ export default class AdminHomepage extends React.Component {
     render() {
         return (
             <div className="AdminPage">
-
 
                 {/* Tabs for tablet */}
                 <Tabs className="AdminPage__tabs show-sm" onChange={this._handleTabChange} value={this._tabFromRouteName(this.state.route.name)}>
@@ -113,9 +135,15 @@ export default class AdminHomepage extends React.Component {
                             case 'chat':
                             case 'chat.channel':
                                 return (
-                                    <div className="AdminPage__splitscreen">
-                                        <AlertPage className={name != 'alert' ? 'AdminPage__splitscreen__secondary':''}/>
-                                        <ChatPage className={name != 'home' && name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
+                                    <div onClick={this._hideNotification}>
+                                        <div className="AdminPage__splitscreen">
+                                            <AlertPage className={name != 'alert' ? 'AdminPage__splitscreen__secondary':''}/>
+                                            <ChatPage className={name != 'home' && name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
+                                        </div>
+                                        {
+                                            this.state.notify &&
+                                            <FluxNotification message={this.state.notify} />
+                                        }
                                     </div>
                                 );
 

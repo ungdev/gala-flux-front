@@ -12,6 +12,7 @@ import Avatar from 'material-ui/Avatar';
 import Divider from 'material-ui/Divider';
 
 import LoginAs from './LoginAs.jsx';
+import NotificationsDialog from "./NotificationsDialog.jsx";
 import { Menu, MenuItem } from 'material-ui/Menu';
 
 require('../../styles/partials/AuthMenu.scss');
@@ -29,6 +30,7 @@ class AuthMenu extends React.Component {
             openLoginAs: false,
             loginAs: false,
             canLoginAs: false,
+            openNotificationsDialog: false
         };
 
         this._palette = props.muiTheme.palette;
@@ -40,6 +42,7 @@ class AuthMenu extends React.Component {
         this._openLoginAs = this._openLoginAs.bind(this);
         this._closeDialog = this._closeDialog.bind(this);
         this._backToMainAccount = this._backToMainAccount.bind(this);
+        this._toggleNotificationsDialog = this._toggleNotificationsDialog.bind(this);
     }
 
     componentDidMount() {
@@ -78,6 +81,20 @@ class AuthMenu extends React.Component {
     _openLoginAs() {
         this.setState({ openLoginAs: true });
         this._closeMenu();
+    }
+
+    /**
+     * Toggle the dialog to update notifications parameters
+     */
+    _toggleNotificationsDialog() {
+        const state = this.state;
+
+        state.openNotificationsDialog = !state.openNotificationsDialog;
+        if (state.openNotificationsDialog) {
+            state.openMenu = false;
+        }
+
+        this.setState(state);
     }
 
     /**
@@ -159,12 +176,19 @@ class AuthMenu extends React.Component {
                             <MenuItem onTouchTap={this._backToMainAccount}>Retour à votre compte</MenuItem>
                         :''}
 
+                        <MenuItem onTouchTap={this._toggleNotificationsDialog}>Notifications</MenuItem>
+
                     </Menu>
                 </Popover>
 
                 { this.state.openLoginAs ?
                     <LoginAs open={this.state.openLoginAs} closeDialog={this._closeDialog} />
                 :''}
+
+                { this.state.openNotificationsDialog ?
+                    <NotificationsDialog close={this._toggleNotificationsDialog} />
+                :''}
+
             </div>
         );
     }

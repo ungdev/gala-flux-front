@@ -1,9 +1,11 @@
 import React from 'react';
 
-import TextField from 'material-ui/TextField';
+import ChatService from '../../services/ChatService';
+import ChatStore from '../../stores/ChatStore';
+import ChatActions from '../../actions/ChatActions';
+
 import RaisedButton from 'material-ui/RaisedButton';
 import ContentSendIcon from 'material-ui/svg-icons/content/send';
-import ChatService from '../../services/ChatService';
 import NotificationActions from '../../actions/NotificationActions';
 
 require('../../styles/chat/ChatMessageForm.scss');
@@ -20,16 +22,21 @@ export default class ChatMessageForm extends React.Component {
 
         this.state = {
             value: this.props.value ? this.props.value : '',
+            channel: props.channel
         };
 
          this._handleChange = this._handleChange.bind(this);
          this._handleSubmit = this._handleSubmit.bind(this);
          this._handleKeyDown = this._handleKeyDown.bind(this);
          this.focus = this.focus.bind(this);
+         this._onTextAreaClick = this._onTextAreaClick.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ value: nextProps.value ? nextProps.value : ''});
+        this.setState({
+            value: nextProps.value ? nextProps.value : '',
+            channel: nextProps.channel
+        });
     }
 
     _handleChange(e) {
@@ -81,6 +88,16 @@ export default class ChatMessageForm extends React.Component {
         }
     }
 
+    /**
+     * Handle click on the textarea
+     */
+    _onTextAreaClick() {
+        // if there was new messages for this channel, reset the new messages counter
+        if (ChatStore.getNewMessages(this.state.channel)) {
+            ChatActions.viewMessages(this.state.channel);
+        }
+     }
+
     render() {
 
         // Show multiline style only if there is more than one line in the field
@@ -101,6 +118,7 @@ export default class ChatMessageForm extends React.Component {
                         ref={(input) => { this.textInput = input; }}
                         placeholder="Votre message.."
                         style={style}
+                        onClick={this._onTextAreaClick}
                     />
 
                     <RaisedButton

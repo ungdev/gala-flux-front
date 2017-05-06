@@ -38,6 +38,23 @@
     }
 }
 
+.Notification_bubble {
+    border-radius: 50%;
+    color: #fff;
+    background: color($red, 600);
+    padding: 4px;
+    margin-right: 2px;
+    animation-name: notification_bubble;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes notification_bubble {
+    0%  {background-color: color($red, 600);}
+    25% {background-color: color($red, 200);}
+    75% {background-color: color($red, 600);}
+}
 
 @media only screen and (max-width: $screen-max-xs) {
     /**
