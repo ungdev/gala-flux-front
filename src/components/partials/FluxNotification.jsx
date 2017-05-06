@@ -16,7 +16,8 @@ export default class FluxNotification extends React.Component {
 
         this.state = {
             config: AuthStore.notifications,
-            message: props.message
+            title: props.title,
+            content: props.content,
         };
 
         // binding
@@ -39,7 +40,8 @@ export default class FluxNotification extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            message: nextProps.message
+            title: nextProps.title,
+            content: nextProps.content,
         });
     }
 
@@ -52,7 +54,7 @@ export default class FluxNotification extends React.Component {
         if (this.state.config.desktop) {
             // check if the browser handle desktop notifications
             if (!("Notification" in window)) {
-                console.log("Ce navigateur ne supporte pas les notifications desktop");
+                console.warn("Ce navigateur ne supporte pas les notifications desktop");
             }
             // check if the user is ok to receive notifications
             else if (Notification.permission === "granted") {
@@ -80,9 +82,10 @@ export default class FluxNotification extends React.Component {
      * Create a FLux desktop notification
      */
     _createDesktopNotification() {
-        const title = this.state.message ? this.state.message : "Nouvelle activité";
+        const title = this.state.title ? this.state.title : '';
         const options = {
-            icon: DESKTOP_NOTIFICATION_ICON
+            icon: DESKTOP_NOTIFICATION_ICON,
+            body: this.state.content ? this.state.content : '',
         };
 
         const notification = new Notification(title, options);

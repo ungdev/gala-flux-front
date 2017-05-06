@@ -6,6 +6,8 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 import AdminMenu from '../partials/AdminMenu.jsx';
 import AuthStore from '../../stores/AuthStore';
 import ChatStore from '../../stores/ChatStore';
+import UserStore from '../../stores/UserStore';
+import TeamStore from '../../stores/TeamStore';
 
 import FluxNotification from '../partials/FluxNotification.jsx';
 import AlertPage from '../adminPages/AlertPage.jsx';
@@ -41,7 +43,7 @@ export default class AdminHomepage extends React.Component {
 
     componentDidMount() {
         // Listen new messages events
-        ChatStore.addNewListener(_ => this._showNotification("Vous avez reçu un message !"));
+        ChatStore.addNewListener(this._showNotification);
     }
 
     componentWillUnmount() {
@@ -65,7 +67,10 @@ export default class AdminHomepage extends React.Component {
 
     _showNotification(message) {
         if (!this.state.notify) {
-            this.setState({ notify: message });
+            let user = UserStore.findById(message.sender);
+            let team = user ? TeamStore.findById(user.team) : null;
+            let contentPrefix = (user? user.name + (team?' ('+team.name+')':'') + ' : ' : '');
+            this.setState({ notify: { title: 'Nouveau message sur ' + message.channel.split(':')[1], content: contentPrefix + message.text }});
         }
     }
 
@@ -101,7 +106,7 @@ export default class AdminHomepage extends React.Component {
 
     render() {
         return (
-            <div className="AdminPage">
+            <div className="AdminPage" onClick={this._hideNotification}>
 
                 {/* Tabs for tablet */}
                 <Tabs className="AdminPage__tabs show-sm" onChange={this._handleTabChange} value={this._tabFromRouteName(this.state.route.name)}>
@@ -135,15 +140,9 @@ export default class AdminHomepage extends React.Component {
                             case 'chat':
                             case 'chat.channel':
                                 return (
-                                    <div onClick={this._hideNotification}>
-                                        <div className="AdminPage__splitscreen">
-                                            <AlertPage className={name != 'alert' ? 'AdminPage__splitscreen__secondary':''}/>
-                                            <ChatPage className={name != 'home' && name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
-                                        </div>
-                                        {
-                                            this.state.notify &&
-                                            <FluxNotification message={this.state.notify} />
-                                        }
+                                    <div className="AdminPage__splitscreen">
+                                        <AlertPage className={name != 'alert' ? 'AdminPage__splitscreen__secondary':''}/>
+                                        <ChatPage className={name != 'home' && name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
                                     </div>
                                 );
 
@@ -203,6 +202,12 @@ export default class AdminHomepage extends React.Component {
                                 );
                         }
                     })()}
+
+
+                {
+                    this.state.notify &&
+                    <FluxNotification title={this.state.notify.title} content={this.state.notify.content} />
+                }
             </div>
         );
     }

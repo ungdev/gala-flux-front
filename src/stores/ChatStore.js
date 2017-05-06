@@ -122,7 +122,7 @@ class ChatStore extends BaseStore {
             // increment the number of unviewed messages for this channel
             this._newMessages[message.channel] ? this._newMessages[message.channel]++ : this._newMessages[message.channel] = 1;
             this.emitChange();
-            this.emitNew();
+            this.emitNew(message);
         }
     }
 
