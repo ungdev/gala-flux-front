@@ -21,7 +21,7 @@ export default class ChatMessageForm extends React.Component {
         super(props);
 
         this.state = {
-            value: this.props.value ? this.props.value : '',
+            value: localStorage.getItem('chat/input/'+props.channel) || '',
             channel: props.channel
         };
 
@@ -33,14 +33,21 @@ export default class ChatMessageForm extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        let value =  this.state.value;
+        if(nextProps != this.state.channel) {
+            value = localStorage.getItem('chat/input/'+nextProps.channel) || '';
+        }
         this.setState({
-            value: nextProps.value ? nextProps.value : '',
-            channel: nextProps.channel
+            channel: nextProps.channel,
+            value: value,
         });
     }
 
     _handleChange(e) {
         this.setState({value: e.target.value ? e.target.value : ''});
+        if(e.target) {
+            localStorage.setItem('chat/input/'+this.state.channel, e.target.value);
+        }
     }
 
     /**
