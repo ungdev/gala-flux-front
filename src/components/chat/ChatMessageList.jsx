@@ -32,16 +32,28 @@ export default class ChatMessageList extends React.Component {
 
         this.channel = '';
 
+        this.scrollBottom = 0;
+        this.clientHeight = 0;
+
         this.ChatStoreToken = null;
         this.UserStoreToken = null;
         this.TeamStoreToken = null;
 
         this._updateData = this._updateData.bind(this);
         this._handleNewChannel = this._handleNewChannel.bind(this);
+        this._handleWindowResize = this._handleWindowResize.bind(this);
+        this._handleScroll = this._handleScroll.bind(this);
     }
 
     componentDidMount() {
         this._handleNewChannel();
+
+        // Init scroll listening
+        window.addEventListener("resize", this._handleWindowResize);
+        this.scrollArea.addEventListener("scroll", this._handleScroll);
+        this.clientHeight = this.scrollArea.clientHeight;
+        this.scrollBottom = 0;
+
 
         // listen the store change
         ChatStore.addChangeListener(this._updateData);
@@ -53,6 +65,9 @@ export default class ChatMessageList extends React.Component {
         UserStore.unloadData(this.UserStoreToken);
         TeamStore.unloadData(this.TeamStoreToken);
 
+        // clear scroll listening
+        window.removeEventListener("resize", this._handleWindowResize);
+        this.scrollArea.removeEventListener("scroll", this._handleScroll);
         // remove the store change listener
         ChatStore.removeChangeListener(this._updateData);
     }
@@ -165,6 +180,27 @@ export default class ChatMessageList extends React.Component {
         else {
             return { channel: ('public:'+AuthStore.team.name) };
         }
+    }
+
+    /**
+     * On Window resize, keep bottom scroll position to keep message position when keyboard show on mobile
+     */
+    _handleWindowResize(e) {
+        if(this.scrollBottom != 0 && this.scrollArea.clientHeight) {
+            this.scrollArea.scrollTop = this.scrollBottom - this.scrollArea.clientHeight;
+        }
+        this.clientHeight = this.scrollArea.clientHeight;
+        this.scrollBottom = this.scrollArea.scrollTop + this.scrollArea.clientHeight;
+    }
+
+    /**
+     * On scroll, register the new bottom scroll position
+     */
+    _handleScroll(e) {
+        if(this.clientHeight == e.target.clientHeight) {
+            this.scrollBottom = this.scrollArea.scrollTop + this.scrollArea.clientHeight;
+        }
+        this.clientHeight = this.scrollArea.clientHeight;
     }
 
     render() {
