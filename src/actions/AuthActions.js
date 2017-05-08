@@ -103,7 +103,6 @@ function loginBack() {
  * @param team Current authenticated team object
  */
 function authenticated(user, team) {
-    NotificationActions.snackbar('Bonjour ' + user.name + ' !');
     AppDispatcher.dispatch({
         type: 'AUTH_AUTHENTICATED',
         user: user,
