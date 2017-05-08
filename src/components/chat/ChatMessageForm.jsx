@@ -56,12 +56,19 @@ export default class ChatMessageForm extends React.Component {
      */
     _handleKeyDown(e) {
         if (e.keyCode === 13) {
-            e.preventDefault();
+            // Submit on enter press
             if(!e.ctrlKey && !e.shiftKey) {
+                e.preventDefault();
                 this._handleSubmit(e);
             }
-            else {
-                this.setState({ value: this.state.value + '\n'});
+            // Generally on browser ctrl+enter doesn't do anything, so we will manually insert return
+            else if(e.ctrlKey && e.target && typeof e.target.selectionStart == 'number') {
+                e.preventDefault();
+                let finalSelection = e.target.selectionStart+1;
+                e.target.value = this.state.value.slice(0, e.target.selectionStart) + '\n' + this.state.value.slice(e.target.selectionEnd);
+                e.target.setSelectionRange(finalSelection,finalSelection);
+                this.setState({value: e.target.value});
+                localStorage.setItem('chat/input/'+this.state.channel, e.target.value);
             }
         }
     }
