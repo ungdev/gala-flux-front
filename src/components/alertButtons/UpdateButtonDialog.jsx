@@ -33,7 +33,8 @@ export default class NewButton extends React.Component {
                 senderGroup: (props.button ? props.button.senderGroup : null),
                 receiver: (props.button ? props.button.receiver : ''),
                 messageRequired: (props.button ? props.button.messageRequired : false),
-                messagePrompt: (props.button ? props.button.messagePrompt : 'Avez-vous des informations complémentaires ?'),
+                messagePrompt: (props.button ? props.button.messagePrompt : ''),
+                messageDefault: (props.button ? props.button.messageDefault : ''),
             },
             categories: props.categories,
             teams: props.teams,
@@ -62,6 +63,7 @@ export default class NewButton extends React.Component {
                 receiver: (props.button ? props.button.receiver : this.state.values.receiver),
                 messageRequired: (props.button ? props.button.messageRequired : this.state.values.messageRequired),
                 messagePrompt: (props.button ? props.button.messagePrompt : this.state.values.messagePrompt),
+                messageDefault: (props.button ? props.button.messageDefault : this.state.values.messageDefault),
             },
         });
     }
@@ -234,17 +236,28 @@ export default class NewButton extends React.Component {
                                 multiLine={true}
                                 floatingLabelText="Question du message"
                                 fullWidth={true}
+                                rows={3}
+                                rowsMax={3}
                                 value={this.state.values.messagePrompt}
                                 onChange={e => this._handleFieldChange('messagePrompt', e.target.value)}
                             />
-                        </Col>
-                        <Col xs={12} sm={6}>
                             <br/><br/>
                             <Toggle
                                 label="Message obligatoire"
                                 labelPosition="right"
                                 toggled={this.state.values.messageRequired}
                                 onToggle={(e, v) => this._handleFieldChange('messageRequired', v)}
+                            />
+                        </Col>
+                        <Col xs={12} sm={6}>
+                            <TextField
+                                multiLine={true}
+                                floatingLabelText="Réponse par défaut"
+                                fullWidth={true}
+                                rows={3}
+                                rowsMax={3}
+                                value={this.state.values.messageDefault}
+                                onChange={e => this._handleFieldChange('messageDefault', e.target.value)}
                             />
                         </Col>
                     </Row>

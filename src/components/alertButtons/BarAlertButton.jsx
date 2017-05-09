@@ -20,7 +20,7 @@ export default class BarAlertButton extends React.Component {
             button: props.button,
             alert: props.alert,
             showInput: false,
-            message: props.alert ? props.alert.message : "",
+            message: props.alert ? props.alert.message : (props.button.messageDefault || ''),
             messageError: '',
         };
 
@@ -33,13 +33,14 @@ export default class BarAlertButton extends React.Component {
         this._handleKeyDown = this._handleKeyDown.bind(this);
         this._handleSubmit = this._handleSubmit.bind(this);
         this._commentAlert = this._commentAlert.bind(this);
+        this._handleScrolOnBlur = this._handleScrolOnBlur.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
             button: nextProps.button,
             alert: nextProps.alert,
-            message: nextProps.alert ? nextProps.alert.message : ""
+            message: nextProps.alert ? nextProps.alert.message : (nextProps.button.messageDefault || ''),
         });
     }
 
@@ -50,17 +51,28 @@ export default class BarAlertButton extends React.Component {
         this.setState({ showInput: !this.state.showInput, messageError: '' });
     }
 
+
+    componentDidUpdate() {
+        if(this.textInput && this.state.showInput) {
+            this.textInput.focus();
+        }
+    }
+
     /**
      * Call the AlertButtonService to create a new alert
      */
     _createAlert() {
         // if comment required but no comment
-        if (this.state.button.messageRequired && this.state.message.trim() === "") {
+        if (this.state.button.messageRequired && (this.state.message.trim() === "" ||
+                this.state.message === this.state.button.messageDefault)) {
             // If input not shown, only show input, else print in field error
             if(!this.state.showInput) {
                 this.setState({ showInput: true });
             }
-            else {
+            else if(this.state.message === this.state.button.messageDefault && this.state.message.trim() !== "") {
+                this.setState({ showInput: true, messageError: 'Veuillez modifier le commentaire par défaut' });
+            }
+            else if(this.state.message.trim() === "") {
                 this.setState({ showInput: true, messageError: 'Commentaire obligatoire' });
             }
 
@@ -106,6 +118,9 @@ export default class BarAlertButton extends React.Component {
         if (this.state.button.messageRequired && this.state.message.trim() === "") {
             this.setState({ showInput: true, messageError: 'Commentaire obligatoire' });
         }
+        else if (this.state.button.messageRequired && this.state.message === this.state.button.messageDefault) {
+            this.setState({ showInput: true, messageError: 'Vous devez modifier ce commentaire' });
+        }
         else {
             AlertService.update(this.state.alert.id, {message: this.state.message})
             .then(_ => this.setState({ showInput: false }))
@@ -117,7 +132,6 @@ export default class BarAlertButton extends React.Component {
      * Update the message in the state when the input change
      *
      * @param e: event
-     * @param v: the input value
      */
     _handleInputChange(e, v) {
         this.setState({ message: v, messageError: ''  });
@@ -162,8 +176,18 @@ export default class BarAlertButton extends React.Component {
         }
     }
 
-    render() {
 
+    /**
+     * This function ensure user can still scroll the alert area when blur is on
+     */
+    _handleScrolOnBlur(e) {
+        let scrollArea = document.getElementsByClassName('BarHomePage__alerts')[0];
+        if(document.getElementsByClassName('BarHomePage__alerts')[0]) {
+            scrollArea.scrollTop += e.deltaY;
+        }
+    }
+
+    render() {
         // true if it's
         const commentRequired = this.state.button.messageRequired && !this.state.alert && this.state.showInput;
 
@@ -187,44 +211,46 @@ export default class BarAlertButton extends React.Component {
                 </div>);
 
         return (
-            <div>
+            <div className="AlertButton">
+                {alertButton}
                 {
-                    alertButton
+                    this.state.showInput && commentRequired &&
+                    <div className="AlertButton_input_blur" onWheel={this._handleScrolOnBlur} onTouchTap={_ => this._toggleMessageInput("done")}></div>
                 }
-                {
-                    this.state.showInput && commentRequired && <div className="AlertButton_input_blur" onTouchTap={_ => this._toggleMessageInput("done")}></div>
-                }
-                {
-                    this.state.showInput &&
-                    <form onSubmit={this._handleSubmit} className={`AlertButton_input_container ${commentRequired && "AlertButton_required"}`}>
+                <form
+                    onSubmit={this._handleSubmit}
+                    style={(this.state.showInput ? {} : {display:'none'})}
+                    className={`AlertButton_input_container ${commentRequired && "AlertButton_required"}`}>
 
-                        <div className="AlertButton_input_label">{this.state.button.messagePlaceholder || "Commentaire"}</div>
-                        <TextField
-                            multiLine={true}
-                            rows={1}
-                            rowsMax={4}
-                            fullWidth={true}
-                            onKeyDown={this._handleKeyDown}
-                            onChange={this._handleInputChange}
-                            value={this.state.message}
-                            hintText={this.state.button.messageRequired ? "Commentaire obligatoire" : ""}
-                            autoFocus
-                            errorText={this.state.messageError}
+                    <div className="AlertButton_input_label">{this.state.button.messagePrompt || "Commentaire"}</div>
+                    <TextField
+                        className="AlertButton_input__TextField"
+                        multiLine={true}
+                        rows={2}
+                        rowsMax={10}
+                        onKeyDown={this._handleKeyDown}
+                        onChange={this._handleInputChange}
+                        value={this.state.showInput ? this.state.message : ''}
+                        hintText={this.state.button.messageRequired ? "Commentaire obligatoire" : ""}
+                        fullWidth={true}
+                        autoFocus={true}
+                        errorText={this.state.messageError}
+                        ref={(input) => { this.textInput = input; }}
+                        id={"button-"+this.state.button.id}
                         />
-                        <div className="AlertButton_input_actions">
-                            <FlatButton
-                                secondary={true}
-                                onClick={_ => this._toggleMessageInput("done")}
-                                label="Annuler"
-                            />
-                            <FlatButton
-                                primary={true}
-                                type="submit"
-                                label={commentRequired ? "Créer l'alerte" : "Envoyer"}
-                            />
-                        </div>
-                    </form>
-                }
+                    <div className="AlertButton_input_actions">
+                        <FlatButton
+                            secondary={true}
+                            onClick={_ => this._toggleMessageInput("done")}
+                            label="Annuler"
+                        />
+                        <FlatButton
+                            primary={true}
+                            type="submit"
+                            label={commentRequired ? "Créer l'alerte" : "Envoyer"}
+                        />
+                    </div>
+                </form>
             </div>
         );
     }

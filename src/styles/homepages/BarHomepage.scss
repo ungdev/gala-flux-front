@@ -19,6 +19,12 @@
 
     > .BarHomePage__alerts {
         flex-grow: 0.8;
+
+        // Prevent button in comment form to become two lines
+        min-width: 250px;
+
+        // Fix TextField hidding a line when scrollbar appear when alert button is deployed
+        overflow-y:scroll;
     }
 
     > .BarHomePage__stock {
