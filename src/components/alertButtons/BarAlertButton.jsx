@@ -55,7 +55,7 @@ export default class BarAlertButton extends React.Component {
      */
     _createAlert() {
         // if comment required but no comment
-        if (this.state.button.message && this.state.message.trim() === "") {
+        if (this.state.button.messageRequired && this.state.message.trim() === "") {
             // If input not shown, only show input, else print in field error
             if(!this.state.showInput) {
                 this.setState({ showInput: true });
@@ -103,7 +103,7 @@ export default class BarAlertButton extends React.Component {
      */
     _updateAlertMessage() {
         // if comment required but no comment empty print in field error
-        if (this.state.button.message && this.state.message.trim() === "") {
+        if (this.state.button.messageRequired && this.state.message.trim() === "") {
             this.setState({ showInput: true, messageError: 'Commentaire obligatoire' });
         }
         else {
@@ -165,7 +165,7 @@ export default class BarAlertButton extends React.Component {
     render() {
 
         // true if it's
-        const commentRequired = this.state.button.message && !this.state.alert && this.state.showInput;
+        const commentRequired = this.state.button.messageRequired && !this.state.alert && this.state.showInput;
 
         let alertButton = (this.state.alert && this.state.alert.severity != 'done') ?
                 (<div className="AlertButton_active_container">
@@ -207,7 +207,7 @@ export default class BarAlertButton extends React.Component {
                             onKeyDown={this._handleKeyDown}
                             onChange={this._handleInputChange}
                             value={this.state.message}
-                            hintText={this.state.button.message ? "Commentaire obligatoire" : ""}
+                            hintText={this.state.button.messageRequired ? "Commentaire obligatoire" : ""}
                             autoFocus
                             errorText={this.state.messageError}
                         />
