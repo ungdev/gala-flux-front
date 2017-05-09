@@ -88,6 +88,7 @@ export default class ChatMessageForm extends React.Component {
             channel: this.props.channel,
         })
         .then(() => {
+            localStorage.setItem('chat/input/'+this.state.channel, '');
             this.setState({value: ''});
             this.focus();
         })
