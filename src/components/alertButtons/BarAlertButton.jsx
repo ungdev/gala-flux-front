@@ -154,12 +154,18 @@ export default class BarAlertButton extends React.Component {
      */
     _handleKeyDown(e) {
         if (e.keyCode === 13) {
-            e.preventDefault();
+            // Submit on enter press
             if(!e.ctrlKey && !e.shiftKey) {
+                e.preventDefault();
                 this._commentAlert();
             }
-            else {
-                this.setState({ message: this.state.message + '\n'});
+            // Generally on browser ctrl+enter doesn't do anything, so we will manually insert return
+            else if(e.ctrlKey && e.target && typeof e.target.selectionStart == 'number') {
+                e.preventDefault();
+                let finalSelection = e.target.selectionStart+1;
+                e.target.value = this.state.message.slice(0, e.target.selectionStart) + '\n' + this.state.message.slice(e.target.selectionEnd);
+                e.target.setSelectionRange(finalSelection,finalSelection);
+                this.setState({message: e.target.value});
             }
         }
     }
