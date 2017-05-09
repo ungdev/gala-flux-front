@@ -113,7 +113,7 @@ export default class NewBottleTypeDialog extends React.Component {
             });
 
             NotificationActions.snackbar('Le type de bouteille ' + type.name + ' a bien été créé.');
-            this.focusField.focus();
+            if(this.focusField) this.focusField.focus();
         })
         .catch((error) => {
             let errors = {};

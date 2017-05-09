@@ -148,7 +148,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
 
             this.submitted = false;
             NotificationActions.snackbar('Le type ' + this.state.values.name + ' a bien été modifié.');
-            this.focusField.focus();
+            if(this.focusField) this.focusField.focus();
             this.props.close();
         })
         .catch((error) => {

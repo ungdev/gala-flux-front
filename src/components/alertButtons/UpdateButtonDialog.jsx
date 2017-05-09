@@ -94,7 +94,7 @@ export default class NewButton extends React.Component {
         AlertButtonService.update(this.state.id, this.state.values)
         .then((button) => {
             NotificationActions.snackbar('Le bouton ' + button.title + ' a bien été modifié.');
-            this.focusField.focus();
+            if(this.focusField) this.focusField.focus();
             this.props.close();
         })
         .catch((error) => {

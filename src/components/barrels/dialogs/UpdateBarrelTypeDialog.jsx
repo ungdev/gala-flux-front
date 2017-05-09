@@ -153,7 +153,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
 
             this.submitted = false;
             NotificationActions.snackbar('Les fûts ' + this.state.values.name + ' ont bien été modifiés.');
-            this.focusField.focus();
+            if(this.focusField) this.focusField.focus();
             this.props.close();
         })
         .catch((error) => {

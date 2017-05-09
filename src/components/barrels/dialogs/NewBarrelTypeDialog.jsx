@@ -120,7 +120,7 @@ export default class NewBarrelTypeDialog extends React.Component {
             });
 
             NotificationActions.snackbar('Le type de fût ' + typeName + ' a bien été créé.');
-            this.focusField.focus();
+            if(this.focusField) this.focusField.focus();
         })
         .catch((error) => {
             let errors = {};
