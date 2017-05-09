@@ -34,7 +34,8 @@ export default class NewButton extends React.Component {
                 senderGroup: null,
                 receiver: '',
                 messageRequired: false,
-                messagePrompt: 'Avez-vous des informations complémentaires ?',
+                messagePrompt: 'Quel est le problème ?',
+                messageDefault: '',
             },
             errors: {},
         };
@@ -85,7 +86,8 @@ export default class NewButton extends React.Component {
                 senderGroup: null,
                 receiver: '',
                 messageRequired: false,
-                messagePrompt: 'Avez-vous des informations complémentaires ?',
+                messagePrompt: 'Quel est le problème ?',
+                messageDefault: '',
             } });
             NotificationActions.snackbar('Le bouton ' + button.title + ' a bien été créé.');
             this.focusField.focus();
@@ -197,17 +199,27 @@ export default class NewButton extends React.Component {
                                 multiLine={true}
                                 floatingLabelText="Question du message"
                                 fullWidth={true}
+                                rows={3}
+                                rowsMax={3}
                                 value={this.state.values.messagePrompt}
                                 onChange={e => this._handleFieldChange('messagePrompt', e.target.value)}
                             />
-                        </Col>
-                        <Col xs={12} sm={6}>
-                            <br/><br/>
                             <Toggle
                                 label="Message obligatoire"
                                 labelPosition="right"
                                 toggled={this.state.values.messageRequired}
                                 onToggle={(e, v) => this._handleFieldChange('messageRequired', v)}
+                            />
+                        </Col>
+                        <Col xs={12} sm={6}>
+                            <TextField
+                                multiLine={true}
+                                floatingLabelText="Réponse par défaut"
+                                fullWidth={true}
+                                rows={3}
+                                rowsMax={3}
+                                value={this.state.values.messageDefault}
+                                onChange={e => this._handleFieldChange('messageDefault', e.target.value)}
                             />
                         </Col>
                     </Row>
