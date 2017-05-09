@@ -79,7 +79,7 @@ export default class UpdateMemberDialog extends React.Component {
         UserService.update(this.state.id, this.state.values)
         .then((user) => {
             NotificationActions.snackbar('L\'utilisateur ' + user.name + ' a bien été modifié.');
-            this.focusField.focus();
+            if(this.focusField) this.focusField.focus();
             this.props.close();
         })
         .catch((error) => {

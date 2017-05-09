@@ -74,7 +74,7 @@ export default class UpdateTeamDialog extends React.Component {
         TeamService.update(this.state.id, this.state.values)
         .then((team) => {
             NotificationActions.snackbar('L\'équipe ' + team.name + ' a bien été modifié.');
-            this.focusField.focus();
+            if(this.focusField) this.focusField.focus();
             this.props.close();
         })
         .catch((error) => {

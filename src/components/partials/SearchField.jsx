@@ -46,7 +46,9 @@ export default class SearchField extends React.Component {
     }
 
     focus() {
-        this.textInput.focus();
+        if(this.textInput) {
+            this.textInput.focus();
+        }
     }
 
     render() {

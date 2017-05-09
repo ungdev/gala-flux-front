@@ -63,7 +63,7 @@ export default class NewTeamDialog extends React.Component {
                 location: '',
             } });
             NotificationActions.snackbar('L\'équipe ' + team.name + ' a bien été créé.');
-            this.focusField.focus();
+            if(this.focusField) this.focusField.focus();
         })
         .catch((error) => {
             let errors = {};

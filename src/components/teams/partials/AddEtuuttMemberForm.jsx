@@ -78,7 +78,7 @@ export default class AddEtuuttMemberForm extends React.Component {
             .then(_ => {
                 this.setState({ query: '', users: [] });
                 NotificationActions.snackbar('L\'utilisateur ' + user.name + ' a bien été ajouté à l\'équipe ' + this.state.team.name);
-                this.searchField.focus();
+                if(this.searchField) this.searchField.focus();
             })
             .catch(error => {
                 if(!createdUser) {
@@ -95,7 +95,7 @@ export default class AddEtuuttMemberForm extends React.Component {
                     NotificationActions.error('L\'utilisateur a été créé, mais il n\'a pas été possible de sauvegarder son avatar.', error);
                     this.setState({ query: '', users: [] });
                     NotificationActions.snackbar('L\'utilisateur ' + user.name + ' a bien été ajouté à l\'équipe ' + this.state.team.name);
-                    this.searchField.focus();
+                    if(this.searchField) this.searchField.focus();
                 }
             });
     }

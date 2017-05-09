@@ -90,7 +90,7 @@ export default class NewButton extends React.Component {
                 messageDefault: '',
             } });
             NotificationActions.snackbar('Le bouton ' + button.title + ' a bien été créé.');
-            this.focusField.focus();
+            if(this.focusField) this.focusField.focus();
         })
         .catch((error) => {
             let errors = error.userFormErrors;

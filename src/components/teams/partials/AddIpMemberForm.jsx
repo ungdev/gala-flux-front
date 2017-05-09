@@ -77,7 +77,7 @@ export default class AddIpMemberForm extends React.Component {
                 ip: '',
             } });
             NotificationActions.snackbar('L\'utilisateur ' + user.name + ' a bien été ajouté à l\'équipe ' + this.state.team.name);
-            this.focusField.focus();
+            if(this.focusField) this.focusField.focus();
         })
         .catch(error => {
             let errors = {};
