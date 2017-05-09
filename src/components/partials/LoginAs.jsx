@@ -54,6 +54,11 @@ export default class LoginAs extends React.Component {
 
                 // save the component token
                 this.TeamStoreToken = data.token;
+
+                // focus
+                if(this.textInput) {
+                    this.textInput.focus();
+                }
             })
             .catch(error => console.log("load users/team error", error));
         // listen the store change
@@ -155,6 +160,7 @@ export default class LoginAs extends React.Component {
                             errorText={this.state.error}
                             onNewRequest={this._submitForm}
                             maxSearchResults={10}
+                            ref={(input) => { this.textInput = input; }}
                         />
                 </Dialog>
             </div>
