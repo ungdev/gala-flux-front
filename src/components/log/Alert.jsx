@@ -88,7 +88,10 @@ export default class Alert extends React.Component {
                         id={"team-" + this.state.alert.id}
                         place="bottom"
                     >
-                        <span>{this.props.alert.sender ? this.props.alert.sender.name : 'Équipe supprimé ou alerte automatique'}</span>
+                        <span>
+                            {this.props.alert.sender ? this.props.alert.sender.name : 'Équipe supprimé ou alerte automatique'}<br/>
+                            {this.props.alert.sender && this.props.alert.sender.location}
+                        </span>
                     </ReactTooltip>
 
                     <div className="alert__separator"><div></div>
