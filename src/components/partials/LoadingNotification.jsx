@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Dialog from 'material-ui/Dialog';
+import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import CircularProgress from 'material-ui/CircularProgress';
 
 import NotificationStore from '../../stores/NotificationStore';

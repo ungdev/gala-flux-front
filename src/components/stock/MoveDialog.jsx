@@ -5,7 +5,7 @@ import BarrelService from '../../services/BarrelService';
 import BarrelTypeStore from '../../stores/BarrelTypeStore';
 import TeamStore from '../../stores/TeamStore';
 
-import Dialog from 'material-ui/Dialog';
+import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import FlatButton from 'material-ui/FlatButton';
 import BarrelChip from '../barrels/partials/BarrelChip.jsx';
 import LocationSelect from './LocationSelect.jsx';

@@ -2,7 +2,7 @@ import React from 'react';
 
 import AuthStore from '../../stores/AuthStore';
 
-import Dialog from 'material-ui/Dialog';
+import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import FlatButton from 'material-ui/FlatButton';
 import Toggle from 'material-ui/Toggle';
 

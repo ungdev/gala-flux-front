@@ -3,7 +3,7 @@ import React from 'react';
 import UserService from '../../../services/UserService';
 import * as constants from '../../../config/constants';
 
-import Dialog from 'material-ui/Dialog';
+import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import Avatar from 'material-ui/Avatar';

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Dialog from 'material-ui/Dialog';
+import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import FlatButton from 'material-ui/FlatButton';
 import { Tabs, Tab } from 'material-ui/Tabs';
 

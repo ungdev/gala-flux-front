@@ -6,7 +6,7 @@ import TeamStore from '../../stores/TeamStore';
 import NotificationActions from '../../actions/NotificationActions';
 
 import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
+import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import AutoComplete from 'material-ui/AutoComplete';
 
 export default class LoginAs extends React.Component {
