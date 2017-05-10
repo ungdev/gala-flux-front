@@ -77,11 +77,11 @@ export default class AdminMenu extends React.Component {
                         <ListItem value="admin.barrels" className="AdminMenu__item">Gestion des fûts</ListItem>
                     }
 
-                    { (AuthStore.can('alertButton')) &&
+                    { (AuthStore.can('barrelType/admin')) &&
                         <ListItem value="admin.bottles" className="AdminMenu__item">Gestion des bouteilles</ListItem>
                     }
 
-                    { (AuthStore.can('alertButton')) &&
+                    { (AuthStore.can('alertButton/admin')) &&
                         <ListItem value="admin.alerts" className="AdminMenu__item">Gestion des boutons d'alerte</ListItem>
                     }
                 </SelectableList>
