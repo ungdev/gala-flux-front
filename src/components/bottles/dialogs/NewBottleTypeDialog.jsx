@@ -198,7 +198,7 @@ export default class NewBottleTypeDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                         <TextField
-                            floatingLabelText="Prix fournisseur (€)"
+                            floatingLabelText="Prix fournisseur d'une bouteille (€)"
                             errorText={this.state.errors.supplierPrice}
                             value={this.state.values.supplierPrice}
                             fullWidth={true}
@@ -207,7 +207,7 @@ export default class NewBottleTypeDialog extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Prix de revente (€)"
+                                floatingLabelText="Prix de revente d'une bouteille (€)"
                                 errorText={this.state.errors.sellPrice}
                                 value={this.state.values.sellPrice}
                                 fullWidth={true}
@@ -218,7 +218,7 @@ export default class NewBottleTypeDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Nombre par caisse"
+                                floatingLabelText="Nombre de bouteilles par caisse"
                                 errorText={this.state.errors.quantityPerBox}
                                 value={this.state.values.quantityPerBox}
                                 fullWidth={true}
@@ -227,7 +227,7 @@ export default class NewBottleTypeDialog extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Nombre de caisses"
+                                floatingLabelText="Nombre de bouteilles"
                                 errorText={this.state.errors.originalStock}
                                 value={this.state.values.originalStock}
                                 fullWidth={true}

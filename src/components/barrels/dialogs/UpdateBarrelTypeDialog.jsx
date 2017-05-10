@@ -268,7 +268,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                         <TextField
-                            floatingLabelText="Prix fournisseur (€)"
+                            floatingLabelText="Prix fournisseur d'un fût (€)"
                             errorText={this.state.errors.supplierPrice}
                             value={this.state.values.supplierPrice}
                             fullWidth={true}
@@ -277,7 +277,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Prix de revente (€)"
+                                floatingLabelText="Prix de revente d'un fût (€)"
                                 errorText={this.state.errors.sellPrice}
                                 value={this.state.values.sellPrice}
                                 fullWidth={true}
@@ -288,7 +288,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Nombre de litres"
+                                floatingLabelText="Nombre de litres par fût"
                                 errorText={this.state.errors.liters}
                                 value={this.state.values.liters}
                                 fullWidth={true}
