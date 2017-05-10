@@ -4,6 +4,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Toggle from 'material-ui/Toggle';
 import Dialog from 'components/partials/ResponsiveDialog.jsx';
 
+import ErrorLogService from 'services/ErrorLogService';
 import NotificationStore from '../../stores/NotificationStore';
 import AuthActions from '../../actions/AuthActions';
 
@@ -71,6 +72,32 @@ export default class ErrorNotification extends React.Component {
                 if(this.state.count >= 10) {
                     errorMessage.refresh = true;
                 }
+
+                // Send error log to the server
+                ErrorLogService.create({
+                    message: errorMessage.message,
+                    error: (typeof errorMessage.error === 'string' || errorMessage.error instanceof String) ?
+                        errorMessage.error
+                        :
+                        Object.assign(
+                            {},
+                            (errorMessage.error.message ? {message: errorMessage.error.message} : {}),
+                            errorMessage.error,
+                        ),
+                    details: (typeof errorMessage.details === 'string' || errorMessage.details instanceof String) ?
+                        errorMessage.details
+                        :
+                        Object.assign(
+                            {},
+                            errorMessage.details,
+                        ),
+                    stack: errorMessage.error ? errorMessage.error.stack : null,
+                    notificationStack: errorMessage.stack,
+                })
+                .catch((e) => {
+                    console.error('Couldnt send error log to server:',e);
+                });
+
 
                 // Enable error
                 this.preventDialog = true;
