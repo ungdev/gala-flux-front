@@ -61,6 +61,7 @@ export default class LoginAs extends React.Component {
             }
         })
         .catch(error => NotificationActions.error("Erreur lors de la lecture des utilisateurs.", error));
+
         // listen the store change
         UserStore.addChangeListener(this._setUsers);
         TeamStore.addChangeListener(this._setUsers);
