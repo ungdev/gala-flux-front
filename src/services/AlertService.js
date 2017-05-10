@@ -1,5 +1,5 @@
-import {ApiError} from '../errors';
-import BaseService from './BaseService';
+import {ApiError} from 'errors';
+import BaseService from 'services/BaseService';
 
 /**
  * Class used for all about alert

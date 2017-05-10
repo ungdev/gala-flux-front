@@ -1,10 +1,10 @@
 import React from "react";
 
-import AlertButtonService from '../../services/AlertButtonService';
-import NotificationActions from '../../actions/NotificationActions';
-import TeamStore from '../../stores/TeamStore';
+import AlertButtonService from 'services/AlertButtonService';
+import NotificationActions from 'actions/NotificationActions';
+import TeamStore from 'stores/TeamStore';
 
-import Dialog from 'material-ui/Dialog';
+import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import { Row, Col } from 'react-flexbox-grid';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';

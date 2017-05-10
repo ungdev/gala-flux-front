@@ -1,12 +1,12 @@
 import React from 'react';
 
-import Dialog from 'material-ui/Dialog';
+import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
 
-import BottleTypeService from '../../../services/BottleTypeService';
-import NotificationActions from '../../../actions/NotificationActions';
+import BottleTypeService from 'services/BottleTypeService';
+import NotificationActions from 'actions/NotificationActions';
 
 export default class NewBottleTypeDialog extends React.Component {
 

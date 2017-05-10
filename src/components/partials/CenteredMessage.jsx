@@ -1,6 +1,6 @@
 import React from 'react';
 
-require('../../styles/partials/CenteredMessage.scss');
+require('styles/partials/CenteredMessage.scss');
 
 
 /**

@@ -1,10 +1,10 @@
 import React from 'react';
 
-import TeamStore from '../../stores/TeamStore';
-import BarrelTypeStore from '../../stores/BarrelTypeStore';
+import TeamStore from 'stores/TeamStore';
+import BarrelTypeStore from 'stores/BarrelTypeStore';
 
 import {Card, CardHeader, CardText} from 'material-ui/Card';
-import BarrelChip from '../barrels/partials/BarrelChip.jsx';
+import BarrelChip from 'components/barrels/partials/BarrelChip.jsx';
 
 export default class StockList extends React.Component {
 

@@ -4,7 +4,7 @@ import { Row, Col } from 'react-flexbox-grid';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
-import LocationSelect from './LocationSelect.jsx';
+import LocationSelect from 'components/stock/LocationSelect.jsx';
 
 export default class Filters extends React.Component {
 

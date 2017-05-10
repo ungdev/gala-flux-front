@@ -1,7 +1,7 @@
-import BaseStore from './BaseStore';
-import AuthStore from './AuthStore';
-import AlertService from '../services/AlertService';
-import NotificationActions from '../actions/NotificationActions';
+import BaseStore from 'stores/BaseStore';
+import AuthStore from 'stores/AuthStore';
+import AlertService from 'services/AlertService';
+import NotificationActions from 'actions/NotificationActions';
 
 class AlertStore extends BaseStore {
 
@@ -94,8 +94,9 @@ class AlertStore extends BaseStore {
      *
      */
     _countNewAlerts() {
-        // fetch all the messages
-        AlertService.get()
+        if(AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) {
+            // fetch all the messages
+            AlertService.get()
             .then(alerts => {
                 // read the date of the last alert viewed
                 if(localStorage.getItem('lastAlerts')) {
@@ -124,6 +125,7 @@ class AlertStore extends BaseStore {
                 }
             })
             .catch(error => NotificationActions.error("Erreur lors de la lecture des alertes non vues.", error));
+        }
     }
 
     /**

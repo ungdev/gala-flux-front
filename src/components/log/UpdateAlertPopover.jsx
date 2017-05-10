@@ -1,9 +1,9 @@
 import React from 'react';
 
-import UserStore from '../../stores/UserStore';
-import AlertService from '../../services/AlertService';
-import AuthStore from '../../stores/AuthStore';
-import * as constants from '../../config/constants';
+import UserStore from 'stores/UserStore';
+import AlertService from 'services/AlertService';
+import AuthStore from 'stores/AuthStore';
+import * as constants from 'config/constants';
 
 import Popover from 'material-ui/Popover';
 import FlatButton from 'material-ui/FlatButton';
@@ -15,8 +15,8 @@ import {List, ListItem} from 'material-ui/List';
 import CheckIcon from 'material-ui/svg-icons/navigation/check';
 import AccountCircleIcon from 'material-ui/svg-icons/action/account-circle';
 
-import NotificationActions from '../../actions/NotificationActions';
-require('../../styles/log/UpdateAlertPopover.scss');
+import NotificationActions from 'actions/NotificationActions';
+require('styles/log/UpdateAlertPopover.scss');
 
 
 /**

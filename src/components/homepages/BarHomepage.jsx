@@ -1,16 +1,16 @@
 import React from 'react';
 
-import ChatStore from '../../stores/ChatStore';
-import UserStore from '../../stores/UserStore';
-import TeamStore from '../../stores/TeamStore';
+import ChatStore from 'stores/ChatStore';
+import UserStore from 'stores/UserStore';
+import TeamStore from 'stores/TeamStore';
 
-import FluxNotification from '../partials/FluxNotification.jsx';
-import ChatMessageList from '../chat/ChatMessageList.jsx';
-import ChatMessageForm from '../chat/ChatMessageForm.jsx';
-import BarBarrels from '../barrels/BarBarrels.jsx';
-import BarAlertButtons  from '../alertButtons/BarAlertButtons.jsx';
+import FluxNotification from 'components/partials/FluxNotification.jsx';
+import ChatMessageList from 'components/chat/ChatMessageList.jsx';
+import ChatMessageForm from 'components/chat/ChatMessageForm.jsx';
+import BarBarrels from 'components/barrels/BarBarrels.jsx';
+import BarAlertButtons  from 'components/alertButtons/BarAlertButtons.jsx';
 
-require('../../styles/homepages/BarHomepage.scss');
+require('styles/homepages/BarHomepage.scss');
 
 /**
  * @param {Object} route Route object given by the router

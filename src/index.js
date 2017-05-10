@@ -14,26 +14,26 @@ injectTapEventPlugin();
 // material ui
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import themeConfiguration from './config/theme';
+import themeConfiguration from 'config/theme';
 const muiTheme = getMuiTheme(themeConfiguration);
 
 // Configure sound manager
 soundManager.setup({debugMode: false});
 
 // Router
-import router from './router';
+import router from 'router';
 import { RouterProvider } from 'react-router5';
 
 // Pages
-import App from "./components/App.jsx";
+import App from "components/App.jsx";
 
 // constants
-import * as constants from './config/constants';
+import * as constants from 'config/constants';
 
 import jwtDecode from 'jwt-decode';
 
 // actions and services
-import WebSocketService from './services/WebSocketService';
+import WebSocketService from 'services/WebSocketService';
 
 // Connect to websocket server
 WebSocketService.connect();
@@ -67,7 +67,7 @@ function requireAuth (nextState, replace, callback) {
             jwtDecode(jwt);
             return callback();
         } catch (e) {
-            console.log('JWT Decode error:', e);
+            console.error('JWT Decode error:', e);
             localStorage.removeItem(constants.jwtName);
             replace('/');
             return callback();

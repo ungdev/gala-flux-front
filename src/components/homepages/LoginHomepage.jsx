@@ -1,12 +1,12 @@
 import React from 'react';
 
-import AuthService from '../../services/AuthService';
+import AuthService from 'services/AuthService';
 
-import NotificationActions from '../../actions/NotificationActions';
+import NotificationActions from 'actions/NotificationActions';
 
 import RaisedButton from 'material-ui/RaisedButton';
 
-require('../../styles/homepages/LoginHomepage.scss');
+require('styles/homepages/LoginHomepage.scss');
 
 export default class LoginHomepage extends React.Component {
 

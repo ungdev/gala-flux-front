@@ -1,10 +1,10 @@
 import React from 'react';
 
-import ChatMessageForm from '../chat/ChatMessageForm.jsx';
-import ChatMessageList from '../chat/ChatMessageList.jsx';
-import ChatMenu from '../chat/ChatMenu.jsx';
+import ChatMessageForm from 'components/chat/ChatMessageForm.jsx';
+import ChatMessageList from 'components/chat/ChatMessageList.jsx';
+import ChatMenu from 'components/chat/ChatMenu.jsx';
 
-require('../../styles/chat/ChatPage.scss');
+require('styles/chat/ChatPage.scss');
 
 /**
  * This component will print thet chat page for the admin panel

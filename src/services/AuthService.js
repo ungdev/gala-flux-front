@@ -1,4 +1,4 @@
-import {ApiError} from '../errors';
+import {ApiError} from 'errors';
 
 /**
  * Class used to make requests about authentication.

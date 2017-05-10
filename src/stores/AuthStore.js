@@ -1,10 +1,10 @@
 import jwtDecode from 'jwt-decode';
-import BaseStore from './BaseStore';
-import AuthService from '../services/AuthService';
-import UserService from '../services/UserService';
-import TeamService from '../services/TeamService';
-import AuthActions from '../actions/AuthActions';
-import NotificationActions from '../actions/NotificationActions';
+import BaseStore from 'stores/BaseStore';
+import AuthService from 'services/AuthService';
+import UserService from 'services/UserService';
+import TeamService from 'services/TeamService';
+import AuthActions from 'actions/AuthActions';
+import NotificationActions from 'actions/NotificationActions';
 
 const LOCALSTORAGE_NOTIFICATIONS_ITEM = 'notifications';
 

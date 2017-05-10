@@ -1,16 +1,16 @@
 import React from 'react';
 
-import TeamService from '../../../services/TeamService';
+import TeamService from 'services/TeamService';
 
-import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
 
-import SelectGroupField from '../partials/SelectGroupField.jsx';
-import SelectRoleField from '../partials/SelectRoleField.jsx';
-import Confirm from '../../partials/Confirm.jsx';
-import NotificationActions from '../../../actions/NotificationActions';
+import SelectGroupField from 'components/teams/partials/SelectGroupField.jsx';
+import SelectRoleField from 'components/teams/partials/SelectRoleField.jsx';
+import Confirm from 'components/partials/Confirm.jsx';
+import Dialog from 'components/partials/ResponsiveDialog.jsx';
+import NotificationActions from 'actions/NotificationActions';
 
 export default class UpdateTeamDialog extends React.Component {
 
@@ -159,7 +159,6 @@ export default class UpdateTeamDialog extends React.Component {
                     title={'Modification de l\'équipe ' + this.state.values.name}
                     open={this.props.show}
                     actions={actions}
-                    autoScrollBodyContent={true}
                     modal={false}
                     onRequestClose={this.props.close}
                 >

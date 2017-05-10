@@ -3,8 +3,8 @@ import React from 'react';
 import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
 
-import UserService from '../../../services/UserService';
-import NotificationActions from '../../../actions/NotificationActions';
+import UserService from 'services/UserService';
+import NotificationActions from 'actions/NotificationActions';
 
 export default class AddIpMemberForm extends React.Component {
 
@@ -91,7 +91,7 @@ export default class AddIpMemberForm extends React.Component {
                     }
                     else {
                         errors[field] = error.formErrors[field][0].message;
-                        console.log('Warning: Validation message not translated. ', error.formErrors[field]);
+                        console.warn('Warning: Validation message not translated. ', error.formErrors[field]);
                     }
                 }
                 this.setState({ errors: errors });

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ButtonList from '../alertButtons/ButtonList.jsx';
+import ButtonList from 'components/alertButtons/ButtonList.jsx';
 
 export default class AlertButtonsPage extends React.Component {
 

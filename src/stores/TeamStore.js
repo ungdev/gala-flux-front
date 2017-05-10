@@ -1,6 +1,6 @@
-import BaseStore from './BaseStore';
-import AuthStore from './AuthStore';
-import TeamService from '../services/TeamService';
+import BaseStore from 'stores/BaseStore';
+import AuthStore from 'stores/AuthStore';
+import TeamService from 'services/TeamService';
 
 class TeamStore extends BaseStore {
 

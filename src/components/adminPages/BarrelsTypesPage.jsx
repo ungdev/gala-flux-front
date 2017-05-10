@@ -1,6 +1,6 @@
 import React from 'react';
 
-import BarrelTypeList from '../barrels/BarrelTypeList.jsx';
+import BarrelTypeList from 'components/barrels/BarrelTypeList.jsx';
 
 export default class BarrelsTypesPage extends React.Component {
 

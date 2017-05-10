@@ -1,13 +1,13 @@
 import React from 'react';
 
 import {Card, CardHeader, CardText} from 'material-ui/Card';
-import BarrelsInfo from './BarrelsInfo.jsx';
-import AlertsInfo from './AlertsInfo.jsx';
+import BarrelsInfo from 'components/bars/BarrelsInfo.jsx';
+import AlertsInfo from 'components/bars/AlertsInfo.jsx';
 import Badge from 'material-ui/Badge';
 import Face from 'material-ui/svg-icons/action/face';
 
 import * as color from 'material-ui/styles/colors';
-require('../../styles/bars/BarCard.scss');
+require('styles/bars/BarCard.scss');
 
 export default class BarCard extends React.Component {
 

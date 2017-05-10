@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Row } from 'react-flexbox-grid';
-import AlertsInfoItem from './AlertsInfoItem.jsx';
+import AlertsInfoItem from 'components/bars/AlertsInfoItem.jsx';
 
 import * as color from 'material-ui/styles/colors';
 

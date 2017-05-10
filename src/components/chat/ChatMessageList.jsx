@@ -1,19 +1,19 @@
 import React from 'react';
 
-import * as constants from '../../config/constants';
-import NotificationActions from '../../actions/NotificationActions';
-import ChatStore from '../../stores/ChatStore';
-import UserStore from '../../stores/UserStore';
-import TeamStore from '../../stores/TeamStore';
-import AuthStore from '../../stores/AuthStore';
+import * as constants from 'config/constants';
+import NotificationActions from 'actions/NotificationActions';
+import ChatStore from 'stores/ChatStore';
+import UserStore from 'stores/UserStore';
+import TeamStore from 'stores/TeamStore';
+import AuthStore from 'stores/AuthStore';
 
-import DateTime from '../partials/DateTime.jsx';
+import DateTime from 'components/partials/DateTime.jsx';
 
 import Avatar from 'material-ui/Avatar';
 import Paper from 'material-ui/Paper';
 
 
-require('../../styles/chat/ChatMessageList.scss');
+require('styles/chat/ChatMessageList.scss');
 
 
 /**

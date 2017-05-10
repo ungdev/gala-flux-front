@@ -1,5 +1,5 @@
-import BaseStore from './BaseStore';
-import BarrelTypeService from '../services/BarrelTypeService';
+import BaseStore from 'stores/BaseStore';
+import BarrelTypeService from 'services/BarrelTypeService';
 
 class BarrelTypeStore extends BaseStore {
 

@@ -1,17 +1,18 @@
 import React from 'react';
 
-import BarrelService from '../../services/BarrelService';
-import BarrelStore from '../../stores/BarrelStore';
-import BarrelTypeStore from '../../stores/BarrelTypeStore';
-import AuthStore from '../../stores/AuthStore';
+import BarrelService from 'services/BarrelService';
+import BarrelStore from 'stores/BarrelStore';
+import BarrelTypeStore from 'stores/BarrelTypeStore';
+import AuthStore from 'stores/AuthStore';
+import NotificationActions from 'actions/NotificationActions';
 
 import Subheader from 'material-ui/Subheader';
 
 import { Row, Col } from 'react-flexbox-grid';
-import BarrelChip from './partials/BarrelChip.jsx';
-import CenteredMessage from '../partials/CenteredMessage.jsx';
+import BarrelChip from 'components/barrels/partials/BarrelChip.jsx';
+import CenteredMessage from 'components/partials/CenteredMessage.jsx';
 
-require('../../styles/barrels/BarBarrels.scss');
+require('styles/barrels/BarBarrels.scss');
 
 export default class BarBarrels extends React.Component {
 
@@ -41,28 +42,28 @@ export default class BarBarrels extends React.Component {
     componentDidMount() {
         // fill the stores
         BarrelStore.loadData(null)
-            .then(data => {
-                // ensure that last token doen't exist anymore.
-                BarrelStore.unloadData(this.BarrelStoreToken);
+        .then(data => {
+            // ensure that last token doen't exist anymore.
+            BarrelStore.unloadData(this.BarrelStoreToken);
 
-                // save the component token
-                this.BarrelStoreToken = data.token;
-                // get distinct barrel types id and create objects with their id
-                let types = [...new Set(data.result.map(barrel => barrel.type))];
-                for (let i in types) {
-                    types[i] = {id: types[i]};
-                }
-                BarrelTypeStore.loadData(types)
-                    .then(data => {
-                        // ensure that last token doen't exist anymore.
-                        BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
+            // save the component token
+            this.BarrelStoreToken = data.token;
+            // get distinct barrel types id and create objects with their id
+            let types = [...new Set(data.result.map(barrel => barrel.type))];
+            for (let i in types) {
+                types[i] = {id: types[i]};
+            }
 
-                        // save the component token
-                        this.BarrelTypeStoreToken = data.token;
-                    })
-                    .catch(error => console.log("bar barrels load types error", error));
-            })
-            .catch(error => console.log("bar barrels load barrels error", error));
+            return BarrelTypeStore.loadData(types)
+        })
+        .then(data => {
+            // ensure that last token doen't exist anymore.
+            BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
+
+            // save the component token
+            this.BarrelTypeStoreToken = data.token;
+        })
+        .catch(error => NotificationActions.error("Erreur lors de la lecture des fûts.", error));
 
         // listen the stores changes
         BarrelStore.addChangeListener(this._setBarrels);
@@ -115,7 +116,7 @@ export default class BarBarrels extends React.Component {
     _updateBarrelState(barrel, newState) {
         barrel.state = newState;
         BarrelService.update(barrel.id, barrel)
-            .catch(error => console.log("update barrel state error", error));
+        .catch(error => NotificationActions.error("Erreur lors de l'etat des fûts.", error));
     }
 
     /**

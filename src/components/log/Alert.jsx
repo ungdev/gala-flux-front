@@ -1,13 +1,13 @@
 import React from 'react';
 
-import AlertService from '../../services/AlertService';
-import UserStore from '../../stores/UserStore';
-import NotificationActions from '../../actions/NotificationActions';
-import * as constants from '../../config/constants';
+import AlertService from 'services/AlertService';
+import UserStore from 'stores/UserStore';
+import NotificationActions from 'actions/NotificationActions';
+import * as constants from 'config/constants';
 
 import { Col } from 'react-flexbox-grid';
 import ReactTooltip from 'react-tooltip';
-import UpdateAlertPopover from './UpdateAlertPopover.jsx';
+import UpdateAlertPopover from 'components/log/UpdateAlertPopover.jsx';
 import Assignment from 'material-ui/svg-icons/action/assignment-ind';
 import Close from 'material-ui/svg-icons/navigation/close';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -17,7 +17,7 @@ import UndoIcon from 'material-ui/svg-icons/content/undo';
 import CheckIcon from 'material-ui/svg-icons/navigation/check';
 import Avatar from 'material-ui/Avatar';
 
-require('../../styles/log/Alert.scss');
+require('styles/log/Alert.scss');
 
 export default class Alert extends React.Component {
 

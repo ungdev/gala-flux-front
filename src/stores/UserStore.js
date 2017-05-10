@@ -1,5 +1,5 @@
-import BaseStore from './BaseStore';
-import UserService from '../services/UserService';
+import BaseStore from 'stores/BaseStore';
+import UserService from 'services/UserService';
 
 class UserStore extends BaseStore {
 

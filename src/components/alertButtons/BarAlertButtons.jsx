@@ -1,12 +1,13 @@
 import React from 'react';
 
-import AlertButtonStore from '../../stores/AlertButtonStore';
-import AuthStore from '../../stores/AuthStore';
-import AlertStore from '../../stores/AlertStore';
+import AlertButtonStore from 'stores/AlertButtonStore';
+import AuthStore from 'stores/AuthStore';
+import AlertStore from 'stores/AlertStore';
+import NotificationActions from 'actions/NotificationActions';
 
-import BarAlertButton from './BarAlertButton.jsx';
+import BarAlertButton from 'components/alertButtons/BarAlertButton.jsx';
 
-require('../../styles/bar/AlertButton.scss');
+require('styles/bar/AlertButton.scss');
 
 export default class BarAlertButtons extends React.Component {
 
@@ -50,7 +51,7 @@ export default class BarAlertButtons extends React.Component {
                 this._setButtons();
                 this._setAlerts();
             })
-            .catch(error => console.log("fill BarAlertButtons error", error));
+            .catch(error => NotificationActions.error("Erreur lors de la lecture des boutons d'alerte.", error));
     }
 
     componentWillUnmount() {

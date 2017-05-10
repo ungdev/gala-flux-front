@@ -1,5 +1,5 @@
-import BaseService from './BaseService';
-import {ApiError} from '../errors';
+import BaseService from 'services/BaseService';
+import {ApiError} from 'errors';
 
 /**
  * Class used for all about Authentication

@@ -1,11 +1,11 @@
 import React from 'react';
-import router from '../../router';
+import router from 'router';
 
-import AuthStore from '../../stores/AuthStore';
-import ChatMenu from '../chat/ChatMenu.jsx'
+import AuthStore from 'stores/AuthStore';
+import ChatMenu from 'components/chat/ChatMenu.jsx'
 
 import { ListItem } from 'material-ui/List';
-import SelectableList from './SelectableList.jsx';
+import SelectableList from 'components/partials/SelectableList.jsx';
 
 /**
  * This component will print a menu for the bar panel

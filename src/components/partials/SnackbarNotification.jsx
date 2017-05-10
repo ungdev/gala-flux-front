@@ -2,7 +2,7 @@ import React from 'react';
 
 import Snackbar from 'material-ui/Snackbar';
 
-import NotificationStore from '../../stores/NotificationStore';
+import NotificationStore from 'stores/NotificationStore';
 
 export default class SnackbarNotification extends React.Component {
 

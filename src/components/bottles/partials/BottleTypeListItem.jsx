@@ -1,11 +1,11 @@
 import React from 'react';
 
-import * as constants from '../../../config/constants';
+import * as constants from 'config/constants';
 
 import { ListItem } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 
-require('../../../styles/bottles/BottleTypeListItem.scss');
+require('styles/bottles/BottleTypeListItem.scss');
 
 /**
  * This component show a ListItem for a BottleType

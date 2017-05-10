@@ -1,13 +1,13 @@
 import React from 'react';
 
-import Dialog from 'material-ui/Dialog';
+import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 
-import BarrelTypeService from '../../../services/BarrelTypeService';
-import NotificationActions from '../../../actions/NotificationActions';
-import Confirm from '../../partials/Confirm.jsx';
+import BarrelTypeService from 'services/BarrelTypeService';
+import NotificationActions from 'actions/NotificationActions';
+import Confirm from 'components/partials/Confirm.jsx';
 
 
 /**

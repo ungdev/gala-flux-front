@@ -1,19 +1,19 @@
 import React from 'react';
 
-import UserService from '../../../services/UserService';
-import * as constants from '../../../config/constants';
+import UserService from 'services/UserService';
+import * as constants from 'config/constants';
 
-import Dialog from 'material-ui/Dialog';
+import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import Avatar from 'material-ui/Avatar';
 import Subheader from 'material-ui/Subheader';
 import { Row, Col } from 'react-flexbox-grid';
 
-import SelectGroupField from '../partials/SelectGroupField.jsx';
-import SelectRoleField from '../partials/SelectRoleField.jsx';
-import Confirm from '../../partials/Confirm.jsx';
-import NotificationActions from '../../../actions/NotificationActions';
+import SelectGroupField from 'components/teams/partials/SelectGroupField.jsx';
+import SelectRoleField from 'components/teams/partials/SelectRoleField.jsx';
+import Confirm from 'components/partials/Confirm.jsx';
+import NotificationActions from 'actions/NotificationActions';
 
 export default class UpdateMemberDialog extends React.Component {
 

@@ -3,9 +3,9 @@ import React from 'react';
 import {List, ListItem} from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 
-import SearchField from "../../partials/SearchField.jsx";
-import UserService from '../../../services/UserService';
-import NotificationActions from '../../../actions/NotificationActions';
+import SearchField from "components/partials/SearchField.jsx";
+import UserService from 'services/UserService';
+import NotificationActions from 'actions/NotificationActions';
 
 export default class AddEtuuttMemberForm extends React.Component {
 

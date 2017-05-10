@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Row, Col } from 'react-flexbox-grid';
 import Euro from 'material-ui/svg-icons/action/euro-symbol';
-import BarrelsInfoItem from './BarrelsInfoItem.jsx';
+import BarrelsInfoItem from 'components/bars/BarrelsInfoItem.jsx';
 
 import * as color from 'material-ui/styles/colors';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import NotificationActions from '../../../actions/NotificationActions';
-import AuthService from '../../../services/AuthService';
+import NotificationActions from 'actions/NotificationActions';
+import AuthService from 'services/AuthService';
 
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';

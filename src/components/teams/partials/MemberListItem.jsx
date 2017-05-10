@@ -1,6 +1,6 @@
 import React from 'react';
 
-import * as constants from '../../../config/constants';
+import * as constants from 'config/constants';
 
 import { ListItem } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';

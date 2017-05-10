@@ -1,9 +1,9 @@
-import * as constants from '../config/constants';
-import NotificationActions from '../actions/NotificationActions';
-import WebSocketActions from '../actions/WebSocketActions';
-import AuthService from '../services/AuthService';
-import AuthActions from '../actions/AuthActions';
-import router from '../router';
+import * as constants from 'config/constants';
+import NotificationActions from 'actions/NotificationActions';
+import WebSocketActions from 'actions/WebSocketActions';
+import AuthService from 'services/AuthService';
+import AuthActions from 'actions/AuthActions';
+import router from 'router';
 
 // Hold the set interval identifier which will try to reconnect every 5 sec
 let watchdog = null;

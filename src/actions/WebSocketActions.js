@@ -1,4 +1,4 @@
-import AppDispatcher from '../dispatchers/AppDispatcher.js';
+import AppDispatcher from 'dispatchers/AppDispatcher.js';
 
 /**
  * Emit a websocket connected event

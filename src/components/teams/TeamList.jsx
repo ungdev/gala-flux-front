@@ -1,14 +1,14 @@
 import React from 'react';
 
-import TeamStore from '../../stores/TeamStore';
-import AuthStore from '../../stores/AuthStore';
-import NotificationActions from '../../actions/NotificationActions';
+import TeamStore from 'stores/TeamStore';
+import AuthStore from 'stores/AuthStore';
+import NotificationActions from 'actions/NotificationActions';
 
-import SelectableList from '../partials/SelectableList.jsx';
+import SelectableList from 'components/partials/SelectableList.jsx';
 import { ListItem } from 'material-ui/List';
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import NewTeamDialog from './dialogs/NewTeamDialog.jsx';
+import NewTeamDialog from 'components/teams/dialogs/NewTeamDialog.jsx';
 
 
 /**

@@ -1,15 +1,15 @@
 import React from 'react';
 
-import BottleTypeStore from '../../stores/BottleTypeStore';
-import AuthStore from '../../stores/AuthStore';
-import NotificationActions from '../../actions/NotificationActions'
+import BottleTypeStore from 'stores/BottleTypeStore';
+import AuthStore from 'stores/AuthStore';
+import NotificationActions from 'actions/NotificationActions'
 
-import SelectableList from '../partials/SelectableList.jsx'
-import BottleTypeListItem from './partials/BottleTypeListItem.jsx'
+import SelectableList from 'components/partials/SelectableList.jsx'
+import BottleTypeListItem from 'components/bottles/partials/BottleTypeListItem.jsx'
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import UpdateBottleTypeDialog from './dialogs/UpdateBottleTypeDialog.jsx';
-import NewBottleTypeDialog from './dialogs/NewBottleTypeDialog.jsx';
+import UpdateBottleTypeDialog from 'components/bottles/dialogs/UpdateBottleTypeDialog.jsx';
+import NewBottleTypeDialog from 'components/bottles/dialogs/NewBottleTypeDialog.jsx';
 
 
 /**

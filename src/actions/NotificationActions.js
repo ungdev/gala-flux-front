@@ -1,4 +1,4 @@
-import AppDispatcher from '../dispatchers/AppDispatcher.js';
+import AppDispatcher from 'dispatchers/AppDispatcher.js';
 
 export default {
 
@@ -15,7 +15,7 @@ export default {
     error(message, error, details, refresh, timeout) {
         AppDispatcher.dispatch({
             type: 'ERROR',
-            data: {message, error, details, refresh, timeout},
+            data: {message, error, details, refresh, timeout, stack: (new Error('NotificationError').stack)},
         });
         if(console.trace) {
             console.trace();

@@ -1,6 +1,6 @@
-import BaseService from './BaseService';
-import * as constants from '../config/constants';
-import {ApiError} from '../errors';
+import BaseService from 'services/BaseService';
+import * as constants from 'config/constants';
+import {ApiError} from 'errors';
 
 /**
  * Class used for all about Authentication

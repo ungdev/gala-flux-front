@@ -1,7 +1,7 @@
-import BaseStore from './BaseStore';
-import ChatService from '../services/ChatService';
-import NotificationActions from '../actions/NotificationActions';
-import AuthStore from './AuthStore';
+import BaseStore from 'stores/BaseStore';
+import ChatService from 'services/ChatService';
+import NotificationActions from 'actions/NotificationActions';
+import AuthStore from 'stores/AuthStore';
 
 class ChatStore extends BaseStore {
 
@@ -71,7 +71,6 @@ class ChatStore extends BaseStore {
     _resetNewMessages(channel) {
         this._newMessages[channel] = 0;
         this._updateLocalStorage(channel);
-        console.log("reset : ", this._newMessages);
         this.emitChange();
     }
 

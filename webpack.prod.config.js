@@ -78,5 +78,11 @@ module.exports = {
             filename: 'public/style.css',
             allChunks: true
         })
-    ]
+    ],
+    resolve: {
+        modules: [
+            path.resolve('src'),
+            path.resolve('node_modules')
+        ]
+    },
 };
