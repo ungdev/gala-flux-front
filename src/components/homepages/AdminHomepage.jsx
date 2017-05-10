@@ -111,8 +111,15 @@ export default class AdminHomepage extends React.Component {
                 {/* Tabs for tablet */}
                 <Tabs className="AdminPage__tabs show-sm" onChange={this._handleTabChange} value={this._tabFromRouteName(this.state.route.name)}>
                     <Tab label="Chat" value="home"/>
-                    <Tab label="Alertes" value="alert"/>
-                    <Tab label="Bars" value="bars"/>
+                    { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
+                        <Tab label="Alertes" value="alert"/>
+                    }
+
+                    { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
+                    (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
+                        <Tab label="Bars" value="bars"/>
+                    }
+
                     { (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
                         <Tab label="Gestion du stock" value="stock"/>
                     }
@@ -122,7 +129,10 @@ export default class AdminHomepage extends React.Component {
                 {/* Tabs for desktop */}
                 <Tabs className="AdminPage__tabs hide-sm" onChange={this._handleTabChange} value={this._tabFromRouteName(this.state.route.name)}>
                     <Tab label="Dashboard" value="home"/>
-                    <Tab label="Bars" value="bars"/>
+                    { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
+                    (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
+                        <Tab label="Bars" value="bars"/>
+                    }
                     { (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
                         <Tab label="Gestion du stock" value="stock"/>
                     }
@@ -141,7 +151,9 @@ export default class AdminHomepage extends React.Component {
                             case 'chat.channel':
                                 return (
                                     <div className="AdminPage__splitscreen">
-                                        <AlertPage className={name != 'alert' ? 'AdminPage__splitscreen__secondary':''}/>
+                                        { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
+                                            <AlertPage className={name != 'alert' ? 'AdminPage__splitscreen__secondary':''}/>
+                                        }
                                         <ChatPage className={name != 'home' && name != 'chat' && name != 'chat.channel' ? 'AdminPage__splitscreen__secondary':''} route={this.state.route}/>
                                     </div>
                                 );

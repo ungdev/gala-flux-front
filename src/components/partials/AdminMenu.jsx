@@ -48,14 +48,18 @@ export default class AdminMenu extends React.Component {
             <div className={this.props.className}>
                 <SelectableList onChange={this._handleChange} value={this.state.route.name} className="AdminMenu">
 
-                    <ListItem value="alert" className="AdminMenu__mainItem">Alertes</ListItem>
+                    { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
+                        <ListItem value="alert" className="AdminMenu__mainItem">Alertes</ListItem>
+                    }
                     <ListItem value="chat" className="AdminMenu__mainItem">Chat</ListItem>
                     <div className="show-xs">
                         <ChatMenu route={this.state.route} onChange={(channel) => this.props.onChange('chat.channel', {channel: channel})} />
                     </div>
 
-
-                    <ListItem value="bars" className="AdminMenu__mainItem">Bars</ListItem>
+                    { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
+                    (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
+                        <ListItem value="bars" className="AdminMenu__mainItem">Bars</ListItem>
+                    }
 
                     { (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
                         <ListItem value="stock" className="AdminMenu__mainItem">Gestion du stock</ListItem>
@@ -73,10 +77,13 @@ export default class AdminMenu extends React.Component {
                         <ListItem value="admin.barrels" className="AdminMenu__item">Gestion des fûts</ListItem>
                     }
 
-                    { (AuthStore.can('bottleType/admin')) &&
+                    { (AuthStore.can('alertButton')) &&
                         <ListItem value="admin.bottles" className="AdminMenu__item">Gestion des bouteilles</ListItem>
                     }
-                    <ListItem value="admin.alerts" className="AdminMenu__item">Gestion des boutons d'alerte</ListItem>
+
+                    { (AuthStore.can('alertButton')) &&
+                        <ListItem value="admin.alerts" className="AdminMenu__item">Gestion des boutons d'alerte</ListItem>
+                    }
                 </SelectableList>
             </div>
         );
