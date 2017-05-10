@@ -2,16 +2,16 @@ import React from 'react';
 import * as c from 'material-ui/styles/colors';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
-import AlertList from './AlertList.jsx';
-import AlertStore from '../../stores/AlertStore';
-import TeamStore from '../../stores/TeamStore';
-import AuthStore from '../../stores/AuthStore';
-import NotificationActions from '../../actions/NotificationActions';
-import ReceiverSelect from './ReceiverSelect.jsx';
+import AlertList from 'components/log/AlertList.jsx';
+import AlertStore from 'stores/AlertStore';
+import TeamStore from 'stores/TeamStore';
+import AuthStore from 'stores/AuthStore';
+import NotificationActions from 'actions/NotificationActions';
+import ReceiverSelect from 'components/log/ReceiverSelect.jsx';
 import { Row, Col } from 'react-flexbox-grid';
-import FluxNotification from '../partials/FluxNotification.jsx';
+import FluxNotification from 'components/partials/FluxNotification.jsx';
 
-require('../../styles/log/Alerts.scss');
+require('styles/log/Alerts.scss');
 
 export default class Alerts extends React.Component {
 

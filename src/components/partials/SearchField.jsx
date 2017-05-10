@@ -4,7 +4,7 @@ import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import SearchIcon from 'material-ui/svg-icons/action/search';
-require('../../styles/partials/SearchField.scss');
+require('styles/partials/SearchField.scss');
 
 export default class SearchField extends React.Component {
 

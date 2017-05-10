@@ -1,14 +1,14 @@
 import React from 'react';
 
-import TeamStore from '../../stores/TeamStore';
-import BarrelStore from '../../stores/BarrelStore';
-import UserStore from '../../stores/UserStore';
-import BarrelTypeStore from '../../stores/BarrelTypeStore';
+import TeamStore from 'stores/TeamStore';
+import BarrelStore from 'stores/BarrelStore';
+import UserStore from 'stores/UserStore';
+import BarrelTypeStore from 'stores/BarrelTypeStore';
 
 import { Row, Col } from 'react-flexbox-grid';
-import BarCard from './BarCard.jsx';
+import BarCard from 'components/bars/BarCard.jsx';
 
-require('../../styles/bars/BarList.scss');
+require('styles/bars/BarList.scss');
 
 export default class BarList extends React.Component {
 

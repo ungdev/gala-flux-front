@@ -1,21 +1,21 @@
 import React, { createElement } from 'react';
-import router from '../router';
+import router from 'router';
 
-import AuthStore from "../stores/AuthStore";
+import AuthStore from "stores/AuthStore";
 
-import AppNavbar from "./partials/AppNavbar.jsx";
-import AppFooter from "./partials/AppFooter.jsx";
-import ErrorNotification from "./partials/ErrorNotification.jsx";
-import SnackbarNotification from "./partials/SnackbarNotification.jsx";
-import LoadingNotification from "./partials/LoadingNotification.jsx";
+import AppNavbar from "components/partials/AppNavbar.jsx";
+import AppFooter from "components/partials/AppFooter.jsx";
+import ErrorNotification from "components/partials/ErrorNotification.jsx";
+import SnackbarNotification from "components/partials/SnackbarNotification.jsx";
+import LoadingNotification from "components/partials/LoadingNotification.jsx";
 
 // homepages
-import AdminHomepage from "./homepages/AdminHomepage.jsx";
-import LoginHomepage from "./homepages/LoginHomepage.jsx";
-import BarHomepage from "./homepages/BarHomepage.jsx";
+import AdminHomepage from "components/homepages/AdminHomepage.jsx";
+import LoginHomepage from "components/homepages/LoginHomepage.jsx";
+import BarHomepage from "components/homepages/BarHomepage.jsx";
 
-require('../styles/App.scss');
-require('../styles/fonts/roboto/roboto.scss');
+require('styles/App.scss');
+require('styles/fonts/roboto/roboto.scss');
 
 export default class App extends React.Component {
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import NotificationActions from '../../../actions/NotificationActions';
-import TeamStore from '../../../stores/TeamStore';
+import NotificationActions from 'actions/NotificationActions';
+import TeamStore from 'stores/TeamStore';
 
 import AutoComplete from 'material-ui/AutoComplete';
 

@@ -1,26 +1,26 @@
 import React from 'react';
-import router from '../../router';
+import router from 'router';
 
 import { Tabs, Tab } from 'material-ui/Tabs';
 
-import AdminMenu from '../partials/AdminMenu.jsx';
-import AuthStore from '../../stores/AuthStore';
-import ChatStore from '../../stores/ChatStore';
-import UserStore from '../../stores/UserStore';
-import TeamStore from '../../stores/TeamStore';
+import AdminMenu from 'components/partials/AdminMenu.jsx';
+import AuthStore from 'stores/AuthStore';
+import ChatStore from 'stores/ChatStore';
+import UserStore from 'stores/UserStore';
+import TeamStore from 'stores/TeamStore';
 
-import FluxNotification from '../partials/FluxNotification.jsx';
-import AlertPage from '../adminPages/AlertPage.jsx';
-import ChatPage from '../adminPages/ChatPage.jsx';
-import StockPage from '../adminPages/StockPage.jsx';
-import BarPage from '../adminPages/BarPage.jsx';
-import BarrelsTypesPage from '../adminPages/BarrelsTypesPage.jsx';
-import BottlesTypesPage from "../adminPages/BottlesTypesPage.jsx";
-import AlertButtonsPage from '../adminPages/AlertButtonsPage.jsx';
-import TeamListPage from '../adminPages/TeamListPage.jsx';
-import TeamDetailsPage from '../adminPages/TeamDetailsPage.jsx';
+import FluxNotification from 'components/partials/FluxNotification.jsx';
+import AlertPage from 'components/adminPages/AlertPage.jsx';
+import ChatPage from 'components/adminPages/ChatPage.jsx';
+import StockPage from 'components/adminPages/StockPage.jsx';
+import BarPage from 'components/adminPages/BarPage.jsx';
+import BarrelsTypesPage from 'components/adminPages/BarrelsTypesPage.jsx';
+import BottlesTypesPage from "components/adminPages/BottlesTypesPage.jsx";
+import AlertButtonsPage from 'components/adminPages/AlertButtonsPage.jsx';
+import TeamListPage from 'components/adminPages/TeamListPage.jsx';
+import TeamDetailsPage from 'components/adminPages/TeamDetailsPage.jsx';
 
-require('../../styles/homepages/AdminHomepage.scss');
+require('styles/homepages/AdminHomepage.scss');
 
 /**
  * @param {Object} route Route object given by the router

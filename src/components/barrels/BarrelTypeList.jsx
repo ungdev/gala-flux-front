@@ -1,16 +1,16 @@
 import React from 'react';
 
-import BarrelStore from '../../stores/BarrelStore';
-import BarrelTypeStore from '../../stores/BarrelTypeStore';
-import AuthStore from '../../stores/AuthStore';
-import NotificationActions from '../../actions/NotificationActions'
+import BarrelStore from 'stores/BarrelStore';
+import BarrelTypeStore from 'stores/BarrelTypeStore';
+import AuthStore from 'stores/AuthStore';
+import NotificationActions from 'actions/NotificationActions'
 
-import SelectableList from '../partials/SelectableList.jsx'
-import BarrelTypeListItem from './partials/BarrelTypeListItem.jsx'
+import SelectableList from 'components/partials/SelectableList.jsx'
+import BarrelTypeListItem from 'components/barrels/partials/BarrelTypeListItem.jsx'
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import UpdateBarrelTypeDialog from './dialogs/UpdateBarrelTypeDialog.jsx';
-import NewBarrelTypeDialog from './dialogs/NewBarrelTypeDialog.jsx';
+import UpdateBarrelTypeDialog from 'components/barrels/dialogs/UpdateBarrelTypeDialog.jsx';
+import NewBarrelTypeDialog from 'components/barrels/dialogs/NewBarrelTypeDialog.jsx';
 
 
 /**

@@ -1,9 +1,9 @@
 import React from 'react';
 
-import NotificationActions from '../../actions/NotificationActions';
-import AlertActions from '../../actions/AlertActions.jsx';
-import AlertButtonService from '../../services/AlertButtonService';
-import AlertService from '../../services/AlertService';
+import NotificationActions from 'actions/NotificationActions';
+import AlertActions from 'actions/AlertActions.jsx';
+import AlertButtonService from 'services/AlertButtonService';
+import AlertService from 'services/AlertService';
 
 import Comment from 'material-ui/svg-icons/communication/comment';
 import Check from 'material-ui/svg-icons/navigation/check';

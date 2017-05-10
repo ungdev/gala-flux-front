@@ -1,8 +1,8 @@
 import React from 'react';
 
-import router from '../../router';
+import router from 'router';
 
-import TeamsList from '../teams/TeamList.jsx';
+import TeamsList from 'components/teams/TeamList.jsx';
 
 export default class TeamListPage extends React.Component {
 

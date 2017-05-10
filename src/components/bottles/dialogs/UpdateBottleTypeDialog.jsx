@@ -5,9 +5,9 @@ import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
 
-import BottleTypeService from '../../../services/BottleTypeService';
-import NotificationActions from '../../../actions/NotificationActions';
-import Confirm from '../../partials/Confirm.jsx';
+import BottleTypeService from 'services/BottleTypeService';
+import NotificationActions from 'actions/NotificationActions';
+import Confirm from 'components/partials/Confirm.jsx';
 
 
 /**

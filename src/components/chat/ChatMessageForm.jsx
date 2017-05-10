@@ -1,14 +1,14 @@
 import React from 'react';
 
-import ChatService from '../../services/ChatService';
-import ChatStore from '../../stores/ChatStore';
-import ChatActions from '../../actions/ChatActions';
+import ChatService from 'services/ChatService';
+import ChatStore from 'stores/ChatStore';
+import ChatActions from 'actions/ChatActions';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import ContentSendIcon from 'material-ui/svg-icons/content/send';
-import NotificationActions from '../../actions/NotificationActions';
+import NotificationActions from 'actions/NotificationActions';
 
-require('../../styles/chat/ChatMessageForm.scss');
+require('styles/chat/ChatMessageForm.scss');
 
 
 /**

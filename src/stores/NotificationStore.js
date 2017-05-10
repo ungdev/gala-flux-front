@@ -1,5 +1,5 @@
 import jwtDecode from 'jwt-decode';
-import BaseStore from './BaseStore';
+import BaseStore from 'stores/BaseStore';
 
 class NotificationStore extends BaseStore {
 

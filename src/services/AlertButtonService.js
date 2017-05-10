@@ -1,4 +1,4 @@
-import BaseService from './BaseService';
+import BaseService from 'services/BaseService';
 
 /**
  * Class used to make requests about alert buttons

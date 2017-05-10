@@ -1,6 +1,6 @@
 import React from 'react';
 
-import TeamDetails from '../teams/TeamDetails.jsx';
+import TeamDetails from 'components/teams/TeamDetails.jsx';
 
 export default class TeamDetailsPage extends React.Component {
 

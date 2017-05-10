@@ -5,11 +5,11 @@ import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 
-import SelectGroupField from '../partials/SelectGroupField.jsx';
-import SelectRoleField from '../partials/SelectRoleField.jsx';
+import SelectGroupField from 'components/teams/partials/SelectGroupField.jsx';
+import SelectRoleField from 'components/teams/partials/SelectRoleField.jsx';
 
-import TeamService from '../../../services/TeamService';
-import NotificationActions from '../../../actions/NotificationActions';
+import TeamService from 'services/TeamService';
+import NotificationActions from 'actions/NotificationActions';
 
 export default class NewTeamDialog extends React.Component {
 

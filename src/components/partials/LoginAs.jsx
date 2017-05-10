@@ -1,9 +1,9 @@
 import React from 'react';
 
-import AuthActions from '../../actions/AuthActions';
-import UserStore from '../../stores/UserStore';
-import TeamStore from '../../stores/TeamStore';
-import NotificationActions from '../../actions/NotificationActions';
+import AuthActions from 'actions/AuthActions';
+import UserStore from 'stores/UserStore';
+import TeamStore from 'stores/TeamStore';
+import NotificationActions from 'actions/NotificationActions';
 
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'components/partials/ResponsiveDialog.jsx';

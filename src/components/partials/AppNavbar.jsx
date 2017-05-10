@@ -1,11 +1,11 @@
 import React from 'react';
-import router from '../../router';
-import routes from '../../config/routes';
+import router from 'router';
+import routes from 'config/routes';
 
 import AppBar from 'material-ui/AppBar';
-import MainDrawer from './MainDrawer.jsx';
-import AuthMenu from './AuthMenu.jsx';
-require('../../styles/partials/AppNavbar.scss');
+import MainDrawer from 'components/partials/MainDrawer.jsx';
+import AuthMenu from 'components/partials/AuthMenu.jsx';
+require('styles/partials/AppNavbar.scss');
 
 export default class AppNavbar extends React.Component {
 

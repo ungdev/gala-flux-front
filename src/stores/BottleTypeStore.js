@@ -1,5 +1,5 @@
-import BaseStore from './BaseStore';
-import BottleTypeService from '../services/BottleTypeService';
+import BaseStore from 'stores/BaseStore';
+import BottleTypeService from 'services/BottleTypeService';
 
 class BottleTypeStore extends BaseStore {
 

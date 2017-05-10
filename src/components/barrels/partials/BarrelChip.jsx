@@ -4,7 +4,7 @@ import Avatar from 'material-ui/Avatar';
 import Chip from 'material-ui/Chip';
 import * as color from 'material-ui/styles/colors';
 
-require('../../../styles/barrels/BarrelChip.scss');
+require('styles/barrels/BarrelChip.scss');
 
 
 /**

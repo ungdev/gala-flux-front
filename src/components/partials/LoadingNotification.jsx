@@ -3,7 +3,7 @@ import React from 'react';
 import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import CircularProgress from 'material-ui/CircularProgress';
 
-import NotificationStore from '../../stores/NotificationStore';
+import NotificationStore from 'stores/NotificationStore';
 
 export default class LoadingNotification extends React.Component {
 

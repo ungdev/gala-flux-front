@@ -1,6 +1,6 @@
 import React from 'react';
 
-import BottleTypeList from '../bottles/BottleTypeList.jsx';
+import BottleTypeList from 'components/bottles/BottleTypeList.jsx';
 
 export default class BottlesTypesPage extends React.Component {
 

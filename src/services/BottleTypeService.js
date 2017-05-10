@@ -1,4 +1,4 @@
-import BaseService from './BaseService';
+import BaseService from 'services/BaseService';
 
 /**
  * Class used for all about bottle types

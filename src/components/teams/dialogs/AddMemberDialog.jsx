@@ -4,8 +4,8 @@ import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import FlatButton from 'material-ui/FlatButton';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
-import AddEtuuttMemberForm from "../partials/AddEtuuttMemberForm.jsx";
-import AddIpMemberForm from "../partials/AddIpMemberForm.jsx";
+import AddEtuuttMemberForm from "components/teams/partials/AddEtuuttMemberForm.jsx";
+import AddIpMemberForm from "components/teams/partials/AddIpMemberForm.jsx";
 
 export default class AddMemberDialog extends React.Component {
 

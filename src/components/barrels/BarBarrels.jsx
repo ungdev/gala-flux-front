@@ -1,17 +1,17 @@
 import React from 'react';
 
-import BarrelService from '../../services/BarrelService';
-import BarrelStore from '../../stores/BarrelStore';
-import BarrelTypeStore from '../../stores/BarrelTypeStore';
-import AuthStore from '../../stores/AuthStore';
+import BarrelService from 'services/BarrelService';
+import BarrelStore from 'stores/BarrelStore';
+import BarrelTypeStore from 'stores/BarrelTypeStore';
+import AuthStore from 'stores/AuthStore';
 
 import Subheader from 'material-ui/Subheader';
 
 import { Row, Col } from 'react-flexbox-grid';
-import BarrelChip from './partials/BarrelChip.jsx';
-import CenteredMessage from '../partials/CenteredMessage.jsx';
+import BarrelChip from 'components/barrels/partials/BarrelChip.jsx';
+import CenteredMessage from 'components/partials/CenteredMessage.jsx';
 
-require('../../styles/barrels/BarBarrels.scss');
+require('styles/barrels/BarBarrels.scss');
 
 export default class BarBarrels extends React.Component {
 

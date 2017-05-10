@@ -1,20 +1,20 @@
 import React from 'react';
 
-import TeamStore from '../../stores/TeamStore';
-import UserStore from '../../stores/UserStore';
-import NotificationActions from '../../actions/NotificationActions'
-import AuthStore from '../../stores/AuthStore';
+import TeamStore from 'stores/TeamStore';
+import UserStore from 'stores/UserStore';
+import NotificationActions from 'actions/NotificationActions'
+import AuthStore from 'stores/AuthStore';
 
 import { List, ListItem } from 'material-ui/List';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import EditorModeEditIcon from 'material-ui/svg-icons/editor/mode-edit';
 import Divider from 'material-ui/Divider';
-import MemberListItem from './partials/MemberListItem.jsx';
-import UpdateTeamDialog from './dialogs/UpdateTeamDialog.jsx';
-import UpdateMemberDialog from './dialogs/UpdateMemberDialog.jsx';
-import AddMemberDialog from './dialogs/AddMemberDialog.jsx';
-import CenteredMessage from '../partials/CenteredMessage.jsx';
+import MemberListItem from 'components/teams/partials/MemberListItem.jsx';
+import UpdateTeamDialog from 'components/teams/dialogs/UpdateTeamDialog.jsx';
+import UpdateMemberDialog from 'components/teams/dialogs/UpdateMemberDialog.jsx';
+import AddMemberDialog from 'components/teams/dialogs/AddMemberDialog.jsx';
+import CenteredMessage from 'components/partials/CenteredMessage.jsx';
 
 
 /**

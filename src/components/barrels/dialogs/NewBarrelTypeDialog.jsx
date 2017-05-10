@@ -5,8 +5,8 @@ import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 
-import BarrelTypeService from '../../../services/BarrelTypeService';
-import NotificationActions from '../../../actions/NotificationActions';
+import BarrelTypeService from 'services/BarrelTypeService';
+import NotificationActions from 'actions/NotificationActions';
 
 export default class NewBarrelTypeDialog extends React.Component {
 

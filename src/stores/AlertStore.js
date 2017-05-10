@@ -1,7 +1,7 @@
-import BaseStore from './BaseStore';
-import AuthStore from './AuthStore';
-import AlertService from '../services/AlertService';
-import NotificationActions from '../actions/NotificationActions';
+import BaseStore from 'stores/BaseStore';
+import AuthStore from 'stores/AuthStore';
+import AlertService from 'services/AlertService';
+import NotificationActions from 'actions/NotificationActions';
 
 class AlertStore extends BaseStore {
 

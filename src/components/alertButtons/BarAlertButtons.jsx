@@ -1,12 +1,12 @@
 import React from 'react';
 
-import AlertButtonStore from '../../stores/AlertButtonStore';
-import AuthStore from '../../stores/AuthStore';
-import AlertStore from '../../stores/AlertStore';
+import AlertButtonStore from 'stores/AlertButtonStore';
+import AuthStore from 'stores/AuthStore';
+import AlertStore from 'stores/AlertStore';
 
-import BarAlertButton from './BarAlertButton.jsx';
+import BarAlertButton from 'components/alertButtons/BarAlertButton.jsx';
 
-require('../../styles/bar/AlertButton.scss');
+require('styles/bar/AlertButton.scss');
 
 export default class BarAlertButtons extends React.Component {
 

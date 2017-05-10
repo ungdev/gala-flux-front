@@ -3,10 +3,10 @@ import React from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 
-import NotificationStore from '../../stores/NotificationStore';
-import AuthActions from '../../actions/AuthActions';
+import NotificationStore from 'stores/NotificationStore';
+import AuthActions from 'actions/AuthActions';
 
-require('../../styles/partials/ResponsiveDialog.scss');
+require('styles/partials/ResponsiveDialog.scss');
 
 export default class ResponsiveDialog extends React.Component {
     render() {

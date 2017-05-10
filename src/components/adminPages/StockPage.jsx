@@ -1,21 +1,21 @@
 import React from 'react';
 
-import BarrelStore from '../../stores/BarrelStore';
-import BarrelTypeStore from '../../stores/BarrelTypeStore';
-import TeamStore from '../../stores/TeamStore';
-import AuthStore from '../../stores/AuthStore';
+import BarrelStore from 'stores/BarrelStore';
+import BarrelTypeStore from 'stores/BarrelTypeStore';
+import TeamStore from 'stores/TeamStore';
+import AuthStore from 'stores/AuthStore';
 
 import { Row, Col } from 'react-flexbox-grid';
 import RaisedButton from 'material-ui/RaisedButton';
-import MoveDialog from '../stock/MoveDialog.jsx';
-import Filters from '../stock/Filters.jsx';
-import StockList from '../stock/StockList.jsx';
+import MoveDialog from 'components/stock/MoveDialog.jsx';
+import Filters from 'components/stock/Filters.jsx';
+import StockList from 'components/stock/StockList.jsx';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import LocalShipping from 'material-ui/svg-icons/maps/local-shipping';
 import Navagiation from 'material-ui/svg-icons/maps/navigation';
 import Paper from 'material-ui/Paper';
 
-require('../../styles/stock/StockPage.scss');
+require('styles/stock/StockPage.scss');
 
 export default class StockPage extends React.Component {
 

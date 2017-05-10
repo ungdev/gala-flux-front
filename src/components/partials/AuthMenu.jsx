@@ -1,21 +1,21 @@
 import React from 'react';
 
-import * as constants from '../../config/constants';
-import AuthStore from '../../stores/AuthStore';
-import AuthActions from '../../actions/AuthActions';
-import NotificationActions from '../../actions/NotificationActions';
-import AuthService from '../../services/AuthService';
+import * as constants from 'config/constants';
+import AuthStore from 'stores/AuthStore';
+import AuthActions from 'actions/AuthActions';
+import NotificationActions from 'actions/NotificationActions';
+import AuthService from 'services/AuthService';
 
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import Popover from 'material-ui/Popover';
 import Avatar from 'material-ui/Avatar';
 import Divider from 'material-ui/Divider';
 
-import LoginAs from './LoginAs.jsx';
-import NotificationsDialog from "./NotificationsDialog.jsx";
+import LoginAs from 'components/partials/LoginAs.jsx';
+import NotificationsDialog from "components/partials/NotificationsDialog.jsx";
 import { Menu, MenuItem } from 'material-ui/Menu';
 
-require('../../styles/partials/AuthMenu.scss');
+require('styles/partials/AuthMenu.scss');
 
 class AuthMenu extends React.Component {
 

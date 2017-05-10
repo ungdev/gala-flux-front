@@ -1,18 +1,18 @@
 import React from 'react';
-import router from '../../router';
+import router from 'router';
 
-import ChatService from '../../services/ChatService';
-import ChatStore from '../../stores/ChatStore';
-import ChatActions from '../../actions/ChatActions';
-import AuthStore from '../../stores/AuthStore';
-import NotificationActions from '../../actions/NotificationActions';
+import ChatService from 'services/ChatService';
+import ChatStore from 'stores/ChatStore';
+import ChatActions from 'actions/ChatActions';
+import AuthStore from 'stores/AuthStore';
+import NotificationActions from 'actions/NotificationActions';
 import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
-import SelectableList from '../partials/SelectableList.jsx';
-import ChatMenuItem from './ChatMenuItem.jsx';
+import SelectableList from 'components/partials/SelectableList.jsx';
+import ChatMenuItem from 'components/chat/ChatMenuItem.jsx';
 import { ListItem } from 'material-ui/List';
 
-require('../../styles/chat/ChatMenu.scss');
+require('styles/chat/ChatMenu.scss');
 
 /**
  * This component will print the list of available channels and let user change page

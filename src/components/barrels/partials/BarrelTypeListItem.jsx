@@ -1,11 +1,11 @@
 import React from 'react';
 
-import * as constants from '../../../config/constants';
+import * as constants from 'config/constants';
 
 import { ListItem } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 
-require('../../../styles/barrels/BarrelTypeListItem.scss');
+require('styles/barrels/BarrelTypeListItem.scss');
 
 /**
  * This component show a ListItem for a BarrelType

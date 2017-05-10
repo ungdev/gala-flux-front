@@ -1,14 +1,14 @@
 import React from 'react';
 
-import router from '../../router';
+import router from 'router';
 
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
-import AdminMenu from './AdminMenu.jsx';
-import BarMenu from './BarMenu.jsx';
-import AuthStore from '../../stores/AuthStore';
+import AdminMenu from 'components/partials/AdminMenu.jsx';
+import BarMenu from 'components/partials/BarMenu.jsx';
+import AuthStore from 'stores/AuthStore';
 
 class MainDrawer extends React.Component {
 

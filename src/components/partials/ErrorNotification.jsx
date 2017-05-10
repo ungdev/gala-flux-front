@@ -5,8 +5,8 @@ import Toggle from 'material-ui/Toggle';
 import Dialog from 'components/partials/ResponsiveDialog.jsx';
 
 import ErrorLogService from 'services/ErrorLogService';
-import NotificationStore from '../../stores/NotificationStore';
-import AuthActions from '../../actions/AuthActions';
+import NotificationStore from 'stores/NotificationStore';
+import AuthActions from 'actions/AuthActions';
 
 require('styles/partials/ErrorNotification.scss');
 

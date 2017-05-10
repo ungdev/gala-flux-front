@@ -1,4 +1,4 @@
-import {ApiError} from '../errors';
+import {ApiError} from 'errors';
 
 export default class BaseService {
 

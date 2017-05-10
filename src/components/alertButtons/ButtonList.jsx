@@ -1,9 +1,9 @@
 import React from 'react';
 
-import AlertButtonStore from '../../stores/AlertButtonStore';
-import AuthStore from '../../stores/AuthStore';
-import TeamStore from '../../stores/TeamStore';
-import NotificationActions from '../../actions/NotificationActions';
+import AlertButtonStore from 'stores/AlertButtonStore';
+import AuthStore from 'stores/AuthStore';
+import TeamStore from 'stores/TeamStore';
+import NotificationActions from 'actions/NotificationActions';
 
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -12,10 +12,10 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import {List, ListItem} from 'material-ui/List';
-import CenteredMessage from '../partials/CenteredMessage.jsx'
+import CenteredMessage from 'components/partials/CenteredMessage.jsx'
 
-import NewButtonDialog from './NewButtonDialog.jsx';
-import UpdateButtonDialog from './UpdateButtonDialog.jsx';
+import NewButtonDialog from 'components/alertButtons/NewButtonDialog.jsx';
+import UpdateButtonDialog from 'components/alertButtons/UpdateButtonDialog.jsx';
 
 export default class ButtonList extends React.Component {
 

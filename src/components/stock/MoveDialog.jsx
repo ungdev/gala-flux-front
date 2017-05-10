@@ -1,14 +1,14 @@
 import React from 'react';
 
-import NotificationActions from '../../actions/NotificationActions';
-import BarrelService from '../../services/BarrelService';
-import BarrelTypeStore from '../../stores/BarrelTypeStore';
-import TeamStore from '../../stores/TeamStore';
+import NotificationActions from 'actions/NotificationActions';
+import BarrelService from 'services/BarrelService';
+import BarrelTypeStore from 'stores/BarrelTypeStore';
+import TeamStore from 'stores/TeamStore';
 
 import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import FlatButton from 'material-ui/FlatButton';
-import BarrelChip from '../barrels/partials/BarrelChip.jsx';
-import LocationSelect from './LocationSelect.jsx';
+import BarrelChip from 'components/barrels/partials/BarrelChip.jsx';
+import LocationSelect from 'components/stock/LocationSelect.jsx';
 
 export default class MoveDialog extends React.Component {
 
