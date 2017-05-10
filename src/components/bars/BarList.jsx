@@ -4,6 +4,7 @@ import TeamStore from 'stores/TeamStore';
 import BarrelStore from 'stores/BarrelStore';
 import UserStore from 'stores/UserStore';
 import BarrelTypeStore from 'stores/BarrelTypeStore';
+import NotificationActions from 'actions/NotificationActions';
 
 import { Row, Col } from 'react-flexbox-grid';
 import BarCard from 'components/bars/BarCard.jsx';
@@ -35,47 +36,47 @@ export default class BarList extends React.Component {
     componentDidMount() {
         // fill the team store
         TeamStore.loadData(null)
-            .then(data => {
-                // ensure that last token doesn't exist anymore.
-                TeamStore.unloadData(this.TeamStoreToken);
-                // save the component token
-                this.TeamStoreToken = data.token;
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            TeamStore.unloadData(this.TeamStoreToken);
+            // save the component token
+            this.TeamStoreToken = data.token;
 
-                return BarrelStore.loadData(null);
-            })
-            .then(data => {
-                // ensure that last token doesn't exist anymore.
-                BarrelStore.unloadData(this.BarrelStoreToken);
-                // save the component token
-                this.BarrelStoreToken = data.token;
+            return BarrelStore.loadData(null);
+        })
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            BarrelStore.unloadData(this.BarrelStoreToken);
+            // save the component token
+            this.BarrelStoreToken = data.token;
 
-                return BarrelTypeStore.loadData(null);
-            })
-            .then(data => {
-                // ensure that last token doesn't exist anymore.
-                BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
-                // save the component token
-                this.BarrelTypeStoreToken = data.token;
+            return BarrelTypeStore.loadData(null);
+        })
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
+            // save the component token
+            this.BarrelTypeStoreToken = data.token;
 
-                return UserStore.loadData(null);
+            return UserStore.loadData(null);
 
-            })
-            .then(data => {
-                // ensure that last token doesn't exist anymore.
-                UserStore.unloadData(this.UserStoreToken);
-                // save the component token
-                this.UserStoreToken = data.token;
+        })
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            UserStore.unloadData(this.UserStoreToken);
+            // save the component token
+            this.UserStoreToken = data.token;
 
-                // listen the stores changes
-                TeamStore.addChangeListener(this._setTeams);
-                BarrelStore.addChangeListener(this._setBarrels);
-                UserStore.addChangeListener(this._setUsers);
-                // init teams
-                this._setTeams();
-                this._setBarrels();
-                this._setUsers();
-            })
-            .catch(error => console.log("fill TeamStore error", error));
+            // listen the stores changes
+            TeamStore.addChangeListener(this._setTeams);
+            BarrelStore.addChangeListener(this._setBarrels);
+            UserStore.addChangeListener(this._setUsers);
+            // init teams
+            this._setTeams();
+            this._setBarrels();
+            this._setUsers();
+        })
+        .catch(error => NotificationActions.error("Erreur lors de la lecture des infos sur les bars.", error));
     }
 
     componentWillUnmount() {

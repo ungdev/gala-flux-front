@@ -67,7 +67,7 @@ function requireAuth (nextState, replace, callback) {
             jwtDecode(jwt);
             return callback();
         } catch (e) {
-            console.log('JWT Decode error:', e);
+            console.error('JWT Decode error:', e);
             localStorage.removeItem(constants.jwtName);
             replace('/');
             return callback();

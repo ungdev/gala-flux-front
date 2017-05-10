@@ -4,6 +4,7 @@ import BarrelStore from 'stores/BarrelStore';
 import BarrelTypeStore from 'stores/BarrelTypeStore';
 import TeamStore from 'stores/TeamStore';
 import AuthStore from 'stores/AuthStore';
+import NotificationActions from 'actions/NotificationActions';
 
 import { Row, Col } from 'react-flexbox-grid';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -86,7 +87,7 @@ export default class StockPage extends React.Component {
                 this._setBarrelTypes();
                 this._setTeams();
             })
-            .catch(error => console.log("fill stores for stockPage error", error));
+            .catch(error => NotificationActions.error("Erreur lors de la stocks.", error));
     }
 
     componentWillUnmount() {

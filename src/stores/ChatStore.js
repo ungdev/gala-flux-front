@@ -71,7 +71,6 @@ class ChatStore extends BaseStore {
     _resetNewMessages(channel) {
         this._newMessages[channel] = 0;
         this._updateLocalStorage(channel);
-        console.log("reset : ", this._newMessages);
         this.emitChange();
     }
 

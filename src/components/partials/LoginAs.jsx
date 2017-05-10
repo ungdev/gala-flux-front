@@ -33,34 +33,34 @@ export default class LoginAs extends React.Component {
     componentDidMount() {
         // fill the stores
         UserStore.loadData(null)
-            .then(data => {
-                // ensure that last token doen't exist anymore.
-                UserStore.unloadData(this.UserStoreToken);
+        .then(data => {
+            // ensure that last token doen't exist anymore.
+            UserStore.unloadData(this.UserStoreToken);
 
-                // save the component token
-                this.UserStoreToken = data.token;
-                // get distinct teams id and create objects with their id
-                let teams = [...new Set(data.result.map(user => user.team))];
-                for (let i in teams) {
-                    teams[i] = {id: teams[i]};
-                }
+            // save the component token
+            this.UserStoreToken = data.token;
+            // get distinct teams id and create objects with their id
+            let teams = [...new Set(data.result.map(user => user.team))];
+            for (let i in teams) {
+                teams[i] = {id: teams[i]};
+            }
 
 
-                return TeamStore.loadData(teams)
-            })
-            .then(data => {
-                // ensure that last token doen't exist anymore.
-                TeamStore.unloadData(this.TeamStoreToken);
+            return TeamStore.loadData(teams)
+        })
+        .then(data => {
+            // ensure that last token doen't exist anymore.
+            TeamStore.unloadData(this.TeamStoreToken);
 
-                // save the component token
-                this.TeamStoreToken = data.token;
+            // save the component token
+            this.TeamStoreToken = data.token;
 
-                // focus
-                if(this.textInput) {
-                    this.textInput.focus();
-                }
-            })
-            .catch(error => console.log("load users/team error", error));
+            // focus
+            if(this.textInput) {
+                this.textInput.focus();
+            }
+        })
+        .catch(error => NotificationActions.error("Erreur lors de la lecture des utilisateurs.", error));
         // listen the store change
         UserStore.addChangeListener(this._setUsers);
         TeamStore.addChangeListener(this._setUsers);

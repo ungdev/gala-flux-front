@@ -91,7 +91,7 @@ export default class AddIpMemberForm extends React.Component {
                     }
                     else {
                         errors[field] = error.formErrors[field][0].message;
-                        console.log('Warning: Validation message not translated. ', error.formErrors[field]);
+                        console.warn('Warning: Validation message not translated. ', error.formErrors[field]);
                     }
                 }
                 this.setState({ errors: errors });
