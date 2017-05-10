@@ -162,7 +162,9 @@ export default class ErrorNotification extends React.Component {
                             <div>
                                 <h4>Error</h4>
                                 <pre>
-                                    {
+                                    { (typeof this.state.errorMessage.error === 'string' || this.state.errorMessage.error instanceof String) ?
+                                        this.state.errorMessage.error
+                                        :
                                         JSON.stringify(
                                             Object.assign(
                                                 {},
@@ -178,7 +180,12 @@ export default class ErrorNotification extends React.Component {
                             <div>
                                 <h4>Details</h4>
                                 <pre>
-                                    {JSON.stringify(this.state.errorMessage.details, null, 4)}
+                                    {
+                                        (typeof this.state.errorMessage.details === 'string' || this.state.errorMessage.details instanceof String) ?
+                                        this.state.errorMessage.details
+                                        :
+                                        JSON.stringify(this.state.errorMessage.details, null, 4)
+                                    }
                                 </pre>
                             </div>
                         }
