@@ -54,6 +54,7 @@ class NotificationStore extends BaseStore {
     pushError(errorMessage) {
         this._errorMessages.push({
             message: errorMessage.message,
+            stack: errorMessage.stack,
             error: errorMessage.error,
             details: errorMessage.details,
             refresh: errorMessage.refresh,

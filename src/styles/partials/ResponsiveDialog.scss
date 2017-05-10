@@ -58,35 +58,14 @@
 /**
  * Go into full screen mode for small screens
  */
+
 @media only screen and (max-width: $screen-max-xs) {
+    .ResponsiveDialog {
+        padding-top: 8px !important;
+    }
+
     .ResponsiveDialog__content {
-        position: absolute !important;
-        left: 8px;
-        right: 8px;
-        top: 8px;
-        bottom: 8px;
-        width: auto !important;
-        height: auto !important;
-        transform: none !important;
-        padding-bottom: 0;
-
-        > div {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-
-            .ResponsiveDialog__title {
-                flex-grow: 0;
-            }
-
-            .ResponsiveDialog__body {
-                flex-grow: 1;
-                max-height: none !important;
-            }
-
-            .ResponsiveDialog__actions {
-                flex-grow: 0;
-            }
-        }
+        width: 97.5% !important;
+        padding-bottom: 8px;
     }
 }
