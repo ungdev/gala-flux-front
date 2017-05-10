@@ -263,7 +263,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                         <TextField
-                            floatingLabelText="Prix fournisseur (€)"
+                            floatingLabelText="Prix fournisseur d'une bouteille (€)"
                             errorText={this.state.errors.supplierPrice}
                             value={this.state.values.supplierPrice}
                             fullWidth={true}
@@ -272,7 +272,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Prix de revente (€)"
+                                floatingLabelText="Prix de revente d'une bouteille (€)"
                                 errorText={this.state.errors.sellPrice}
                                 value={this.state.values.sellPrice}
                                 fullWidth={true}
@@ -283,7 +283,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Nombre par caisse"
+                                floatingLabelText="Nombre de bouteille par caisse"
                                 errorText={this.state.errors.quantityPerBox}
                                 value={this.state.values.quantityPerBox}
                                 fullWidth={true}
