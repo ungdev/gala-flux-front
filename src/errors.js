@@ -22,6 +22,7 @@ export class ApiError extends Error {
         let status = 'UnexpectedError';
         let formErrors = {};
         let userFormErrors = {};
+        let req = {};
 
         // Try to parse body
         if(jwres.body) {
@@ -29,6 +30,7 @@ export class ApiError extends Error {
                 message = jwres.body._error.message;
                 code = jwres.body._error.code;
                 status = jwres.body._error.status;
+                req = jwres.body._error.req;
             }
             else if(jwres.body.code && jwres.body.code == 'E_VALIDATION') {
                 status = 'ValidationError';
@@ -71,5 +73,6 @@ export class ApiError extends Error {
         this.status = status;
         this.formErrors = formErrors;
         this.userFormErrors = userFormErrors;
+        if(req && Object.keys(req)) this.req = req;
     }
  }
