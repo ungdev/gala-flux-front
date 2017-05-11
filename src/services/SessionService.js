@@ -1,3 +1,8 @@
+import {ApiError} from 'errors';
+import AuthStore from '../stores/AuthStore';
+
+const TOKEN_NAME = 'firebaseToken';
+
 class SessionService {
 
     /**
@@ -21,8 +26,30 @@ class SessionService {
                 }
             }
         }
-        localStorage.setItem('firebaseToken', firebaseToken);
+        localStorage.setItem(TOKEN_NAME, firebaseToken);
         return firebaseToken;
+    }
+
+    /**
+     * If there is a firebase token in the localStorage,
+     * register the new session for this user
+     */
+    sendFirebaseToken() {
+        const token = localStorage.getItem(TOKEN_NAME);
+        if (token) {
+            iosocket.request({
+                method: 'post',
+                url: '/firebase/register',
+                data: {token}
+            }, (resData, jwres) => {
+                if(jwres.error) {
+                    // display error => n'a pas pu register le device
+                    console.log("SESSION ERROR : ", jwres.body);
+                }
+                // ok
+                console.log("SESSION OK : ", jwres.body);
+            });
+        }
     }
 
 }
