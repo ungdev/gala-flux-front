@@ -43,7 +43,6 @@ class AuthStore extends BaseStore {
         };
     }
 
-
     /**
      * init the store : pull current roles->permission association
      * @param {string} jwt The jwt return by the server after authentication

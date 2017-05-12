@@ -45,8 +45,13 @@ class SessionService {
                 if(jwres.error) {
                     // display error => n'a pas pu register le device
                     console.log("SESSION ERROR : ", jwres.body);
+                } else {
+
                 }
-                // ok
+                // if android device, send jwt
+                if (androidInterface) {
+                    androidInterface.initTopics(AuthStore.jwt);
+                }
                 console.log("SESSION OK : ", jwres.body);
             });
         }
