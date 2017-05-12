@@ -1,5 +1,5 @@
 import {ApiError} from 'errors';
-import AuthStore from '../stores/AuthStore';
+import * as constants from '../config/constants';
 
 const TOKEN_NAME = 'firebaseToken';
 
@@ -48,9 +48,10 @@ class SessionService {
                 } else {
 
                 }
+
                 // if android device, send jwt
                 if (androidInterface) {
-                    androidInterface.initTopics(AuthStore.jwt);
+                    androidInterface.initTopics(localStorage.getItem(constants.jwtName));
                 }
                 console.log("SESSION OK : ", jwres.body);
             });
