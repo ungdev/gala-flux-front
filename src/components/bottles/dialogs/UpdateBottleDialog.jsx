@@ -23,7 +23,6 @@ export default class UpdateBottleDialog extends React.Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             type: props.type,
             count: props.count || 0,
@@ -47,6 +46,7 @@ export default class UpdateBottleDialog extends React.Component {
 
     componentWillReceiveProps(props) {
 
+        console.log('props', props.total)
         this.setState({
             type: props.type,
             count: props.count || 0,

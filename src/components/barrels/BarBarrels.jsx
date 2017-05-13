@@ -258,6 +258,7 @@ export default class BarBarrels extends React.Component {
                                     }),
                                     Object.keys(this.state.bottles.new).map((typeId, i) => {
                                         let type = BottleTypeStore.findById(typeId);
+                                        let total = (this.state.bottles.new[typeId] || 0) + (this.state.bottles.empty[typeId] || 0);
                                         return <div key={i}>
                                             <h4>{type ? type.name : ''}</h4>
                                             <div className="BarrelChipContainer">
@@ -265,7 +266,7 @@ export default class BarBarrels extends React.Component {
                                                     count={this.state.bottles.new[typeId]}
                                                     state="new"
                                                     type={type}
-                                                    onClick={() => this.setState({updatedBottle: {type: type, count: this.state.bottles.new[typeId], state: 'new', total: (this.state.bottles.new[typeId] + this.state.bottles.empty[typeId])}})}
+                                                    onClick={() => this.setState({updatedBottle: {type: type, count: this.state.bottles.new[typeId], state: 'new', total: total}})}
                                                 />
                                             </div>
                                         </div>
@@ -336,6 +337,7 @@ export default class BarBarrels extends React.Component {
                                     }),
                                     Object.keys(this.state.bottles.empty).map((typeId, i) => {
                                         let type = BottleTypeStore.findById(typeId);
+                                        let total = (this.state.bottles.new[typeId] || 0) + (this.state.bottles.empty[typeId] || 0);
                                         return <div key={i}>
                                             <h4>{type ? type.name : ''}</h4>
                                             <div className="BarrelChipContainer">
@@ -343,7 +345,7 @@ export default class BarBarrels extends React.Component {
                                                     count={this.state.bottles.empty[typeId]}
                                                     state="empty"
                                                     type={type}
-                                                    onRequestDelete={() => this.setState({updatedBottle: {type: type, count: this.state.bottles.new[typeId], state: 'empty', total: (this.state.bottles.new[typeId] + this.state.bottles.empty[typeId])}})}
+                                                    onRequestDelete={() => this.setState({updatedBottle: {type: type, count: this.state.bottles.new[typeId], state: 'empty', total: total}})}
                                                 />
                                             </div>
                                         </div>
