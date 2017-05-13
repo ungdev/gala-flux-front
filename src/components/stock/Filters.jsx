@@ -4,6 +4,7 @@ import { Row, Col } from 'react-flexbox-grid';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
+import TeamStore from 'stores/TeamStore';
 import LocationSelect from 'components/stock/LocationSelect.jsx';
 
 export default class Filters extends React.Component {
@@ -12,17 +13,17 @@ export default class Filters extends React.Component {
         super(props);
 
         this.state = {
-            teams: props.teams,
-            types: props.types,
+            barrelTypes: props.barrelTypes,
+            bottleTypes: props.bottleTypes,
             filters: props.filters
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(props) {
         this.setState({
-            teams: nextProps.teams,
-            types: nextProps.types,
-            filters: nextProps.filters
+            barrelTypes: props.barrelTypes,
+            bottleTypes: props.bottleTypes,
+            filters: props.filters
         });
     }
 
@@ -38,7 +39,7 @@ export default class Filters extends React.Component {
                         fullWidth={true}
                     >
                         {
-                            this.state.types.map(type => {
+                            this.state.barrelTypes.map(type => {
                                 return <MenuItem
                                     key={type.id}
                                     insetChildren={true}
@@ -48,12 +49,23 @@ export default class Filters extends React.Component {
                                 />
                             })
                         }
+                        {
+                            this.state.bottleTypes.map(type => {
+                                return <MenuItem
+                                    key={'-'+type.id}
+                                    insetChildren={true}
+                                    checked={this.state.filters.types.includes('-'+type.id)}
+                                    value={'-'+type.id}
+                                    primaryText={type.name}
+                                />
+                            })
+                        }
                     </SelectField>
                 </Col>
 
                 <Col xs={12} sm={6} md={3}>
                     <LocationSelect
-                        teams={this.state.teams}
+                        teams={TeamStore.findByPermission('ui/receiveStock')}
                         value={this.state.filters.locations}
                         setValue={(e, i, v) => this.props.setFilters("locations", v)}
                         multiple={true}

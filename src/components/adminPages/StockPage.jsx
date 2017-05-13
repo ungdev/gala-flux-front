@@ -2,6 +2,8 @@ import React from 'react';
 
 import BarrelStore from 'stores/BarrelStore';
 import BarrelTypeStore from 'stores/BarrelTypeStore';
+import BottleActionStore from 'stores/BottleActionStore';
+import BottleTypeStore from 'stores/BottleTypeStore';
 import TeamStore from 'stores/TeamStore';
 import AuthStore from 'stores/AuthStore';
 import NotificationActions from 'actions/NotificationActions';
@@ -24,9 +26,7 @@ export default class StockPage extends React.Component {
         super();
 
         this.state = {
-            barrels: [],
-            types: [],
-            teams: [],
+            filteredData: [],
             filters: {
                 types: [],
                 locations: [],
@@ -35,92 +35,175 @@ export default class StockPage extends React.Component {
             },
             selectedRows: [],
             selectedBarrels: [],
+            selectedBottles: {},
             showMoveDialog: false
         };
 
         this.BarrelStoreToken = null;
         this.BarrelTypeStoreToken = null;
         this.TeamStoreToken = null;
+        this.BottleActionStoreToken = null;
+        this.BottleTypeStoreToken = null;
 
         // binding
-        this._setBarrelTypes = this._setBarrelTypes.bind(this);
-        this._setBarrels = this._setBarrels.bind(this);
-        this._setTeams = this._setTeams.bind(this);
+        this._loadData = this._loadData.bind(this);
+        this._unloadData = this._unloadData.bind(this);
+        this._updateData = this._updateData.bind(this);
         this._toggleMoveDialog = this._toggleMoveDialog.bind(this);
-        this._filteredBarrels = this._filteredBarrels.bind(this);
         this._handleBarrelSelection = this._handleBarrelSelection.bind(this);
+        this._handleBottleSelection = this._handleBottleSelection.bind(this);
         this._setFilters = this._setFilters.bind(this);
         this._resetFilters = this._resetFilters.bind(this);
     }
 
     componentDidMount() {
-        // fill the stores
-        BarrelStore.loadData(null)
-            .then(data => {
-                // ensure that last token doesn't exist anymore.
-                BarrelStore.unloadData(this.BarrelStoreToken);
-                // save the component token
-                this.BarrelStoreToken = data.token;
-
-                return BarrelTypeStore.loadData(null);
-            })
-            .then(data => {
-                // ensure that last token doesn't exist anymore.
-                BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
-                // save the component token
-                this.BarrelTypeStoreToken = data.token;
-
-                return TeamStore.loadData(null);
-            })
-            .then(data => {
-                // ensure that last token doesn't exist anymore.
-                TeamStore.unloadData(this.TeamStoreToken);
-                // save the component token
-                this.TeamStoreToken = data.token;
-
-                // listen the stores changes
-                BarrelStore.addChangeListener(this._setBarrels);
-                BarrelTypeStore.addChangeListener(this._setBarrelTypes);
-                TeamStore.addChangeListener(this._setTeams);
-                // init barrels, barrel types, and teams
-                this._setBarrels();
-                this._setBarrelTypes();
-                this._setTeams();
-            })
-            .catch(error => NotificationActions.error("Erreur lors de la stocks.", error));
+        // Load data from the store
+        this._loadData()
+        .then(() => {
+            // listen the stores changes
+            BarrelStore.addChangeListener(this._updateData);
+            BarrelTypeStore.addChangeListener(this._updateData);
+            TeamStore.addChangeListener(this._updateData);
+            BottleActionStore.addChangeListener(this._updateData);
+            BottleTypeStore.addChangeListener(this._updateData);
+        })
     }
 
     componentWillUnmount() {
-        // clear stores
+        // clear store
+        this._unloadData();
+
+        // remove the stores listeners
+        BarrelStore.removeChangeListener(this._updateData);
+        BarrelTypeStore.removeChangeListener(this._updateData);
+        TeamStore.removeChangeListener(this._updateData);
+        BottleActionStore.removeChangeListener(this._updateData);
+        BottleTypeStore.removeChangeListener(this._updateData);
+    }
+
+    /**
+     * Load data from all stores and update state
+     */
+    _loadData() {
+        // fill the stores
+        return BarrelStore.loadData(null)
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            BarrelStore.unloadData(this.BarrelStoreToken);
+            // save the component token
+            this.BarrelStoreToken = data.token;
+
+            return BarrelTypeStore.loadData(null);
+        })
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
+            // save the component token
+            this.BarrelTypeStoreToken = data.token;
+
+            return BottleActionStore.loadCount()
+        })
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            BottleActionStore.unloadCount(this.BottleActionStoreToken);
+            // save the component token
+            this.BottleActionStoreToken = data.token;
+
+            return BottleTypeStore.loadData(null);
+        })
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            BottleTypeStore.unloadData(this.BottleTypeStoreToken);
+            // save the component token
+            this.BottleTypeStoreToken = data.token;
+
+            return TeamStore.loadData(null);
+        })
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            TeamStore.unloadData(this.TeamStoreToken);
+            // save the component token
+            this.TeamStoreToken = data.token;
+
+            // init values
+            this._updateData();
+        })
+        .catch(error => NotificationActions.error("Erreur lors de la récupération des stocks.", error));
+    }
+
+    /**
+     * clear stores
+     */
+    _unloadData() {
         BarrelStore.unloadData(this.BarrelStoreToken);
         BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
         TeamStore.unloadData(this.TeamStoreToken);
-        // remove the listeners
-        BarrelStore.removeChangeListener(this._setBarrels);
-        BarrelTypeStore.removeChangeListener(this._setBarrelTypes);
-        TeamStore.removeChangeListener(this._setTeams);
+        BottleActionStore.unloadCount(this.BottleActionStoreToken);
+        BottleTypeStore.unloadData(this.BottleTypeStoreToken);
     }
 
     /**
-     * Set the barrel types in the state
+     * Update data according to stores without adding new filter to it
      */
-    _setBarrelTypes() {
-        this.setState({ types: BarrelTypeStore.types });
-    }
+    _updateData() {
+        let filteredData = {};
 
-    /**
-     * Set the teams in the state
-     */
-    _setTeams() {
-        this.setState({ teams: TeamStore.teams });
-    }
+        // Add barrels to filteredData
+        const filters = this.state.filters;
+        filters.rgx = new RegExp(filters.reference);
+        for (let barrel of BarrelStore.barrels) {
+            if (!filters.types.length || filters.types.includes(barrel.type)) {
+                if (!filters.locations.length || filters.locations.includes(barrel.place)) {
+                    if (!filters.states.length || filters.states.includes(barrel.state)) {
+                        if (barrel.reference.match(filters.rgx)) {
+                            // the barrel match the filters
+                            if (!filteredData[barrel.place]) {
+                                filteredData[barrel.place] = { barrels: {}, bottles: {} };
+                            }
+                            if (filteredData[barrel.place].barrels[barrel.type]) {
+                                filteredData[barrel.place].barrels[barrel.type].push(barrel);
+                            } else {
+                                filteredData[barrel.place].barrels[barrel.type] = [barrel];
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-    /**
-     * Set the barrels in the state.
-     * Get the team name of each barrel in the same time.
-     */
-    _setBarrels() {
-        this.setState({ barrels: BarrelStore.barrels });
+        // Add bottles to filteredData
+        let count = BottleActionStore.count;
+        for (let teamId in count) {
+            if (!filters.locations.length || filters.locations.includes(teamId != 'null' ? teamId : null)) {
+                for(let typeId in count[teamId])
+                {
+                    let type = BottleTypeStore.findById(typeId);
+                    if (!filters.types.length || filters.types.includes('-'+typeId)) {
+                        if (type && type.shortName.match(filters.rgx)) {
+                            for(let state in count[teamId][typeId]) {
+                                if(count[teamId][typeId][state] > 0) {
+                                    if (!filters.states.length || filters.states.includes(state)) {
+                                        // the bottle match the filters
+                                        if (!filteredData[teamId]) {
+                                            filteredData[teamId] = { barrels: {}, bottles: {} };
+                                        }
+                                        if (!filteredData[teamId].bottles[typeId]) {
+                                            filteredData[teamId].bottles[typeId] = {};
+                                        }
+                                        filteredData[teamId].bottles[typeId][state] = count[teamId][typeId][state];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        this.setState({
+            filteredData: filteredData,
+        });
     }
 
     /**
@@ -133,6 +216,7 @@ export default class StockPage extends React.Component {
         let state = this.state;
         state.filters[attribute] = value;
         this.setState(state);
+        this._updateData();
     }
 
     /**
@@ -147,40 +231,7 @@ export default class StockPage extends React.Component {
                 reference: ""
             }
         });
-    }
-
-    /**
-     * Get only the barrels in the state that matches the filters
-     *
-     * @returns {Array} array of barrels
-     */
-    _filteredBarrels() {
-        const filters = this.state.filters;
-        filters.rgx = new RegExp(filters.reference);
-
-        let barrels = {};
-
-        for (let barrel of this.state.barrels) {
-            if (!filters.types.length || filters.types.includes(barrel.type)) {
-                if (!filters.locations.length || filters.locations.includes(barrel.place)) {
-                    if (!filters.states.length || filters.states.includes(barrel.state)) {
-                        if (barrel.reference.match(filters.rgx)) {
-                            // the barrel match the filters
-                            if (!barrels[barrel.place]) {
-                                barrels[barrel.place] = {};
-                            }
-                            if (barrels[barrel.place][barrel.type]) {
-                                barrels[barrel.place][barrel.type].push(barrel);
-                            } else {
-                                barrels[barrel.place][barrel.type] = [barrel];
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return barrels;
+        this._updateData();
     }
 
     /**
@@ -194,6 +245,7 @@ export default class StockPage extends React.Component {
         let state = this.state;
         if (emptySelected === true) {
             state.selectedBarrels = [];
+            state.selectedBottles = {};
         }
         state.showMoveDialog = !state.showMoveDialog;
         this.setState(state);
@@ -203,8 +255,8 @@ export default class StockPage extends React.Component {
      * When a barrel is selected, add or remove it from the selected barrels
      * depending of the 'selected' boolean
      *
-     * @param {object} clickedBarrel: the barrel
-     * @param {boolean} selected: is the barrel selected or not
+     * @param {object} clickedBarrel the barrel
+     * @param {boolean} selected is the barrel selected or not
      */
     _handleBarrelSelection(clickedBarrel, selected) {
         let selectedBarrels = this.state.selectedBarrels;
@@ -219,6 +271,30 @@ export default class StockPage extends React.Component {
     }
 
     /**
+     * When a bottle is selected, add or remove it from the selected bottles
+     *
+     * @param {BottleType} type type of the selected bottle
+     * @param {Team} team owner team
+     * @param {int} count Number of bottle selected
+     */
+    _handleBottleSelection(type, team, count) {
+        let selectedBottles = this.state.selectedBottles;
+        if(team) team = team.id;
+
+        if(!selectedBottles[team || null]) {
+            selectedBottles[team || null] = {};
+        }
+
+        if (count > 0) {
+            selectedBottles[team || null][type.id] = count;
+        } else {
+            delete selectedBottles[team || null][type.id];
+        }
+
+        this.setState({ selectedBottles });
+    }
+
+    /**
      * Scroll to the top of the page
      */
     static _scrollTop() {
@@ -226,13 +302,23 @@ export default class StockPage extends React.Component {
     }
 
     render() {
+        let selectionCount = 0;
+        if(this.state.selectedBarrels.length) {
+            selectionCount += this.state.selectedBarrels.length;
+        }
+        if(Object.keys(this.state.selectedBottles).length) {
+            for (let teamId in this.state.selectedBottles) {
+                selectionCount += Object.keys(this.state.selectedBottles[teamId]).length;
+            }
+        }
 
         return (
             <div className="StockPage_container" id="StockPage_Top">
                 <Paper className="StockPage_filters_container">
                     <Filters
-                        teams={this.state.teams}
-                        types={this.state.types}
+                        teams={TeamStore.teams}
+                        barrelTypes={BarrelTypeStore.types}
+                        bottleTypes={BottleTypeStore.types}
                         setFilters={this._setFilters}
                         filters={this.state.filters}
                     />
@@ -240,9 +326,9 @@ export default class StockPage extends React.Component {
                     <Row center="md">
                         <Col xs={12} sm={6} md={3}>
                             <RaisedButton
-                                label={`Déselectionner les fûts ${(this.state.selectedBarrels.length ? `(${this.state.selectedBarrels.length })` : '')}`}
-                                disabled={this.state.selectedBarrels.length === 0}
-                                onClick={_ => this.setState({ selectedBarrels: [] })}
+                                label={'Déselectionner les fûts ' + (selectionCount ? '(' + selectionCount + ')' : '')}
+                                disabled={selectionCount === 0}
+                                onClick={_ => this.setState({ selectedBarrels: [], selectedBottles: {} })}
                                 fullWidth={true}
                             />
                         </Col>
@@ -258,9 +344,11 @@ export default class StockPage extends React.Component {
                 </Paper>
 
                 <StockList
-                    barrels={this._filteredBarrels()}
+                    data={this.state.filteredData}
                     handleBarrelSelection={this._handleBarrelSelection}
-                    selected={this.state.selectedBarrels}
+                    handleBottleSelection={this._handleBottleSelection}
+                    selectedBarrels={this.state.selectedBarrels}
+                    selectedBottles={this.state.selectedBottles}
                 />
 
 
@@ -276,7 +364,7 @@ export default class StockPage extends React.Component {
                 { AuthStore.can('barrel/admin') &&
                     <FloatingActionButton
                         className="FloatingButton"
-                        disabled={this.state.selectedBarrels.length === 0}
+                        disabled={selectionCount === 0}
                         onClick={this._toggleMoveDialog}
                     >
                         <LocalShipping  />
@@ -286,8 +374,9 @@ export default class StockPage extends React.Component {
                     <MoveDialog
                         show={this.state.showMoveDialog}
                         close={this._toggleMoveDialog}
-                        teams={this.state.teams}
+                        teams={TeamStore.findByPermission('ui/receiveStock')}
                         barrels={this.state.selectedBarrels}
+                        bottles={this.state.selectedBottles}
                     />
 
             </div>

@@ -403,9 +403,7 @@ export default class BaseStore extends EventEmitter {
                 }
                 break;
             case "updated":
-                if(this.findById(e.id)) {
-                    this._set(e.id, e.data);
-                }
+                this._set(e.id, e.data);
                 break;
             case "destroyed":
                 if(this.findById(e.id)) {

@@ -1,18 +1,13 @@
-.BarrelChipContainer {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.BarrelChip {
+.BottleChip {
 
     margin: 3px 2px !important;
     z-index: auto !important;
 
-    .BarrelChip__shortname {
+    .BottleChip__shortname {
         font-size: 13px !important;
     }
 
-    .BarrelChip__number {
+    .BottleChip__content {
         margin-left: -5px;
         font-size: 13px;
     }
