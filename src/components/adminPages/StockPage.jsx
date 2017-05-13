@@ -302,7 +302,6 @@ export default class StockPage extends React.Component {
     }
 
     render() {
-        console.log('render')
         let selectionCount = 0;
         if(this.state.selectedBarrels.length) {
             selectionCount += this.state.selectedBarrels.length;

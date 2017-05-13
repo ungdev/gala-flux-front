@@ -92,7 +92,6 @@ export default class BarBarrels extends React.Component {
         // fill the stores
         return BarrelStore.loadData({place: AuthStore.team && AuthStore.team.id})
         .then(data => {
-            console.log(data)
             // ensure that last token doesn't exist anymore.
             BarrelStore.unloadData(this.BarrelStoreToken);
             // save the component token
