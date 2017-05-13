@@ -34,9 +34,13 @@ import jwtDecode from 'jwt-decode';
 
 // actions and services
 import WebSocketService from 'services/WebSocketService';
+import SessionService from 'services/SessionService';
 
 // Connect to websocket server
 WebSocketService.connect();
+
+// Check if there is a Firebase token in the url parameters
+SessionService.getFirebaseToken();
 
 // Render the app using router
 ReactDOM.render(
