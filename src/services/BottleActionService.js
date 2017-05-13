@@ -11,13 +11,17 @@ class BottleActionService extends BaseService {
 
     /**
      * Make a request to get the current count of each bottle in each team
-     *
+     * @param {Team} team
      * @return {Promise}
      */
-    getCount() {
+    getCount(team) {
+        if(team && team.id) {
+            team = team.id;
+        }
         return this._makeRequest({
             method: 'get',
             url: '/bottleaction/count',
+            data: { team },
         });
     }
 

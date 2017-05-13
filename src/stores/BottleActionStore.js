@@ -8,6 +8,7 @@ class BottleActionStore extends BaseStore {
         super('bottleaction', BottleActionService);
 
         this._count = {};
+        this._countRequest = 0;
 
         this.subscribe(() => this._handleActions.bind(this));
     }
@@ -16,20 +17,40 @@ class BottleActionStore extends BaseStore {
         return this._count;
     }
 
+
     /**
-     * Overload fetchData to load or unload bottle count on filter update
-     *
-     * @param {number} [componentToken]: the new component
-     * @return {Promise}
+     * Same as loadDAta bur for requesting count
      */
-    fetchData(componentToken) {
-        return BottleActionService.getCount()
-        .then((count) => {
-            if(count) {
+    loadCount() {
+        this._countRequest++;
+        // Use a fake filter to load 0 entry but subscribe
+        return new Promise((resolve, reject) => {
+            BottleActionService.getCount()
+            .then((count) => {
                 this._count = count;
+                return resolve();
+            })
+            .catch((error) => {
+                return reject(error);
+            });
+        })
+        .then(() => this.loadData({id: '0'}));
+    }
+
+
+    /**
+     * Same as unloadData but for unrequesting count
+     *
+     * @param {number|null} token: the component's token
+     */
+    unloadCount(token) {
+        if(this._filters[token] !== undefined) {
+            this._countRequest--;
+            if(this._countRequest === 0) {
+                this._count = {};
             }
-            return super.fetchData(componentToken);
-        });
+        }
+        return this.unloadData(token);
     }
 
 
@@ -39,18 +60,17 @@ class BottleActionStore extends BaseStore {
      * @param {object} e : the event
      */
     _handleModelEvents(e) {
-        // init count object
-        if(!this._count[e.data.team || null]) this._count[e.data.team || null] = {};
-        if(!this._count[e.data.team || null][e.data.type]) this._count[e.data.team || null][e.data.type] = {empty: 0, new: 0};
-        if(e.data.fromTeam) {
-            if(!this._count[e.data.fromTeam || null]) this._count[e.data.fromTeam || null] = {};
-            if(!this._count[e.data.fromTeam || null][e.data.type]) this._count[e.data.fromTeam || null][e.data.type] = {empty: 0, new: 0};
-        }
+        if(this._countRequest) {
+            // init count object
+            if(!this._count[e.data.team || null]) this._count[e.data.team || null] = {};
+            if(!this._count[e.data.team || null][e.data.type]) this._count[e.data.team || null][e.data.type] = {empty: 0, new: 0};
+            if(e.data.fromTeam) {
+                if(!this._count[e.data.fromTeam || null]) this._count[e.data.fromTeam || null] = {};
+                if(!this._count[e.data.fromTeam || null][e.data.type]) this._count[e.data.fromTeam || null][e.data.type] = {empty: 0, new: 0};
+            }
 
-        let old;
-        switch (e.verb) {
-            case "created":
-                if(!this.findById(e.id)) {
+            switch (e.verb) {
+                case "created":
                     // Update count
                     if(e.data.operation == 'purchased') {
                         this._count[e.data.team || null][e.data.type].new -= e.data.quantity;
@@ -60,44 +80,9 @@ class BottleActionStore extends BaseStore {
                         this._count[e.data.fromTeam || null][e.data.type].new -= e.data.quantity;
                         this._count[e.data.team || null][e.data.type].new += e.data.quantity;
                     }
-                }
-                break;
-            case "updated":
-                old = this.findById(e.id);
-                if(old) {
-                    // Update count
-                    if(old.operation == 'purchased') {
-                        // Delete old
-                        this._count[old.team || null][old.type].new += old.quantity;
-                        this._count[old.team || null][old.type].empty -= old.quantity;
-                        // Add new
-                        this._count[e.data.team || null][e.data.type].new -= e.data.quantity;
-                        this._count[e.data.team || null][e.data.type].empty += e.data.quantity;
-                    }
-                    else if(e.data.operation == 'moved') {
-                        // Delete old
-                        this._count[old.fromTeam || null][old.type].new += old.quantity;
-                        this._count[old.team || null][old.type].new -= old.quantity;
-                        // add new
-                        this._count[e.data.fromTeam || null][e.data.type].new -= e.data.quantity;
-                        this._count[e.data.team || null][e.data.type].new += e.data.quantity;
-                    }
-                }
-                break;
-            case "destroyed":
-                old = this.findById(e.id);
-                if(old) {
-                    // Update count
-                    if(old.operation == 'purchased') {
-                        this._count[old.team || null][old.type].new += old.quantity;
-                        this._count[old.team || null][old.type].empty -= old.quantity;
-                    }
-                    else if(e.data.operation == 'moved') {
-                        this._count[old.fromTeam || null][old.type].new += old.quantity;
-                        this._count[old.team || null][old.type].new -= old.quantity;
-                    }
-                }
-                break;
+                    this.emitChange();
+                    break;
+            }
         }
         return super._handleModelEvents(e);
     }

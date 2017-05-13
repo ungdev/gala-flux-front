@@ -58,14 +58,15 @@ export default class StockPage extends React.Component {
 
     componentDidMount() {
         // Load data from the store
-        this._loadData();
-
-        // listen the stores changes
-        BarrelStore.addChangeListener(this._updateData);
-        BarrelTypeStore.addChangeListener(this._updateData);
-        TeamStore.addChangeListener(this._updateData);
-        BottleActionStore.addChangeListener(this._updateData);
-        BottleTypeStore.addChangeListener(this._updateData);
+        this._loadData()
+        .then(() => {
+            // listen the stores changes
+            BarrelStore.addChangeListener(this._updateData);
+            BarrelTypeStore.addChangeListener(this._updateData);
+            TeamStore.addChangeListener(this._updateData);
+            BottleActionStore.addChangeListener(this._updateData);
+            BottleTypeStore.addChangeListener(this._updateData);
+        })
     }
 
     componentWillUnmount() {
@@ -85,7 +86,7 @@ export default class StockPage extends React.Component {
      */
     _loadData() {
         // fill the stores
-        BarrelStore.loadData(null)
+        return BarrelStore.loadData(null)
         .then(data => {
             // ensure that last token doesn't exist anymore.
             BarrelStore.unloadData(this.BarrelStoreToken);
@@ -100,11 +101,11 @@ export default class StockPage extends React.Component {
             // save the component token
             this.BarrelTypeStoreToken = data.token;
 
-            return BottleActionStore.loadData(null)
+            return BottleActionStore.loadCount()
         })
         .then(data => {
             // ensure that last token doesn't exist anymore.
-            BottleActionStore.unloadData(this.BottleActionStoreToken);
+            BottleActionStore.unloadCount(this.BottleActionStoreToken);
             // save the component token
             this.BottleActionStoreToken = data.token;
 
@@ -137,7 +138,7 @@ export default class StockPage extends React.Component {
         BarrelStore.unloadData(this.BarrelStoreToken);
         BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
         TeamStore.unloadData(this.TeamStoreToken);
-        BottleActionStore.unloadData(this.BottleActionStoreToken);
+        BottleActionStore.unloadCount(this.BottleActionStoreToken);
         BottleTypeStore.unloadData(this.BottleTypeStoreToken);
     }
 
@@ -301,6 +302,7 @@ export default class StockPage extends React.Component {
     }
 
     render() {
+        console.log('render')
         let selectionCount = 0;
         if(this.state.selectedBarrels.length) {
             selectionCount += this.state.selectedBarrels.length;

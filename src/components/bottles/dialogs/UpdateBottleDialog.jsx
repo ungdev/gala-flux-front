@@ -7,7 +7,7 @@ import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
 
-import BottleTypeService from 'services/BottleTypeService';
+import BottleActionService from 'services/BottleActionService';
 import NotificationActions from 'actions/NotificationActions';
 import Confirm from 'components/partials/Confirm.jsx';
 
@@ -15,8 +15,11 @@ import Confirm from 'components/partials/Confirm.jsx';
 /**
  * @param {BottleType} type
  * @param {integer} count Current number of bottles available
+ * @param {integer} total Total number of bottle (no matter the state)
+ * @param {Team} team
+ * @param {string} state State of bottles
  */
-export default class BottleSelectionDialog extends React.Component {
+export default class UpdateBottleDialog extends React.Component {
 
     constructor(props) {
         super(props);
@@ -24,9 +27,12 @@ export default class BottleSelectionDialog extends React.Component {
         this.state = {
             type: props.type,
             count: props.count || 0,
+            total: props.total || 0,
+            team: props.team,
+            state: props.state,
             values: {
-                'box': parseInt(props.selected / props.type.quantityPerBox) || 0,
-                'bottle': (props.selected % props.type.quantityPerBox) || 0,
+                'box': parseInt(props.count / props.type.quantityPerBox) || 0,
+                'bottle': (props.count % props.type.quantityPerBox) || 0,
             },
             errors: {},
         };
@@ -40,12 +46,14 @@ export default class BottleSelectionDialog extends React.Component {
     }
 
     componentWillReceiveProps(props) {
+
         this.setState({
             type: props.type,
             count: props.count || 0,
+            total: props.total || 0,
             values: {
-                'box': parseInt(props.selected / props.type.quantityPerBox) || 0,
-                'bottle': (props.selected % props.type.quantityPerBox) || 0,
+                'box': parseInt(props.count / props.type.quantityPerBox) || 0,
+                'bottle': (props.count % props.type.quantityPerBox) || 0,
             },
             errors: {},
         });
@@ -53,6 +61,9 @@ export default class BottleSelectionDialog extends React.Component {
         this.focus();
     }
 
+    componentDidMount() {
+        this.focus();
+    }
 
     /**
      * Called on field change
@@ -69,12 +80,17 @@ export default class BottleSelectionDialog extends React.Component {
         if(field === 'box' || field === 'bottle') {
             values[field] = values[field].replace(/[^0-9]/, '');
 
-            if(values['box'] > parseInt(this.state.count / this.state.type.quantityPerBox)) {
-                values['box'] = parseInt(this.state.count / this.state.type.quantityPerBox);
-                values['bottle'] = parseInt(this.state.count % this.state.type.quantityPerBox);
+            let limit = this.state.count;
+            if(this.state.state != 'new') {
+                limit = this.state.total;
             }
-            if(values['bottle'] > this.state.count - (values['box'] * this.state.type.quantityPerBox)) {
-                values['bottle'] =  this.state.count - (values['box'] * this.state.type.quantityPerBox);
+
+            if(values['box'] > parseInt(limit / this.state.type.quantityPerBox)) {
+                values['box'] = parseInt(limit / this.state.type.quantityPerBox);
+                values['bottle'] = parseInt(limit % this.state.type.quantityPerBox);
+            }
+            if(values['bottle'] > limit - (values['box'] * this.state.type.quantityPerBox)) {
+                values['bottle'] =  limit - (values['box'] * this.state.type.quantityPerBox);
             }
         }
 
@@ -94,17 +110,30 @@ export default class BottleSelectionDialog extends React.Component {
             e.preventDefault();
         }
 
-        if(this.props.submit) {
+        let box = parseInt(this.state.values.box || 0);
+        let bottle = parseInt(this.state.values.bottle || 0);
+        let quantityPerBox = parseInt(this.state.type.quantityPerBox || 1);
+        let count = parseInt(this.state.count || 0);
 
-            let box = parseInt(this.state.values.box || 0);
-            let bottle = parseInt(this.state.values.bottle || 0);
-            let quantityPerBox = parseInt(this.state.type.quantityPerBox || 1);
+        let quantity = count - (box * quantityPerBox + bottle);
 
-            let selected = box * quantityPerBox + bottle;
-
-            this.props.submit(selected);
+        if(quantity != 0) {
+            BottleActionService.create({
+                team: this.state.team.id,
+                type: this.state.type.id,
+                quantity: quantity,
+                operation: 'purchased',
+            })
+            .then(() => {
+                NotificationActions.snackbar('Vos modifications ont été enregistrées.');
+                this.props.close();
+            })
+            .catch(error => NotificationActions.error("Erreur lors de l'etat des fûts.", error));
         }
-
+        else {
+            NotificationActions.snackbar('Rien n\'a été modifié.');
+            this.props.close();
+        }
     }
 
     focus() {
@@ -123,18 +152,12 @@ export default class BottleSelectionDialog extends React.Component {
 
         const actions = [
             <FlatButton
-                label="Désélectionner"
-                secondary={true}
-                onTouchTap={() => (this.props.submit && this.props.submit(0))}
-                className="Dialog__DeleteButon"
-            />,
-            <FlatButton
                 label="Annuler"
                 secondary={true}
                 onTouchTap={this.props.close}
             />,
             <FlatButton
-                label="Sélectionner"
+                label="Sauvegarder"
                 primary={true}
                 type="submit"
                 onTouchTap={this._handleSubmit}
@@ -144,7 +167,7 @@ export default class BottleSelectionDialog extends React.Component {
         return (
 
             <Dialog
-                title={'Sélection de ' + (this.state.values.byBottle?'bouteilles':'cartons') + ' : ' + this.state.type.name}
+                title={'Mise à jour de ' + this.state.type.name + ' restant'}
                 open={this.props.show}
                 actions={actions}
                 onRequestClose={this.props.close}
@@ -152,7 +175,8 @@ export default class BottleSelectionDialog extends React.Component {
 
                 <form onSubmit={this._handleSubmit}>
                     <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                    Selectionner
+
+                    Il reste
                     <TextField
                         name="box"
                         errorText={this.state.errors.box}

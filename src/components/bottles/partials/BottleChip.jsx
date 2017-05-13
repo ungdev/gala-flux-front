@@ -2,6 +2,7 @@ import React from 'react';
 
 import Avatar from 'material-ui/Avatar';
 import Chip from 'material-ui/Chip';
+import ReactTooltip from 'react-tooltip';
 import * as color from 'material-ui/styles/colors';
 import BottleSelectionDialog from 'components/bottles/dialogs/BottleSelectionDialog.jsx';
 
@@ -91,13 +92,14 @@ export default class BottleChip extends React.Component {
         }
 
         // Tooltip generation
-        let tooltip = this.state.type.name;
+        let tooltipH = this.state.type.name;
         if(this.state.team) {
-            tooltip = this.state.type.name + ' - ' + this.state.team.name;
+            tooltipH = this.state.type.name + ' - ' + this.state.team.name;
         }
 
         // Calculate number of boxes
         let box = this.state.type.quantityPerBox > 1 ? Math.round(this.state.count * 10 / this.state.type.quantityPerBox) / 10 : 0;
+        let bottleLeft = this.state.type.quantityPerBox > 1 ? this.state.count % this.state.type.quantityPerBox : this.state.count;
         let selectedBox = this.state.selected ? Math.round(this.state.selected * 10 / this.state.type.quantityPerBox) / 10 : 0;
 
         return (
@@ -106,7 +108,8 @@ export default class BottleChip extends React.Component {
                 backgroundColor={background}
                 onRequestDelete={this.props.onRequestDelete ? (() => this.props.onRequestDelete(this.state.bottleType)) : null}
                 onTouchTap={((this.props.selectable && this.props.onSelection) || this.props.onClick) ? this._handleClick : undefined}
-                title={tooltip}
+                data-tip
+                data-for={'BottleChip-' + this.state.count + '-' + this.state.state + '-' + this.state.type + '-' + this.state.team}
             >
                 <Avatar className="BottleChip__shortname"  backgroundColor={avatarBackground}>
                     {this.state.type.shortName}
@@ -115,7 +118,7 @@ export default class BottleChip extends React.Component {
                     className="BottleChip__content"
                     style={{fontWeight: this.state.selected ? 'bold': 'normal'}}
                 >
-                    {( this.state.type.quantityPerBox > 1 && Number.isInteger(box) && (!selectedBox || Number.isInteger(selectedBox))  ?
+                    {( this.state.type.quantityPerBox > 1 && box >= 2 && (!selectedBox || Number.isInteger(selectedBox))  ?
                         (this.state.selected ? selectedBox +'/' : '') + box + ' carton' + (box>1?'s':'')
                         :
                         (this.state.selected ? this.state.selected +'/' : '') + this.state.count + ' bouteille' + (this.state.count>1?'s':'')
@@ -132,6 +135,18 @@ export default class BottleChip extends React.Component {
                         submit={this._handleSelectSubmit}
                      />
                 }
+
+                <ReactTooltip
+                    id={'BottleChip-' + this.state.count + '-' + this.state.state + '-' + this.state.type + '-' + this.state.team}
+                    place="bottom"
+                    style={{textAlign: 'center', zIndex: '10'}}
+                >
+                    {(this.state.type && <span> {this.state.type.name} <br/></span>)}
+                    {(this.state.team && <span> {this.state.team.name} <br/></span>)}
+                    {(parseInt(box) + ' carton' + (parseInt(box)>1?'s ':' '))}
+                    et {(bottleLeft + ' bouteille' + (bottleLeft>1?'s ':' '))} <br/>
+                    {(this.state.selected ? this.state.selected +'/' : '') + this.state.count + ' bouteille' + (this.state.count>1?'s':'')}
+                </ReactTooltip>
             </Chip>
 
         );
