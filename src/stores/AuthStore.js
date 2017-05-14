@@ -220,7 +220,7 @@ class AuthStore extends BaseStore {
                 break;
             case "AUTH_AUTHENTICATED":
                 // handle firebase token
-                SessionService.sendFirebaseToken();
+                SessionService.initAndroidSession();
                 break;
         }
     }
