@@ -4,6 +4,9 @@ export const jwtName = 'token';
 // Contains the old value JWT stored in jwtName (used for the "login as" feature)
 export const firstJwtName = 'firstToken';
 
+// The value of firebaseTokenName is the name of the firebase token in the localStorage
+export const firebaseTokenName = 'firebaseToken';
+
 // websocket target full uri
 export const webSocketUri = process.env.FLUX_API_URI || 'http://192.168.1.2:1337';
 
@@ -15,4 +18,4 @@ export const build = {
     repo: process.env.TRAVIS_REPO_SLUG,
     branch: process.env.TRAVIS_BRANCH,
     commit: process.env.TRAVIS_COMMIT,
-}
+};
