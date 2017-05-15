@@ -1,14 +1,20 @@
 import React from 'react';
 
 import BarrelService from 'services/BarrelService';
+import BottleActionService from 'services/BottleActionService';
 import BarrelStore from 'stores/BarrelStore';
 import BarrelTypeStore from 'stores/BarrelTypeStore';
+import BottleActionStore from 'stores/BottleActionStore';
+import BottleTypeStore from 'stores/BottleTypeStore';
+import TeamStore from 'stores/TeamStore';
 import AuthStore from 'stores/AuthStore';
 import NotificationActions from 'actions/NotificationActions';
 
 import Subheader from 'material-ui/Subheader';
 
 import { Row, Col } from 'react-flexbox-grid';
+import BottleChip from 'components/bottles/partials/BottleChip.jsx';
+import UpdateBottleDialog from 'components/bottles/dialogs/UpdateBottleDialog.jsx';
 import BarrelChip from 'components/barrels/partials/BarrelChip.jsx';
 import CenteredMessage from 'components/partials/CenteredMessage.jsx';
 
@@ -24,62 +30,166 @@ export default class BarBarrels extends React.Component {
                 "new": {},
                 "opened": {},
                 "empty": {}
-            }
+            },
+            bottles: {
+                "new": {},
+                "empty": {}
+            },
+            updatedBottle: {type: null, count: 0, state: 'new'},
         };
 
         this.BarrelStoreToken = null;
         this.BarrelTypeStoreToken = null;
+        this.TeamStoreToken = null;
+        this.BottleActionStoreToken = null;
+        this.BottleTypeStoreToken = null;
 
         this.states = ["new", "opened", "empty"];
 
         // binding
-        this._setBarrels = this._setBarrels.bind(this);
+        this._loadData = this._loadData.bind(this);
+        this._unloadData = this._unloadData.bind(this);
+        this._updateData = this._updateData.bind(this);
+
+        this._updateBarrelState = this._updateBarrelState.bind(this);
         this._backPreviousState = this._backPreviousState.bind(this);
         this._moveNextState = this._moveNextState.bind(this);
-        this._updateBarrelState = this._updateBarrelState.bind(this);
     }
 
+
+
+
+
     componentDidMount() {
-        // fill the stores
-        BarrelStore.loadData(null)
-        .then(data => {
-            // ensure that last token doen't exist anymore.
-            BarrelStore.unloadData(this.BarrelStoreToken);
-
-            // save the component token
-            this.BarrelStoreToken = data.token;
-            // get distinct barrel types id and create objects with their id
-            let types = [...new Set(data.result.map(barrel => barrel.type))];
-            for (let i in types) {
-                types[i] = {id: types[i]};
-            }
-
-            return BarrelTypeStore.loadData(types)
+        // Load data from the store
+        this._loadData()
+        .then(() => {
+            // listen the stores changes
+            BarrelStore.addChangeListener(this._updateData);
+            BarrelTypeStore.addChangeListener(this._updateData);
+            TeamStore.addChangeListener(this._updateData);
+            BottleActionStore.addChangeListener(this._updateData);
+            BottleTypeStore.addChangeListener(this._updateData);
         })
-        .then(data => {
-            // ensure that last token doen't exist anymore.
-            BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
-
-            // save the component token
-            this.BarrelTypeStoreToken = data.token;
-        })
-        .catch(error => NotificationActions.error("Erreur lors de la lecture des fûts.", error));
-
-        // listen the stores changes
-        BarrelStore.addChangeListener(this._setBarrels);
-        BarrelTypeStore.addChangeListener(this._setBarrels);
-        // init barrels list and barrelTypes list
-        this._setBarrels();
     }
 
     componentWillUnmount() {
-        // clear stores
+        // clear store
+        this._unloadData();
+
+        // remove the stores listeners
+        BarrelStore.removeChangeListener(this._updateData);
+        BarrelTypeStore.removeChangeListener(this._updateData);
+        TeamStore.removeChangeListener(this._updateData);
+        BottleActionStore.removeChangeListener(this._updateData);
+        BottleTypeStore.removeChangeListener(this._updateData);
+    }
+
+    /**
+     * Load data from all stores and update state
+     */
+    _loadData() {
+        // fill the stores
+        return BarrelStore.loadData({place: AuthStore.team && AuthStore.team.id})
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            BarrelStore.unloadData(this.BarrelStoreToken);
+            // save the component token
+            this.BarrelStoreToken = data.token;
+
+            return BarrelTypeStore.loadData(null);
+        })
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
+            // save the component token
+            this.BarrelTypeStoreToken = data.token;
+
+            return BottleActionStore.loadCount();
+        })
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            BottleActionStore.unloadCount(this.BottleActionStoreToken);
+            // save the component token
+            this.BottleActionStoreToken = data.token;
+
+            return BottleTypeStore.loadData(null);
+        })
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            BottleTypeStore.unloadData(this.BottleTypeStoreToken);
+            // save the component token
+            this.BottleTypeStoreToken = data.token;
+
+            return TeamStore.loadData(null);
+        })
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            TeamStore.unloadData(this.TeamStoreToken);
+            // save the component token
+            this.TeamStoreToken = data.token;
+
+            // init values
+            this._updateData();
+        })
+        .catch(error => NotificationActions.error("Erreur lors de la récupération des stocks.", error));
+    }
+
+    /**
+     * clear stores
+     */
+    _unloadData() {
         BarrelStore.unloadData(this.BarrelStoreToken);
         BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
-        // remove the stores listeners
-        BarrelStore.removeChangeListener(this._setBarrels);
-        BarrelTypeStore.removeChangeListener(this._setBarrels);
+        TeamStore.unloadData(this.TeamStoreToken);
+        BottleActionStore.unloadCount(this.BottleActionStoreToken);
+        BottleTypeStore.unloadData(this.BottleTypeStoreToken);
     }
+
+
+
+
+
+    /**
+     * Update data according to stores without adding new filter to it
+     */
+    _updateData() {
+        let state = {
+            barrels: {
+                "new": {},
+                "opened": {},
+                "empty": {}
+            },
+            bottles: {
+                "new": {},
+                "empty": {}
+            },
+        };
+
+        // Init barrels
+        for (let barrel of BarrelStore.find({place: AuthStore.team.id})) {
+            if(!state.barrels[barrel.state][barrel.type]) {
+                state.barrels[barrel.state][barrel.type] = [];
+            }
+            state.barrels[barrel.state][barrel.type].push(barrel);
+        }
+
+        // Init bottles
+        let count = BottleActionStore.count[AuthStore.team.id]
+        if(count) {
+            for (let typeId in count) {
+                for (let bottleState in count[typeId]) {
+                    if(count[typeId][bottleState] > 0) {
+                        state.bottles[bottleState][typeId] = count[typeId][bottleState];
+                    }
+                }
+            }
+        }
+
+        this.setState(state);
+    }
+
+
 
     /**
      * If the barrel state is not the last state, call the method
@@ -114,34 +224,9 @@ export default class BarBarrels extends React.Component {
      * @param {string} newState: the new barrel state
      */
     _updateBarrelState(barrel, newState) {
-        barrel.state = newState;
-        BarrelService.update(barrel.id, barrel)
+        BarrelService.update(barrel.id, {state: newState})
         .catch(error => NotificationActions.error("Erreur lors de l'etat des fûts.", error));
     }
-
-    /**
-     * Set the barrels in the store with the barrel of the user's team
-     */
-    _setBarrels() {
-        // if the AuthStore.user attribute is not initialized yet, we don't know the user's team
-        if (AuthStore.user && BarrelTypeStore.types) {
-            const barrels = {
-                "new": {},
-                "opened": {},
-                "empty": {}
-            };
-            // put each barrel of the user's team in the matching state indexed by type
-            for (let barrel of BarrelStore.find({place: AuthStore.user.team})) {
-                if(!barrels[barrel.state][barrel.type]) {
-                    barrels[barrel.state][barrel.type] = [];
-                }
-                barrels[barrel.state][barrel.type].push(barrel);
-            }
-
-            this.setState({ barrels });
-        }
-    }
-
 
     render() {
         return (
@@ -150,9 +235,9 @@ export default class BarBarrels extends React.Component {
                     <h3>En stock</h3>
                     <div>
                         {
-                            Object.keys(this.state.barrels.new).length
+                            Object.keys(this.state.barrels.new).length || Object.keys(this.state.bottles.new).length
                                 ?
-                                    Object.keys(this.state.barrels.new).map((typeId, i) => {
+                                    [Object.keys(this.state.barrels.new).map((typeId, i) => {
                                         let type = BarrelTypeStore.findById(typeId);
                                         return <div key={i}>
                                             <h4>{type ? type.name : ''}</h4>
@@ -170,10 +255,26 @@ export default class BarBarrels extends React.Component {
                                             </div>
                                         </div>
 
-                                    })
+                                    }),
+                                    Object.keys(this.state.bottles.new).map((typeId, i) => {
+                                        let type = BottleTypeStore.findById(typeId);
+                                        let total = (this.state.bottles.new[typeId] || 0) + (this.state.bottles.empty[typeId] || 0);
+                                        return <div key={i}>
+                                            <h4>{type ? type.name : ''}</h4>
+                                            <div className="BarrelChipContainer">
+                                                <BottleChip
+                                                    count={this.state.bottles.new[typeId]}
+                                                    state="new"
+                                                    type={type}
+                                                    onClick={() => this.setState({updatedBottle: {type: type, count: this.state.bottles.new[typeId], state: 'new', total: total}})}
+                                                />
+                                            </div>
+                                        </div>
+
+                                    })]
 
                                 :
-                                    <small>Aucun fût en stock.</small>
+                                    <small>Aucun item en stock.</small>
                         }
                     </div>
                 </Col>
@@ -205,7 +306,7 @@ export default class BarBarrels extends React.Component {
                                     })
 
                                 :
-                                <small>Aucun fût ouvert.</small>
+                                <small>Aucun item ouvert.</small>
                         }
                     </div>
                 </Col>
@@ -213,9 +314,9 @@ export default class BarBarrels extends React.Component {
                     <h3>Terminé</h3>
                     <div>
                         {
-                            Object.keys(this.state.barrels.empty).length
+                            Object.keys(this.state.barrels.empty).length || Object.keys(this.state.bottles.empty).length
                                 ?
-                                    Object.keys(this.state.barrels.empty).map((typeId, i) => {
+                                    [Object.keys(this.state.barrels.empty).map((typeId, i) => {
                                         let type = BarrelTypeStore.findById(typeId);
                                         return <div key={i}>
                                             <h4>{type ? type.name : ''}</h4>
@@ -233,13 +334,40 @@ export default class BarBarrels extends React.Component {
                                             </div>
                                         </div>
 
-                                    })
+                                    }),
+                                    Object.keys(this.state.bottles.empty).map((typeId, i) => {
+                                        let type = BottleTypeStore.findById(typeId);
+                                        let total = (this.state.bottles.new[typeId] || 0) + (this.state.bottles.empty[typeId] || 0);
+                                        return <div key={i}>
+                                            <h4>{type ? type.name : ''}</h4>
+                                            <div className="BarrelChipContainer">
+                                                <BottleChip
+                                                    count={this.state.bottles.empty[typeId]}
+                                                    state="empty"
+                                                    type={type}
+                                                    onRequestDelete={() => this.setState({updatedBottle: {type: type, count: this.state.bottles.new[typeId], state: 'empty', total: total}})}
+                                                />
+                                            </div>
+                                        </div>
+
+                                    })]
 
                                 :
-                                <small>Aucun fût terminé.</small>
+                                <small>Aucun item terminé.</small>
                         }
                     </div>
                 </Col>
+                { this.state.updatedBottle.type &&
+                    <UpdateBottleDialog
+                        type={this.state.updatedBottle.type}
+                        count={this.state.updatedBottle.count}
+                        total={this.state.updatedBottle.total}
+                        team={AuthStore.team}
+                        state={this.state.updatedBottle.state}
+                        show={this.state.updatedBottle.type != null}
+                        close={() => this.setState({updatedBottle: {type: null, count: 0, state: 'new'}})}
+                    />
+                }
             </Row>
         );
     }

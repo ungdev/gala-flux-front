@@ -2,12 +2,15 @@ import React from 'react';
 
 import NotificationActions from 'actions/NotificationActions';
 import BarrelService from 'services/BarrelService';
+import BottleActionService from 'services/BottleActionService';
+import BottleTypeStore from 'stores/BottleTypeStore';
 import BarrelTypeStore from 'stores/BarrelTypeStore';
 import TeamStore from 'stores/TeamStore';
 
 import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import FlatButton from 'material-ui/FlatButton';
 import BarrelChip from 'components/barrels/partials/BarrelChip.jsx';
+import BottleChip from 'components/bottles/partials/BottleChip.jsx';
 import LocationSelect from 'components/stock/LocationSelect.jsx';
 
 export default class MoveDialog extends React.Component {
@@ -17,6 +20,7 @@ export default class MoveDialog extends React.Component {
 
         this.state = {
             barrels: props.barrels,
+            bottles: props.bottles,
             teams: props.teams,
             team: null
         };
@@ -25,10 +29,11 @@ export default class MoveDialog extends React.Component {
         this._moveBarrels = this._moveBarrels.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(props) {
         this.setState({
-            barrels: nextProps.barrels,
-            teams: nextProps.teams
+            barrels: props.barrels,
+            bottles: props.bottles,
+            teams: props.teams
         });
     }
 
@@ -37,11 +42,29 @@ export default class MoveDialog extends React.Component {
      */
     _moveBarrels() {
         BarrelService.moveBarrels(this.state.barrels, this.state.team)
-            .then(_ => {
-                this.props.close(true);
-                NotificationActions.snackbar("Les fûts ont bien été déplacés.");
-            })
-            .catch(error => NotificationActions.error("Erreur lors du déplacement des fûts.", error));
+        .then(_ => {
+
+            // Prepare to move bottles
+            let promises = [];
+            for (let teamId in this.state.bottles) {
+                for (let typeId in this.state.bottles[teamId]) {
+                    promises.push(BottleActionService.create({
+                            team: this.state.team,
+                            fromTeam: teamId,
+                            type: typeId,
+                            quantity: this.state.bottles[teamId][typeId],
+                            operation: 'moved',
+                        })
+                    );
+                }
+            }
+            return Promise.all(promises);
+        })
+        .then(_ => {
+            this.props.close(true);
+            NotificationActions.snackbar("Les fûts et bouteilles ont bien été déplacés.");
+        })
+        .catch(error => NotificationActions.error("Erreur lors du déplacement des fûts et bouteilles.", error));
     }
 
     render() {
@@ -58,12 +81,6 @@ export default class MoveDialog extends React.Component {
             />
         ];
 
-        const styles = {
-            chip: {
-                display: "inline-block"
-            }
-        };
-
         return (
             <div>
                 {
@@ -76,19 +93,13 @@ export default class MoveDialog extends React.Component {
                         actions={actions}
                     >
                         <p>
-                            Les fûts sélectionnés vont être déplacés. Choisissez la destination.
+                            Les fûts et bouteilles suivantes vont être déplacés.
                         </p>
-                        <LocationSelect
-                            teams={this.state.teams}
-                            value={this.state.team}
-                            setValue={(e, i, v) => this.setState({ team: v })}
-                            floatingLabel={true}
-                        />
+
                         <div className="BarrelChipContainer">
                             {
                                 this.state.barrels.map((barrel, i) => {
                                     return <BarrelChip
-                                                style={styles.chip}
                                                 key={i}
                                                 barrel={barrel}
                                                 team={TeamStore.findById(barrel.place)}
@@ -96,7 +107,29 @@ export default class MoveDialog extends React.Component {
                                             />
                                 })
                             }
+                            {
+                                Object.keys(this.state.bottles).map(teamId => {
+                                    let team = TeamStore.findById(teamId);
+                                    return Object.keys(this.state.bottles[teamId]).map(typeId => {
+                                        let type = BottleTypeStore.findById(typeId);
+                                        return  <BottleChip
+                                            key={(teamId + typeId)}
+                                            count={this.state.bottles[teamId][typeId]}
+                                            state="new"
+                                            type={type}
+                                            team={team}
+                                        />
+                                    })
+                                })
+                            }
                         </div>
+
+                        <LocationSelect
+                            teams={this.state.teams}
+                            value={this.state.team}
+                            setValue={(e, i, v) => this.setState({ team: v })}
+                            floatingLabel="Destination"
+                        />
                     </Dialog>
                 }
             </div>

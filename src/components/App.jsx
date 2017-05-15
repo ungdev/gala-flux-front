@@ -38,7 +38,30 @@ export default class App extends React.Component {
             this.setState({
                 route: route,
             });
+
+            // Update android interface route
+            if (global.Android) {
+                Android.setRoute(route.name);
+                if(route.params.channel) {
+                    Android.setChannel(route.params.channel);
+                }
+                else {
+                    Android.setChannel("");
+                }
+            }
         });
+
+        // Init android interface route
+        if (global.Android && router.getState()) {
+            let route = router.getState();
+            Android.setRoute(route.name);
+            if(route.params.channel) {
+                Android.setChannel(route.params.channel);
+            }
+            else {
+                Android.setChannel("");
+            }
+        }
 
         // listen the stores changes
         AuthStore.addChangeListener(this._handleAuthStoreChange);
