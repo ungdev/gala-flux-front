@@ -1,7 +1,12 @@
+import BaseService from 'services/BaseService';
 import {ApiError} from 'errors';
 import * as constants from '../config/constants';
 
-class SessionService {
+class SessionService extends BaseService {
+
+    constructor() {
+        super('session');
+    }
 
     /**
      * Look if there is a firebase token in the url

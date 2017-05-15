@@ -3,6 +3,7 @@ import React from 'react';
 import TeamStore from 'stores/TeamStore';
 import BarrelStore from 'stores/BarrelStore';
 import UserStore from 'stores/UserStore';
+import SessionStore from 'stores/SessionStore';
 import BarrelTypeStore from 'stores/BarrelTypeStore';
 import NotificationActions from 'actions/NotificationActions';
 
@@ -26,6 +27,7 @@ export default class BarList extends React.Component {
         this.BarrelStoreToken = null;
         this.BarrelTypeStoreToken = null;
         this.UserStoreToken = null;
+        this.SessionStoreToken = null;
 
         // binding
         this._setTeams = this._setTeams.bind(this);
@@ -58,6 +60,15 @@ export default class BarList extends React.Component {
             // save the component token
             this.BarrelTypeStoreToken = data.token;
 
+            return SessionStore.loadData(null);
+
+        })
+        .then(data => {
+            // ensure that last token doesn't exist anymore.
+            SessionStore.unloadData(this.SessionStoreToken);
+            // save the component token
+            this.SessionStoreToken = data.token;
+
             return UserStore.loadData(null);
 
         })
@@ -71,6 +82,7 @@ export default class BarList extends React.Component {
             TeamStore.addChangeListener(this._setTeams);
             BarrelStore.addChangeListener(this._setBarrels);
             UserStore.addChangeListener(this._setUsers);
+            SessionStore.addChangeListener(this._setUsers);
             // init teams
             this._setTeams();
             this._setBarrels();
@@ -85,10 +97,12 @@ export default class BarList extends React.Component {
         BarrelStore.unloadData(this.TeamStoreToken);
         BarrelTypeStore.unloadData(this.TeamStoreToken);
         UserStore.unloadData(this.UserStoreToken);
+        SessionStore.unloadData(this.SessionStoreToken);
         // remove the listener
         TeamStore.removeChangeListener(this._setTeams);
         BarrelStore.removeChangeListener(this._setBarrels);
         UserStore.removeChangeListener(this._setUsers);
+        SessionStore.removeChangeListener(this._setUsers);
     }
 
     /**
@@ -99,20 +113,28 @@ export default class BarList extends React.Component {
     }
 
     /**
-     * Update the users in the state with the users from UserStore
+     * Count the number of active users for each team, and set the localStorage
      */
     _setUsers() {
         const storeUsers = UserStore.users;
         let users = {};
 
-        for (let user of storeUsers) {
-            // if the team doesn't exists in the users object, create it
-            if (!users[user.team]) {
-                users[user.team] = [];
-            }
-            // if the user is logged, add it
-            if (user.lastDisconnection < user.lastConnection) {
-                users[user.team].push(user);
+        // loop through sessions
+        for (let session of SessionStore.sessions) {
+            // get the user
+            const user = UserStore.findById(session.user);
+            if (user) {
+                // if the user is active, increment the number of active user for this team
+                if (session.lastAction >= session.disconnectedAt) {
+                    if (users[user.team]) {
+                        // check if the user is not already in the active users of this team
+                        if (!users[user.team].find(user.id)) {
+                            users[user.team].push(user.id);
+                        }
+                    } else {
+                        users[user.team] = [user.id];
+                    }
+                }
             }
         }
 
