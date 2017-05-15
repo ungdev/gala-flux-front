@@ -9,8 +9,34 @@ import AuthActions from 'actions/AuthActions';
 require('styles/partials/ResponsiveDialog.scss');
 
 export default class ResponsiveDialog extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            open: this.props.open,
+        };
+        if(props.open) {
+            if(global.Android) Android.setModal(props.open);
+        }
+    }
+
+    componentWillReceiveProps(props) {
+        if(props.open != this.state.open) {
+            this.setState({open: props.open});
+            if(global.Android) Android.setModal(props.open);
+        }
+    }
+
+    componentWillUnmount() {
+        if(this.props.open) {
+            if(global.Android) Android.setModal(false);
+        }
+    }
+
     render() {
         let props = Object.assign({}, this.props);
+            // console.log('render:'+props.open)
         props.autoScrollBodyContent = true;
         props.className = 'ResponsiveDialog ' + (props.className || '');
         props.actionsContainerClassName = 'ResponsiveDialog__actions ' + (props.actionsContainerClassName || '');

@@ -4,6 +4,7 @@ import AuthService from 'services/AuthService';
 import UserService from 'services/UserService';
 import TeamService from 'services/TeamService';
 import AuthActions from 'actions/AuthActions';
+import SessionService from 'services/SessionService';
 import NotificationActions from 'actions/NotificationActions';
 
 const LOCALSTORAGE_NOTIFICATIONS_ITEM = 'notifications';
@@ -41,7 +42,6 @@ class AuthStore extends BaseStore {
             desktop: true
         };
     }
-
 
     /**
      * init the store : pull current roles->permission association
@@ -217,6 +217,10 @@ class AuthStore extends BaseStore {
                 break;
             case "AUTH_LOGGED_BACK":
                 this.loginAs = false;
+                break;
+            case "AUTH_AUTHENTICATED":
+                // handle firebase token
+                SessionService.openSession();
                 break;
         }
     }

@@ -16,7 +16,7 @@ export default class BarCard extends React.Component {
 
         this.state = {
             team: props.team,
-            users: props.users,
+            users: props.users ? props.users.length : 0,
             barrels: props.barrels,
             alerts: props.alerts
         };
@@ -25,7 +25,7 @@ export default class BarCard extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({
             team: nextProps.team,
-            users: nextProps.users,
+            users: nextProps.users ? nextProps.users.length : 0,
             alerts: nextProps.alerts,
             barrels: nextProps.barrels
         });
@@ -38,7 +38,7 @@ export default class BarCard extends React.Component {
                 fontWeight: "bold"
             },
             badge: {
-                background: this.state.users && this.state.users.length > 0 ? color.teal600 : color.red600
+                background: this.state.users > 0 ? color.teal600 : color.red600
             }
         };
 
@@ -46,7 +46,7 @@ export default class BarCard extends React.Component {
             <Card className="BarCard">
                 <div className="UsersLogged">
                     <Badge
-                        badgeContent={this.state.users ? this.state.users.length : 0}
+                        badgeContent={this.state.users}
                         primary={true}
                         badgeStyle={styles.badge}
                     >

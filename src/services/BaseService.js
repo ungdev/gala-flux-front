@@ -63,7 +63,7 @@ export default class BaseService {
     }
 
     /**
-     *
+     * Make a request to get a document by his id
      *
      * @param id
      * @returns {Promise}

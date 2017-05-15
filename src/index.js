@@ -34,6 +34,7 @@ import jwtDecode from 'jwt-decode';
 
 // actions and services
 import WebSocketService from 'services/WebSocketService';
+import SessionService from 'services/SessionService';
 
 // Connect to websocket server
 WebSocketService.connect();
@@ -48,32 +49,12 @@ ReactDOM.render(
     document.getElementById('app')
 );
 
-/**
- * Check if the user is authenticated
- * used to protect some routes
- *
- * Parameters are from react-router (onEnter prop)
- *
- * @param nextState
- * @param replace
- * @param callback
- * @returns callback
- */
-function requireAuth (nextState, replace, callback) {
-    // if there is a valid JWT in the localStorage, continue
-    let jwt = localStorage.getItem(constants.jwtName);
-    if(jwt) {
-        try {
-            jwtDecode(jwt);
-            return callback();
-        } catch (e) {
-            console.error('JWT Decode error:', e);
-            localStorage.removeItem(constants.jwtName);
-            replace('/');
-            return callback();
-        }
-    }
-    else {
-        replace('/');
+// Init android interface
+if (global.Android) {
+    Android.setApiUri(constants.webSocketUri);
+
+    // Add method that execute js code
+    Android.navigate = (route, param) => {
+        router.navigate(route, param);
     }
 }
