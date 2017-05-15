@@ -128,7 +128,7 @@ export default class BarList extends React.Component {
                 if (session.lastAction >= session.disconnectedAt) {
                     if (users[user.team]) {
                         // check if the user is not already in the active users of this team
-                        if (!users[user.team].find(user.id)) {
+                        if (!users[user.team].includes(user.id)) {
                             users[user.team].push(user.id);
                         }
                     } else {
