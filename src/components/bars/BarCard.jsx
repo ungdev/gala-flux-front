@@ -1,4 +1,5 @@
 import React from 'react';
+import router from 'router';
 
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import BarrelsInfo from 'components/bars/BarrelsInfo.jsx';
@@ -18,8 +19,12 @@ export default class BarCard extends React.Component {
             team: props.team,
             users: props.users ? props.users.length : 0,
             barrels: props.barrels,
-            alerts: props.alerts
+            alerts: props.alerts,
+            headerHovered: false
         };
+
+        this._showBarHome = this._showBarHome.bind(this);
+        this._toggleHover= this._toggleHover.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -31,16 +36,31 @@ export default class BarCard extends React.Component {
         });
     }
 
+    _toggleHover() {
+        this.setState({ headerHovered: !this.state.headerHovered });
+    }
+
+    _showBarHome() {
+        router.navigate('barhome.id', {id: this.state.team.id});
+    }
+
     render() {
         const styles = {
             title: {
                 fontSize: 20,
                 fontWeight: "bold"
             },
+            header: {
+                cursor: "pointer"
+            },
             badge: {
                 background: this.state.users > 0 ? color.teal600 : color.red600
             }
         };
+
+        if (this.state.headerHovered) {
+            styles.title.borderBottom = "1px solid black";
+        }
 
         return (
             <Card className="BarCard">
@@ -55,8 +75,12 @@ export default class BarCard extends React.Component {
                 </div>
                 <CardHeader
                     titleStyle={styles.title}
+                    style={styles.header}
                     title={this.state.team.name}
                     subtitle={this.state.team.location}
+                    onClick={this._showBarHome}
+                    onMouseEnter={this._toggleHover}
+                    onMouseLeave={this._toggleHover}
                 />
                 <CardText>
                     <AlertsInfo alerts={this.state.alerts} />

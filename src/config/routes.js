@@ -9,6 +9,8 @@
 export default [
     { name: 'home', path: '/'},
     { name: 'alert', path: '/alert', title: 'Alertes'},
+    { name: 'barhome', path: '/bar', title: 'Bar'},
+        { name: 'barhome.id', path: '/:id', title: 'Bar'},
     { name: 'bars', path: '/bars', title: 'Bars' },
     { name: 'chat', path: '/chat', title: 'Chat' },
         { name: 'chat.channel', path: '/:channel', title: (route) => {
