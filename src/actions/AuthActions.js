@@ -44,10 +44,6 @@ function logout() {
     router.navigate('home');
     NotificationActions.snackbar('À bientôt !');
     location.href = '/';
-
-    AppDispatcher.dispatch({
-        type: 'AUTH_LOGGED_OUT'
-    });
 }
 
 /**

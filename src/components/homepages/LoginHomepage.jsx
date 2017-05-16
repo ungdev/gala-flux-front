@@ -58,7 +58,6 @@ export default class LoginHomepage extends React.Component {
     }
 
     render() {
-        console.log(this.state.connected)
         return (
             <div className="LoginPage">
                 <img src={LOGO} alt="Flux" className="LoginPage__logo"/>
@@ -67,13 +66,14 @@ export default class LoginHomepage extends React.Component {
                 :
                     [
                         <RaisedButton
+                            key={1}
                             icon={(this.state.etuuttLoading ? <CircularProgress size={20} thickness={2} style={{lineHeight: 'normal'}} /> : null)}
                             disabled={this.state.etuuttLoading}
                             label="Se connecter avec un compte UTT"
                             primary={true}
                             onTouchTap={this._login} />,
                         (!global.Android &&
-                            <a className="LoginPage__googleplay" href="http://play.google.com/store/apps/details?id=fr.utt.ung.flux">
+                            <a key={2} className="LoginPage__googleplay" href="http://play.google.com/store/apps/details?id=fr.utt.ung.flux">
                                 <img src={GOOGLEPLAY_BADGE} alt="Disponible sur Google Play" />
                             </a>
                         )
