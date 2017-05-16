@@ -3,7 +3,8 @@ import React from 'react';
 import ChatMessageList from 'components/chat/ChatMessageList.jsx';
 import ChatMessageForm from 'components/chat/ChatMessageForm.jsx';
 import BarBarrels from 'components/barrels/BarBarrels.jsx';
-import BarAlertButtons  from 'components/alertButtons/BarAlertButtons.jsx';
+import BarAlertButtons from 'components/alertButtons/BarAlertButtons.jsx';
+import BarNav from 'components/bars/BarNav.jsx';
 
 export default class BarHome extends React.Component {
 
@@ -17,7 +18,7 @@ export default class BarHome extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            barId: nextProps.barId,
+            barId: nextProps.barId
         });
     }
 
@@ -36,7 +37,7 @@ export default class BarHome extends React.Component {
                         <ChatMessageForm channel={null}/>
                     </div>
                     <div className="BarHomePage_nav">
-                        test
+                        <BarNav barId={this.state.barId} />
                     </div>
                 </div>
             </div>

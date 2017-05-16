@@ -56,6 +56,8 @@ export default class BarBarrels extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({
             barId: nextProps.barId
+        }, _ => {
+            this._updateData();
         });
     }
 
@@ -88,8 +90,9 @@ export default class BarBarrels extends React.Component {
      * Load data from all stores and update state
      */
     _loadData() {
+        console.log("to load :", this.state.barId);
         // fill the stores
-        return BarrelStore.loadData({place: AuthStore.team && AuthStore.team.id})
+        return BarrelStore.loadData(this.state.barId ? null : {place: AuthStore.team && AuthStore.team.id})
         .then(data => {
             // ensure that last token doesn't exist anymore.
             BarrelStore.unloadData(this.BarrelStoreToken);
@@ -159,10 +162,12 @@ export default class BarBarrels extends React.Component {
                 "new": {},
                 "empty": {}
             },
+            barId: this.state.barId
         };
 
         // Init barrels
-        for (let barrel of BarrelStore.find({place: this.state.barId ? this.state.barId : AuthStore.team.id})) {
+        for (let barrel of BarrelStore.find({place: state.barId ? state.barId : AuthStore.team.id})) {
+            console.log("found");
             if(!state.barrels[barrel.state][barrel.type]) {
                 state.barrels[barrel.state][barrel.type] = [];
             }
@@ -170,7 +175,7 @@ export default class BarBarrels extends React.Component {
         }
 
         // Init bottles
-        let count = BottleActionStore.count[this.state.barId ? this.state.barId : AuthStore.team.id];
+        let count = BottleActionStore.count[state.barId ? state.barId : AuthStore.team.id];
         if(count) {
             for (let typeId in count) {
                 for (let bottleState in count[typeId]) {

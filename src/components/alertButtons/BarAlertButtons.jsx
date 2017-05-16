@@ -31,6 +31,8 @@ export default class BarAlertButtons extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({
             barId: nextProps.barId
+        }, _ => {
+            this._setAlerts();
         });
     }
 
