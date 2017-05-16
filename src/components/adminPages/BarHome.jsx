@@ -1,5 +1,10 @@
 import React from 'react';
 
+import ChatMessageList from 'components/chat/ChatMessageList.jsx';
+import ChatMessageForm from 'components/chat/ChatMessageForm.jsx';
+import BarBarrels from 'components/barrels/BarBarrels.jsx';
+import BarAlertButtons  from 'components/alertButtons/BarAlertButtons.jsx';
+
 export default class BarHome extends React.Component {
 
     constructor(props) {
@@ -19,7 +24,18 @@ export default class BarHome extends React.Component {
     render() {
         return (
             <div>
-                {this.state.barId}
+                <div className="BarHomePage BarHomePage_admin">
+                    <div className={('BarHomePage__alerts')}>
+                        <BarAlertButtons />
+                    </div>
+                    <div className={('BarHomePage__stock')}>
+                        <BarBarrels />
+                    </div>
+                    <div className={('BarHomePage__chat')}>
+                        <ChatMessageList channel={null}/>
+                        <ChatMessageForm channel={null}/>
+                    </div>
+                </div>
             </div>
         );
     }

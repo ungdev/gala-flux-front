@@ -36,6 +36,10 @@
     }
 }
 
+.BarHomePage_admin {
+    top: $AppBarHeight + $TabsHeight;
+}
+
 
 @media only screen and (max-width: $screen-max-xs) {
     /**

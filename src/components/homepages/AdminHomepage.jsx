@@ -217,7 +217,7 @@ export default class AdminHomepage extends React.Component {
                             case 'barhome.id':
                                 return (
                                     <div className="AdminPage__splitscreen">
-                                        <BarHome barId={this.state.route.params.id}/>
+                                        <BarHome barId={this.state.route.params.id} />
                                     </div>
                                 );
                         }

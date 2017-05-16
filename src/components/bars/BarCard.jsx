@@ -48,7 +48,8 @@ export default class BarCard extends React.Component {
         const styles = {
             title: {
                 fontSize: 20,
-                fontWeight: "bold"
+                fontWeight: "bold",
+                borderBottom: "1px solid white"
             },
             header: {
                 cursor: "pointer"
