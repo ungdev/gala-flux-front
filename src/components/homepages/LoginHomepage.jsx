@@ -8,6 +8,7 @@ import NotificationActions from 'actions/NotificationActions';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
+
 import LOGO from 'assets/images/logos/logo.svg';
 import GOOGLEPLAY_BADGE from 'assets/images/google-play-badge.png';
 
@@ -74,7 +75,7 @@ export default class LoginHomepage extends React.Component {
                             onTouchTap={this._login} />,
                         (!global.Android &&
                             <a key={2} className="LoginPage__googleplay" href="http://play.google.com/store/apps/details?id=fr.utt.ung.flux">
-                                <img src={GOOGLEPLAY_BADGE} alt="Disponible sur Google Play"/>
+                                <img src={GOOGLEPLAY_BADGE} alt="Disponible sur Google Play" />
                             </a>
                         )
                     ]
