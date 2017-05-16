@@ -120,7 +120,7 @@ export default class ErrorNotification extends React.Component {
     _closeDialog() {
         if(this.state.errorMessage.refresh) {
             AuthActions.logout();
-            location.reload();
+            location.href = '/';
         }
         this.setState({ errorMessage: null, count: this.state.count+1 });
     }
