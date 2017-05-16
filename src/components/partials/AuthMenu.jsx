@@ -71,10 +71,10 @@ class AuthMenu extends React.Component {
     _logout() {
         this._closeMenu();
         AuthService.logout()
-            .then(AuthActions.logout())
-            .catch((error) => {
-                NotificationActions.error("Une erreur s'est produite lors de la deconnexion", error);
-            });
+        .then(() => AuthActions.logout())
+        .catch((error) => {
+            NotificationActions.error("Une erreur s'est produite lors de la deconnexion", error, null, true);
+        });
     }
 
     /**
@@ -125,6 +125,9 @@ class AuthMenu extends React.Component {
     _backToMainAccount() {
         this._closeMenu();
         AuthActions.loginBack()
+        .then(() => {
+            location.href = '/';
+        })
         .catch((error) => {
             NotificationActions.error('Une erreur s\'est produite pendant que votre tentative de reconnexion sur votre compte d\'origine', error);
         })
