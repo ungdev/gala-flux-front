@@ -10,6 +10,9 @@ import muiThemeable from 'material-ui/styles/muiThemeable';
 import Popover from 'material-ui/Popover';
 import Avatar from 'material-ui/Avatar';
 import Divider from 'material-ui/Divider';
+import ReactTooltip from 'react-tooltip';
+import {red500} from 'material-ui/styles/colors';
+import CloudOffIcon from 'material-ui/svg-icons/file/cloud-off';
 
 import LoginAs from 'components/partials/LoginAs.jsx';
 import NotificationsDialog from "components/partials/NotificationsDialog.jsx";
@@ -151,7 +154,25 @@ class AuthMenu extends React.Component {
                         <strong>{this.state.team.name}</strong><br/>
                         {this.state.user.name}
                     </div>
-                    <Avatar src={avatarUri} backgroundColor="white" className="AuthMenu__button__avatar" />
+                    {( AuthStore.connected ?
+                        <Avatar src={avatarUri} backgroundColor="white" className="AuthMenu__button__avatar" />
+                        :
+                        <div>
+                            <Avatar
+                                data-tip
+                                data-for="authmenu-offline"
+                                backgroundColor={red500}
+                                className="AuthMenu__button__avatar"
+                                icon={<CloudOffIcon color="white" />}
+                            />
+                            <ReactTooltip
+                                id="authmenu-offline"
+                                place="left"
+                            >
+                                Acune connexion avec le serveur..
+                            </ReactTooltip>
+                        </div>
+                    )}
                 </button>
                 <Popover
                     anchorEl={this.state.menuAnchor}
