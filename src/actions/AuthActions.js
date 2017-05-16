@@ -68,6 +68,7 @@ function loginAs(id) {
 }
 
 
+
 /**
  * authenticate back to main account after a login as
  */
@@ -111,8 +112,28 @@ function authenticated(user, team) {
     });
 }
 
+/**
+ * Indicate to stores that EtuUTT auth is started
+ */
+function authEtuuttStarted() {
+    AppDispatcher.dispatch({
+        type: 'AUTH_ETUUTT_STARTED'
+    });
+}
+
+/**
+ * Indicate to stores that EtuUTT auth is done
+ */
+function authEtuuttDone() {
+    AppDispatcher.dispatch({
+        type: 'AUTH_ETUUTT_DONE'
+    });
+}
+
 exports.saveJWT = saveJWT;
 exports.logout = logout;
 exports.loginAs = loginAs;
 exports.loginBack = loginBack;
 exports.authenticated = authenticated;
+exports.authEtuuttStarted = authEtuuttStarted;
+exports.authEtuuttDone = authEtuuttDone;

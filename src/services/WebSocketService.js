@@ -58,7 +58,7 @@ class WebSocketService {
                 // Authenticate via EtuUTT
                 let authCode = AuthService.getAuthorizationCode();
                 if(authCode) {
-                    NotificationActions.loading('Connexion depuis EtuUTT en cours..');
+                    AuthActions.authEtuuttStarted();
                 }
                 AuthService.sendAuthorizationCode(authCode)
                 .then((jwt) => {
@@ -66,10 +66,12 @@ class WebSocketService {
                     history.replaceState({}, 'Flux', '/');
                     router.navigate('home');
                     NotificationActions.hideLoading();
+                    AuthActions.authEtuuttDone();
                 })
                 .catch((error) => {
                     router.navigate('home');
                     NotificationActions.hideLoading();
+                    AuthActions.authEtuuttDone();
                     if(authCode) {
                         if(error && error.status == 'LoginNotFound') {
                             NotificationActions.error('Un administrateur de Flux doit vous ajouter avant que vous puissiez vous connecter.', error, null, true);
@@ -85,11 +87,13 @@ class WebSocketService {
                         AuthActions.saveJWT(jwt);
                         WebSocketActions.connected();
                         NotificationActions.hideLoading();
+                        AuthActions.authEtuuttDone();
                     })
                     // Ignore this error
                     .catch((error) => {
                         WebSocketActions.connected();
                         NotificationActions.hideLoading();
+                        AuthActions.authEtuuttDone();
                         if(jwtError) {
                             AuthActions.logout();
                             location.href = '/';

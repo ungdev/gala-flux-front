@@ -37,6 +37,9 @@ class AuthStore extends BaseStore {
         // Hold the value used to indicate if client has lost connection to serveur
         this._connected = false;
 
+        // True if an etutt login is started
+        this._etuuttLoading = false;
+
         // notification parameters
         this._notifications = {
             sound: true,
@@ -215,6 +218,15 @@ class AuthStore extends BaseStore {
         this.emitChange();
     }
 
+    get etuuttLoading() {
+        return this._etuuttLoading;
+    }
+
+    set etuuttLoading(v) {
+        this._etuuttLoading = v;
+        this.emitChange();
+    }
+
     _handleActions(action) {
         super._handleActions(action);
         switch(action.type) {
@@ -232,6 +244,13 @@ class AuthStore extends BaseStore {
                 break;
             case "AUTH_AUTHENTICATED":
                 this.connected = true;
+                break;
+            case "AUTH_ETUUTT_STARTED":
+                this.etuuttLoading = true;
+                break;
+            case "AUTH_ETUUTT_DONE":
+                this.etuuttLoading = false;
+                break;
 
                 // handle firebase token
                 SessionService.openSession();
