@@ -22,18 +22,6 @@ class WebSocketService {
 
             iosocket.on('connect', () => this._handleConnected());
             iosocket.on('disconnect', () => this._handleDisconnected());
-
-            // Show this notification only if it takes some time to connect
-            setTimeout(() => {
-                if(!iosocket.isConnected()) {
-                    NotificationActions.loading('Connexion au serveur perdue..');
-                }
-            }, 1000);
-        }
-
-        // Try to reconnect every 5 seconds
-        if(!watchdog) {
-            watchdog = setInterval(() => this.connect(), 5000);
         }
     }
 
@@ -97,9 +85,10 @@ class WebSocketService {
                         WebSocketActions.connected();
                         NotificationActions.hideLoading();
                         if(jwtError) {
-                            NotificationActions.error('Votre connexion a expiré, veuillez vous reconnecter.', jwtError);
                             localStorage.removeItem(constants.jwtName);
                             localStorage.removeItem(constants.firstJwtName);
+                            location.assign('/');
+                            location.reload(true);
                         }
                     });
                 });

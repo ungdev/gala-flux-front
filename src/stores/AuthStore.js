@@ -34,6 +34,9 @@ class AuthStore extends BaseStore {
         // contain current user permissions
         this._permissions = null;
 
+        // Hold the value used to indicate if client has lost connection to serveur
+        this._connected = false;
+
         // notification parameters
         this._notifications = {
             sound: true,
@@ -203,6 +206,15 @@ class AuthStore extends BaseStore {
         this._init(jwt);
     }
 
+    get connected() {
+        return this._connected;
+    }
+
+    set connected(v) {
+        this._connected = v;
+        this.emitChange();
+    }
+
     _handleActions(action) {
         super._handleActions(action);
         switch(action.type) {
@@ -219,8 +231,13 @@ class AuthStore extends BaseStore {
                 this.loginAs = false;
                 break;
             case "AUTH_AUTHENTICATED":
+                this.connected = true;
+
                 // handle firebase token
                 SessionService.openSession();
+                break;
+            case "WEBSOCKET_DISCONNECTED":
+                this.connected = false;
                 break;
         }
     }
