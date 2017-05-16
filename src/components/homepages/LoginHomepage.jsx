@@ -8,7 +8,7 @@ import NotificationActions from 'actions/NotificationActions';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
-import LOGO from 'assets/images/flux_logos/flux_logo_large200.png';
+import LOGO from 'assets/images/logos/logo.svg';
 import GOOGLEPLAY_BADGE from 'assets/images/google-play-badge.png';
 
 require('styles/homepages/LoginHomepage.scss');
@@ -60,8 +60,8 @@ export default class LoginHomepage extends React.Component {
     render() {
         return (
             <div className="LoginPage">
-                <img src={LOGO} alt="Flux" className="LoginPage__logo"/>
-                { this.state.connected === null ?
+                <img src={LOGO} alt="Flux" className="LoginPage__logo" height="200"/>
+                { this.state.connected === null && !this.state.etuuttLoading ?
                     <CircularProgress className="LoginPage__spinner"/>
                 :
                     [
@@ -74,7 +74,7 @@ export default class LoginHomepage extends React.Component {
                             onTouchTap={this._login} />,
                         (!global.Android &&
                             <a key={2} className="LoginPage__googleplay" href="http://play.google.com/store/apps/details?id=fr.utt.ung.flux">
-                                <img src={GOOGLEPLAY_BADGE} alt="Disponible sur Google Play" />
+                                <img src={GOOGLEPLAY_BADGE} alt="Disponible sur Google Play"/>
                             </a>
                         )
                     ]

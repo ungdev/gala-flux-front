@@ -6,7 +6,7 @@ import AuthStore from 'stores/AuthStore';
 require('styles/FlashScreen.scss');
 
 import NOTIFICATION_SOUND from 'assets/sounds/notification.wav';
-import DESKTOP_NOTIFICATION_ICON from 'assets/images/flux_logos/flux_logo_small36.png';
+import DESKTOP_NOTIFICATION_ICON from 'assets/images/logos/favicon-32x32.png';
 const DESKTOP_NOTIFICATION_MAX_DURATION = 8000;
 
 export default class FluxNotification extends React.Component {
