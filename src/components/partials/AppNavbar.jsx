@@ -49,7 +49,6 @@ export default class AppNavbar extends React.Component {
             <AppBar
                 title={this.state.title}
                 className="AppNavbar"
-                onTitleTouchTap={_ => router.navigate('home')}
                 iconElementLeft={<MainDrawer />}
                 iconElementRight={<AuthMenu />}
             />
