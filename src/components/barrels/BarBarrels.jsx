@@ -1,7 +1,6 @@
 import React from 'react';
 
 import BarrelService from 'services/BarrelService';
-import BottleActionService from 'services/BottleActionService';
 import BarrelStore from 'stores/BarrelStore';
 import BarrelTypeStore from 'stores/BarrelTypeStore';
 import BottleActionStore from 'stores/BottleActionStore';
@@ -10,20 +9,17 @@ import TeamStore from 'stores/TeamStore';
 import AuthStore from 'stores/AuthStore';
 import NotificationActions from 'actions/NotificationActions';
 
-import Subheader from 'material-ui/Subheader';
-
 import { Row, Col } from 'react-flexbox-grid';
 import BottleChip from 'components/bottles/partials/BottleChip.jsx';
 import UpdateBottleDialog from 'components/bottles/dialogs/UpdateBottleDialog.jsx';
 import BarrelChip from 'components/barrels/partials/BarrelChip.jsx';
-import CenteredMessage from 'components/partials/CenteredMessage.jsx';
 
 require('styles/barrels/BarBarrels.scss');
 
 export default class BarBarrels extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             barrels: {
@@ -36,6 +32,7 @@ export default class BarBarrels extends React.Component {
                 "empty": {}
             },
             updatedBottle: {type: null, count: 0, state: 'new'},
+            barId: props.barId
         };
 
         this.BarrelStoreToken = null;
@@ -56,21 +53,23 @@ export default class BarBarrels extends React.Component {
         this._moveNextState = this._moveNextState.bind(this);
     }
 
-
-
-
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            barId: nextProps.barId
+        });
+    }
 
     componentDidMount() {
         // Load data from the store
         this._loadData()
-        .then(() => {
+        .then(_ => {
             // listen the stores changes
             BarrelStore.addChangeListener(this._updateData);
             BarrelTypeStore.addChangeListener(this._updateData);
             TeamStore.addChangeListener(this._updateData);
             BottleActionStore.addChangeListener(this._updateData);
             BottleTypeStore.addChangeListener(this._updateData);
-        })
+        });
     }
 
     componentWillUnmount() {
@@ -146,10 +145,6 @@ export default class BarBarrels extends React.Component {
         BottleTypeStore.unloadData(this.BottleTypeStoreToken);
     }
 
-
-
-
-
     /**
      * Update data according to stores without adding new filter to it
      */
@@ -167,7 +162,7 @@ export default class BarBarrels extends React.Component {
         };
 
         // Init barrels
-        for (let barrel of BarrelStore.find({place: AuthStore.team.id})) {
+        for (let barrel of BarrelStore.find({place: this.state.barId ? this.state.barId : AuthStore.team.id})) {
             if(!state.barrels[barrel.state][barrel.type]) {
                 state.barrels[barrel.state][barrel.type] = [];
             }
@@ -175,7 +170,7 @@ export default class BarBarrels extends React.Component {
         }
 
         // Init bottles
-        let count = BottleActionStore.count[AuthStore.team.id]
+        let count = BottleActionStore.count[this.state.barId ? this.state.barId : AuthStore.team.id];
         if(count) {
             for (let typeId in count) {
                 for (let bottleState in count[typeId]) {

@@ -29,7 +29,7 @@ export default class BarHome extends React.Component {
                         <BarAlertButtons barId={this.state.barId} />
                     </div>
                     <div className="BarHomePage__stock">
-                        <BarBarrels />
+                        <BarBarrels barId={this.state.barId} />
                     </div>
                     <div className="BarHomePage__chat">
                         <ChatMessageList channel={null}/>
