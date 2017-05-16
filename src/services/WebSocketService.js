@@ -63,6 +63,7 @@ class WebSocketService {
                 AuthService.sendAuthorizationCode(authCode)
                 .then((jwt) => {
                     AuthActions.saveJWT(jwt);
+                    history.replaceState({}, 'Flux', '/');
                     router.navigate('home');
                     NotificationActions.hideLoading();
                 })
@@ -70,7 +71,12 @@ class WebSocketService {
                     router.navigate('home');
                     NotificationActions.hideLoading();
                     if(authCode) {
-                        NotificationActions.error('Une erreur s\'est produite pendant votre authentification via EtuUTT', error);
+                        if(error && error.status == 'LoginNotFound') {
+                            NotificationActions.error('Un administrateur de Flux doit vous ajouter avant que vous puissiez vous connecter.', error, null, true);
+                        }
+                        else {
+                            NotificationActions.error('Une erreur s\'est produite pendant votre authentification via EtuUTT. Veuillez recommencer.', error, null, true);
+                        }
                     }
 
                     // Authenticate with IP
@@ -85,10 +91,8 @@ class WebSocketService {
                         WebSocketActions.connected();
                         NotificationActions.hideLoading();
                         if(jwtError) {
-                            localStorage.removeItem(constants.jwtName);
-                            localStorage.removeItem(constants.firstJwtName);
-                            location.assign('/');
-                            location.reload(true);
+                            AuthActions.logout();
+                            location.href = '/';
                         }
                     });
                 });
