@@ -417,7 +417,6 @@ export default class BaseStore extends EventEmitter {
     }
 
     _handleActions(action) {
-        console.log('parent handle action ', this._modelName)
         switch(action.type) {
             case "AUTH_AUTHENTICATED":
                 // Refresh all stores after login or relogin

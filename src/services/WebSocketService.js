@@ -23,6 +23,11 @@ class WebSocketService {
             iosocket.on('connect', () => this._handleConnected());
             iosocket.on('disconnect', () => this._handleDisconnected());
         }
+
+        // Try to reconnect every 5 seconds
+        if(!watchdog) {
+            watchdog = setInterval(() => this.connect(), 5000);
+        }
     }
 
     _handleConnected() {
@@ -91,6 +96,7 @@ class WebSocketService {
                     })
                     // Ignore this error
                     .catch((error) => {
+                        AuthActions.noJWT();
                         WebSocketActions.connected();
                         NotificationActions.hideLoading();
                         AuthActions.authEtuuttDone();

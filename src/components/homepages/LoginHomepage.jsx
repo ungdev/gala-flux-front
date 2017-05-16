@@ -8,6 +8,8 @@ import NotificationActions from 'actions/NotificationActions';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
+import LOGO from 'assets/images/flux_logos/flux_logo_large200.png';
+import GOOGLEPLAY_BADGE from 'assets/images/google-play-badge.png';
 
 require('styles/homepages/LoginHomepage.scss');
 
@@ -18,6 +20,7 @@ export default class LoginHomepage extends React.Component {
 
         this.state = {
             etuuttLoading: AuthStore.etuuttLoading,
+            connected: AuthStore.connected,
         };
 
         // binding
@@ -33,7 +36,10 @@ export default class LoginHomepage extends React.Component {
     }
 
     _updateData() {
-        this.setState({etuuttLoading: AuthStore.etuuttLoading})
+        this.setState({
+            etuuttLoading: AuthStore.etuuttLoading,
+            connected: AuthStore.connected,
+        })
     }
 
     /**
@@ -52,16 +58,27 @@ export default class LoginHomepage extends React.Component {
     }
 
     render() {
-
+        console.log(this.state.connected)
         return (
             <div className="LoginPage">
-                <h2>Flux</h2>
-                <RaisedButton
-                    icon={(this.state.etuuttLoading ? <CircularProgress size={20} thickness={2} style={{lineHeight: 'normal'}} /> : null)}
-                    disabled={this.state.etuuttLoading}
-                    label="Se connecter avec un compte UTT"
-                    primary={true}
-                    onTouchTap={this._login} />
+                <img src={LOGO} alt="Flux" className="LoginPage__logo"/>
+                { this.state.connected === null ?
+                    <CircularProgress className="LoginPage__spinner"/>
+                :
+                    [
+                        <RaisedButton
+                            icon={(this.state.etuuttLoading ? <CircularProgress size={20} thickness={2} style={{lineHeight: 'normal'}} /> : null)}
+                            disabled={this.state.etuuttLoading}
+                            label="Se connecter avec un compte UTT"
+                            primary={true}
+                            onTouchTap={this._login} />,
+                        (!global.Android &&
+                            <a className="LoginPage__googleplay" href="http://play.google.com/store/apps/details?id=fr.utt.ung.flux">
+                                <img src={GOOGLEPLAY_BADGE} alt="Disponible sur Google Play" />
+                            </a>
+                        )
+                    ]
+                }
             </div>
         );
     }
