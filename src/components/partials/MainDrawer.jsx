@@ -18,6 +18,7 @@ class MainDrawer extends React.Component {
         this.state = {
             open: false,
             route: router.getState(),
+            team: AuthStore.team,
         };
 
         this._palette = props.muiTheme.palette;
@@ -26,10 +27,12 @@ class MainDrawer extends React.Component {
         this._handleToggle = this._handleToggle.bind(this);
         this._handleChange = this._handleChange.bind(this);
         this._handleRouteChange = this._handleRouteChange.bind(this);
+        this._handleAuthStoreChange = this._handleAuthStoreChange.bind(this);
     }
 
     componentDidMount() {
         router.addListener(this._handleRouteChange);
+        AuthStore.addChangeListener(this._handleAuthStoreChange);
 
         // Init route
         this.setState({
@@ -39,6 +42,7 @@ class MainDrawer extends React.Component {
 
     componentWillUnmount() {
         router.removeListener(this._handleRouteChange);
+        AuthStore.removeChangeListener(this._handleAuthStoreChange);
     }
 
     /**
@@ -59,12 +63,21 @@ class MainDrawer extends React.Component {
         this.setState({open: false});
     }
 
+    _handleAuthStoreChange(route) {
+        this.setState({team: AuthStore.team});
+    }
+
     render() {
         const style = {
             icon: {
                 color: this._palette.alternateTextColor,
             }
         };
+
+        // Don't draw anything if user is not logged in
+        if(!this.state.team) {
+            return null;
+        }
 
         return (
             <div className="show-xs">
