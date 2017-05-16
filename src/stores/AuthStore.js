@@ -35,7 +35,8 @@ class AuthStore extends BaseStore {
         this._permissions = null;
 
         // Hold the value used to indicate if client has lost connection to serveur
-        this._connected = false;
+        // If null we didn't even try to connect yet
+        this._connected = null;
 
         // True if an etutt login is started
         this._etuuttLoading = false;
@@ -64,6 +65,7 @@ class AuthStore extends BaseStore {
             this._loginAs = false;
             this._team = null;
             this._roles = null;
+            this._connected = false;
             this.emitChange();
             return;
         }
@@ -74,7 +76,6 @@ class AuthStore extends BaseStore {
                 this._roles = data;
                 this.emitChange();
             })
-
             .catch(error => {
                 NotificationActions.error('Impossible de récupérer les droits configurés sur le serveur.', error, null, true);
             });
@@ -230,6 +231,9 @@ class AuthStore extends BaseStore {
     _handleActions(action) {
         super._handleActions(action);
         switch(action.type) {
+            case "AUTH_JWT_NONE":
+                this._connected = false;
+                break;
             case "AUTH_JWT_SAVED":
                 this._init(action.jwt);
                 break;

@@ -27,6 +27,15 @@ function saveJWT (jwt) {
 }
 
 /**
+ * Emitted when client admin we are not logged in
+ */
+function noJWT () {
+    AppDispatcher.dispatch({
+        type: 'AUTH_JWT_NONE'
+    });
+}
+
+/**
  * Remove token from the localStorage
  */
 function logout() {
@@ -131,6 +140,7 @@ function authEtuuttDone() {
 }
 
 exports.saveJWT = saveJWT;
+exports.noJWT = noJWT;
 exports.logout = logout;
 exports.loginAs = loginAs;
 exports.loginBack = loginBack;

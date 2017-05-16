@@ -33,7 +33,8 @@ class AuthMenu extends React.Component {
             openLoginAs: false,
             loginAs: false,
             canLoginAs: false,
-            openNotificationsDialog: false
+            openNotificationsDialog: false,
+            connected: false,
         };
 
         this._palette = props.muiTheme.palette;
@@ -61,6 +62,7 @@ class AuthMenu extends React.Component {
             team: AuthStore.team,
             user: AuthStore.user,
             loginAs: AuthStore.loginAs,
+            connected: AuthStore.connected,
             canLoginAs: AuthStore.can('auth/as'),
         });
     }
@@ -157,7 +159,7 @@ class AuthMenu extends React.Component {
                         <strong>{this.state.team.name}</strong><br/>
                         {this.state.user.name}
                     </div>
-                    {( AuthStore.connected ?
+                    {( this.state.connected ?
                         <Avatar src={avatarUri} backgroundColor="white" className="AuthMenu__button__avatar" />
                         :
                         <div>
