@@ -4,6 +4,24 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
         <title>Flux</title>
+
+        <link rel="apple-touch-icon" sizes="180x180" href="<%= require('assets/images/logos/apple-touch-icon.png') %>">
+        <link rel="icon" type="image/png" sizes="32x32" href="<%= require('assets/images/logos/favicon-32x32.png') %>">
+        <link rel="icon" type="image/png" sizes="194x194" href="<%= require('assets/images/logos/favicon-194x194.png') %>">
+        <link rel="icon" type="image/png" sizes="192x192" href="<%= require('assets/images/logos/android-chrome-192x192.png') %>">
+        <link rel="icon" type="image/png" sizes="16x16" href="<%= require('assets/images/logos/favicon-16x16.png') %>">
+        <link rel="manifest" href="<%= require('assets/images/logos/manifest.json') %>">
+        <link rel="mask-icon" href="<%= require('assets/images/logos/safari-pinned-tab.svg') %>" color="#00b8d4">
+        <link rel="shortcut icon" href="<%= require('assets/images/logos/favicon.ico') %>">
+        <meta name="apple-mobile-web-app-title" content="Flux">
+        <meta name="application-name" content="Flux">
+        <meta name="msapplication-config" content="<%= require('assets/images/logos/browserconfig.xml') %>">
+        <meta name="theme-color" content="#37474f">
+        <!-- force webpack to load image included from browserconfig.xml:
+            * <%= require('assets/images/logos/mstile-150x150.png') %>
+            * <%= require('assets/images/logos/android-chrome-512x512.png') %>
+        -->
+
 <!-- Monitoring test content
 repo=<%= process.env.TRAVIS_REPO_SLUG  %>
 branch=<%= process.env.TRAVIS_BRANCH  %>
@@ -12,6 +30,11 @@ dokkuApp=<%= process.env.DOKKU_APP_NAME %>
 -->
     </head>
     <body>
-        <div id="app"></div>
+        <div id="app">
+            <!-- Show something while js is loading -->
+            <div style="text-align:center; margin-top:20vh; filter: drop-shadow(rgba(0, 0, 0, 0.25) 0px 1px 6px);">
+                <img src="<%= require('assets/images/logos/logo.svg') %>" height="200" alt="Flux" />
+            </div>
+        </div>
     </body>
 </html>
