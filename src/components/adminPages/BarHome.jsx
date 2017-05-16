@@ -25,15 +25,18 @@ export default class BarHome extends React.Component {
         return (
             <div>
                 <div className="BarHomePage BarHomePage_admin">
-                    <div className={('BarHomePage__alerts')}>
-                        <BarAlertButtons />
+                    <div className="BarHomePage__alerts">
+                        <BarAlertButtons barId={this.state.barId} />
                     </div>
-                    <div className={('BarHomePage__stock')}>
+                    <div className="BarHomePage__stock">
                         <BarBarrels />
                     </div>
-                    <div className={('BarHomePage__chat')}>
+                    <div className="BarHomePage__chat">
                         <ChatMessageList channel={null}/>
                         <ChatMessageForm channel={null}/>
+                    </div>
+                    <div className="BarHomePage_nav">
+                        test
                     </div>
                 </div>
             </div>

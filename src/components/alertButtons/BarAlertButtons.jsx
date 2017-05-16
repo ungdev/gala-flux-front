@@ -11,12 +11,13 @@ require('styles/bar/AlertButton.scss');
 
 export default class BarAlertButtons extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             buttons: {},
-            alerts: {}
+            alerts: {},
+            barId: props.barId
         };
 
         this.AlertButtonStoreToken = null;
@@ -25,6 +26,12 @@ export default class BarAlertButtons extends React.Component {
         // binding
         this._setButtons = this._setButtons.bind(this);
         this._setAlerts = this._setAlerts.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            barId: nextProps.barId
+        });
     }
 
     componentDidMount() {
@@ -84,7 +91,7 @@ export default class BarAlertButtons extends React.Component {
      * Update the alerts in the state with the alerts from the alerts store
      */
     _setAlerts() {
-        const storeAlerts = AlertStore.alerts;
+        const storeAlerts = this.state.barId ? AlertStore.find([{sender: this.state.barId}]) : AlertStore.alerts;
         let alerts = {};
 
         // store them by button (because only one alert by button by team)
