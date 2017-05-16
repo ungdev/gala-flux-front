@@ -6,8 +6,6 @@ class TeamStore extends BaseStore {
 
     constructor() {
         super('team', TeamService);
-
-        this.subscribe(() => this._handleActions.bind(this));
     }
 
     get teams() {
@@ -44,19 +42,6 @@ class TeamStore extends BaseStore {
         groups = [...groups];
         groups.sort((a,b) =>  a.localeCompare(b));
         return groups;
-    }
-
-    /**
-     * Handle Actions from TeamActions
-     *
-     * @param {object} action : the action
-     */
-    _handleActions(action) {
-        switch(action.type) {
-            case "WEBSOCKET_DISCONNECTED":
-                this._modelData = [];
-                break;
-        }
     }
 }
 

@@ -17,6 +17,8 @@ export default class BaseStore extends EventEmitter {
         this._filters = {};
         this._filterLastId = 0;
 
+        this.subscribe(() => this._handleActions.bind(this));
+
         // binding
         this._delete = this._delete.bind(this);
         this._set = this._set.bind(this);
@@ -71,9 +73,10 @@ export default class BaseStore extends EventEmitter {
      * Use the fetchMethod to fetch the data needed of this model.
      *
      * @param {number} [componentToken]: the new component
+     * @param {boolean} force Force refresh
      * @return {Promise}
      */
-    fetchData(componentToken) {
+    fetchData(componentToken, force) {
         let filters = this.getFiltersSet();
 
         // No need to ask the server if there is no filter
@@ -108,7 +111,7 @@ export default class BaseStore extends EventEmitter {
 
             return new Promise((resolve, reject) => {
                 // Fetch from the server only if it use usefull
-                if(fetch) {
+                if(fetch || force) {
                     this._service.get(this.getFiltersSet())
                         .then(result => {
                             this._setModelData(result);
@@ -408,6 +411,25 @@ export default class BaseStore extends EventEmitter {
             case "destroyed":
                 if(this.findById(e.id)) {
                     this._delete(e.id);
+                }
+                break;
+        }
+    }
+
+    _handleActions(action) {
+        console.log('parent handle action ', this._modelName)
+        switch(action.type) {
+            case "AUTH_AUTHENTICATED":
+                // Refresh all stores after login or relogin
+                this.fetchData(null, true);
+
+                // If filter was not empty re-subscribe
+                if(Object.keys(this._filters).length >= 1) {
+                    // listen model changes
+                    iosocket.on(this._modelName, this._handleModelEvents);
+
+                    // Subscribe
+                    this._service.subscribe();
                 }
                 break;
         }

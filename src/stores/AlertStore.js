@@ -9,8 +9,6 @@ class AlertStore extends BaseStore {
         super('alert', AlertService);
 
         this._newAlerts = {};
-
-        this.subscribe(() => this._handleActions.bind(this));
     }
 
     get alerts() {
@@ -134,15 +132,13 @@ class AlertStore extends BaseStore {
      * @param {object} action : the action
      */
     _handleActions(action) {
+        super._handleActions(action);
         switch(action.type) {
             case "ALERT_CLOSED":
                 this._delete(action.id);
                 break;
             case "AUTH_JWT_SAVED":
                 this._countNewAlerts();
-                break;
-            case "WEBSOCKET_DISCONNECTED":
-                this._modelData = [];
                 break;
         }
     }

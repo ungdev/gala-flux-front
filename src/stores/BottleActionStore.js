@@ -9,8 +9,6 @@ class BottleActionStore extends BaseStore {
 
         this._count = {};
         this._countRequest = 0;
-
-        this.subscribe(() => this._handleActions.bind(this));
     }
 
     get count() {
@@ -85,19 +83,6 @@ class BottleActionStore extends BaseStore {
             }
         }
         return super._handleModelEvents(e);
-    }
-
-    /**
-     * Handle Actions from BottleAction
-     *
-     * @param {object} action : the action
-     */
-    _handleActions(action) {
-        switch(action.type) {
-            case "WEBSOCKET_DISCONNECTED":
-                this._modelData = [];
-                break;
-        }
     }
 
 }
