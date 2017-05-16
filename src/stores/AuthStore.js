@@ -13,7 +13,6 @@ class AuthStore extends BaseStore {
 
     constructor() {
         super();
-        this.subscribe(() => this._handleActions.bind(this));
 
         // active account
         this._jwt = null;
@@ -205,6 +204,7 @@ class AuthStore extends BaseStore {
     }
 
     _handleActions(action) {
+        super._handleActions(action);
         switch(action.type) {
             case "AUTH_JWT_SAVED":
                 this._init(action.jwt);

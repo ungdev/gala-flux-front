@@ -9,8 +9,7 @@ class ChatStore extends BaseStore {
         super('message', ChatService);
 
         this._newMessages = {};
-
-        this.subscribe(() => this._handleActions.bind(this));
+        
     }
 
     get messages() {
@@ -164,6 +163,8 @@ class ChatStore extends BaseStore {
      * @param {object} action : the action
      */
     _handleActions(action) {
+        super._handleActions(action);
+        console.log('child handle action for ', this._modelName)
         switch(action.type) {
             case "MESSAGES_VIEWED":
                 this._resetNewMessages(action.channel);

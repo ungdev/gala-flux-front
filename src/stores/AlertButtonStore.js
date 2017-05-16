@@ -6,16 +6,10 @@ class AlertButtonStore extends BaseStore {
 
     constructor() {
         super('alertbutton', AlertButtonService);
-
-        this.subscribe(() => this._handleActions.bind(this));
     }
 
     get buttons() {
         return this.getUnIndexedData();
-    }
-
-    _handleActions(action) {
-        switch(action.type) {}
     }
 
 }
