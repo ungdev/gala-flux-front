@@ -20,6 +20,8 @@ export default class AdminTabs extends React.Component {
         this.state = {
             value: props.value,
             messageCount: 0,
+            hasMessage: false,
+            Count: 0,
             alertCount: 0,
         };
 
@@ -52,12 +54,21 @@ export default class AdminTabs extends React.Component {
         // Calculate chat notification count
         let counts = NotificationStore.newMessageCounts;
         let messageCount = 0;
+        let hasMessage = false;
+        const chanConfig = NotificationStore.configuration.channel;
         for (let channel in NotificationStore.newMessageCounts) {
-            messageCount += NotificationStore.newMessageCounts[channel];
+            if(chanConfig[channel] == 'notify') {
+                messageCount += NotificationStore.newMessageCounts[channel];
+                hasMessage = (hasMessage || NotificationStore.newMessageCounts[channel] > 0);
+            }
+            else if(chanConfig[channel] == 'show') {
+                hasMessage = (hasMessage || NotificationStore.newMessageCounts[channel] > 0);
+            }
         }
 
         this.setState({
             messageCount: messageCount,
+            hasMessage: hasMessage,
             alertCount: NotificationStore.newMAlertCount,
         });
     }
@@ -68,7 +79,11 @@ export default class AdminTabs extends React.Component {
             <div>
                 {/* Tabs for tablet */}
                 <Tabs className="AdminPage__tabs show-sm" onChange={this.props.onChange} value={this.state.value}>
-                    <Tab label={<span>Chat { this.state.messageCount > 0 && <span className="Notification_bubble">{this.state.messageCount}</span> } </span>} value="home"/>
+                    { !this.state.hasMessage ?
+                        <Tab label={<span>Chat { this.state.messageCount > 0 && <span className="Notification_bubble">{this.state.messageCount}</span> } </span>} value="home"/>
+                    :
+                        <Tab label={<strong>Chat { this.state.messageCount > 0 && <span className="Notification_bubble">{this.state.messageCount}</span> } </strong>} value="home"/>
+                    }
 
                     { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
                         <Tab label={<span>Alertes { this.state.alertCount > 0 && <span className="Notification_bubble">{this.state.alertCount}</span> } </span>}  value="alert"/>

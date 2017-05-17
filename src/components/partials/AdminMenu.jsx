@@ -24,6 +24,7 @@ export default class AdminMenu extends React.Component {
         this.state = {
             route: props.route,
             messageCount: 0,
+            hasMessage: false,
             alertCount: 0,
         };
 
@@ -64,12 +65,21 @@ export default class AdminMenu extends React.Component {
         // Calculate chat notification count
         let counts = NotificationStore.newMessageCounts;
         let messageCount = 0;
+        let hasMessage = false;
+        const chanConfig = NotificationStore.configuration.channel;
         for (let channel in NotificationStore.newMessageCounts) {
-            messageCount += NotificationStore.newMessageCounts[channel];
+            if(chanConfig[channel] == 'notify') {
+                messageCount += NotificationStore.newMessageCounts[channel];
+                hasMessage = (hasMessage || NotificationStore.newMessageCounts[channel] > 0);
+            }
+            else if(chanConfig[channel] == 'show') {
+                hasMessage = (hasMessage || NotificationStore.newMessageCounts[channel] > 0);
+            }
         }
 
         this.setState({
             messageCount: messageCount,
+            hasMessage: hasMessage,
             alertCount: NotificationStore.newMAlertCount,
         });
     }
