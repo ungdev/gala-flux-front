@@ -42,7 +42,6 @@ class NotificationStore extends BaseStore {
         this._lastReadAlert = localStorage.getItem('lastReadAlert') ? new Date(localStorage.getItem('lastReadAlert')) : (new Date()).toISOString();
         localStorage.setItem('lastReadAlert', this._lastReadAlert);
 
-
         // Count of new alert
         this._newAlertCount = 0;
 
@@ -51,6 +50,23 @@ class NotificationStore extends BaseStore {
 
         // Notification Id used to avoid start same notification multiple times
         this._nextNotificationId = 0;
+
+        // Notification configuration
+        try {
+            this._configuration = localStorage.getItem('notificationConfiguration') ? JSON.parse(localStorage.getItem('notificationConfiguration')) : {};
+        } catch (e) {
+            this._configuration = {};
+            console.error('localstorage notificationConfiguration json parsing error', e);
+        }
+        this._configuration = Object.assign({
+            sound: !global.Android,
+            flash: !global.Android,
+            desktop: !global.Android,
+            android: true,
+            alert: true,
+            channel: {}, // notify, show, hide
+        }, this._configuration);
+        localStorage.setItem('notificationConfiguration', JSON.stringify(this._configuration));
 
         // Bind
         this._handleMessageEvent = this._handleMessageEvent.bind(this);
@@ -98,6 +114,18 @@ class NotificationStore extends BaseStore {
         })
         .then(alertes => {
             this._newAlertCount = alertes.length;
+            this.emitChange();
+
+            // Update configuration with new channels
+            return ChatService.getChannels();
+        })
+        .then(channels => {
+            for (let channel of channels) {
+                if(!this._configuration.channel[channel]) {
+                    this._configuration.channel[channel] = 'notify';
+                }
+            }
+            localStorage.setItem('notificationConfiguration', JSON.stringify(this._configuration));
             this.emitChange();
         })
         .catch(error => NotificationActions.error("Erreur lors de la lecture des messages et alertes non lus.", error));
@@ -216,6 +244,16 @@ class NotificationStore extends BaseStore {
 
     get newMAlertCount() {
         return this._newAlertCount;
+    }
+
+    get configuration() {
+        return this._configuration;
+    }
+
+    set configuration(newConfiguration) {
+        this._configuration = Object.assign(this._configuration, newConfiguration);
+        localStorage.setItem('notificationConfiguration', JSON.stringify(this._configuration));
+        this.emitChange();
     }
 
 
@@ -340,6 +378,9 @@ class NotificationStore extends BaseStore {
                 break;
             case "MESSAGES_VIEWED":
                 this._resetNewMessages(action.channel);
+                break;
+            case "NOTIFICATION_CONFIGURATION":
+                this.configuration = action.data;
                 break;
         }
     }

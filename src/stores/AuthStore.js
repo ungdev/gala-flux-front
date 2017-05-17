@@ -7,7 +7,6 @@ import AuthActions from 'actions/AuthActions';
 import SessionService from 'services/SessionService';
 import NotificationActions from 'actions/NotificationActions';
 
-const LOCALSTORAGE_NOTIFICATIONS_ITEM = 'notifications';
 
 class AuthStore extends BaseStore {
 
@@ -40,13 +39,6 @@ class AuthStore extends BaseStore {
 
         // True if an etutt login is started
         this._etuuttLoading = false;
-
-        // notification parameters
-        this._notifications = {
-            sound: true,
-            flash: true,
-            desktop: true
-        };
     }
 
     /**
@@ -90,15 +82,6 @@ class AuthStore extends BaseStore {
                 return TeamService.getById(this.user.team);
             })
             .then(team => {
-                const localStorageNotifications = JSON.parse(localStorage.getItem(LOCALSTORAGE_NOTIFICATIONS_ITEM));
-                if (localStorageNotifications) {
-                    this._notifications = {
-                        flash: localStorageNotifications.flash === true,
-                        sound: localStorageNotifications.sound === true,
-                        desktop: localStorageNotifications.desktop === true,
-                    };
-                }
-
                 this._team = team;
                 iosocket.on('team', (e) => this._handleTeamEvents(e));
                 TeamService.subscribe();
@@ -188,20 +171,6 @@ class AuthStore extends BaseStore {
     get roles() {
         return this._roles;
     }
-
-    get notifications() {
-        return this._notifications;
-    }
-
-    set notifications(newConfiguration) {
-        this._notifications = {
-            flash: newConfiguration.flash === true,
-            sound: newConfiguration.sound === true,
-            desktop: newConfiguration.desktop === true,
-        };
-        localStorage.setItem(LOCALSTORAGE_NOTIFICATIONS_ITEM, JSON.stringify(this._notifications));
-        this.emitChange();
-    };
 
     set loginAs(v) {
         this._loginAs = v;

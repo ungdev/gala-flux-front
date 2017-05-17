@@ -65,4 +65,19 @@ export default {
         });
     },
 
+
+
+    /**
+     * Update notification configuration
+     *
+     * @param {Object} configuration Chat message object
+     */
+    updateConfiguration(configuration) {
+
+        AppDispatcher.dispatch({
+            type: 'NOTIFICATION_CONFIGURATION',
+            data: configuration,
+        });
+    },
+
 }
