@@ -295,21 +295,24 @@ class NotificationStore extends BaseStore {
             let alert = e.data;
             let team = TeamStore.findById(alert.sender);
 
-            // increment the number of unread alerts if not already on the page
-            if(router.getState() && router.getState().name == 'alert') {
-                this._newAlertCount = 0;
-                this._lastReadAlert = (new Date()).toISOString();
-                localStorage.setItem('lastReadAlert', this._lastReadAlert);
-            }
-            else {
-                this._newAlertCount++;
-            }
+            if (AuthStore.team.id !== alert.sender) {
 
-            // Send notification
-            this.pushNotification('Alerte' + (team ? ' de ' + team.name : ''), alert.title, 'alert', null, 'alert');
+                // increment the number of unread alerts if not already on the page
+                if(router.getState() && router.getState().name == 'alert') {
+                    this._newAlertCount = 0;
+                    this._lastReadAlert = (new Date()).toISOString();
+                    localStorage.setItem('lastReadAlert', this._lastReadAlert);
+                }
+                else {
+                    this._newAlertCount++;
+                }
 
-            // Emit changes
-            this.emitChange();
+                // Send notification
+                this.pushNotification('Alerte' + (team ? ' de ' + team.name : ''), alert.title, 'alert', null, 'alert');
+
+                // Emit changes
+                this.emitChange();
+            }
         }
     }
 
