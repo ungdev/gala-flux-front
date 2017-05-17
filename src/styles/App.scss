@@ -180,3 +180,13 @@ html, body, .container-hide {
         border-top-right-radius: 5px;
     }
 }
+
+
+// List item with a toggle inside (but reacting like a normal clickable list item)
+.ToggleListItem {
+    padding-right: 20px !important;
+    > div > div {
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+    }
+}

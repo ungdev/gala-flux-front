@@ -3,6 +3,8 @@ import router from 'router';
 
 import AdminMenu from 'components/partials/AdminMenu.jsx';
 import AdminTabs from 'components/partials/AdminTabs.jsx';
+import NotificationsDialog from 'components/partials/NotificationsDialog.jsx';
+import NotificationStore from 'stores/NotificationStore';
 import AuthStore from 'stores/AuthStore';
 import ChatStore from 'stores/ChatStore';
 import UserStore from 'stores/UserStore';
@@ -32,6 +34,7 @@ export default class AdminHomepage extends React.Component {
 
         this.state = {
             route: props.route,
+            showWelcome: !NotificationStore.configuration || !NotificationStore.configuration.submitted,
         };
 
         // binding
@@ -84,6 +87,14 @@ export default class AdminHomepage extends React.Component {
     render() {
         return (
             <div className="AdminPage" onClick={this._hideNotification}>
+
+                { this.state.showWelcome &&
+                    <NotificationsDialog
+                        welcome={true}
+                        close={() => this.setState({showWelcome: false})}
+                    />
+            }
+
                 <AdminTabs
                     onChange={this._handleTabChange}
                     value={this._tabFromRouteName(this.state.route.name)}
