@@ -7,6 +7,7 @@ import AuthStore from 'stores/AuthStore';
 import ChatStore from 'stores/ChatStore';
 import UserStore from 'stores/UserStore';
 import TeamStore from 'stores/TeamStore';
+import AlertActions from 'actions/AlertActions.jsx';
 
 import AlertPage from 'components/adminPages/AlertPage.jsx';
 import ChatPage from 'components/adminPages/ChatPage.jsx';
@@ -49,6 +50,11 @@ export default class AdminHomepage extends React.Component {
      */
     _handleTabChange(value) {
         router.navigate(value);
+
+        // Clear alert when this tab is selected
+        if(value == 'alert') {
+            AlertActions.alertViewed();
+        }
     }
 
     /**
