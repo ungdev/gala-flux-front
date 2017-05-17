@@ -9,7 +9,6 @@ import AuthStore from 'stores/AuthStore';
 import NotificationActions from 'actions/NotificationActions';
 import ReceiverSelect from 'components/log/ReceiverSelect.jsx';
 import { Row, Col } from 'react-flexbox-grid';
-import FluxNotification from 'components/partials/FluxNotification.jsx';
 
 require('styles/log/Alerts.scss');
 
@@ -26,7 +25,6 @@ export default class Alerts extends React.Component {
             receiverFilter: [],
             isDoneFilter: false,
             newAlerts: {},
-            notify: null
         };
 
         this.AlertStoreToken = null;
@@ -111,7 +109,6 @@ export default class Alerts extends React.Component {
         let team = TeamStore.findById(alert.sender);
         this.setState({
             newAlerts: AlertStore.newAlerts,
-            notify: {title: 'Alerte' + (team?' de ' + team.name: ''), content: alert.title},
         });
     }
 
@@ -138,7 +135,7 @@ export default class Alerts extends React.Component {
 
     render() {
         return (
-            <div className="alerts" onClick={_ => this.setState({ notify: false })}>
+            <div className="alerts">
                 <Paper className="alerts__filters">
                     <Row center="sm">
                         <Col xs={12} sm={4}>
@@ -172,10 +169,6 @@ export default class Alerts extends React.Component {
                 <div className="alerts__container">
                     <AlertList alerts={this.state.filteredAlerts} />
                 </div>
-                {
-                    this.state.notify &&
-                    <FluxNotification title={this.state.notify.title} content={this.state.notify.content} />
-                }
             </div>
         );
     }

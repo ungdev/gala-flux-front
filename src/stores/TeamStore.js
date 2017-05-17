@@ -6,6 +6,9 @@ class TeamStore extends BaseStore {
 
     constructor() {
         super('team', TeamService);
+
+        // Force subscribe
+        this._forceSubscribe = true;
     }
 
     get teams() {

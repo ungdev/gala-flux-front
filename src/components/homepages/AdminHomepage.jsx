@@ -1,15 +1,13 @@
 import React from 'react';
 import router from 'router';
 
-import { Tabs, Tab } from 'material-ui/Tabs';
-
 import AdminMenu from 'components/partials/AdminMenu.jsx';
+import AdminTabs from 'components/partials/AdminTabs.jsx';
 import AuthStore from 'stores/AuthStore';
 import ChatStore from 'stores/ChatStore';
 import UserStore from 'stores/UserStore';
 import TeamStore from 'stores/TeamStore';
 
-import FluxNotification from 'components/partials/FluxNotification.jsx';
 import AlertPage from 'components/adminPages/AlertPage.jsx';
 import ChatPage from 'components/adminPages/ChatPage.jsx';
 import StockPage from 'components/adminPages/StockPage.jsx';
@@ -19,6 +17,7 @@ import BottlesTypesPage from "components/adminPages/BottlesTypesPage.jsx";
 import AlertButtonsPage from 'components/adminPages/AlertButtonsPage.jsx';
 import TeamListPage from 'components/adminPages/TeamListPage.jsx';
 import TeamDetailsPage from 'components/adminPages/TeamDetailsPage.jsx';
+
 
 require('styles/homepages/AdminHomepage.scss');
 
@@ -32,23 +31,10 @@ export default class AdminHomepage extends React.Component {
 
         this.state = {
             route: props.route,
-            notify: null
         };
 
         // binding
         this._handleTabChange = this._handleTabChange.bind(this);
-        this._showNotification = this._showNotification.bind(this);
-        this._hideNotification = this._hideNotification.bind(this);
-    }
-
-    componentDidMount() {
-        // Listen new messages events
-        ChatStore.addNewListener(this._showNotification);
-    }
-
-    componentWillUnmount() {
-        // remove the store listener
-        ChatStore.removeNewListener(this._showNotification);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -63,21 +49,6 @@ export default class AdminHomepage extends React.Component {
      */
     _handleTabChange(value) {
         router.navigate(value);
-    }
-
-    _showNotification(message) {
-        if (!this.state.notify) {
-            let user = UserStore.findById(message.sender);
-            let team = user ? TeamStore.findById(user.team) : null;
-            let contentPrefix = (user? user.name + (team?' ('+team.name+')':'') + ' : ' : '');
-            this.setState({ notify: { title: 'Nouveau message sur ' + message.channel.split(':')[1], content: contentPrefix + message.text }});
-        }
-    }
-
-    _hideNotification() {
-        if (this.state.notify) {
-            this.setState({ notify: false });
-        }
     }
 
     /**
@@ -107,37 +78,10 @@ export default class AdminHomepage extends React.Component {
     render() {
         return (
             <div className="AdminPage" onClick={this._hideNotification}>
-
-                {/* Tabs for tablet */}
-                <Tabs className="AdminPage__tabs show-sm" onChange={this._handleTabChange} value={this._tabFromRouteName(this.state.route.name)}>
-                    <Tab label="Chat" value="home"/>
-                    { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
-                        <Tab label="Alertes" value="alert"/>
-                    }
-
-                    { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
-                    (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
-                        <Tab label="Bars" value="bars"/>
-                    }
-
-                    { (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
-                        <Tab label="Gestion du stock" value="stock"/>
-                    }
-                    <Tab label="Administration" value="admin"/>
-                </Tabs>
-
-                {/* Tabs for desktop */}
-                <Tabs className="AdminPage__tabs hide-sm" onChange={this._handleTabChange} value={this._tabFromRouteName(this.state.route.name)}>
-                    <Tab label="Dashboard" value="home"/>
-                    { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
-                    (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
-                        <Tab label="Bars" value="bars"/>
-                    }
-                    { (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
-                        <Tab label="Gestion du stock" value="stock"/>
-                    }
-                    <Tab label="Administration" value="admin"/>
-                </Tabs>
+                <AdminTabs
+                    onChange={this._handleTabChange}
+                    value={this._tabFromRouteName(this.state.route.name)}
+                />
 
 
                     {(() => {
@@ -214,12 +158,6 @@ export default class AdminHomepage extends React.Component {
                                 );
                         }
                     })()}
-
-
-                {
-                    this.state.notify &&
-                    <FluxNotification title={this.state.notify.title} content={this.state.notify.content} />
-                }
             </div>
         );
     }

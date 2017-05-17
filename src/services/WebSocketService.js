@@ -38,7 +38,6 @@ class WebSocketService {
         .then((jwt) => {
             AuthActions.saveJWT(jwt);
             WebSocketActions.connected();
-            NotificationActions.hideLoading();
         })
         .catch((error) => {
             if(jwt) {
@@ -53,7 +52,6 @@ class WebSocketService {
                 AuthActions.saveJWT(jwt);
                 localStorage.removeItem(constants.firstJwtName);
                 WebSocketActions.connected();
-                NotificationActions.hideLoading();
             })
             .catch((error) => {
                 if(jwt) {
@@ -70,12 +68,10 @@ class WebSocketService {
                     AuthActions.saveJWT(jwt);
                     history.replaceState({}, 'Flux', '/');
                     router.navigate('home');
-                    NotificationActions.hideLoading();
                     AuthActions.authEtuuttDone();
                 })
                 .catch((error) => {
                     router.navigate('home');
-                    NotificationActions.hideLoading();
                     AuthActions.authEtuuttDone();
                     if(authCode) {
                         if(error && error.status == 'LoginNotFound') {
@@ -91,14 +87,12 @@ class WebSocketService {
                     .then((jwt) => {
                         AuthActions.saveJWT(jwt);
                         WebSocketActions.connected();
-                        NotificationActions.hideLoading();
                         AuthActions.authEtuuttDone();
                     })
                     // Ignore this error
                     .catch((error) => {
                         AuthActions.noJWT();
                         WebSocketActions.connected();
-                        NotificationActions.hideLoading();
                         AuthActions.authEtuuttDone();
                         if(jwtError) {
                             AuthActions.logout();

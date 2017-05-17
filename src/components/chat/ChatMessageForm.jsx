@@ -55,6 +55,7 @@ export default class ChatMessageForm extends React.Component {
      * @param e: event
      */
     _handleKeyDown(e) {
+        ChatActions.viewMessages(this.state.channel);
         if (e.keyCode === 13) {
             // Submit on enter press
             if(!e.ctrlKey && !e.shiftKey) {
@@ -88,6 +89,7 @@ export default class ChatMessageForm extends React.Component {
             channel: this.props.channel,
         })
         .then(() => {
+            ChatActions.viewMessages(this.state.channel);
             localStorage.setItem('chat/input/'+this.state.channel, '');
             this.setState({value: ''});
             this.focus();
@@ -108,9 +110,7 @@ export default class ChatMessageForm extends React.Component {
      */
     _onTextAreaClick() {
         // if there was new messages for this channel, reset the new messages counter
-        if (ChatStore.getNewMessages(this.state.channel)) {
-            ChatActions.viewMessages(this.state.channel);
-        }
+        ChatActions.viewMessages(this.state.channel);
      }
 
     render() {

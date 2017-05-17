@@ -85,6 +85,7 @@ class AuthStore extends BaseStore {
             .then(user => {
                 this._user = user;
                 iosocket.on('user', (e) => this._handleUserEvents(e));
+                UserService.subscribe();
                 this.emitChange();
                 return TeamService.getById(this.user.team);
             })
@@ -100,6 +101,7 @@ class AuthStore extends BaseStore {
 
                 this._team = team;
                 iosocket.on('team', (e) => this._handleTeamEvents(e));
+                TeamService.subscribe();
                 this.emitChange();
                 AuthActions.authenticated(this.user, this.team);
             })

@@ -18,6 +18,10 @@
             > div > div {
                 padding: 8px 16px !important;
             }
+
+            .ChatMenu__channel__nameContainer {
+                overflow: hidden;
+            }
         }
 
         .ChatMenu__subheader {
@@ -53,16 +57,7 @@
     text-align: center;
     line-height: 13px;
     float: right;
-    animation-name: notification_bubble;
-    animation-duration: 2s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-}
-
-@keyframes notification_bubble {
-    0%  {background-color: color($red, 600);}
-    25% {background-color: color($red, 200);}
-    75% {background-color: color($red, 600);}
+    margin-left: 5px;
 }
 
 @media only screen and (max-width: $screen-max-xs) {

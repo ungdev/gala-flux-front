@@ -3,6 +3,7 @@ import router from 'router';
 
 import ChatService from 'services/ChatService';
 import ChatStore from 'stores/ChatStore';
+import NotificationStore from 'stores/NotificationStore';
 import ChatActions from 'actions/ChatActions';
 import AuthStore from 'stores/AuthStore';
 import NotificationActions from 'actions/NotificationActions';
@@ -71,12 +72,12 @@ export default class ChatMenu extends React.Component {
         this._updateChannel(this.props.route);
 
         // Listen store change
-        ChatStore.addChangeListener(this._updateNewMessages);
+        NotificationStore.addChangeListener(this._updateNewMessages);
     }
 
     componentWillUnmount() {
         // remove the store change listener
-        ChatStore.addChangeListener(this._updateNewMessages);
+        NotificationStore.addChangeListener(this._updateNewMessages);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -87,7 +88,7 @@ export default class ChatMenu extends React.Component {
      * Set the new messages counters in the state
      */
     _updateNewMessages() {
-        this.setState({ newMessages: ChatStore.newMessages });
+        this.setState({ newMessages: NotificationStore.newMessageCounts });
     }
 
     /**
