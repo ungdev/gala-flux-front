@@ -9,6 +9,9 @@ class AlertStore extends BaseStore {
         super('alert', AlertService);
 
         this._newAlerts = {};
+
+        // Force subscribe
+        this._forceSubscribe = true;
     }
 
     get alerts() {

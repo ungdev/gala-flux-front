@@ -17,6 +17,12 @@ export default class BaseStore extends EventEmitter {
         this._filters = {};
         this._filterLastId = 0;
 
+        // If this variable is true, the store will subscribe to new events and never unsubscribe
+        this._forceSubscribe = false;
+
+        // True if subscrbied has already been excecuted
+        this._subscribed = false;
+
         this.subscribe(() => this._handleActions.bind(this));
 
         // binding
@@ -174,12 +180,13 @@ export default class BaseStore extends EventEmitter {
         this._filters[componentToken] = filters;
 
         // If store was empty before, subscribe
-        if(Object.keys(this._filters).length == 1) {
+        if(!this._subscribed && (Object.keys(this._filters).length == 1 || this._forceSubscribe)) {
             // listen model changes
             iosocket.on(this._modelName, this._handleModelEvents);
 
             // Subscribe
             this._service.subscribe();
+            this._subscribed = true;
         }
 
         // refresh the store with the new filters
@@ -200,12 +207,13 @@ export default class BaseStore extends EventEmitter {
             this.fetchData();
 
             // If store is now empty
-            if(Object.keys(this._filters).length === 0) {
+            if(Object.keys(this._filters).length === 0 && !this._forceSubscribe) {
                 // unlisten model changes
                 iosocket.off(this._modelName, this._handleModelEvents);
 
                 // unsubscribe
                 this._service.unsubscribe();
+                this._subscribed = false;
             }
         }
     }
@@ -399,6 +407,7 @@ export default class BaseStore extends EventEmitter {
                     // Add to the list only if it match our list
                     if(this._match(e.data, this.getFiltersSet())) {
                         this._set(e.id, e.data);
+                        this.emitNew(e.data);
                     }
                 }
                 else {
@@ -423,12 +432,14 @@ export default class BaseStore extends EventEmitter {
                 this.fetchData(null, true);
 
                 // If filter was not empty re-subscribe
-                if(Object.keys(this._filters).length >= 1) {
+                if(this._forceSubscribe || Object.keys(this._filters).length >= 1) {
                     // listen model changes
+                    iosocket.off(this._modelName, this._handleModelEvents);
                     iosocket.on(this._modelName, this._handleModelEvents);
 
                     // Subscribe
                     this._service.subscribe();
+                    this._subscribed = true;
                 }
                 break;
         }

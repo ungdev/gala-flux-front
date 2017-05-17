@@ -1,5 +1,12 @@
 import jwtDecode from 'jwt-decode';
 import BaseStore from 'stores/BaseStore';
+import AuthStore from 'stores/AuthStore';
+import ChatStore from 'stores/ChatStore';
+import UserStore from 'stores/UserStore';
+import TeamStore from 'stores/TeamStore';
+import ChatService from 'services/ChatService';
+import AlertService from 'services/AlertService';
+import NotificationActions from 'actions/NotificationActions';
 
 class NotificationStore extends BaseStore {
 
@@ -19,10 +26,82 @@ class NotificationStore extends BaseStore {
         // }
         this._errorMessages = [];
 
+        // Counts of new messages for each channel
+        this._newMessageCounts = {};
 
-        // Contains the message under the loading circular progress
-        // The loading page will be shown only if this attribute is defined
-        this._loadingMessage = null;
+        // Date of last message for each channel
+        try {
+            this._lastReadMessages = localStorage.getItem('lastReadMessages') ? JSON.parse(localStorage.getItem('lastReadMessages')) : {};
+        } catch (e) {
+            this._lastReadMessages = {};
+            console.error('localstorage lastReadMessages json parsing error', e);
+        }
+
+        // Date of last alert
+        this._lastAlert = localStorage.getItem('lastAlert') ? new Date(localStorage.getItem('lastReadMessages')) : new Date();
+
+        // Count of new alert
+        this._newAlertCount = 0;
+
+        // List notification not cleared
+        this._notifications = [];
+
+        // Notification Id used to avoid start same notification multiple times
+        this._nextNotificationId = 0;
+
+        // Bind
+        this._handleMessageEvent = this._handleMessageEvent.bind(this);
+        this._handleAlertEvent = this._handleAlertEvent.bind(this);
+
+    }
+
+    /**
+     * init the store : pull last messages and last alertes
+     */
+    _init() {
+        // fetch new messages counts
+        ChatService.get()
+        .then(messages => {
+            // read the last messages viewed
+            const newMessages = {};
+            const newChannels = {};
+
+            // for each messages, check if he is more recent than the last viewed
+            for (let message of messages) {
+                if(this._lastReadMessages[message.channel]) {
+                    if ((new Date(this._lastReadMessages[message.channel])) < (new Date(message.createdAt))) {
+                        if (newMessages[message.channel]) {
+                            newMessages[message.channel]++;
+                        } else {
+                            newMessages[message.channel] = 1;
+                        }
+                    }
+                }
+                else if(!newChannels[message.channel]) {
+                    newChannels[message.channel] = new Date();
+                }
+
+            }
+
+            this._newMessageCounts = newMessages;
+            this._lastReadMessages = Object.assign(this._lastReadMessages, newChannels);
+            localStorage.setItem('lastReadMessages', JSON.stringify(this._lastReadMessages));
+
+            // Fetch new alert count
+            if(AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) {
+                return AlertService.get({ createdAt: {'>': this._lastAlert}});
+            }
+            return Promise.resolve([]);
+        })
+        .then(alertes => {
+            this._newAlertCount = alertes.length;
+            this.emitChange();
+        })
+        .catch(error => NotificationActions.error("Erreur lors de la lecture des messages et alertes non lus.", error));
+
+        // Listen for new events
+        iosocket.on('message', this._handleMessageEvent);
+        iosocket.on('alert', this._handleAlertEvent);
     }
 
 
@@ -36,8 +115,8 @@ class NotificationStore extends BaseStore {
         if(error) {
             process.nextTick(() => {
                 // Prevent from breaking syncronous code
-                this.emitChange()
-            })
+                this.emitChange();
+            });
             return error;
         }
         return null;
@@ -71,7 +150,7 @@ class NotificationStore extends BaseStore {
             process.nextTick(() => {
                 // Prevent from breaking syncronous code
                 this.emitChange();
-            })
+            });
             return notification;
         }
         return null;
@@ -87,27 +166,142 @@ class NotificationStore extends BaseStore {
         this.emitChange();
     }
 
+    /**
+     * Removes the first notification in the list
+     *
+     * @return {Object}  {title: 'string', text: 'string'}
+     */
+    shiftNotification() {
+        let notification = this._notifications.shift();
+        if(notification) {
+            process.nextTick(() => {
+                // Prevent from breaking syncronous code
+                this.emitChange();
+            });
+            return notification;
+        }
+        return null;
+    }
 
     /**
-     * set loadingMessage - Show or hide the loading screen with the given message
+     * Add a new notification in the list
+     * @param {String} title Title of the notification
+     * @param {String} text Text of the notification
+     * @param {String} route Route to redirect on notification click
+     * @param {String} routeParams Param of the route to redirect on notification click
+     * @param {String} tag Notification with a tag will be replaced by the new with the same type
      *
-     * @param  {type} message Message shown on the loading screen or nothing to hide it
      */
-    set loadingMessage(message) {
-        this._loadingMessage = message ? message : null;
+    pushNotification(title, text, route = null, routeParams = null, tag = null) {
+        this._notifications.push({title, text, id: this._nextNotificationId, route, routeParams, tag});
+        this._nextNotificationId++;
         this.emitChange();
     }
 
-
     /**
-     * get loadingMessage - Return the current message on the loading screen or nothing if hidden
+     * return list of notifications
      *
-     * @return {string|null}  The current message or nothing
+     * @return {array}  [{title: 'string', text: 'string'}]
      */
-    get loadingMessage() {
-        return this._loadingMessage;
+    get notifications() {
+        return this._notifications;
     }
 
+    get newMessageCounts() {
+        return this._newMessageCounts;
+    }
+
+    get newMAlertCount() {
+        return this._newAlertCount;
+    }
+
+
+    /**
+     * Return the number of new messages of the given channel
+     * @param {string} channel: the channel name
+     * @returns {number}
+     */
+    getNewMessageCount(channel) {
+        if (this._newMessageCounts[channel]) {
+            return this._newMessageCounts[channel];
+        }
+        return 0;
+    }
+
+    /**
+     * set new messages of a given channel to 0
+     * @param {string} channel
+     */
+    _resetNewMessages(channel) {
+        let lastReadMessage = ChatStore.getLastChannelMessage(channel);
+        this._newMessageCounts[channel] = 0;
+        this._lastReadMessages[channel] = lastReadMessage ? lastReadMessage.createdAt : null;
+
+        localStorage.setItem('lastReadMessages', JSON.stringify(this._lastReadMessages));
+        this.emitChange();
+    }
+
+    /**
+     * Handle new Message
+     * @param message
+     */
+    _handleMessageEvent(e) {
+        if(e.verb == 'created')
+        {
+            let message = e.data;
+            let user = UserStore.findById(message.sender);
+            let team = user ? TeamStore.findById(user.team) : null;
+
+            // it's new message only if the sender is not the authenticated user
+            if (AuthStore.user.id !== message.sender) {
+                // increment the number of unviewed messages for this channel
+                this._newMessageCounts[message.channel] = this._newMessageCounts[message.channel] ? this._newMessageCounts[message.channel]+1 : 1;
+
+                // Send notification
+                let contentPrefix = (user? user.name + (team?' ('+team.name+')':'') + ' : ' : '');
+                let route = null;
+                let routeParams = null;
+                if(AuthStore.can('ui/admin')) {
+                    route = 'chat.channel';
+                    routeParams = {channel: message.channel};
+                }
+                this.pushNotification('Nouveau message sur ' + message.channel.split(':')[1], contentPrefix + message.text, route, routeParams, 'chat/'+message.channel);
+
+                // Emit changes
+                this.emitChange();
+            }
+
+            // Add this channel to lastRead messages if necessary
+            if(!this._lastReadMessages[message.channel]) {
+                // Register the "seen date" to one second before this message
+                let date = new Date(message.createdAt);
+                date.setTime(date.getTime() - 1000);
+                this._lastReadMessages[message.channel] = date.toISOString();
+                localStorage.setItem('lastReadMessages', JSON.stringify(this._lastReadMessages));
+            }
+        }
+    }
+
+    /**
+     * Handle new alert
+     * @param message
+     */
+    _handleAlertEvent(e) {
+        if(e.verb == 'created')
+        {
+            let alert = e.data;
+            let team = TeamStore.findById(alert.sender);
+
+            // increment the number of unread alerts
+            this._newAlertCount++;
+
+            // Send notification
+            this.pushNotification('Alerte' + (team ? ' de ' + team.name : ''), alert.title, 'alert', null, 'alert');
+
+            // Emit changes
+            this.emitChange();
+        }
+    }
 
     _handleActions(action) {
         super._handleActions(action);
@@ -118,12 +312,18 @@ class NotificationStore extends BaseStore {
             case "SNACKBAR":
                 this.pushSnackbar(action.data);
                 break;
-            case "LOADING":
-                this.loadingMessage = action.data;
+            case "AUTH_AUTHENTICATED":
+                this._init();
+                break;
+            case "NOTIFICATIONS_CLEAR":
+                this._notifications = [];
+                this.emitChange();
+                break;
+            case "MESSAGES_VIEWED":
+                this._resetNewMessages(action.channel);
                 break;
         }
     }
-
 }
 
 export default new NotificationStore();

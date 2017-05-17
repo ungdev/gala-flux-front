@@ -58,3 +58,8 @@ if (global.Android) {
         router.navigate(route, param);
     }
 }
+
+// Ask the user for permission to emit browser notifications
+if ("Notification" in window) {
+    Notification.requestPermission();
+}
