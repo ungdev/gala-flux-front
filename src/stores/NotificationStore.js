@@ -39,7 +39,9 @@ class NotificationStore extends BaseStore {
         }
 
         // Date of last alert
-        this._lastAlert = localStorage.getItem('lastAlert') ? new Date(localStorage.getItem('lastReadMessages')) : (new Date()).toISOString();
+        this._lastReadAlert = localStorage.getItem('lastReadAlert') ? new Date(localStorage.getItem('lastReadAlert')) : (new Date()).toISOString();
+        localStorage.setItem('lastReadAlert', this._lastReadAlert);
+
 
         // Count of new alert
         this._newAlertCount = 0;
@@ -90,7 +92,7 @@ class NotificationStore extends BaseStore {
 
             // Fetch new alert count
             if(AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) {
-                return AlertService.get({ createdAt: {'>': this._lastAlert}});
+                return AlertService.get({ createdAt: {'>': this._lastReadAlert}});
             }
             return Promise.resolve([]);
         })
@@ -296,6 +298,8 @@ class NotificationStore extends BaseStore {
             // increment the number of unread alerts if not already on the page
             if(router.getState() && router.getState().name == 'alert') {
                 this._newAlertCount = 0;
+                this._lastReadAlert = (new Date()).toISOString();
+                localStorage.setItem('lastReadAlert', this._lastReadAlert);
             }
             else {
                 this._newAlertCount++;
@@ -326,8 +330,8 @@ class NotificationStore extends BaseStore {
                 this.emitChange();
                 break;
             case "ALERT_VIEWED":
-                this._lastAlert = (new Date()).toISOString();
-                localStorage.setItem('lastAlert', this._lastAlert);
+                this._lastReadAlert = (new Date()).toISOString();
+                localStorage.setItem('lastReadAlert', this._lastReadAlert);
                 this._newAlertCount = 0;
                 this.emitChange();
                 break;
