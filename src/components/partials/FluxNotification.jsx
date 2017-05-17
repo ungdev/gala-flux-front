@@ -21,6 +21,7 @@ export default class FluxNotification extends React.Component {
             // config: AuthStore.notifications,
             notifications: [],
             flashScreen: false,
+            playing: Sound.status.STOPPED,
         };
 
         this._lastNotificationId = -1;
@@ -119,18 +120,29 @@ export default class FluxNotification extends React.Component {
                 }
             });
         // }
+
+        // Start sound
+        for (let data of this.state.notifications) {
+            if(this._lastNotificationId < data.id) {
+                console.log('Notification ', data)
+                this.setState({playing: Sound.status.PLAYING});
+                break;
+            }
+        }
     }
 
     render() {
+        console.log('will play', this.state.playing)
         return (
             <div>
                 {(true || this.state.config.flash) && this.state.flashScreen &&
                     <div className="flash_screen"></div>
                 }
-                {true || this.state.config.sound &&
+                {(true || this.state.config.sound) &&
                     <Sound
                         url={NOTIFICATION_SOUND}
-                        playStatus={Sound.status.PLAYING}
+                        playStatus={this.state.playing}
+                        onFinishedPlaying={() => this.setState({playing: Sound.status.STOPPED})}
                     />
                 }
             </div>
