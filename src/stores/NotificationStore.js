@@ -299,15 +299,16 @@ class NotificationStore extends BaseStore {
                 this._newMessageCounts[message.channel] = this._newMessageCounts[message.channel] ? this._newMessageCounts[message.channel]+1 : 1;
 
                 // Send notification
-                let contentPrefix = (user? user.name + (team?' ('+team.name+')':'') + ' : ' : '');
-                let route = null;
-                let routeParams = null;
-                if(AuthStore.can('ui/admin')) {
-                    route = 'chat.channel';
-                    routeParams = {channel: message.channel};
+                if(!this.configuration.channel || !this.configuration.channel[message.channel] || this.configuration.channel[message.channel] == 'notify') {
+                    let contentPrefix = (user? user.name + (team?' ('+team.name+')':'') + ' : ' : '');
+                    let route = null;
+                    let routeParams = null;
+                    if(AuthStore.can('ui/admin')) {
+                        route = 'chat.channel';
+                        routeParams = {channel: message.channel};
+                    }
+                    this.pushNotification('Nouveau message sur ' + message.channel.split(':')[1], contentPrefix + message.text, route, routeParams, 'chat/'+message.channel);
                 }
-                this.pushNotification('Nouveau message sur ' + message.channel.split(':')[1], contentPrefix + message.text, route, routeParams, 'chat/'+message.channel);
-
                 // Emit changes
                 this.emitChange();
             }
@@ -346,7 +347,9 @@ class NotificationStore extends BaseStore {
                 }
 
                 // Send notification
-                this.pushNotification('Alerte' + (team ? ' de ' + team.name : ''), alert.title, 'alert', null, 'alert');
+                if(this.configuration.alert) {
+                    this.pushNotification('Alerte' + (team ? ' de ' + team.name : ''), alert.title, 'alert', null, 'alert');
+                }
 
                 // Emit changes
                 this.emitChange();

@@ -10,8 +10,9 @@ import NotificationActions from 'actions/NotificationActions';
 import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
 import SelectableList from 'components/partials/SelectableList.jsx';
-import ChatMenuItem from 'components/chat/ChatMenuItem.jsx';
+import FontAwesome from 'react-fontawesome';
 import { ListItem } from 'material-ui/List';
+import ReactTooltip from 'react-tooltip';
 
 require('styles/chat/ChatMenu.scss');
 
@@ -32,6 +33,7 @@ export default class ChatMenu extends React.Component {
                 group: [],
                 public: []
             },
+            channelOrder: {},
             channel: '',
             newMessages: {},
             overNewMessageCount: 0,
@@ -95,7 +97,53 @@ export default class ChatMenu extends React.Component {
      * Set the new messages counters in the state
      */
     _updateNewMessages() {
-        this.setState({ newMessages: NotificationStore.newMessageCounts });
+        let channelOrder = [];
+        let channels = NotificationStore.configuration.channel;
+        for (let channel in channels) {
+            if(channels[channel] != 'hide') {
+                // Create channel label
+                let label = channel.split(':')[1];
+                let leftIcon = '';
+                let notify = true;
+                if(channel.split(':')[0] == 'private') {
+                    leftIcon = 'user-secret';
+                }
+                else if(channel.split(':')[0] == 'group') {
+                    leftIcon = 'bullhorn';
+                }
+                if(channels[channel] != 'notify') {
+                    notify = false;
+                }
+
+                channelOrder.push({channel, label, leftIcon, notify});
+            }
+        }
+        channelOrder = channelOrder.sort((a,b) => {
+            let chanA = a.channel;
+            let chanB = b.channel;
+
+            // General first
+            chanA = (a.channel.split(':')[1] == 'General' ? '0' : '1') +  chanA;
+            chanB = (b.channel.split(':')[1] == 'General' ? '0' : '1') +  chanB;
+
+            // Personnal channel first
+            chanA = (a.channel.split(':')[1] == AuthStore.team.name ? '0' : '1') +  chanA;
+            chanB = (b.channel.split(':')[1] == AuthStore.team.name ? '0' : '1') +  chanB;
+
+            // order public, group, private
+            chanA = (a.channel.split(':')[0] == 'group' ? '0' : '1') +  chanA;
+            chanB = (b.channel.split(':')[0] == 'group' ? '0' : '1') +  chanB;
+            chanA = (a.channel.split(':')[0] == 'public' ? '0' : '1') +  chanA;
+            chanB = (b.channel.split(':')[0] == 'public' ? '0' : '1') +  chanB;
+
+            // put 'notify' first
+            chanA = (a.notify ? '0' : '1') + chanA;
+            chanB = (b.notify ? '0' : '1') + chanB;
+
+            return chanA.localeCompare(chanB);
+        })
+
+        this.setState({ newMessages: NotificationStore.newMessageCounts, channelOrder });
     }
 
     /**
@@ -190,49 +238,29 @@ export default class ChatMenu extends React.Component {
                     </div>
                 }
                 <SelectableList onChange={this._handleChange} value={this.state.channel}>
-
-                    { this.state.channels.public.length > 0 &&
-                        <Subheader className="ChatMenu__subheader">Publique</Subheader>
-                    }
                     {
-                        this.state.channels.public.map((channel, i) => {
+                        Object.keys(this.state.channelOrder).map((key, i) => {
+                            let channel = this.state.channelOrder[key].channel;
                             return (
                                 <ListItem key={i} value={channel} className="ChatMenu__channel" onClick={_ => this._messagesViewed(channel)}>
-                                    <ChatMenuItem  newMessages={this.state.newMessages[channel]} channel={channel} />
-                                </ListItem>
-                            )
-                        })
-                    }
+                                    { this.state.channelOrder[key].notify && this.state.newMessages[channel] > 0 &&
+                                        <span className="Notification_bubble">{this.state.newMessages[channel]}</span>
+                                    }
+                                    {!this.state.channelOrder[key].notify &&
+                                        <span className="pull-right"> <FontAwesome name="bell-slash-o" /></span>
+                                    }
+                                    <div data-count={((this.state.channelOrder[key].notify && this.state.newMessages[channel]) || 0)} className="ChatMenu__channel__nameContainer NotificationScrollIndicatorLine">
 
+                                        {this.state.channelOrder[key].leftIcon &&
+                                            <span><FontAwesome name={this.state.channelOrder[key].leftIcon} /> </span>
+                                        }
 
-                    { this.state.channels.group.length > 0 &&
-                        <div>
-                            <Divider className="hide-xs"/>
-                            <Subheader className="ChatMenu__subheader">Groupe</Subheader>
-                        </div>
-                    }
-                    {
-                        this.state.channels.group.map((channel, i) => {
-                            return (
-                                <ListItem key={i} value={channel} className="ChatMenu__channel">
-                                    <ChatMenuItem  newMessages={this.state.newMessages[channel]} channel={channel} messagesViewed={_ => this._messagesViewed(channel)} />
-                                </ListItem>
-                            )
-                        })
-                    }
-
-
-                    { this.state.channels.private.length > 0 &&
-                        <div>
-                            <Divider className="hide-xs"/>
-                            <Subheader className="ChatMenu__subheader">Privé</Subheader>
-                        </div>
-                    }
-                    {
-                        this.state.channels.private.map((channel, i) => {
-                            return (
-                                <ListItem key={i} value={channel} className="ChatMenu__channel">
-                                    <ChatMenuItem  newMessages={this.state.newMessages[channel]} channel={channel} messagesViewed={_ => this._messagesViewed(channel)} />
+                                        {this.state.newMessages[channel] > 0 ?
+                                            <strong>{this.state.channelOrder[key].label}</strong>
+                                            :
+                                            this.state.channelOrder[key].label
+                                        }
+                                    </div>
                                 </ListItem>
                             )
                         })
