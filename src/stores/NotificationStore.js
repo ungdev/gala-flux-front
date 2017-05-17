@@ -7,6 +7,7 @@ import TeamStore from 'stores/TeamStore';
 import ChatService from 'services/ChatService';
 import AlertService from 'services/AlertService';
 import NotificationActions from 'actions/NotificationActions';
+import router from 'router';
 
 class NotificationStore extends BaseStore {
 
@@ -38,7 +39,7 @@ class NotificationStore extends BaseStore {
         }
 
         // Date of last alert
-        this._lastAlert = localStorage.getItem('lastAlert') ? new Date(localStorage.getItem('lastReadMessages')) : new Date();
+        this._lastAlert = localStorage.getItem('lastAlert') ? new Date(localStorage.getItem('lastReadMessages')) : (new Date()).toISOString();
 
         // Count of new alert
         this._newAlertCount = 0;
@@ -292,8 +293,13 @@ class NotificationStore extends BaseStore {
             let alert = e.data;
             let team = TeamStore.findById(alert.sender);
 
-            // increment the number of unread alerts
-            this._newAlertCount++;
+            // increment the number of unread alerts if not already on the page
+            if(router.getState() && router.getState().name == 'alert') {
+                this._newAlertCount = 0;
+            }
+            else {
+                this._newAlertCount++;
+            }
 
             // Send notification
             this.pushNotification('Alerte' + (team ? ' de ' + team.name : ''), alert.title, 'alert', null, 'alert');
@@ -317,6 +323,12 @@ class NotificationStore extends BaseStore {
                 break;
             case "NOTIFICATIONS_CLEAR":
                 this._notifications = [];
+                this.emitChange();
+                break;
+            case "ALERT_VIEWED":
+                this._lastAlert = (new Date()).toISOString();
+                localStorage.setItem('lastAlert', this._lastAlert);
+                this._newAlertCount = 0;
                 this.emitChange();
                 break;
             case "MESSAGES_VIEWED":
