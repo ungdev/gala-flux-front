@@ -33,10 +33,13 @@ export default class ChatMenu extends React.Component {
                 public: []
             },
             channel: '',
-            newMessages: {}
+            newMessages: {},
+            overNewMessageCount: 0,
+            underNewMessageCount: 0,
         };
 
         // binding
+        this._handleScroll = this._handleScroll.bind(this);
         this._handleChange = this._handleChange.bind(this);
         this._updateChannel = this._updateChannel.bind(this);
         this._updateNewMessages = this._updateNewMessages.bind(this);
@@ -84,6 +87,10 @@ export default class ChatMenu extends React.Component {
         this._updateChannel(nextProps.route);
     }
 
+    componentDidUpdate() {
+        this._handleScroll();
+    }
+
     /**
      * Set the new messages counters in the state
      */
@@ -123,6 +130,45 @@ export default class ChatMenu extends React.Component {
         }
     }
 
+    _handleScroll(e) {
+        let target = this.scrollArea;
+        if(target) {
+            let over = 0;
+            let under = 0;
+
+            const scrollAreaTop = target.getBoundingClientRect().top;
+            const scrollAreaBottom = target.getBoundingClientRect().bottom;
+
+            // Calculate number of message under and over the view in the scroll area
+            let elements = target.getElementsByClassName('NotificationScrollIndicatorLine');
+            for (let el of elements) {
+                let rect = el.getBoundingClientRect();
+                if(el.dataset && el.dataset.count && rect && rect.bottom != 0) {
+                    if(rect.top - scrollAreaTop < 0) {
+                        over += parseInt(el.dataset.count) || 0;
+                    }
+                    else if(scrollAreaBottom - rect.bottom < 0) {
+                        under += parseInt(el.dataset.count) || 0;
+                    }
+                    if(el.dataset.count==24) {
+                    }
+                }
+            }
+
+            // update state if necessary
+            let state = {};
+            if(this.state.overNewMessageCount != over) {
+                state.overNewMessageCount = over;
+            }
+            if(this.state.underNewMessageCount != under) {
+                state.underNewMessageCount = under;
+            }
+            if(Object.keys(state) != 0) {
+                this.setState(state);
+            }
+        }
+    }
+
     /**
      * Call the ChatStore method to reset the new messages counter of this channel
      * @param {string} channel
@@ -134,7 +180,15 @@ export default class ChatMenu extends React.Component {
     render() {
 
         return (
-            <div className="ChatMenu">
+            <div className="ChatMenu" onScroll={this._handleScroll} ref={(el) => { this.scrollArea = el; }}>
+
+                {this.state.overNewMessageCount != 0 &&
+                    <div className="NotificationScrollIndicator--top">
+                        <div>
+                            {this.state.overNewMessageCount} Non lus ↑
+                        </div>
+                    </div>
+                }
                 <SelectableList onChange={this._handleChange} value={this.state.channel}>
 
                     { this.state.channels.public.length > 0 &&
@@ -184,6 +238,14 @@ export default class ChatMenu extends React.Component {
                         })
                     }
                 </SelectableList>
+
+                {this.state.underNewMessageCount != 0 &&
+                    <div className="NotificationScrollIndicator--bottom">
+                        <div>
+                            {this.state.underNewMessageCount} Non lus ↓
+                        </div>
+                    </div>
+                }
             </div>
         );
     }
