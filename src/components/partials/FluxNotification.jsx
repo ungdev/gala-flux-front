@@ -18,7 +18,7 @@ export default class FluxNotification extends React.Component {
         super(props);
 
         this.state = {
-            // config: AuthStore.notifications,
+            configuration: NotificationStore.configuration,
             notifications: [],
             flashScreen: false,
             playing: Sound.status.STOPPED,
@@ -54,7 +54,7 @@ export default class FluxNotification extends React.Component {
     _updateData() {
         let notifications = NotificationStore.notifications;
         this.setState({
-            // config: AuthStore.notifications,
+            configuration: NotificationStore.configuration,
             notifications: notifications,
             flashScreen: (notifications.length == 0) ? false : this.state.flashScreen,
         });
@@ -86,7 +86,7 @@ export default class FluxNotification extends React.Component {
      * create a new desktop notification
      */
     _showDesktopNotification() {
-        // if (this.state.config.desktop) {
+        if (this.state.configuration.desktop) {
             // check if the browser handle desktop notifications
             if (!("Notification" in window)) {
                 return console.warn("Ce navigateur ne supporte pas les notifications desktop");
@@ -119,12 +119,11 @@ export default class FluxNotification extends React.Component {
                     }
                 }
             });
-        // }
+        }
 
         // Start sound
         for (let data of this.state.notifications) {
             if(this._lastNotificationId < data.id) {
-                console.log('Notification ', data)
                 this.setState({playing: Sound.status.PLAYING});
                 break;
             }
@@ -132,13 +131,12 @@ export default class FluxNotification extends React.Component {
     }
 
     render() {
-        console.log('will play', this.state.playing)
         return (
             <div>
-                {(true || this.state.config.flash) && this.state.flashScreen &&
+                {(this.state.configuration.flash) && this.state.flashScreen &&
                     <div className="flash_screen"></div>
                 }
-                {(true || this.state.config.sound) &&
+                {(this.state.configuration.sound) &&
                     <Sound
                         url={NOTIFICATION_SOUND}
                         playStatus={this.state.playing}

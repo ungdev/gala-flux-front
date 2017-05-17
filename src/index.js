@@ -17,6 +17,9 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import themeConfiguration from 'config/theme';
 const muiTheme = getMuiTheme(themeConfiguration);
 
+// Font awesome
+require('font-awesome/scss/font-awesome.scss');
+
 // Configure sound manager
 soundManager.setup({debugMode: false});
 
