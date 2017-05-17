@@ -29,7 +29,7 @@ export default class ChatMenuItem extends React.Component {
                             null
 
                 }
-                <div className="ChatMenu__channel__nameContainer">{this.state.channel.split(':')[1]}</div>
+                <div data-count={(this.state.newMessages || 0)} className="ChatMenu__channel__nameContainer NotificationScrollIndicatorLine">{this.state.channel.split(':')[1]}</div>
             </div>
         );
     }

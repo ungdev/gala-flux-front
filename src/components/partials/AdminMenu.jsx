@@ -81,8 +81,8 @@ export default class AdminMenu extends React.Component {
                 <SelectableList onChange={this._handleChange} value={this.state.route.name} className="AdminMenu">
 
                     { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
-                        <ListItem value="alert" className="AdminMenu__mainItem">
-                            <span className="Notification_bubble">{this.state.alertCount}</span>
+                        <ListItem value="alert" className="AdminMenu__mainItem NotificationScrollIndicatorLine" data-count={(this.state.alertCount || 0)}>
+                            { this.state.alertCount != 0 && <span className="Notification_bubble">{this.state.alertCount}</span> }
                             <div>Alertes</div>
                         </ListItem>
                     }

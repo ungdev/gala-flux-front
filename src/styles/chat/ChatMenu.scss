@@ -1,9 +1,11 @@
 @import '../Colors';
 @import '../Constants';
 
+$ChatMenu-width: 128px;
+
 .ChatPage {
     .ChatMenu {
-        max-width: 128px;
+        width: $ChatMenu-width;
         flex-shrink: 0;
         flex-grow: 0;
 
