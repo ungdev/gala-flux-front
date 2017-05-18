@@ -152,13 +152,13 @@ export default class ChatMessageList extends React.Component {
                 first = message;
             }
             last = message;
-
-            // Save messages
-            this.setState({
-                messages: messagesGroups,
-                loading: false,
-            })
         }
+
+        // Save messages
+        this.setState({
+            messages: messagesGroups,
+            loading: false,
+        })
     }
 
     /**
@@ -203,43 +203,48 @@ export default class ChatMessageList extends React.Component {
                 { this.state.loading ?
                     <CenteredMessage>Chargement..</CenteredMessage>
                 :
-                    // For each message, create a Message component
-                    this.state.messages.map((messageGroup, i) => {
-                        let user = UserStore.findById(messageGroup[0].sender) || {name: 'Utilisateur supprimé'};
-                        let team = TeamStore.findById(user.team) || {name: 'Utilisateur supprimé'};
-                        return (
-                            <div className={(AuthStore.user && user.id === AuthStore.user.id ? 'ChatMessageList__container--own' : 'ChatMessageList__container')} key={messageGroup[0].id}>
-                                <Avatar
-                                    className="ChatMessageList__avatar"
-                                    src={(constants.avatarBasePath + messageGroup[0].sender)}
-                                    backgroundColor="white"
-                                    title={user.name}
-                                    />
-                                <div className="ChatMessageList__bubbles">
-                                    <div className="ChatMessageList__bubbles__head">
-                                        {(team && user.id !== AuthStore.user.id ? (team.name + ' - ') : '')}
-                                        <DateTime date={messageGroup[0].createdAt} />
+
+                    ( this.state.messages.length == 0 ?
+                        <CenteredMessage>Aucun message</CenteredMessage>
+                    :
+                        // For each message, create a Message component
+                        this.state.messages.map((messageGroup, i) => {
+                            let user = UserStore.findById(messageGroup[0].sender) || {name: 'Utilisateur supprimé'};
+                            let team = TeamStore.findById(user.team) || {name: 'Utilisateur supprimé'};
+                            return (
+                                <div className={(AuthStore.user && user.id === AuthStore.user.id ? 'ChatMessageList__container--own' : 'ChatMessageList__container')} key={messageGroup[0].id}>
+                                    <Avatar
+                                        className="ChatMessageList__avatar"
+                                        src={(constants.avatarBasePath + messageGroup[0].sender)}
+                                        backgroundColor="white"
+                                        title={user.name}
+                                        />
+                                    <div className="ChatMessageList__bubbles">
+                                        <div className="ChatMessageList__bubbles__head">
+                                            {(team && user.id !== AuthStore.user.id ? (team.name + ' - ') : '')}
+                                            <DateTime date={messageGroup[0].createdAt} />
+                                        </div>
+                                        {
+                                            messageGroup.map((message, i) => {
+                                                let date = new Date(message.createdAt);
+                                                let title = (date.getDate() < 10 ? '0' : '') + date.getDate() +
+                                                    '/' + (date.getMonth() < 10 ? '0' : '') + date.getMonth() +
+                                                    '/' + (date.getYear()%100 < 10 ? '0' : '') + date.getYear()%100 +
+                                                    ' ' + (date.getHours() < 10 ? '0' : '') + date.getHours() +
+                                                    ':' + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() +
+                                                    ':' + (date.getSeconds() < 10 ? '0' : '') + date.getSeconds();
+                                                return (
+                                                    <Paper className="ChatMessageList__bubbles_bubble" title={title} key={message.id}>
+                                                        {message.text}
+                                                    </Paper>
+                                                )
+                                            })
+                                        }
                                     </div>
-                                    {
-                                        messageGroup.map((message, i) => {
-                                            let date = new Date(message.createdAt);
-                                            let title = (date.getDate() < 10 ? '0' : '') + date.getDate() +
-                                                '/' + (date.getMonth() < 10 ? '0' : '') + date.getMonth() +
-                                                '/' + (date.getYear()%100 < 10 ? '0' : '') + date.getYear()%100 +
-                                                ' ' + (date.getHours() < 10 ? '0' : '') + date.getHours() +
-                                                ':' + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() +
-                                                ':' + (date.getSeconds() < 10 ? '0' : '') + date.getSeconds();
-                                            return (
-                                                <Paper className="ChatMessageList__bubbles_bubble" title={title} key={message.id}>
-                                                    {message.text}
-                                                </Paper>
-                                            )
-                                        })
-                                    }
                                 </div>
-                            </div>
-                        )
-                    })
+                            )
+                        })
+                    )
                 }
             </div>
         );
