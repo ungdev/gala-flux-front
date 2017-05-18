@@ -334,7 +334,17 @@ class NotificationStore extends BaseStore {
             let alert = e.data;
             let team = TeamStore.findById(alert.sender);
 
-            if (AuthStore.team.id !== alert.sender) {
+            let receiverFilter = [];
+            if(localStorage.getItem('alertReceivers')) {
+                try {
+                    receiverFilter = JSON.parse(localStorage.getItem('alertReceivers'));
+                } catch (e) {
+                    receiverFilter = [];
+                    console.error('localstorage notificationConfiguration json parsing error', e);
+                }
+            }
+
+            if (AuthStore.team.id !== alert.sender && (receiverFilter.length === 0 || receiverFilter.includes(alert.receiver || null))) {
 
                 // increment the number of unread alerts if not already on the page
                 if(router.getState() && router.getState().name == 'alert') {
