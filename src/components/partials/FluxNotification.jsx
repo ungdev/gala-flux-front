@@ -92,11 +92,11 @@ export default class FluxNotification extends React.Component {
                 return console.warn("Ce navigateur ne supporte pas les notifications desktop");
             }
 
-            // Request authorization
-            Notification.requestPermission().then((permission) => {
-                if(permission == 'granted') {
-                    for (let data of this.state.notifications) {
-                        if(this._lastNotificationId < data.id) {
+            for (let data of this.state.notifications) {
+                if(this._lastNotificationId < data.id) {
+                    // Request authorization
+                    Notification.requestPermission().then((permission) => {
+                        if(permission == 'granted') {
                             const notification = new Notification(data.title, {
                                 icon: DESKTOP_NOTIFICATION_ICON,
                                 body: data.text ? data.text : '',
@@ -112,20 +112,15 @@ export default class FluxNotification extends React.Component {
                                     router.navigate(data.route, data.routeParams ? data.routeParams : {});
                                 }
                             };
-
-                            // Avoid starting again this notification
-                            this._lastNotificationId = data.id
                         }
-                    }
-                }
-            });
-        }
 
-        // Start sound
-        for (let data of this.state.notifications) {
-            if(this._lastNotificationId < data.id) {
-                this.setState({playing: Sound.status.PLAYING});
-                break;
+                        // Start sound
+                        this.setState({playing: Sound.status.PLAYING});
+
+                        // Avoid starting again this notification
+                        this._lastNotificationId = data.id
+                    });
+                }
             }
         }
     }
