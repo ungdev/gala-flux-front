@@ -12,17 +12,20 @@ class AlertButtonService extends BaseService {
     /**
      * Send a request to create a new Alert from an AlertButton
      *
-     * @param {string} id: the button id
-     * @param message
+     * @param {object} data: the alert data. can contains
+     *      - {string} button: the button id
+     *      - {string} message: a message (can be null if not required)
+     *      - {string} team: the team id (the user team by default)
      * @returns {Promise}
      */
-    createAlert(id, message = "") {
+    createAlert(data) {
         return this._makeRequest({
             method: 'post',
             url: '/alertbutton/alert',
             data: {
-                id,
-                message
+                button: data.button ? data.button : null,
+                message: data.message ? data.message : null,
+                team: data.team ? data.team : null
             }
         });
     }

@@ -11,12 +11,13 @@ require('styles/bar/AlertButton.scss');
 
 export default class BarAlertButtons extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             buttons: {},
-            alerts: {}
+            alerts: {},
+            barId: props.barId
         };
 
         this.AlertButtonStoreToken = null;
@@ -25,6 +26,14 @@ export default class BarAlertButtons extends React.Component {
         // binding
         this._setButtons = this._setButtons.bind(this);
         this._setAlerts = this._setAlerts.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            barId: nextProps.barId
+        }, _ => {
+            this._setAlerts();
+        });
     }
 
     componentDidMount() {
@@ -38,7 +47,7 @@ export default class BarAlertButtons extends React.Component {
 
                 return AlertStore.loadData(null);
             })
-            .then(data => {
+            .then(data => {;
                 // ensure that last token doesn't exist anymore.
                 AlertStore.unloadData(this.AlertStoreToken);
                 // save the component token
@@ -84,7 +93,7 @@ export default class BarAlertButtons extends React.Component {
      * Update the alerts in the state with the alerts from the alerts store
      */
     _setAlerts() {
-        const storeAlerts = AlertStore.alerts;
+        const storeAlerts = this.state.barId ? AlertStore.find([{sender: this.state.barId}]) : AlertStore.alerts;
         let alerts = {};
 
         // store them by button (because only one alert by button by team)
@@ -112,6 +121,7 @@ export default class BarAlertButtons extends React.Component {
                                                         key={button.id}
                                                         button={button}
                                                         alert={this.state.alerts[button.id]}
+                                                        teamId={this.state.barId}
                                                     />
                                         })
                                     }

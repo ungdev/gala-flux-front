@@ -14,9 +14,7 @@ import CenteredMessage from 'components/partials/CenteredMessage.jsx';
 import Avatar from 'material-ui/Avatar';
 import Paper from 'material-ui/Paper';
 
-
 require('styles/chat/ChatMessageList.scss');
-
 
 /**
  * Show message list of specific channel
@@ -56,7 +54,6 @@ export default class ChatMessageList extends React.Component {
         this.scrollArea.addEventListener("scroll", this._handleScroll);
         this.clientHeight = this.scrollArea.clientHeight;
         this.scrollBottom = 0;
-
 
         // listen the store change
         ChatStore.addChangeListener(this._updateData);
