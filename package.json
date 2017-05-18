@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/prudywsh/flux2-client#readme",
   "dependencies": {
+    "babel-polyfill": "^6.23.0",
     "css-loader": "^0.27.3",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.11.1",
