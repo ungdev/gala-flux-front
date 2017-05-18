@@ -22,6 +22,7 @@ export default class BarAlertButton extends React.Component {
             showInput: false,
             message: props.alert ? props.alert.message : (props.button.messageDefault || ''),
             messageError: '',
+            teamId: props.teamId
         };
 
         // binding
@@ -38,6 +39,7 @@ export default class BarAlertButton extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({
+            teamId: nextProps.teamId,
             button: nextProps.button,
             alert: nextProps.alert,
             message: nextProps.alert ? nextProps.alert.message : (nextProps.button.messageDefault || ''),
@@ -75,10 +77,13 @@ export default class BarAlertButton extends React.Component {
             else if(this.state.message.trim() === "") {
                 this.setState({ showInput: true, messageError: 'Commentaire obligatoire' });
             }
-
         }
         else {
-            AlertButtonService.createAlert(this.state.button.id, this.state.message)
+            AlertButtonService.createAlert({
+                button: this.state.button.id,
+                message: this.state.message,
+                team: this.state.teamId
+            })
             .then(_ => {
                 this.setState({ showInput: false });
             })

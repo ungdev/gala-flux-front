@@ -121,6 +121,7 @@ export default class BarAlertButtons extends React.Component {
                                                         key={button.id}
                                                         button={button}
                                                         alert={this.state.alerts[button.id]}
+                                                        teamId={this.state.barId}
                                                     />
                                         })
                                     }
