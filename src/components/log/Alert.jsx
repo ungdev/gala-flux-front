@@ -72,6 +72,8 @@ export default class Alert extends React.Component {
     }
 
     render() {
+        let date = new Date(this.state.alert.createdAt);
+        date = date.getHours() + ':' + date.getMinutes();
 
         return (
             <Col xs={12} sm={6} className="alert">
@@ -96,44 +98,36 @@ export default class Alert extends React.Component {
 
                     <div className="alert__separator"><div></div>
                     </div>
-                    <div className="alert__content">
+                    <div className="alert__content"
+                        data-tip
+                        data-for={"content-" + this.state.alert.id}
+                    >
                         <div>
                             <span
                                 className="alert__title"
-                                data-tip
-                                data-for={"title-" + this.state.alert.id}
                             >
                                 <p>
                                     {this.state.alert.title}
                                 </p>
                             </span>
-                            <ReactTooltip
-                                id={"title-" + this.state.alert.id}
-                                place="bottom"
-                            >
-                                <span>{this.state.alert.title}</span>
-                            </ReactTooltip>
                             {this.state.alert.message &&
                                 <div>
-                                    <span
-                                        className="alert__description"
-                                        data-tip
-                                        data-for={"message-" + this.state.alert.id}
-                                    >
+                                    <span className="alert__description">
                                         <p>
                                             {this.state.alert.message}
                                         </p>
                                     </span>
-                                    <ReactTooltip
-                                        id={"message-" + this.state.alert.id}
-                                        place="bottom"
-                                    >
-                                        <span>{this.state.alert.message}</span>
-                                    </ReactTooltip>
                                 </div>
                             }
                         </div>
                     </div>
+                    <ReactTooltip
+                        id={"content-" + this.state.alert.id}
+                        place="bottom"
+                    >
+                        <strong>{this.state.alert.title}</strong> - {date}<br/>
+                        {this.state.alert.message}
+                    </ReactTooltip>
 
 
 
@@ -169,12 +163,15 @@ export default class Alert extends React.Component {
                         :
                             <AccountCircleIcon />
                         }
-                        <UpdateAlertPopover
-                            alert={this.state.alert}
-                            onRequestClose={this._toggleUpdateAlertPopover}
-                            open={this.state.showUpdateAlertPopover}
-                            anchor={this.state.popoverAnchor}
-                        />
+                        
+                        { this.state.showUpdateAlertPopover &&
+                            <UpdateAlertPopover
+                                alert={this.state.alert}
+                                onRequestClose={this._toggleUpdateAlertPopover}
+                                open={this.state.showUpdateAlertPopover}
+                                anchor={this.state.popoverAnchor}
+                            />
+                        }
                     </button>
 
                     {this.state.alert.severity != 'done' ?
