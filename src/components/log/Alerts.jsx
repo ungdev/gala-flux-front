@@ -81,6 +81,7 @@ export default class Alerts extends React.Component {
                 }
                 this.setState({receiverFilter});
                 localStorage.setItem('alertReceivers', JSON.stringify(this.state.receiverFilter));
+                if(global.Android) Android.setAlertReceivers(JSON.stringify(this.state.receiverFilter));
 
                 // First update of the component with data
                 this._setAlerts();
@@ -113,6 +114,7 @@ export default class Alerts extends React.Component {
 
         if(prevState.receiverFilter.length != this.state.receiverFilter.length) {
             localStorage.setItem('alertReceivers', JSON.stringify(this.state.receiverFilter));
+            if(global.Android) Android.setAlertReceivers(JSON.stringify(this.state.receiverFilter));
         }
     }
 

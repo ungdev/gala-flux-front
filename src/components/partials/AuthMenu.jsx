@@ -154,7 +154,7 @@ class AuthMenu extends React.Component {
 
         return (
             <div className="AuthMenu">
-                <button onTouchTap={this._openMenu} className="AuthMenu__button">
+                <button onClick={this._openMenu} className="AuthMenu__button">
                     <div className="AuthMenu__button__details">
                         <strong>{this.state.team.name}</strong><br/>
                         {this.state.user.name}
@@ -192,17 +192,17 @@ class AuthMenu extends React.Component {
                         <Divider/>
                     </div>
                     <Menu>
-                        <MenuItem onTouchTap={this._toggleNotificationsDialog}>Notifications</MenuItem>
+                        <MenuItem onClick={this._toggleNotificationsDialog}>Notifications</MenuItem>
 
                         { this.state.canLoginAs ?
-                            <MenuItem onTouchTap={this._openLoginAs}>Se connecter en tant que ...</MenuItem>
+                            <MenuItem onClick={this._openLoginAs}>Se connecter en tant que ...</MenuItem>
                         :''}
 
                         { this.state.loginAs ?
-                            <MenuItem onTouchTap={this._backToMainAccount}>Retour à votre compte</MenuItem>
+                            <MenuItem onClick={this._backToMainAccount}>Retour à votre compte</MenuItem>
                         :''}
 
-                        <MenuItem onTouchTap={this._logout}>Se déconnecter</MenuItem>
+                        <MenuItem onClick={this._logout}>Se déconnecter</MenuItem>
 
                     </Menu>
                 </Popover>
