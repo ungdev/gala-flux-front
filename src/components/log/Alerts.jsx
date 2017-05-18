@@ -143,6 +143,25 @@ export default class Alerts extends React.Component {
                 (this.state.receiverFilter.length === 0 ||
                 (this.state.receiverFilter.includes((alert.receiver && alert.receiver.id) || null)))
             ));
+
+            // Order by modification for "done" list and by creation and assignation for "not done" list
+            if(this.state.isDoneFilter) {
+                filteredAlerts = filteredAlerts.sort((a, b) => {
+                    return new Date(b.updatedAt) - new Date(a.updatedAt);
+                });
+            }
+            else {
+                filteredAlerts = filteredAlerts.sort((a, b) => {
+                    if((a.users.length == 0) == (b.users.length == 0)) {
+                        return new Date(a.createdAt) - new Date(b.createdAt);
+                    }
+                    else if(a.users.length == 0) {
+                        return -1;
+                    }
+                    return 1;
+                });
+            }
+
             this.setState({filteredAlerts: filteredAlerts});
         }
     }
