@@ -105,7 +105,7 @@ export default class Alerts extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.alerts.length) {
+        if (this.state.alerts.length || this.state.alertsDone.length) {
             if (prevState.isDoneFilter !== this.state.isDoneFilter || prevState.receiverFilter.length !== this.state.receiverFilter.length ) {
                 this._setFilteredAlerts();
             }
