@@ -73,7 +73,7 @@ export default class Alert extends React.Component {
 
     render() {
         let date = new Date(this.state.alert.createdAt);
-        date = date.getHours() + ':' + date.getMinutes();
+        date = date.getHours() + ':' + (date.getMinutes() < 10 ? '0':'') + date.getMinutes();
 
         return (
             <Col xs={12} sm={6} className="alert">
@@ -163,7 +163,7 @@ export default class Alert extends React.Component {
                         :
                             <AccountCircleIcon />
                         }
-                        
+
                         { this.state.showUpdateAlertPopover &&
                             <UpdateAlertPopover
                                 alert={this.state.alert}

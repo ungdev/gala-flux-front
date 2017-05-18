@@ -20,12 +20,19 @@ export default class AlertList extends React.Component {
     }
 
     render() {
+        let assigned = false;
         return (
             <div className="alert-list">
                 <Row className="alert-list__row">
                     {
                         this.state.alerts.map((alert, i) => {
-                            return <Alert alert={alert} key={i} />
+                            let ret = [];
+                            if(!assigned && alert.users.length != 0) {
+                                assigned = true;
+                                ret.push(<h3 style={{width: '100%', marginBottom: '0'}}>Alertes assignées</h3>);
+                            }
+                            ret.push(<Alert alert={alert} key={i} />);
+                            return ret;
                         })
                     }
                 </Row>
