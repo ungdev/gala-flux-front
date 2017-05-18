@@ -22,13 +22,6 @@ class WebSocketService {
 
             iosocket.on('connect', () => this._handleConnected());
             iosocket.on('disconnect', () => this._handleDisconnected());
-
-            // Show this notification only if it takes some time to connect
-            setTimeout(() => {
-                if(!iosocket.isConnected()) {
-                    NotificationActions.loading('Connexion au serveur perdue..');
-                }
-            }, 1000);
         }
 
         // Try to reconnect every 5 seconds
@@ -45,7 +38,6 @@ class WebSocketService {
         .then((jwt) => {
             AuthActions.saveJWT(jwt);
             WebSocketActions.connected();
-            NotificationActions.hideLoading();
         })
         .catch((error) => {
             if(jwt) {
@@ -60,7 +52,6 @@ class WebSocketService {
                 AuthActions.saveJWT(jwt);
                 localStorage.removeItem(constants.firstJwtName);
                 WebSocketActions.connected();
-                NotificationActions.hideLoading();
             })
             .catch((error) => {
                 if(jwt) {
@@ -70,19 +61,25 @@ class WebSocketService {
                 // Authenticate via EtuUTT
                 let authCode = AuthService.getAuthorizationCode();
                 if(authCode) {
-                    NotificationActions.loading('Connexion depuis EtuUTT en cours..');
+                    AuthActions.authEtuuttStarted();
                 }
                 AuthService.sendAuthorizationCode(authCode)
                 .then((jwt) => {
                     AuthActions.saveJWT(jwt);
+                    history.replaceState({}, 'Flux', '/');
                     router.navigate('home');
-                    NotificationActions.hideLoading();
+                    AuthActions.authEtuuttDone();
                 })
                 .catch((error) => {
                     router.navigate('home');
-                    NotificationActions.hideLoading();
+                    AuthActions.authEtuuttDone();
                     if(authCode) {
-                        NotificationActions.error('Une erreur s\'est produite pendant votre authentification via EtuUTT', error);
+                        if(error && error.status == 'LoginNotFound') {
+                            NotificationActions.error('Un administrateur de Flux doit vous ajouter avant que vous puissiez vous connecter.', error, null, true);
+                        }
+                        else {
+                            NotificationActions.error('Une erreur s\'est produite pendant votre authentification via EtuUTT. Veuillez recommencer.', error, null, true);
+                        }
                     }
 
                     // Authenticate with IP
@@ -90,16 +87,16 @@ class WebSocketService {
                     .then((jwt) => {
                         AuthActions.saveJWT(jwt);
                         WebSocketActions.connected();
-                        NotificationActions.hideLoading();
+                        AuthActions.authEtuuttDone();
                     })
                     // Ignore this error
                     .catch((error) => {
+                        AuthActions.noJWT();
                         WebSocketActions.connected();
-                        NotificationActions.hideLoading();
+                        AuthActions.authEtuuttDone();
                         if(jwtError) {
-                            NotificationActions.error('Votre connexion a expiré, veuillez vous reconnecter.', jwtError);
-                            localStorage.removeItem(constants.jwtName);
-                            localStorage.removeItem(constants.firstJwtName);
+                            AuthActions.logout();
+                            location.href = '/';
                         }
                     });
                 });

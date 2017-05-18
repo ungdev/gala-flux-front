@@ -27,6 +27,15 @@ function saveJWT (jwt) {
 }
 
 /**
+ * Emitted when client admin we are not logged in
+ */
+function noJWT () {
+    AppDispatcher.dispatch({
+        type: 'AUTH_JWT_NONE'
+    });
+}
+
+/**
  * Remove token from the localStorage
  */
 function logout() {
@@ -37,10 +46,7 @@ function logout() {
 
     router.navigate('home');
     NotificationActions.snackbar('À bientôt !');
-
-    AppDispatcher.dispatch({
-        type: 'AUTH_LOGGED_OUT'
-    });
+    location.href = '/';
 }
 
 /**
@@ -68,6 +74,7 @@ function loginAs(id) {
         });
     });
 }
+
 
 
 /**
@@ -113,8 +120,29 @@ function authenticated(user, team) {
     });
 }
 
+/**
+ * Indicate to stores that EtuUTT auth is started
+ */
+function authEtuuttStarted() {
+    AppDispatcher.dispatch({
+        type: 'AUTH_ETUUTT_STARTED'
+    });
+}
+
+/**
+ * Indicate to stores that EtuUTT auth is done
+ */
+function authEtuuttDone() {
+    AppDispatcher.dispatch({
+        type: 'AUTH_ETUUTT_DONE'
+    });
+}
+
 exports.saveJWT = saveJWT;
+exports.noJWT = noJWT;
 exports.logout = logout;
 exports.loginAs = loginAs;
 exports.loginBack = loginBack;
 exports.authenticated = authenticated;
+exports.authEtuuttStarted = authEtuuttStarted;
+exports.authEtuuttDone = authEtuuttDone;

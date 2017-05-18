@@ -13,7 +13,7 @@ export default [
         { name: 'barhome.id', path: '/:id', title: 'Bar'},
     { name: 'bars', path: '/bars', title: 'Bars' },
     { name: 'chat', path: '/chat', title: 'Chat' },
-        { name: 'chat.channel', path: '/:channel', title: (route) => {
+        { name: 'chat.channel', path: '/*channel', title: (route) => {
             switch(route.params.channel.split(':')[0]) {
                 case 'public': return 'Publique : ' + route.params.channel.split(':')[1];
                 case 'group': return 'Groupe : ' + route.params.channel.split(':')[1];

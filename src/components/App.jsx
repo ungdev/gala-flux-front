@@ -6,8 +6,8 @@ import AuthStore from "stores/AuthStore";
 import AppNavbar from "components/partials/AppNavbar.jsx";
 import AppFooter from "components/partials/AppFooter.jsx";
 import ErrorNotification from "components/partials/ErrorNotification.jsx";
+import FluxNotification from "components/partials/FluxNotification.jsx";
 import SnackbarNotification from "components/partials/SnackbarNotification.jsx";
-import LoadingNotification from "components/partials/LoadingNotification.jsx";
 
 // homepages
 import AdminHomepage from "components/homepages/AdminHomepage.jsx";
@@ -103,8 +103,8 @@ export default class App extends React.Component {
                     {createElement(this.state.homepage, {route: this.state.route})}
                 </main>
                 <AppFooter />
+                <FluxNotification />
                 <SnackbarNotification />
-                <LoadingNotification />
                 <ErrorNotification />
             </div>
         );

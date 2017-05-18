@@ -39,26 +39,44 @@ export default {
 
 
     /**
-     * error - Show a loading message
+     * Clear the notification list but not last message and last alert count
      *
-     * @param {String} message Message that will be shown to the user],
+     * @param {Alert} alert Alert object
      */
-    loading(message) {
+    clearNotifications() {
+        AppDispatcher.dispatch({
+            type: 'NOTIFICATIONS_CLEAR',
+            data: alert,
+        });
+    },
+
+
+
+    /**
+     * Show a chat message notification according to user settings
+     *
+     * @param {Message} message Chat message object
+     */
+    notifyChatMessage(message) {
 
         AppDispatcher.dispatch({
-            type: 'LOADING',
+            type: 'CHAT_NOTIFICATION',
             data: message,
         });
     },
 
+
+
     /**
-     * error - Hide the loading message
+     * Update notification configuration
+     *
+     * @param {Object} configuration Chat message object
      */
-    hideLoading() {
+    updateConfiguration(configuration) {
 
         AppDispatcher.dispatch({
-            type: 'LOADING',
-            data: null,
+            type: 'NOTIFICATION_CONFIGURATION',
+            data: configuration,
         });
     },
 

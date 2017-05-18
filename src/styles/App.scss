@@ -141,3 +141,52 @@ html, body, .container-hide {
    .show-sm { display: none !important; }
    .show-md { display: none !important; }
 }
+
+/**
+ * Unread arrow on bottom/top of scroll area
+ */
+
+.NotificationScrollIndicator {
+    position: absolute;
+    right: 0;
+    z-index: 5;
+
+    > div {
+        font-size: 12px;
+        text-align: center;
+        background: color($red, 600);
+        margin: auto;
+        color: white;
+        padding: 2px 5px;
+        margin-right: 24px;
+        box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+    }
+}
+.NotificationScrollIndicator--top {
+    @extend .NotificationScrollIndicator;
+
+    top: 0;
+    > div {
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+}
+.NotificationScrollIndicator--bottom {
+    @extend .NotificationScrollIndicator;
+
+    bottom: 0;
+    > div {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+}
+
+
+// List item with a toggle inside (but reacting like a normal clickable list item)
+.ToggleListItem {
+    padding-right: 20px !important;
+    > div > div {
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+    }
+}

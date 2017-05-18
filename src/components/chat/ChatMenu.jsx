@@ -3,14 +3,16 @@ import router from 'router';
 
 import ChatService from 'services/ChatService';
 import ChatStore from 'stores/ChatStore';
+import NotificationStore from 'stores/NotificationStore';
 import ChatActions from 'actions/ChatActions';
 import AuthStore from 'stores/AuthStore';
 import NotificationActions from 'actions/NotificationActions';
 import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
 import SelectableList from 'components/partials/SelectableList.jsx';
-import ChatMenuItem from 'components/chat/ChatMenuItem.jsx';
+import FontAwesome from 'react-fontawesome';
 import { ListItem } from 'material-ui/List';
+import ReactTooltip from 'react-tooltip';
 
 require('styles/chat/ChatMenu.scss');
 
@@ -31,11 +33,15 @@ export default class ChatMenu extends React.Component {
                 group: [],
                 public: []
             },
+            channelOrder: {},
             channel: '',
-            newMessages: {}
+            newMessages: {},
+            overNewMessageCount: 0,
+            underNewMessageCount: 0,
         };
 
         // binding
+        this._handleScroll = this._handleScroll.bind(this);
         this._handleChange = this._handleChange.bind(this);
         this._updateChannel = this._updateChannel.bind(this);
         this._updateNewMessages = this._updateNewMessages.bind(this);
@@ -71,23 +77,74 @@ export default class ChatMenu extends React.Component {
         this._updateChannel(this.props.route);
 
         // Listen store change
-        ChatStore.addChangeListener(this._updateNewMessages);
+        NotificationStore.addChangeListener(this._updateNewMessages);
     }
 
     componentWillUnmount() {
         // remove the store change listener
         ChatStore.removeChangeListener(this._updateNewMessages);
+        NotificationStore.removeChangeListener(this._updateNewMessages);
     }
 
     componentWillReceiveProps(nextProps) {
         this._updateChannel(nextProps.route);
     }
 
+    componentDidUpdate() {
+        this._handleScroll();
+    }
+
     /**
      * Set the new messages counters in the state
      */
     _updateNewMessages() {
-        this.setState({ newMessages: ChatStore.newMessages });
+        let channelOrder = [];
+        let channels = NotificationStore.configuration.channel;
+        for (let channel in channels) {
+            if(channels[channel] != 'hide') {
+                // Create channel label
+                let label = channel.split(':')[1];
+                let leftIcon = '';
+                let notify = true;
+                if(channel.split(':')[0] == 'private') {
+                    leftIcon = 'user-secret';
+                }
+                else if(channel.split(':')[0] == 'group') {
+                    leftIcon = 'bullhorn';
+                }
+                if(channels[channel] != 'notify') {
+                    notify = false;
+                }
+
+                channelOrder.push({channel, label, leftIcon, notify});
+            }
+        }
+        channelOrder = channelOrder.sort((a,b) => {
+            let chanA = a.channel;
+            let chanB = b.channel;
+
+            // Personnal channel first
+            chanA = (a.channel.split(':')[1] == AuthStore.team.name ? '0' : '1') +  chanA;
+            chanB = (b.channel.split(':')[1] == AuthStore.team.name ? '0' : '1') +  chanB;
+
+            // General first
+            chanA = (a.channel.split(':')[1] == 'General' ? '0' : '1') +  chanA;
+            chanB = (b.channel.split(':')[1] == 'General' ? '0' : '1') +  chanB;
+
+            // order public, group, private
+            chanA = (a.channel.split(':')[0] == 'group' ? '0' : '1') +  chanA;
+            chanB = (b.channel.split(':')[0] == 'group' ? '0' : '1') +  chanB;
+            chanA = (a.channel.split(':')[0] == 'public' ? '0' : '1') +  chanA;
+            chanB = (b.channel.split(':')[0] == 'public' ? '0' : '1') +  chanB;
+
+            // put 'notify' first
+            chanA = (a.notify ? '0' : '1') + chanA;
+            chanB = (b.notify ? '0' : '1') + chanB;
+
+            return chanA.localeCompare(chanB);
+        })
+
+        this.setState({ newMessages: NotificationStore.newMessageCounts, channelOrder });
     }
 
     /**
@@ -122,6 +179,45 @@ export default class ChatMenu extends React.Component {
         }
     }
 
+    _handleScroll(e) {
+        let target = this.scrollArea;
+        if(target) {
+            let over = 0;
+            let under = 0;
+
+            const scrollAreaTop = target.getBoundingClientRect().top;
+            const scrollAreaBottom = target.getBoundingClientRect().bottom;
+
+            // Calculate number of message under and over the view in the scroll area
+            let elements = target.getElementsByClassName('NotificationScrollIndicatorLine');
+            for (let el of elements) {
+                let rect = el.getBoundingClientRect();
+                if(el.dataset && el.dataset.count && rect && rect.bottom != 0) {
+                    if(rect.top - scrollAreaTop < 0) {
+                        over += parseInt(el.dataset.count) || 0;
+                    }
+                    else if(scrollAreaBottom - rect.bottom < 0) {
+                        under += parseInt(el.dataset.count) || 0;
+                    }
+                    if(el.dataset.count==24) {
+                    }
+                }
+            }
+
+            // update state if necessary
+            let state = {};
+            if(this.state.overNewMessageCount != over) {
+                state.overNewMessageCount = over;
+            }
+            if(this.state.underNewMessageCount != under) {
+                state.underNewMessageCount = under;
+            }
+            if(Object.keys(state) != 0) {
+                this.setState(state);
+            }
+        }
+    }
+
     /**
      * Call the ChatStore method to reset the new messages counter of this channel
      * @param {string} channel
@@ -133,56 +229,52 @@ export default class ChatMenu extends React.Component {
     render() {
 
         return (
-            <div className="ChatMenu">
-                <SelectableList onChange={this._handleChange} value={this.state.channel}>
+            <div className="ChatMenu" onScroll={this._handleScroll} ref={(el) => { this.scrollArea = el; }}>
 
-                    { this.state.channels.public.length > 0 &&
-                        <Subheader className="ChatMenu__subheader">Publique</Subheader>
-                    }
+                {this.state.overNewMessageCount != 0 &&
+                    <div className="NotificationScrollIndicator--top">
+                        <div>
+                            {this.state.overNewMessageCount} Non lus ↑
+                        </div>
+                    </div>
+                }
+                <SelectableList onChange={this._handleChange} value={this.state.channel}>
                     {
-                        this.state.channels.public.map((channel, i) => {
+                        Object.keys(this.state.channelOrder).map((key, i) => {
+                            let channel = this.state.channelOrder[key].channel;
                             return (
                                 <ListItem key={i} value={channel} className="ChatMenu__channel" onClick={_ => this._messagesViewed(channel)}>
-                                    <ChatMenuItem  newMessages={this.state.newMessages[channel]} channel={channel} />
-                                </ListItem>
-                            )
-                        })
-                    }
+                                    { this.state.channelOrder[key].notify && this.state.newMessages[channel] > 0 &&
+                                        <span className="Notification_bubble">{this.state.newMessages[channel]}</span>
+                                    }
+                                    {!this.state.channelOrder[key].notify &&
+                                        <span className="pull-right"> <FontAwesome name="bell-slash-o" /></span>
+                                    }
+                                    <div data-count={((this.state.channelOrder[key].notify && this.state.newMessages[channel]) || 0)} className="ChatMenu__channel__nameContainer NotificationScrollIndicatorLine">
 
+                                        {this.state.channelOrder[key].leftIcon &&
+                                            <span><FontAwesome name={this.state.channelOrder[key].leftIcon} /> </span>
+                                        }
 
-                    { this.state.channels.group.length > 0 &&
-                        <div>
-                            <Divider className="hide-xs"/>
-                            <Subheader className="ChatMenu__subheader">Groupe</Subheader>
-                        </div>
-                    }
-                    {
-                        this.state.channels.group.map((channel, i) => {
-                            return (
-                                <ListItem key={i} value={channel} className="ChatMenu__channel">
-                                    <ChatMenuItem  newMessages={this.state.newMessages[channel]} channel={channel} messagesViewed={_ => this._messagesViewed(channel)} />
-                                </ListItem>
-                            )
-                        })
-                    }
-
-
-                    { this.state.channels.private.length > 0 &&
-                        <div>
-                            <Divider className="hide-xs"/>
-                            <Subheader className="ChatMenu__subheader">Privé</Subheader>
-                        </div>
-                    }
-                    {
-                        this.state.channels.private.map((channel, i) => {
-                            return (
-                                <ListItem key={i} value={channel} className="ChatMenu__channel">
-                                    <ChatMenuItem  newMessages={this.state.newMessages[channel]} channel={channel} messagesViewed={_ => this._messagesViewed(channel)} />
+                                        {this.state.newMessages[channel] > 0 ?
+                                            <strong>{this.state.channelOrder[key].label}</strong>
+                                            :
+                                            this.state.channelOrder[key].label
+                                        }
+                                    </div>
                                 </ListItem>
                             )
                         })
                     }
                 </SelectableList>
+
+                {this.state.underNewMessageCount != 0 &&
+                    <div className="NotificationScrollIndicator--bottom">
+                        <div>
+                            {this.state.underNewMessageCount} Non lus ↓
+                        </div>
+                    </div>
+                }
             </div>
         );
     }

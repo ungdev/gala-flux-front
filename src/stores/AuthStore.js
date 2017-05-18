@@ -7,13 +7,11 @@ import AuthActions from 'actions/AuthActions';
 import SessionService from 'services/SessionService';
 import NotificationActions from 'actions/NotificationActions';
 
-const LOCALSTORAGE_NOTIFICATIONS_ITEM = 'notifications';
 
 class AuthStore extends BaseStore {
 
     constructor() {
         super();
-        this.subscribe(() => this._handleActions.bind(this));
 
         // active account
         this._jwt = null;
@@ -35,12 +33,12 @@ class AuthStore extends BaseStore {
         // contain current user permissions
         this._permissions = null;
 
-        // notification parameters
-        this._notifications = {
-            sound: true,
-            flash: true,
-            desktop: true
-        };
+        // Hold the value used to indicate if client has lost connection to serveur
+        // If null we didn't even try to connect yet
+        this._connected = null;
+
+        // True if an etutt login is started
+        this._etuuttLoading = false;
     }
 
     /**
@@ -59,6 +57,7 @@ class AuthStore extends BaseStore {
             this._loginAs = false;
             this._team = null;
             this._roles = null;
+            this._connected = false;
             this.emitChange();
             return;
         }
@@ -69,7 +68,6 @@ class AuthStore extends BaseStore {
                 this._roles = data;
                 this.emitChange();
             })
-
             .catch(error => {
                 NotificationActions.error('Impossible de récupérer les droits configurés sur le serveur.', error, null, true);
             });
@@ -79,21 +77,14 @@ class AuthStore extends BaseStore {
             .then(user => {
                 this._user = user;
                 iosocket.on('user', (e) => this._handleUserEvents(e));
+                UserService.subscribe();
                 this.emitChange();
                 return TeamService.getById(this.user.team);
             })
             .then(team => {
-                const localStorageNotifications = JSON.parse(localStorage.getItem(LOCALSTORAGE_NOTIFICATIONS_ITEM));
-                if (localStorageNotifications) {
-                    this._notifications = {
-                        flash: localStorageNotifications.flash === true,
-                        sound: localStorageNotifications.sound === true,
-                        desktop: localStorageNotifications.desktop === true,
-                    };
-                }
-
                 this._team = team;
                 iosocket.on('team', (e) => this._handleTeamEvents(e));
+                TeamService.subscribe();
                 this.emitChange();
                 AuthActions.authenticated(this.user, this.team);
             })
@@ -181,20 +172,6 @@ class AuthStore extends BaseStore {
         return this._roles;
     }
 
-    get notifications() {
-        return this._notifications;
-    }
-
-    set notifications(newConfiguration) {
-        this._notifications = {
-            flash: newConfiguration.flash === true,
-            sound: newConfiguration.sound === true,
-            desktop: newConfiguration.desktop === true,
-        };
-        localStorage.setItem(LOCALSTORAGE_NOTIFICATIONS_ITEM, JSON.stringify(this._notifications));
-        this.emitChange();
-    };
-
     set loginAs(v) {
         this._loginAs = v;
         this.emitChange();
@@ -204,8 +181,30 @@ class AuthStore extends BaseStore {
         this._init(jwt);
     }
 
+    get connected() {
+        return this._connected;
+    }
+
+    set connected(v) {
+        this._connected = v;
+        this.emitChange();
+    }
+
+    get etuuttLoading() {
+        return this._etuuttLoading;
+    }
+
+    set etuuttLoading(v) {
+        this._etuuttLoading = v;
+        this.emitChange();
+    }
+
     _handleActions(action) {
+        super._handleActions(action);
         switch(action.type) {
+            case "AUTH_JWT_NONE":
+                this._connected = false;
+                break;
             case "AUTH_JWT_SAVED":
                 this._init(action.jwt);
                 break;
@@ -219,8 +218,19 @@ class AuthStore extends BaseStore {
                 this.loginAs = false;
                 break;
             case "AUTH_AUTHENTICATED":
+                this.connected = true;
+
                 // handle firebase token
                 SessionService.openSession();
+                break;
+            case "AUTH_ETUUTT_STARTED":
+                this.etuuttLoading = true;
+                break;
+            case "AUTH_ETUUTT_DONE":
+                this.etuuttLoading = false;
+                break;
+            case "WEBSOCKET_DISCONNECTED":
+                this.connected = false;
                 break;
         }
     }

@@ -47,7 +47,7 @@ export default class BarAlertButtons extends React.Component {
 
                 return AlertStore.loadData(null);
             })
-            .then(data => {
+            .then(data => {;
                 // ensure that last token doesn't exist anymore.
                 AlertStore.unloadData(this.AlertStoreToken);
                 // save the component token

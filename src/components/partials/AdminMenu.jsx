@@ -2,6 +2,7 @@ import React from 'react';
 import router from 'router';
 
 import AuthStore from 'stores/AuthStore';
+import NotificationStore from 'stores/NotificationStore';
 import ChatMenu from 'components/chat/ChatMenu.jsx'
 
 import { ListItem } from 'material-ui/List';
@@ -22,10 +23,14 @@ export default class AdminMenu extends React.Component {
 
         this.state = {
             route: props.route,
+            messageCount: 0,
+            hasMessage: false,
+            alertCount: 0,
         };
 
         // binding
         this._handleChange = this._handleChange.bind(this);
+        this._updateData = this._updateData.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -42,6 +47,43 @@ export default class AdminMenu extends React.Component {
         }
     }
 
+    componentDidMount() {
+        // Listen store changes
+        NotificationStore.addChangeListener(this._updateData);
+    }
+
+    componentWillUnmount() {
+        // remove the store listener
+        NotificationStore.removeChangeListener(this._updateData);
+    }
+
+    /**
+     * Set the notification data in the component state
+     */
+    _updateData() {
+
+        // Calculate chat notification count
+        let counts = NotificationStore.newMessageCounts;
+        let messageCount = 0;
+        let hasMessage = false;
+        const chanConfig = NotificationStore.configuration.channel;
+        for (let channel in NotificationStore.newMessageCounts) {
+            if(chanConfig[channel] == 'notify') {
+                messageCount += NotificationStore.newMessageCounts[channel];
+                hasMessage = (hasMessage || NotificationStore.newMessageCounts[channel] > 0);
+            }
+            else if(chanConfig[channel] == 'show') {
+                hasMessage = (hasMessage || NotificationStore.newMessageCounts[channel] > 0);
+            }
+        }
+
+        this.setState({
+            messageCount: messageCount,
+            hasMessage: hasMessage,
+            alertCount: NotificationStore.newMAlertCount,
+        });
+    }
+
     render() {
 
         return (
@@ -49,7 +91,10 @@ export default class AdminMenu extends React.Component {
                 <SelectableList onChange={this._handleChange} value={this.state.route.name} className="AdminMenu">
 
                     { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
-                        <ListItem value="alert" className="AdminMenu__mainItem">Alertes</ListItem>
+                        <ListItem value="alert" className="AdminMenu__mainItem NotificationScrollIndicatorLine" data-count={(this.state.alertCount || 0)}>
+                            { this.state.alertCount != 0 && <span className="Notification_bubble">{this.state.alertCount}</span> }
+                            <div>Alertes</div>
+                        </ListItem>
                     }
                     <ListItem value="chat" className="AdminMenu__mainItem">Chat</ListItem>
                     <div className="show-xs">

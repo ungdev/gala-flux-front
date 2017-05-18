@@ -1,3 +1,4 @@
+
 import React from "react";
 import ReactDOM from "react-dom";
 
@@ -16,6 +17,9 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import themeConfiguration from 'config/theme';
 const muiTheme = getMuiTheme(themeConfiguration);
+
+// Font awesome
+require('font-awesome/scss/font-awesome.scss');
 
 // Configure sound manager
 soundManager.setup({debugMode: false});
@@ -57,4 +61,9 @@ if (global.Android) {
     Android.navigate = (route, param) => {
         router.navigate(route, param);
     }
+}
+
+// Ask the user for permission to emit browser notifications
+if ("Notification" in window) {
+    Notification.requestPermission();
 }

@@ -7,5 +7,14 @@ export default {
             type: 'ALERT_CLOSED',
             id
         });
-    }
+    },
+
+    /**
+     * reset the new alert counter
+     */
+    alertViewed() {
+        AppDispatcher.dispatch({
+            type: 'ALERT_VIEWED'
+        });
+    },
 }

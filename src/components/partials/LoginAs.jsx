@@ -109,6 +109,7 @@ export default class LoginAs extends React.Component {
     _submitForm(item) {
         AuthActions.loginAs(item.value)
         .then(() => {
+            location.href = '/';
             this._closeDialog();
         })
         .catch((error) => {

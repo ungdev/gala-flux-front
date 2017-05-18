@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
     template: './src/index.ejs',
     filename: 'index.html',
-    favicon: './src/assets/images/flux_logos/flux_favico.ico',
+    favicon: './src/assets/images/logos/favicon.ico',
     inject: 'body',
     hash: true,
 });
@@ -12,7 +12,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require('webpack');
 
 module.exports = {
-    entry: './src/index.js',
+    entry: ['babel-polyfill', './src/index.js'],
     devtool: 'source-map',
     output: {
         path: path.resolve('dist'),
@@ -44,11 +44,11 @@ module.exports = {
                 exclude: /node_modules/
             },
             {
-                test: /\.(woff|woff2|eot|ttf|svg)$/,
+                test: /\.(woff|woff2|eot|ttf)$/,
                 loader: 'file-loader?name=fonts/[name].[ext]'
             },
             {
-                test: /\.(ico|svg|png|wav)$/,
+                test: /(\.ico|\.svg|\.png|\.wav|manifest\.json|browserconfig\.xml)$/,
                 loader: 'file-loader?name=assets/[name].[ext]'
             }
         ]

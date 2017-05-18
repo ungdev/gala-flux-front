@@ -22,7 +22,8 @@ export default class ChatMessageForm extends React.Component {
 
         this.state = {
             value: localStorage.getItem('chat/input/'+props.channel) || '',
-            channel: props.channel
+            channel: props.channel,
+            multiline: false,
         };
 
          this._handleChange = this._handleChange.bind(this);
@@ -40,7 +41,14 @@ export default class ChatMessageForm extends React.Component {
         this.setState({
             channel: nextProps.channel,
             value: value,
+            multiline: false,
         });
+    }
+
+    componentDidUpdate() {
+        if(this.textInput && this.textInput.clientHeight != this.textInput.scrollHeight && !this.state.multiline) {
+            this.setState({multiline: true})
+        }
     }
 
     _handleChange(e) {
@@ -55,6 +63,7 @@ export default class ChatMessageForm extends React.Component {
      * @param e: event
      */
     _handleKeyDown(e) {
+        ChatActions.viewMessages(this.state.channel);
         if (e.keyCode === 13) {
             // Submit on enter press
             if(!e.ctrlKey && !e.shiftKey) {
@@ -88,8 +97,12 @@ export default class ChatMessageForm extends React.Component {
             channel: this.props.channel,
         })
         .then(() => {
+            ChatActions.viewMessages(this.state.channel);
             localStorage.setItem('chat/input/'+this.state.channel, '');
-            this.setState({value: ''});
+            this.setState({
+                value: '',
+                multiline: false,
+            });
             this.focus();
         })
         .catch(error => {
@@ -108,16 +121,13 @@ export default class ChatMessageForm extends React.Component {
      */
     _onTextAreaClick() {
         // if there was new messages for this channel, reset the new messages counter
-        if (ChatStore.getNewMessages(this.state.channel)) {
-            ChatActions.viewMessages(this.state.channel);
-        }
+        ChatActions.viewMessages(this.state.channel);
      }
 
     render() {
-
         // Show multiline style only if there is more than one line in the field
         let style = {};
-        if(this.state.value.indexOf('\n') !== -1) {
+        if(this.state.value.includes('\n') || this.state.multiline) {
             style.lineHeight = 'normal';
         }
 

@@ -17,6 +17,14 @@ export default class BaseStore extends EventEmitter {
         this._filters = {};
         this._filterLastId = 0;
 
+        // If this variable is true, the store will subscribe to new events and never unsubscribe
+        this._forceSubscribe = false;
+
+        // True if subscrbied has already been excecuted
+        this._subscribed = false;
+
+        this.subscribe(() => this._handleActions.bind(this));
+
         // binding
         this._delete = this._delete.bind(this);
         this._set = this._set.bind(this);
@@ -71,9 +79,10 @@ export default class BaseStore extends EventEmitter {
      * Use the fetchMethod to fetch the data needed of this model.
      *
      * @param {number} [componentToken]: the new component
+     * @param {boolean} force Force refresh
      * @return {Promise}
      */
-    fetchData(componentToken) {
+    fetchData(componentToken, force) {
         let filters = this.getFiltersSet();
 
         // No need to ask the server if there is no filter
@@ -108,7 +117,7 @@ export default class BaseStore extends EventEmitter {
 
             return new Promise((resolve, reject) => {
                 // Fetch from the server only if it use usefull
-                if(fetch) {
+                if(fetch || force) {
                     this._service.get(this.getFiltersSet())
                         .then(result => {
                             this._setModelData(result);
@@ -171,12 +180,13 @@ export default class BaseStore extends EventEmitter {
         this._filters[componentToken] = filters;
 
         // If store was empty before, subscribe
-        if(Object.keys(this._filters).length == 1) {
+        if(!this._subscribed && (Object.keys(this._filters).length == 1 || this._forceSubscribe)) {
             // listen model changes
             iosocket.on(this._modelName, this._handleModelEvents);
 
             // Subscribe
             this._service.subscribe();
+            this._subscribed = true;
         }
 
         // refresh the store with the new filters
@@ -197,12 +207,13 @@ export default class BaseStore extends EventEmitter {
             this.fetchData();
 
             // If store is now empty
-            if(Object.keys(this._filters).length === 0) {
+            if(Object.keys(this._filters).length === 0 && !this._forceSubscribe) {
                 // unlisten model changes
                 iosocket.off(this._modelName, this._handleModelEvents);
 
                 // unsubscribe
                 this._service.unsubscribe();
+                this._subscribed = false;
             }
         }
     }
@@ -396,6 +407,7 @@ export default class BaseStore extends EventEmitter {
                     // Add to the list only if it match our list
                     if(this._match(e.data, this.getFiltersSet())) {
                         this._set(e.id, e.data);
+                        this.emitNew(e.data);
                     }
                 }
                 else {
@@ -408,6 +420,26 @@ export default class BaseStore extends EventEmitter {
             case "destroyed":
                 if(this.findById(e.id)) {
                     this._delete(e.id);
+                }
+                break;
+        }
+    }
+
+    _handleActions(action) {
+        switch(action.type) {
+            case "AUTH_AUTHENTICATED":
+                // Refresh all stores after login or relogin
+                this.fetchData(null, true);
+
+                // If filter was not empty re-subscribe
+                if(this._forceSubscribe || Object.keys(this._filters).length >= 1) {
+                    // listen model changes
+                    iosocket.off(this._modelName, this._handleModelEvents);
+                    iosocket.on(this._modelName, this._handleModelEvents);
+
+                    // Subscribe
+                    this._service.subscribe();
+                    this._subscribed = true;
                 }
                 break;
         }
