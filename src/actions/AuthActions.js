@@ -41,6 +41,9 @@ function noJWT () {
 function logout() {
     localStorage.removeItem(constants.jwtName);
     localStorage.removeItem(constants.firstJwtName);
+
+    location.reload();
+
     router.navigate('home');
     NotificationActions.snackbar('À bientôt !');
     location.href = '/';

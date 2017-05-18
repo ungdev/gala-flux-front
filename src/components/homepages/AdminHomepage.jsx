@@ -14,6 +14,7 @@ import AlertActions from 'actions/AlertActions.jsx';
 import AlertPage from 'components/adminPages/AlertPage.jsx';
 import ChatPage from 'components/adminPages/ChatPage.jsx';
 import StockPage from 'components/adminPages/StockPage.jsx';
+import BarHome from 'components/adminPages/BarHome.jsx';
 import BarPage from 'components/adminPages/BarPage.jsx';
 import BarrelsTypesPage from 'components/adminPages/BarrelsTypesPage.jsx';
 import BottlesTypesPage from "components/adminPages/BottlesTypesPage.jsx";
@@ -163,6 +164,13 @@ export default class AdminHomepage extends React.Component {
                                     <div className="AdminPage__splitscreen">
                                         <AdminMenu route={this.state.route} className="AdminPage__splitscreen__menu" />
                                         <AlertButtonsPage />
+                                    </div>
+                                );
+
+                            case 'barhome.id':
+                                return (
+                                    <div className="AdminPage__splitscreen">
+                                        <BarHome barId={this.state.route.params.id} />
                                     </div>
                                 );
                         }
