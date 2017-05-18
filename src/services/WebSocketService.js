@@ -22,6 +22,7 @@ class WebSocketService {
 
             iosocket.on('connect', () => this._handleConnected());
             iosocket.on('disconnect', () => this._handleDisconnected());
+            iosocket.on('refresh', () => this._handleRefresh());
         }
 
         // Try to reconnect every 5 seconds
@@ -106,6 +107,10 @@ class WebSocketService {
 
     _handleDisconnected() {
         WebSocketActions.disconnected();
+    }
+
+    _handleRefresh() {
+        location.href = '/';
     }
 }
 

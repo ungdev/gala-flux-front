@@ -26,4 +26,5 @@ export default [
         { name: 'admin.barrels', path: '/barrel', title: 'Gestion des fûts' },
         { name: 'admin.bottles', path: '/bottle', title: 'Gestion des bouteilles' },
         { name: 'admin.alerts', path: '/alerts', title: 'Gestion des alertes' },
+        { name: 'admin.developer', path: '/developer', title: 'Espace développeur' },
 ];
