@@ -5,6 +5,7 @@ import Paper from 'material-ui/Paper';
 import AlertList from 'components/log/AlertList.jsx';
 import AlertStore from 'stores/AlertStore';
 import TeamStore from 'stores/TeamStore';
+import UserStore from 'stores/UserStore';
 import AuthStore from 'stores/AuthStore';
 import NotificationStore from 'stores/NotificationStore';
 import NotificationActions from 'actions/NotificationActions';
@@ -30,6 +31,7 @@ export default class Alerts extends React.Component {
 
         this.AlertStoreToken = null;
         this.TeamStoreToken = null;
+        this.UserStoreToken = null;
 
         this._setAlerts = this._setAlerts.bind(this);
         this._setNewAlerts = this._setNewAlerts.bind(this);
@@ -41,6 +43,11 @@ export default class Alerts extends React.Component {
             .then(data => {
                 AlertStore.unloadData(this.AlertStoreToken);
                 this.AlertStoreToken = data.token;
+                return UserStore.loadData(null);
+            })
+            .then(data => {
+                UserStore.unloadData(this.UserStoreToken);
+                this.UserStoreToken = data.token;
                 return TeamStore.loadData(null);
             })
             .then(data => {
@@ -149,6 +156,7 @@ export default class Alerts extends React.Component {
                 filteredAlerts = filteredAlerts.sort((a, b) => {
                     return new Date(b.updatedAt) - new Date(a.updatedAt);
                 });
+                filteredAlerts = filteredAlerts.slice(0, 30);
             }
             else {
                 filteredAlerts = filteredAlerts.sort((a, b) => {
