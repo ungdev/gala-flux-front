@@ -118,28 +118,30 @@ export default class NotificationsDialog extends React.Component {
                     <p>Modification des paramètres de notifications</p>
                 }
                 <List>
-                    <ListItem
-                        className="ToggleListItem"
-                        primaryText="Son"
-                        secondaryText="Jouer un son lors des notifications"
-                        onTouchTap={_ => this._toggleParameter('sound')}
-                        rightIcon={<Toggle toggled={this.state.configuration.sound}/>}
-                    />
-                    <ListItem
-                        className="ToggleListItem"
-                        primaryText="Écran clignotant"
-                        secondaryText="Faire clignoter l'écran lors des notifications"
-                        onTouchTap={_ => this._toggleParameter('flash')}
-                        rightIcon={<Toggle toggled={this.state.configuration.flash}/>}
-                    />
                     { !global.Android ?
-                        <ListItem
-                            className="ToggleListItem"
-                            primaryText="Notifications pour bureau"
-                            secondaryText="Recevoir les notifications sur votre bureau"
-                            onTouchTap={_ => this._toggleParameter('desktop')}
-                            rightIcon={<Toggle toggled={this.state.configuration.desktop}/>}
-                        />
+                        <div>
+                            <ListItem
+                                className="ToggleListItem"
+                                primaryText="Son"
+                                secondaryText="Jouer un son lors des notifications"
+                                onTouchTap={_ => this._toggleParameter('sound')}
+                                rightIcon={<Toggle toggled={this.state.configuration.sound}/>}
+                            />
+                            <ListItem
+                                className="ToggleListItem"
+                                primaryText="Écran clignotant"
+                                secondaryText="Faire clignoter l'écran lors des notifications"
+                                onTouchTap={_ => this._toggleParameter('flash')}
+                                rightIcon={<Toggle toggled={this.state.configuration.flash}/>}
+                            />
+                            <ListItem
+                                className="ToggleListItem"
+                                primaryText="Notifications pour bureau"
+                                secondaryText="Recevoir les notifications sur votre bureau"
+                                onTouchTap={_ => this._toggleParameter('desktop')}
+                                rightIcon={<Toggle toggled={this.state.configuration.desktop}/>}
+                            />
+                        </div>
                     :
                         <ListItem
                             className="ToggleListItem"

@@ -8,7 +8,7 @@ export const firstJwtName = 'firstToken';
 export const firebaseTokenName = 'firebaseToken';
 
 // websocket target full uri
-export const webSocketUri = process.env.FLUX_API_URI || 'http://localhost:1337';
+export const webSocketUri = process.env.FLUX_API_URI || 'http://192.168.1.2:1337';
 
 // To show an user avatar, show an image with (avatarBasePath + userId) as src
 export const avatarBasePath = webSocketUri + '/user/avatar/';

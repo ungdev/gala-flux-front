@@ -67,6 +67,7 @@ class NotificationStore extends BaseStore {
             channel: {}, // notify, show, hide
         }, this._configuration);
         localStorage.setItem('notificationConfiguration', JSON.stringify(this._configuration));
+        if(global.Android) Android.setConfiguration(JSON.stringify(this._configuration));
 
         // Bind
         this._handleMessageEvent = this._handleMessageEvent.bind(this);
@@ -126,6 +127,7 @@ class NotificationStore extends BaseStore {
                 }
             }
             localStorage.setItem('notificationConfiguration', JSON.stringify(this._configuration));
+            if(global.Android) Android.setConfiguration(JSON.stringify(this._configuration));
             this.emitChange();
         })
         .catch(error => NotificationActions.error("Erreur lors de la lecture des messages et alertes non lus.", error));
@@ -253,6 +255,7 @@ class NotificationStore extends BaseStore {
     set configuration(newConfiguration) {
         this._configuration = Object.assign(this._configuration, newConfiguration);
         localStorage.setItem('notificationConfiguration', JSON.stringify(this._configuration));
+        if(global.Android) Android.setConfiguration(JSON.stringify(this._configuration));
         this.emitChange();
     }
 

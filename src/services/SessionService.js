@@ -1,4 +1,5 @@
 import BaseService from 'services/BaseService';
+import NotificationActions from 'actions/NotificationActions';
 import {ApiError} from 'errors';
 import * as constants from '../config/constants';
 
