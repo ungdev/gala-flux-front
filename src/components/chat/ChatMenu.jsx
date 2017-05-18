@@ -122,13 +122,13 @@ export default class ChatMenu extends React.Component {
             let chanA = a.channel;
             let chanB = b.channel;
 
-            // General first
-            chanA = (a.channel.split(':')[1] == 'General' ? '0' : '1') +  chanA;
-            chanB = (b.channel.split(':')[1] == 'General' ? '0' : '1') +  chanB;
-
             // Personnal channel first
             chanA = (a.channel.split(':')[1] == AuthStore.team.name ? '0' : '1') +  chanA;
             chanB = (b.channel.split(':')[1] == AuthStore.team.name ? '0' : '1') +  chanB;
+
+            // General first
+            chanA = (a.channel.split(':')[1] == 'General' ? '0' : '1') +  chanA;
+            chanB = (b.channel.split(':')[1] == 'General' ? '0' : '1') +  chanB;
 
             // order public, group, private
             chanA = (a.channel.split(':')[0] == 'group' ? '0' : '1') +  chanA;
