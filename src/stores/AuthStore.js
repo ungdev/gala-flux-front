@@ -219,16 +219,15 @@ class AuthStore extends BaseStore {
                 break;
             case "AUTH_AUTHENTICATED":
                 this.connected = true;
+
+                // handle firebase token
+                SessionService.openSession();
                 break;
             case "AUTH_ETUUTT_STARTED":
                 this.etuuttLoading = true;
                 break;
             case "AUTH_ETUUTT_DONE":
                 this.etuuttLoading = false;
-                break;
-
-                // handle firebase token
-                SessionService.openSession();
                 break;
             case "WEBSOCKET_DISCONNECTED":
                 this.connected = false;
