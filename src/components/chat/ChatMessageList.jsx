@@ -172,6 +172,9 @@ export default class ChatMessageList extends React.Component {
             return { channel: props.channel };
         }
         else {
+            if(localStorage.getItem('chat/lastChannel')) {
+                return { channel: localStorage.getItem('chat/lastChannel') };
+            }
             return { channel: ('public:'+AuthStore.team.name) };
         }
     }
