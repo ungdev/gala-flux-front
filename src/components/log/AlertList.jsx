@@ -27,7 +27,7 @@ export default class AlertList extends React.Component {
                     {
                         this.state.alerts.map((alert, i) => {
                             let ret = [];
-                            if(!assigned && alert.users.length != 0) {
+                            if(!assigned && alert.users.length != 0 && alert.severity != 'done' && i != 0) {
                                 assigned = true;
                                 ret.push(<h3 style={{width: '100%', marginBottom: '0'}}>Alertes assignées</h3>);
                             }

@@ -2,12 +2,14 @@ import React from 'react';
 
 import * as constants from 'config/constants';
 import NotificationActions from 'actions/NotificationActions';
+import ChatActions from 'actions/ChatActions';
 import ChatStore from 'stores/ChatStore';
 import UserStore from 'stores/UserStore';
 import TeamStore from 'stores/TeamStore';
 import AuthStore from 'stores/AuthStore';
 
 import DateTime from 'components/partials/DateTime.jsx';
+import CenteredMessage from 'components/partials/CenteredMessage.jsx';
 
 import Avatar from 'material-ui/Avatar';
 import Paper from 'material-ui/Paper';
@@ -28,6 +30,7 @@ export default class ChatMessageList extends React.Component {
 
         this.state = {
             messages: [],
+            loading: true,
         };
 
         this.channel = '';
@@ -78,6 +81,7 @@ export default class ChatMessageList extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if(nextProps.channel !== this.channel) {
+            this.setState({loading: true})
             this._handleNewChannel(nextProps);
         }
     }
@@ -102,6 +106,17 @@ export default class ChatMessageList extends React.Component {
             // Save current channel
             this.channel = this.props.channel;
 
+            return UserStore.loadData(null);
+        })
+        .then(data => {
+            UserStore.unloadData(this.UserStoreToken);
+            this.UserStoreToken = data.token;
+            return TeamStore.loadData(null);
+        })
+        .then(data => {
+            TeamStore.unloadData(this.TeamStoreToken);
+            this.TeamStoreToken = data.token;
+
             // Update messages
             this._updateData(props);
         })
@@ -119,52 +134,31 @@ export default class ChatMessageList extends React.Component {
         }
         let messages = ChatStore.find(this._getChannelFilter(this.props));
 
-        // Get user data
-        UserStore.loadDataByRelation(messages, 'sender')
-        .then(data => {
-            // ensure that last token doen't exist anymore.
-            UserStore.unloadData(this.UserStoreToken);
-            // save the component token
-            this.UserStoreToken = data.token;
-
-            // Get team data
-            return TeamStore.loadDataByRelation(UserStore.findByRelation(messages, 'sender'), 'team');
-        })
-        .then(data => {
-            // ensure that last token doen't exist anymore.
-            TeamStore.unloadData(this.TeamStoreToken);
-
-            // save the component token
-            this.TeamStoreToken = data.token;
-
-            // Group messages
-            let messagesGroups = [];
-            let first = null;
-            let last = null;
-            for (let message of messages) {
-                // Group if same sender and first message of the has been post less than 15 min ago, and last message less than 5 min ago
-                if(last && first && last.sender == message.sender &&
-                Math.abs((new Date(last.createdAt)).getTime() - (new Date(message.createdAt)).getTime()) < (5 * 60 * 1000) &&
-                Math.abs((new Date(first.createdAt)).getTime() - (new Date(message.createdAt)).getTime()) < (15 * 60 * 1000) &&
-                messagesGroups[messagesGroups.length - 1].length < 15
-                && last.channel == message.channel) {
-                    messagesGroups[messagesGroups.length - 1].push(message);
-                }
-                else {
-                    messagesGroups.push([message]);
-                    first = message;
-                }
-                last = message;
+        // Group messages
+        let messagesGroups = [];
+        let first = null;
+        let last = null;
+        for (let message of messages) {
+            // Group if same sender and first message of the has been post less than 15 min ago, and last message less than 5 min ago
+            if(last && first && last.sender == message.sender &&
+            Math.abs((new Date(last.createdAt)).getTime() - (new Date(message.createdAt)).getTime()) < (5 * 60 * 1000) &&
+            Math.abs((new Date(first.createdAt)).getTime() - (new Date(message.createdAt)).getTime()) < (15 * 60 * 1000) &&
+            messagesGroups[messagesGroups.length - 1].length < 15
+            && last.channel == message.channel) {
+                messagesGroups[messagesGroups.length - 1].push(message);
             }
+            else {
+                messagesGroups.push([message]);
+                first = message;
+            }
+            last = message;
 
             // Save messages
             this.setState({
                 messages: messagesGroups,
+                loading: false,
             })
-        })
-        .catch(error => {
-            NotificationActions.error('Une erreur s\'est produite pendant le re-chargement des messages', error);
-        });
+        }
     }
 
     /**
@@ -205,8 +199,10 @@ export default class ChatMessageList extends React.Component {
 
     render() {
         return (
-            <div className="ChatMessageList" ref={(scrollArea) => { this.scrollArea = scrollArea; }}>
-                {
+            <div className="ChatMessageList" ref={(scrollArea) => { this.scrollArea = scrollArea; }} onClick={() => ChatActions.viewMessages(this.channel)}>
+                { this.state.loading ?
+                    <CenteredMessage>Chargement..</CenteredMessage>
+                :
                     // For each message, create a Message component
                     this.state.messages.map((messageGroup, i) => {
                         let user = UserStore.findById(messageGroup[0].sender) || {name: 'Utilisateur supprimé'};
