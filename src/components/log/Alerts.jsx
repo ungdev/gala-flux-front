@@ -6,6 +6,7 @@ import AlertList from 'components/log/AlertList.jsx';
 import AlertStore from 'stores/AlertStore';
 import TeamStore from 'stores/TeamStore';
 import AuthStore from 'stores/AuthStore';
+import NotificationStore from 'stores/NotificationStore';
 import NotificationActions from 'actions/NotificationActions';
 import ReceiverSelect from 'components/log/ReceiverSelect.jsx';
 import { Row, Col } from 'react-flexbox-grid';
@@ -48,13 +49,31 @@ export default class Alerts extends React.Component {
 
                 // Init receiver filter
                 let receiverFilter = [];
-                if(AuthStore.can('ui/receiveAlerts')) {
-                    receiverFilter.push(AuthStore.team.id);
+                if(localStorage.getItem('alertReceivers')) {
+                    try {
+                        receiverFilter = JSON.parse(localStorage.getItem('alertReceivers'));
+                    } catch (e) {
+                        receiverFilter = [];
+                        console.error('localstorage notificationConfiguration json parsing error', e);
+                    }
                 }
-                if(AuthStore.can('ui/receiveDefaultAlerts')) {
-                    receiverFilter.push(undefined);
+                else {
+                    if(AuthStore.can('ui/receiveAlerts')) {
+                        receiverFilter.push(AuthStore.team.id);
+                    }
+                    if(AuthStore.can('ui/receiveDefaultAlerts')) {
+                        receiverFilter.push(null);
+                    }
+                    if(receiverFilter.length == 0) {
+                        let teams = TeamStore.findByPermission('ui/receiveAlerts');
+                        for (let team of teams) {
+                            receiverFilter.push(team.id);
+                        }
+                        receiverFilter.push(null);
+                    }
                 }
                 this.setState({receiverFilter});
+                localStorage.setItem('alertReceivers', JSON.stringify(this.state.receiverFilter));
 
                 // First update of the component with data
                 this._setAlerts();
@@ -83,6 +102,10 @@ export default class Alerts extends React.Component {
             if (prevState.isDoneFilter !== this.state.isDoneFilter || prevState.receiverFilter.length !== this.state.receiverFilter.length ) {
                 this._setFilteredAlerts();
             }
+        }
+
+        if(prevState.receiverFilter.length != this.state.receiverFilter.length) {
+            localStorage.setItem('alertReceivers', JSON.stringify(this.state.receiverFilter));
         }
     }
 
@@ -118,7 +141,7 @@ export default class Alerts extends React.Component {
             let filteredAlerts = (this.state.isDoneFilter?this.state.alertsDone:this.state.alerts).filter((alert) => (
                 ((this.state.isDoneFilter && alert.severity === 'done') || (!this.state.isDoneFilter && alert.severity !== 'done')) &&
                 (this.state.receiverFilter.length === 0 ||
-                (this.state.receiverFilter.includes(alert.receiver ? alert.receiver.id : alert.receiver)))
+                (this.state.receiverFilter.includes((alert.receiver && alert.receiver.id) || null)))
             ));
             this.setState({filteredAlerts: filteredAlerts});
         }
@@ -138,7 +161,7 @@ export default class Alerts extends React.Component {
             <div className="alerts">
                 <Paper className="alerts__filters">
                     <Row center="sm">
-                        <Col xs={12} sm={4}>
+                        <Col xs={6} sm={4}>
                             <RaisedButton
                                 label={`En cours ${this.state.newAlerts.processing ? `(${this.state.newAlerts.processing})` : ''}`}
                                 onTouchTap={_ => this._handleFilter('processing')}
@@ -146,7 +169,7 @@ export default class Alerts extends React.Component {
                                 fullWidth={true}
                             />
                         </Col>
-                        <Col xs={12} sm={4}>
+                        <Col xs={6} sm={4}>
                             <RaisedButton
                                 label={`Terminées ${this.state.newAlerts.done ? `(${this.state.newAlerts.done})` : ''}`}
                                 onTouchTap={_ => this._handleFilter('done')}

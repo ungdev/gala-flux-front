@@ -46,8 +46,8 @@ export default class ReceiverSelect extends React.Component {
                 <MenuItem
                     key={0}
                     insetChildren={true}
-                    checked={this.props.value && this.props.value.includes(undefined)}
-                    value={undefined}
+                    checked={this.props.value && this.props.value.includes(null)}
+                    value={null}
                     primaryText="Alertes auto"
                 />
                 {
