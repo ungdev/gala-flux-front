@@ -76,7 +76,7 @@ export default class ChatMenu extends React.Component {
 
     componentWillUnmount() {
         // remove the store change listener
-        ChatStore.addChangeListener(this._updateNewMessages);
+        ChatStore.removeChangeListener(this._updateNewMessages);
     }
 
     componentWillReceiveProps(nextProps) {

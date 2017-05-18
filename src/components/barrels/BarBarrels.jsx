@@ -90,7 +90,6 @@ export default class BarBarrels extends React.Component {
      * Load data from all stores and update state
      */
     _loadData() {
-        console.log("to load :", this.state.barId);
         // fill the stores
         return BarrelStore.loadData(this.state.barId ? null : {place: AuthStore.team && AuthStore.team.id})
         .then(data => {
@@ -167,7 +166,6 @@ export default class BarBarrels extends React.Component {
 
         // Init barrels
         for (let barrel of BarrelStore.find({place: state.barId ? state.barId : AuthStore.team.id})) {
-            console.log("found");
             if(!state.barrels[barrel.state][barrel.type]) {
                 state.barrels[barrel.state][barrel.type] = [];
             }
