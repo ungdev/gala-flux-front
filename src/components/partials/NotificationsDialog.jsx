@@ -161,9 +161,9 @@ export default class NotificationsDialog extends React.Component {
                 <h3>Channels du chat</h3>
                 <List>
                     {this.state.configuration && this.state.configuration.channel &&
-                        Object.keys(this.state.configuration.channel).map((channel, i) => {
+                        Object.keys(this.state.configuration.channel).sort((a,b) => a.replace('public:','0:').localeCompare(b.replace('public:','0:'))).map((channel, i) => {
 
-                            let primaryText = 'Publique : ' + channel.split(':')[1];
+                            let primaryText = channel.split(':')[1];
                             switch(channel.split(':')[0]) {
                                 case 'group': primaryText = 'Groupe : ' + channel.split(':')[1]; break;
                                 case 'private': primaryText = 'Privé : ' + channel.split(':')[1]; break;

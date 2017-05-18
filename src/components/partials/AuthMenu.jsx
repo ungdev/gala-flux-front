@@ -192,7 +192,7 @@ class AuthMenu extends React.Component {
                         <Divider/>
                     </div>
                     <Menu>
-                        <MenuItem onTouchTap={this._logout}>Se déconnecter</MenuItem>
+                        <MenuItem onTouchTap={this._toggleNotificationsDialog}>Notifications</MenuItem>
 
                         { this.state.canLoginAs ?
                             <MenuItem onTouchTap={this._openLoginAs}>Se connecter en tant que ...</MenuItem>
@@ -202,7 +202,7 @@ class AuthMenu extends React.Component {
                             <MenuItem onTouchTap={this._backToMainAccount}>Retour à votre compte</MenuItem>
                         :''}
 
-                        <MenuItem onTouchTap={this._toggleNotificationsDialog}>Notifications</MenuItem>
+                        <MenuItem onTouchTap={this._logout}>Se déconnecter</MenuItem>
 
                     </Menu>
                 </Popover>
