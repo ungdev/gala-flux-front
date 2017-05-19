@@ -93,7 +93,7 @@ export default class FluxNotification extends React.Component {
             }
 
             for (let data of this.state.notifications) {
-                if(this._lastNotificationId < data.id) {
+                if(this._lastNotificationId < data.id && Notification.requestPermission()) {
                     // Request authorization
                     Notification.requestPermission().then((permission) => {
                         if(permission == 'granted') {
