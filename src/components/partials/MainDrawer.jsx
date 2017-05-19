@@ -86,7 +86,8 @@ class MainDrawer extends React.Component {
 
             // Calculate number of message under and over the view in the scroll area
             let elements = target.getElementsByClassName('NotificationScrollIndicatorLine');
-            for (let el of elements) {
+            for (let i = 0 ; i < elements.length ; i++) {
+                let el = elements[i];
                 let rect = el.getBoundingClientRect();
                 if(el.dataset && el.dataset.count && rect && rect.bottom != 0) {
                     if(rect.top - scrollAreaTop < 0) {
