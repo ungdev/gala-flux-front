@@ -1,4 +1,5 @@
 import React from 'react';
+import router from 'router';
 
 import AlertService from 'services/AlertService';
 import UserStore from 'stores/UserStore';
@@ -81,7 +82,8 @@ export default class Alert extends React.Component {
                     <button
                         data-tip
                         data-for={"team-" + this.state.alert.id}
-                        className={ 'alert__team-name__container alert__team-name__container--' + this.state.alert.severity}>
+                        className={ 'alert__team-name__container alert__team-name__container--' + this.state.alert.severity}
+                        onClick={() => (this.state.alert.sender && router.navigate('barhome.id', {id: this.state.alert.sender.id}))}>
                         <div className="alert__team-name">
                             {this.props.alert.sender ? this.state.alert.sender.name : '-'}
                         </div>

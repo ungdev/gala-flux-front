@@ -24,7 +24,6 @@ export default class BarCard extends React.Component {
         };
 
         this._showBarHome = this._showBarHome.bind(this);
-        this._toggleHover= this._toggleHover.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -34,10 +33,6 @@ export default class BarCard extends React.Component {
             alerts: nextProps.alerts,
             barrels: nextProps.barrels
         });
-    }
-
-    _toggleHover() {
-        this.setState({ headerHovered: !this.state.headerHovered });
     }
 
     _showBarHome() {
@@ -51,20 +46,15 @@ export default class BarCard extends React.Component {
                 fontWeight: "bold",
                 borderBottom: "1px solid white"
             },
-            header: {
-                cursor: "pointer"
-            },
             badge: {
                 background: this.state.users > 0 ? color.teal600 : color.red600
             }
         };
 
-        if (this.state.headerHovered) {
-            styles.title.borderBottom = "1px solid black";
-        }
-
         return (
-            <Card className="BarCard">
+            <Card className="BarCard"
+                onClick={this._showBarHome}
+            >
                 <div className="UsersLogged">
                     <Badge
                         badgeContent={this.state.users}
@@ -76,12 +66,8 @@ export default class BarCard extends React.Component {
                 </div>
                 <CardHeader
                     titleStyle={styles.title}
-                    style={styles.header}
                     title={this.state.team.name}
                     subtitle={this.state.team.location}
-                    onClick={this._showBarHome}
-                    onMouseEnter={this._toggleHover}
-                    onMouseLeave={this._toggleHover}
                 />
                 <CardText>
                     <AlertsInfo alerts={this.state.alerts} />
