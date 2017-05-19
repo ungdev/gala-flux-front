@@ -80,13 +80,13 @@ export default class AdminTabs extends React.Component {
                 {/* Tabs for tablet */}
                 <Tabs className="AdminPage__tabs show-sm" onChange={this.props.onChange} value={this.state.value}>
                     { !this.state.hasMessage ?
-                        <Tab label={<span>Chat { this.state.messageCount > 0 && <span className="Notification_bubble">{this.state.messageCount}</span> } </span>} value="home"/>
+                        <Tab label={<span>{ this.state.messageCount > 0 && <span className="Notification_bubble">{this.state.messageCount}</span> }Chat</span>} value="home"/>
                     :
-                        <Tab label={<strong>Chat { this.state.messageCount > 0 && <span className="Notification_bubble">{this.state.messageCount}</span> } </strong>} value="home"/>
+                        <Tab label={<strong>{ this.state.messageCount > 0 && <span className="Notification_bubble">{this.state.messageCount}</span> }Chat</strong>} value="home"/>
                     }
 
                     { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
-                        <Tab label={<span>Alertes { this.state.alertCount > 0 && <span className="Notification_bubble">{this.state.alertCount}</span> } </span>}  value="alert"/>
+                        <Tab label={<span>{ this.state.alertCount > 0 && <span className="Notification_bubble">{this.state.alertCount}</span> }Alertes</span>}  value="alert"/>
                     }
 
                     { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
@@ -102,7 +102,7 @@ export default class AdminTabs extends React.Component {
 
                 {/* Tabs for desktop */}
                 <Tabs className="AdminPage__tabs hide-sm" onChange={this.props.onChange} value={this.state.value}>
-                    <Tab label={<span>Dashboard { (this.state.messageCount+this.state.alertCount) > 0 && <span className="Notification_bubble">{(this.state.messageCount+this.state.alertCount)}</span> } </span>} value="home"/>
+                    <Tab label={<span>{ (this.state.messageCount+this.state.alertCount) > 0 && <span className="Notification_bubble">{(this.state.messageCount+this.state.alertCount)}</span> }Dashboard</span>} value="home"/>
                     { (AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) &&
                     (AuthStore.can('barrel/read') || AuthStore.can('barrel/admin')) &&
                         <Tab label="Bars" value="bars"/>

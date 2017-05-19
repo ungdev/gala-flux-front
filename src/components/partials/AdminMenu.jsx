@@ -129,6 +129,10 @@ export default class AdminMenu extends React.Component {
                     { (AuthStore.can('alertButton/admin')) &&
                         <ListItem value="admin.alerts" className="AdminMenu__item">Gestion des boutons d'alerte</ListItem>
                     }
+
+                    { (AuthStore.can('developer/refresh')) &&
+                        <ListItem value="admin.developer" className="AdminMenu__item">Espace développeur</ListItem>
+                    }
                 </SelectableList>
             </div>
         );

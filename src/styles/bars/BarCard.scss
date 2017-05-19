@@ -3,6 +3,13 @@
 .BarCard {
     margin-bottom: 20px;
     position: relative;
+    cursor: pointer;
+
+
+}
+
+.BarCard:hover {
+    background-color: #e6e6e6 !important;
 }
 
 .UsersLogged {

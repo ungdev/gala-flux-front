@@ -109,7 +109,7 @@ class NotificationStore extends BaseStore {
 
             // Fetch new alert count
             if(AuthStore.can('alert/read') || AuthStore.can('alert/restrictedReceiver') || AuthStore.can('alert/admin')) {
-                return AlertService.get({ createdAt: {'>': this._lastReadAlert}});
+                return AlertService.get([{ createdAt: {'>': this._lastReadAlert}}]);
             }
             return Promise.resolve([]);
         })

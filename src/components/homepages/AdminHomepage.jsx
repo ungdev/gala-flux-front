@@ -21,6 +21,8 @@ import BottlesTypesPage from "components/adminPages/BottlesTypesPage.jsx";
 import AlertButtonsPage from 'components/adminPages/AlertButtonsPage.jsx';
 import TeamListPage from 'components/adminPages/TeamListPage.jsx';
 import TeamDetailsPage from 'components/adminPages/TeamDetailsPage.jsx';
+import DeveloperPage from 'components/adminPages/DeveloperPage.jsx';
+
 
 
 require('styles/homepages/AdminHomepage.scss');
@@ -80,6 +82,7 @@ export default class AdminHomepage extends React.Component {
             case 'admin.teams.id':
             case 'admin.barrels':
             case 'admin.alerts':
+            case 'admin.developer':
                 return 'admin';
         }
     }
@@ -164,6 +167,14 @@ export default class AdminHomepage extends React.Component {
                                     <div className="AdminPage__splitscreen">
                                         <AdminMenu route={this.state.route} className="AdminPage__splitscreen__menu" />
                                         <AlertButtonsPage />
+                                    </div>
+                                );
+
+                            case 'admin.developer':
+                                return (
+                                    <div className="AdminPage__splitscreen">
+                                        <AdminMenu route={this.state.route} className="AdminPage__splitscreen__menu" />
+                                        <DeveloperPage />
                                     </div>
                                 );
 

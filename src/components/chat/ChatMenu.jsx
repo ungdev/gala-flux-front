@@ -82,7 +82,6 @@ export default class ChatMenu extends React.Component {
 
     componentWillUnmount() {
         // remove the store change listener
-        ChatStore.removeChangeListener(this._updateNewMessages);
         NotificationStore.removeChangeListener(this._updateNewMessages);
     }
 
@@ -158,12 +157,19 @@ export default class ChatMenu extends React.Component {
                 this.setState({
                     channel: route.params.channel,
                 });
+                localStorage.setItem('chat/lastChannel', route.params.channel);
             }
+        }
+        else if(this.props.selectDefault && localStorage.getItem('chat/lastChannel') && this.state.channel != localStorage.getItem('chat/lastChannel')) {
+            this.setState({
+                channel: localStorage.getItem('chat/lastChannel'),
+            });
         }
         else if(this.props.selectDefault && AuthStore.team && this.state.channel != ('public:'+AuthStore.team.name)) {
             this.setState({
                 channel: 'public:'+AuthStore.team.name,
             });
+            localStorage.setItem('chat/lastChannel', 'public:'+AuthStore.team.name);
         }
         else {
             this.setState({
