@@ -17,12 +17,8 @@ class AlertService extends BaseService {
      * @returns {Promise}
      */
     updateAssignedUsers(id, users) {
-        return this._makeRequest({
-            method: 'put',
-            url: this._baseUrl + '/' + id + '/users',
-            data: {
-                users
-            }
+        return this.request('put', '/alert/' + id + '/users', {
+            users
         });
     }
 }

@@ -17,10 +17,8 @@ class BottleTypeService extends BaseService {
      * @return {Promise}
      */
     setBottleNumber(id, number) {
-        return this._makeRequest({
-            method: 'post',
-            url: '/bottletype/bottle',
-            data: { id, number },
+        return this.request('post', '/bottletype/bottle', {
+            id, number,
         });
     }
 

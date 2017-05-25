@@ -18,15 +18,8 @@ class UserService extends BaseService {
      * @return {Promise} A promise to get a list of etuutt users
      */
     findEtuuttUser(query) {
-        return new Promise((resolve, reject) => {
-            iosocket.get('/user/etuutt', {
-                query: query,
-            }, (resData, jwres) => {
-                if (jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve(resData);
-            });
+        return this.request('get', '/user/etuutt', {
+            query,
         });
     }
 

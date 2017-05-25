@@ -8,19 +8,18 @@ export default class BaseService {
     }
 
     /**
-     * Make a socket request on the rest API
+     * Shortcut to io.request
      *
-     * @param {object} data: contains at least the method and url
+     * @param {string} method method of the request
+     * @param {object} url Url of the request
+     * @param {object} data facultative data object
      * @returns {Promise}
      */
-    _makeRequest(data) {
-        return new Promise((resolve, reject) => {
-            iosocket.request(data, (resData, jwres) => {
-                if(jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve(resData);
-            });
+    request(method, url, data) {
+        return io.request({
+            method,
+            url,
+            data: data || {},
         });
     }
 
@@ -30,10 +29,7 @@ export default class BaseService {
      * @returns {Promise}
      */
     subscribe() {
-        return this._makeRequest({
-            method: 'post',
-            url: this._baseUrl + '/subscribe'
-        });
+        return this.request('post', this._baseUrl + '/subscribe');
     }
 
     /**
@@ -42,10 +38,7 @@ export default class BaseService {
      * @returns {Promise}
      */
     unsubscribe() {
-        return this._makeRequest({
-            method: 'post',
-            url: this._baseUrl + '/unsubscribe'
-        });
+        return this.request('post', this._baseUrl + '/unsubscribe');
     }
 
     /**
@@ -55,11 +48,7 @@ export default class BaseService {
      * @returns {Promise}
      */
     get(filters = {}) {
-        return this._makeRequest({
-            method: 'get',
-            url: this._baseUrl,
-            data: {filters}
-        });
+        return this.request('get', this._baseUrl, filters);
     }
 
     /**
@@ -69,9 +58,9 @@ export default class BaseService {
      * @returns {Promise}
      */
     getById(id) {
-        return this._makeRequest({
-            method: 'get',
-            url: this._baseUrl + '/' + id
+        return this.get({id})
+        .then((data) => {
+            return Promise.resolve(data[0]);
         });
     }
 
@@ -82,11 +71,7 @@ export default class BaseService {
      * @returns {Promise}
      */
     create(data) {
-        return this._makeRequest({
-            method: 'post',
-            url: this._baseUrl,
-            data
-        });
+        return this.request('post', this._baseUrl, data);
     }
 
     /**
@@ -97,11 +82,7 @@ export default class BaseService {
      * @returns {Promise}
      */
     update(id, data) {
-        return this._makeRequest({
-            method: 'put',
-            url: this._baseUrl + '/' + id,
-            data
-        });
+        return this.request('put', this._baseUrl + '/' + id, data);
     }
 
     /**
@@ -111,10 +92,7 @@ export default class BaseService {
      * @returns {Promise}
      */
     destroy(id) {
-        return this._makeRequest({
-            method: 'delete',
-            url: this._baseUrl + '/' + id
-        });
+        return this.request('delete', this._baseUrl + '/' + id, data);
     }
 
 }

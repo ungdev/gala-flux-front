@@ -19,14 +19,10 @@ class AlertButtonService extends BaseService {
      * @returns {Promise}
      */
     createAlert(data) {
-        return this._makeRequest({
-            method: 'post',
-            url: '/alertbutton/alert',
-            data: {
-                button: data.button ? data.button : null,
-                message: data.message ? data.message : null,
-                team: data.team ? data.team : null
-            }
+        return this.request('post', '/alertbutton/alert', {
+            button: data.button ? data.button : null,
+            message: data.message ? data.message : null,
+            team: data.team ? data.team : null
         });
     }
 }

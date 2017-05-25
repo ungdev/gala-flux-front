@@ -3,10 +3,15 @@ import NotificationActions from 'actions/NotificationActions';
 import WebSocketActions from 'actions/WebSocketActions';
 import AuthService from 'services/AuthService';
 import AuthActions from 'actions/AuthActions';
+import socketIOClient from 'socket.io-client';
+import {ApiError} from 'errors';
 import router from 'router';
 
 // Hold the set interval identifier which will try to reconnect every 5 sec
 let watchdog = null;
+
+// This request ID is used to associate socket request with answer. (socket io doesn't have any built-in answer system like HTTP)
+let lastRequestId = 0;
 
 /**
  * Service which will create and manage webSocket connection
@@ -17,27 +22,45 @@ class WebSocketService {
      * connect - Connect to the websocket server if we are not already connected
      */
     connect() {
-        if(!global.iosocket || !global.iosocket.isConnected()) {
-            global.iosocket = io.sails.connect(constants.webSocketUri);
+        if(!global.io) { //  || !global.io.isConnected()
+            global.io = socketIOClient.connect(constants.webSocketUri, {reconnect: true});
 
-            iosocket.on('connect', () => this._handleConnected());
-            iosocket.on('disconnect', () => this._handleDisconnected());
-            iosocket.on('refresh', () => this._handleRefresh());
+            io.on('connect', () => this._handleConnected());
+            io.on('disconnect', () => this._handleDisconnected());
+            io.on('refresh', () => this._handleRefresh());
+
+
+            // When we wan to start a new fake HTTP request
+            // TODO implement timeout
+            io.request = (data) => {
+                return new Promise((resolve, reject) => {
+                    data.requestId = ++lastRequestId;
+
+                    io.emit('request', data);
+                    io.once('response-' + data.requestId, (data) => {
+                        if(data.statusCode != 200) {
+                            return reject(new ApiError(data));
+                        }
+                        return resolve(data.data);
+                    });
+                });
+            };
         }
 
         // Try to reconnect every 5 seconds
-        if(!watchdog) {
-            watchdog = setInterval(() => this.connect(), 5000);
-        }
+        // if(!watchdog) {
+            // watchdog = setInterval(() => this.connect(), 5000);
+        // }
     }
 
     _handleConnected() {
         let jwtError = null;
         // Authenticate with stored jwt
         let jwt = localStorage.getItem(constants.jwtName);
+        console.log('Authenticate with jwt', jwt)
         AuthService.tryToAuthenticateWithJWT(jwt)
-        .then((jwt) => {
-            AuthActions.saveJWT(jwt);
+        .then((data) => {
+            AuthActions.saveJWT(data.jwt);
             WebSocketActions.connected();
         })
         .catch((error) => {
@@ -49,8 +72,8 @@ class WebSocketService {
             // Authenticate with jwt stored before 'login as'
             jwt = localStorage.getItem(constants.firstJwtName);
             AuthService.tryToAuthenticateWithJWT(jwt)
-            .then((jwt) => {
-                AuthActions.saveJWT(jwt);
+            .then((data) => {
+                AuthActions.saveJWT(data.jwt);
                 localStorage.removeItem(constants.firstJwtName);
                 WebSocketActions.connected();
             })
@@ -65,8 +88,8 @@ class WebSocketService {
                     AuthActions.authEtuuttStarted();
                 }
                 AuthService.sendAuthorizationCode(authCode)
-                .then((jwt) => {
-                    AuthActions.saveJWT(jwt);
+                .then((data) => {
+                    AuthActions.saveJWT(data.jwt);
                     history.replaceState({}, 'Flux', '/');
                     router.navigate('home');
                     AuthActions.authEtuuttDone();
@@ -83,10 +106,12 @@ class WebSocketService {
                         }
                     }
 
+                    console.log('Auth par ip try')
                     // Authenticate with IP
                     AuthService.tryToAuthenticateWithIP()
-                    .then((jwt) => {
-                        AuthActions.saveJWT(jwt);
+                    .then((data) => {
+                        console.log('Auth par ip success', data.jwt)
+                        AuthActions.saveJWT(data.jwt);
                         WebSocketActions.connected();
                         AuthActions.authEtuuttDone();
                     })

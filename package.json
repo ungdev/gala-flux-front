@@ -40,9 +40,8 @@
     "react-tap-event-plugin": "^2.0.1",
     "react-tooltip": "^3.3.0",
     "router5": "^4.5.2",
-    "sails.io.js": "^1.1.6",
     "sass-loader": "^6.0.3",
-    "socket.io-client": "^1.7.3",
+    "socket.io-client": "^2.0.1",
     "style-loader": "^0.16.1",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.2"

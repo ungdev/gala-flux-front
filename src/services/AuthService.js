@@ -1,26 +1,22 @@
 import {ApiError} from 'errors';
+import BaseService from 'services/BaseService';
 
 /**
  * Class used to make requests about authentication.
  */
-class AuthService {
+class AuthService extends BaseService {
+
+    constructor() {
+        super('auth');
+    }
+
     /**
      * Pull the current role->permission configuration of the server
      *
      * @return {Promise}    Promise that resolve to role->permission association object
      */
     getRoles() {
-        return new Promise((resolve, reject) => {
-            iosocket.request({
-                method: 'get',
-                url: '/login/roles'
-            }, (resData, jwres) => {
-                if(jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve(resData);
-            });
-        });
+        return this.request('get', '/auth/roles');
     }
 
     /**
@@ -30,17 +26,7 @@ class AuthService {
      * @return {Promise}
      */
     tryToAuthenticateWithIP() {
-        return new Promise((resolve, reject) => {
-            iosocket.request({
-                method: 'post',
-                url: '/login/ip'
-            }, (resData, jwres) => {
-                if (jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve(jwres.body.jwt);
-            });
-        });
+        return this.request('post', '/auth/ip');
     }
 
     /**
@@ -50,17 +36,7 @@ class AuthService {
      * @return {Promise}
      */
     authWithEtuUTT() {
-        return new Promise((resolve, reject) => {
-            iosocket.request({
-                method: 'get',
-                url: '/login/oauth'
-            }, (resData, jwres) => {
-                if (jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve(resData);
-            });
-        });
+        return this.request('get', '/auth/oauth');
     }
 
     /**
@@ -74,21 +50,10 @@ class AuthService {
      * @return {Promise} Promise for the jwt
      */
     sendAuthorizationCode(authorizationCode) {
-        return new Promise((resolve, reject) => {
-            if (!authorizationCode) {
-                reject(new Error('No authorizationCode'));
-            }
-            iosocket.request({
-                method: 'post',
-                url: '/login/oauth/submit',
-                data: {authorizationCode}
-            }, (resData, jwres) => {
-                if (jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve(jwres.body.jwt);
-            });
-        });
+        if(!authorizationCode) {
+            return Promise.reject(new Error('No authorizationCode'));
+        }
+        return this.request('post', '/auth/oauth/submit', {authorizationCode});
     }
 
     /**
@@ -121,21 +86,10 @@ class AuthService {
      * @return {Promise} Promise for the new authenticated jwt
      */
     tryToAuthenticateWithJWT(jwt) {
-        return new Promise((resolve, reject) => {
-            if (!jwt) {
-                reject(new Error('No JWT'));
-            }
-            iosocket.request({
-                method: 'post',
-                url: '/login/jwt',
-                data: {jwt}
-            }, (resData, jwres) => {
-                if (jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve(jwres.body.jwt);
-            });
-        });
+        if(!jwt) {
+            return Promise.reject(new Error('No JWT'));
+        }
+        return this.request('post', '/auth/jwt', {jwt});
     }
 
     /**
@@ -146,17 +100,7 @@ class AuthService {
      * @return {Promise} Promise for the jwt
      */
     tryToLoginAs(id) {
-        return new Promise((resolve, reject) => {
-            iosocket.request({
-                method: 'post',
-                url: '/login/as/' + id
-            }, (resData, jwres, tmp) => {
-                if (jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve(jwres.body.jwt);
-            });
-        });
+        return this.request('post',  '/auth/as/' + id);
     }
 
     /**
@@ -165,17 +109,7 @@ class AuthService {
      * @returns {Promise}
      */
     logout() {
-        return new Promise((resolve, reject) => {
-            iosocket.request({
-                method: 'post',
-                url: '/logout'
-            }, (resData, jwres) => {
-                if (jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve();
-            })
-        });
+        return this.request('post',  '/auth/logout');
     }
 
 }

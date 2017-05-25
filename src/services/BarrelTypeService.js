@@ -17,10 +17,8 @@ class BarrelTypeService extends BaseService {
      * @return {Promise}
      */
     setBarrelNumber(id, number) {
-        return this._makeRequest({
-            method: 'post',
-            url: '/barreltype/barrel',
-            data: { id, number },
+        return this.request('post', '/barreltype/barrel', {
+            id, number,
         });
     }
 

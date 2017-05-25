@@ -17,7 +17,7 @@ export class ApiError extends Error {
      */
     constructor(jwres) {
         // Default error values
-        let message = jwres.error.message;
+        let message = jwres.statusMessage;
         let code = jwres.statusCode;
         let status = 'UnexpectedError';
         let formErrors = {};
@@ -25,17 +25,17 @@ export class ApiError extends Error {
         let req = {};
 
         // Try to parse body
-        if(jwres.body) {
-            if(jwres.body._error) {
-                message = jwres.body._error.message;
-                code = jwres.body._error.code;
-                status = jwres.body._error.status;
-                req = jwres.body._error.req;
+        if(jwres.data) {
+            if(jwres.data._error) {
+                message = jwres.data._error.message;
+                code = jwres.data._error.code;
+                status = jwres.data._error.status;
+                req = jwres.data._error.req;
             }
-            else if(jwres.body.code && jwres.body.code == 'E_VALIDATION') {
+            else if(jwres.data.code && jwres.data.code == 'E_VALIDATION') {
                 status = 'ValidationError';
-                message = jwres.body.details;
-                formErrors = jwres.body.invalidAttributes;
+                message = jwres.data.details;
+                formErrors = jwres.data.invalidAttributes;
 
                 // Parse and translate formErrors
                 for (let attr in formErrors) {

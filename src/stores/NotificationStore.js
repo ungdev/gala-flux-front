@@ -133,8 +133,8 @@ class NotificationStore extends BaseStore {
         .catch(error => NotificationActions.error("Erreur lors de la lecture des messages et alertes non lus.", error));
 
         // Listen for new events
-        iosocket.on('message', this._handleMessageEvent);
-        iosocket.on('alert', this._handleAlertEvent);
+        io.on('message', this._handleMessageEvent);
+        io.on('alert', this._handleAlertEvent);
     }
 
 

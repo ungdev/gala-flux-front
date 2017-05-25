@@ -10,13 +10,9 @@ class BarrelService extends BaseService {
     }
 
     moveBarrels(barrels, location) {
-        return this._makeRequest({
-            method: 'put',
-            url: '/barrel/location',
-            data: {
-                barrels,
-                location
-            }
+        return this.request('put', '/barrel/location', {
+            barrels,
+            location
         });
     }
 

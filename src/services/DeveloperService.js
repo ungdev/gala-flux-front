@@ -13,13 +13,8 @@ class DeveloperService extends BaseService {
      * Trigger a refresh of all browsers connected to flux
      */
     refresh() {
-        return new Promise((resolve, reject) => {
-            iosocket.post('/developer/refresh', (resData, jwres) => {
-                if(jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve(resData);
-            });
+        return this.request('post', '/developer/refresh', {
+            id, number,
         });
     }
 

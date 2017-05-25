@@ -2,12 +2,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-// Sails lib
-var socketIOClient = require('socket.io-client');
-var sailsIOClient = require('sails.io.js');
-window.io = sailsIOClient(socketIOClient);
-io.sails.autoConnect = false;
-
 // TapEvent
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();

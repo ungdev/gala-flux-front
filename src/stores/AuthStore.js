@@ -76,14 +76,14 @@ class AuthStore extends BaseStore {
         UserService.getById(this.jwt.userId)
             .then(user => {
                 this._user = user;
-                iosocket.on('user', (e) => this._handleUserEvents(e));
+                io.on('user', (e) => this._handleUserEvents(e));
                 UserService.subscribe();
                 this.emitChange();
                 return TeamService.getById(this.user.team);
             })
             .then(team => {
                 this._team = team;
-                iosocket.on('team', (e) => this._handleTeamEvents(e));
+                io.on('team', (e) => this._handleTeamEvents(e));
                 TeamService.subscribe();
                 this.emitChange();
                 AuthActions.authenticated(this.user, this.team);

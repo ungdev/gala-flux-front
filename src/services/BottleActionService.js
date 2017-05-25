@@ -18,10 +18,8 @@ class BottleActionService extends BaseService {
         if(team && team.id) {
             team = team.id;
         }
-        return this._makeRequest({
-            method: 'get',
-            url: '/bottleaction/count',
-            data: { team },
+        return this.request('get', '/bottleaction/count', {
+            team
         });
     }
 

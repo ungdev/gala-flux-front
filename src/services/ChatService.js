@@ -16,14 +16,7 @@ class ChatService extends BaseService {
      * @return {Promise}    Promise that resolve to the list of channels
      */
     getChannels() {
-        return new Promise((resolve, reject) => {
-            iosocket.get('/message/channels', (resData, jwres) => {
-                if(jwres.error) {
-                    return reject(new ApiError(jwres));
-                }
-                return resolve(resData);
-            });
-        });
+        return this.request('get', '/message/channels');
     }
 
 }

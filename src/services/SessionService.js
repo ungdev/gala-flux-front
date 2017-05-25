@@ -27,11 +27,8 @@ class SessionService extends BaseService {
             }
         }
 
-        iosocket.post('/session/open', {token, deviceId}, (resData, jwres) => {
-            if(jwres.error) {
-                NotificationActions.error('Impossible d\'enregistrer cette application Android.', jwres.error, jwres.body);
-            }
-        });
+        console.error('deprecated, token and deviceId should move to auth endpoints');
+        return Promise.resolve();
     }
 
 }
