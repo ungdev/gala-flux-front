@@ -83,27 +83,10 @@ export default class UpdateMemberDialog extends React.Component {
             this.props.close();
         })
         .catch((error) => {
-            let errors = {};
-            if(error.status === 'ValidationError' && error.formErrors) {
-                for (let field in error.formErrors) {
-                    if(error.formErrors[field][0].rule == 'string') {
-                        errors[field] = 'Ce champ est vide ou contient une valeur invalide.';
-                    }
-                    else if(error.formErrors[field][0].rule == 'unique') {
-                        errors[field] = 'Il existe déjà un utilisateur avec cette valeur.';
-                    }
-                    else if(error.formErrors[field][0].rule == 'required') {
-                        errors[field] = 'Ce champ ne peut pas être vide.';
-                    }
-                    else {
-                        errors[field] = error.formErrors[field][0].message;
-                        console.warn('Validation message not translated. ', error.formErrors[field]);
-                    }
-                }
+            if(error.formErrors && Object.keys(error.formErrors).length) {
+                this.setState({ errors: error.formErrors });
             }
-            this.setState({ errors: errors });
-
-            if(!Object.keys(errors).length) {
+            else {
                 NotificationActions.error('Une erreur s\'est produite pendant la modification de l\'user', error);
             }
         });

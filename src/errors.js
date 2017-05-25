@@ -20,8 +20,8 @@ export class ApiError extends Error {
         let message = jwres.statusMessage;
         let code = jwres.statusCode;
         let status = 'UnexpectedError';
+        let validationErrors = {};
         let formErrors = {};
-        let userFormErrors = {};
         let req = {};
 
         // Try to parse body
@@ -31,36 +31,45 @@ export class ApiError extends Error {
                 code = jwres.data._error.code;
                 status = jwres.data._error.status;
                 req = jwres.data._error.req;
-            }
-            else if(jwres.data.code && jwres.data.code == 'E_VALIDATION') {
-                status = 'ValidationError';
-                message = jwres.data.details;
-                formErrors = jwres.data.invalidAttributes;
 
-                // Parse and translate formErrors
-                for (let attr in formErrors) {
-                    // Rules are translated only if it has an user meaning.
-                    // eg: `required` is translated, but not `string`.
-                    // Only the first translated rule is returned
-                    for (let error of formErrors[attr]) {
-                        if(error.rule === 'required') {
-                            userFormErrors[attr] = 'Ce champ est obligatoire';
-                            break;
-                        }
-                        else if(error.rule === 'unique') {
-                            userFormErrors[attr] = 'Un autre élément utilise déjà cette valeur. Veuillez en choisir une autre.';
-                            break;
-                        }
-                        else if(error.rule === 'model') {
-                            userFormErrors[attr] = 'Cet élément n\'a pas pus être trouvé.';
-                            break;
+                if(status == 'ValidationError' && jwres.data._error.validation) {
+                    validationErrors = jwres.data._error.validation;
+
+                    // Parse and translate validation errors (only the first of each field)
+                    for (let error of jwres.data._error.validation) {
+                        if(!formErrors[error.path]) {
+                            switch (error.type) {
+                                case 'notNull Violation':
+                                    formErrors[error.path] = 'Ce champ est obligatoire.';
+                                    break;
+                                case 'unique violation':
+                                    formErrors[error.path] = 'Un autre élément utilise déjà cette valeur. Veuillez en changer.';
+                                    break;
+                                case 'Validation error':
+                                    switch (error.message) {
+                                        case 'Validation notEmpty failed':
+                                            formErrors[error.path] = 'Ce champ est obligatoire';
+                                            break;
+                                        case 'Validation roleExist failed':
+                                            formErrors[error.path] = 'Ce role n\'existe pas';
+                                            break;
+                                        case 'Validation isIP failed':
+                                            formErrors[error.path] = 'Cette ip n\'est pas valide';
+                                            break;
+                                    }
+                                    break;
+                            }
+
                         }
                     }
+                    console.log(formErrors);
 
-                    // If not translated, use the english version with a warning
-                    if(!userFormErrors[attr]) {
-                        userFormErrors[attr] = formErrors[attr][0].message;
-                        console.warn('Validation message not translated. ', formErrors[attr]);
+                    // Create formErrors with english text if french doesn't exist
+                    for (let error of jwres.data._error.validation) {
+                        if(!formErrors[error.path]) {
+                            formErrors[error.path] = error.message;
+                            console.warn('Validation message not translated. ', error);
+                        }
                     }
                 }
             }
@@ -71,8 +80,8 @@ export class ApiError extends Error {
         this.name = 'ApiError';
         this.code = code;
         this.status = status;
+        this.validationErrors = validationErrors;
         this.formErrors = formErrors;
-        this.userFormErrors = userFormErrors;
         if(req && Object.keys(req)) this.req = req;
     }
  }

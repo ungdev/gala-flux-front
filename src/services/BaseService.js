@@ -48,7 +48,7 @@ export default class BaseService {
      * @returns {Promise}
      */
     get(filters = {}) {
-        return this.request('get', this._baseUrl, filters);
+        return this.request('get', this._baseUrl, {filters});
     }
 
     /**
@@ -92,7 +92,7 @@ export default class BaseService {
      * @returns {Promise}
      */
     destroy(id) {
-        return this.request('delete', this._baseUrl + '/' + id, data);
+        return this.request('delete', this._baseUrl + '/' + id);
     }
 
 }

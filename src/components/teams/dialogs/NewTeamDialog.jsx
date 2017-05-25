@@ -66,27 +66,10 @@ export default class NewTeamDialog extends React.Component {
             if(this.focusField) this.focusField.focus();
         })
         .catch((error) => {
-            let errors = {};
-            if(error.status === 'UnknownRole') {
-                errors.role = 'Ce champ est vide ou contient une invalide.';
+            if(error.formErrors && Object.keys(error.formErrors).length) {
+                this.setState({ errors: error.formErrors });
             }
-            else if(error.status === 'ValidationError' && error.formErrors) {
-                for (let field in error.formErrors) {
-                    if(error.formErrors[field][0].rule == 'string') {
-                        errors[field] = 'Ce champ est vide ou contient une invalide.';
-                    }
-                    else if(error.formErrors[field][0].rule == 'unique') {
-                        errors[field] = 'Il existe déjà une équipe avec cette valeur.';
-                    }
-                    else {
-                        errors[field] = error.formErrors[field][0].message;
-                        console.warn('Validation message not translated. ', error.formErrors[field]);
-                    }
-                }
-            }
-            this.setState({ errors: errors });
-
-            if(!Object.keys(errors).length) {
+            else {
                 NotificationActions.error('Une erreur s\'est produite pendant la création de l\'équipe', error);
             }
         });

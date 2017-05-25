@@ -89,8 +89,8 @@ export default class TeamDetails extends React.Component {
                 // save the component token
                 this.TeamStoreToken = data.token;
 
-                // Load members in store
-                return UserStore.loadData({team: id});
+                // Load members in store7
+                return UserStore.loadData({teamId: id});
             })
             .then(data => {
                 // ensure that last token doen't exist anymore.
@@ -125,7 +125,7 @@ export default class TeamDetails extends React.Component {
     _updateData() {
         this.setState({
             team: TeamStore.findById(this.props.id),
-            members: UserStore.find({team: this.props.id}),
+            members: UserStore.find({teamId: this.props.id}),
         });
     }
 

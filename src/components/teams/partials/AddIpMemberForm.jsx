@@ -52,22 +52,9 @@ export default class AddIpMemberForm extends React.Component {
             e.preventDefault();
         }
 
-        // Pre-check
-        let errors = {};
-        if(!this.state.values.ip) {
-            errors.ip = 'Ce champ est obligatoire';
-        }
-        if(!this.state.values.name) {
-            errors.name = 'Ce champ est obligatoire';
-        }
-        if(Object.keys(errors).length) {
-            this.setState({ errors: errors });
-            return;
-        }
-
         // Submit
         UserService.create({
-            team: this.state.team.id,
+            teamId: this.state.team.id,
             name: this.state.values.name,
             ip: this.state.values.ip,
         })
@@ -80,23 +67,10 @@ export default class AddIpMemberForm extends React.Component {
             if(this.focusField) this.focusField.focus();
         })
         .catch(error => {
-            let errors = {};
-            if(error.status === 'ValidationError' && error.formErrors) {
-                for (let field in error.formErrors) {
-                    if(field == 'ip' && error.formErrors[field][0].rule == 'unique') {
-                        errors[field] = 'Cet IP a déjà été assigné à un autre utilisateur';
-                    }
-                    else if(error.formErrors[field][0].rule == 'ip') {
-                        errors[field] = 'Cette ip n\'est pas valide';
-                    }
-                    else {
-                        errors[field] = error.formErrors[field][0].message;
-                        console.warn('Warning: Validation message not translated. ', error.formErrors[field]);
-                    }
-                }
-                this.setState({ errors: errors });
+            if(error.formErrors && Object.keys(error.formErrors).length) {
+                this.setState({ errors: error.formErrors });
             }
-            if (!errors) {
+            else {
                 NotificationActions.error('Une erreur s\'est produite pendant la création de l\'utilisateur', error);
             }
         });

@@ -123,27 +123,10 @@ export default class NewBarrelTypeDialog extends React.Component {
             if(this.focusField) this.focusField.focus();
         })
         .catch((error) => {
-            let errors = {};
-            if(error.status === 'ValidationError' && error.formErrors) {
-                for (let field in error.formErrors) {
-                    if(error.formErrors[field][0].rule == 'string') {
-                        errors[field] = 'Ce champ est vide ou contient une donnée invalide.';
-                    }
-                    else if(error.formErrors[field][0].rule == 'unique') {
-                        errors[field] = 'Il existe déjà un autre type de fût avec cette valeur.';
-                    }
-                    else if(error.formErrors[field][0].rule == 'required') {
-                        errors[field] = 'Ce champ est obligatoire.';
-                    }
-                    else {
-                        errors[field] = error.formErrors[field][0].message;
-                        console.warn('Validation message not translated. ', error.formErrors[field]);
-                    }
-                }
+            if(error.formErrors && Object.keys(error.formErrors).length) {
+                this.setState({ errors: error.formErrors });
             }
-            this.setState({ errors: errors });
-
-            if(!Object.keys(errors).length) {
+            else {
                 NotificationActions.error('Une erreur s\'est produite pendant la création du type de fût', error);
             }
         });
