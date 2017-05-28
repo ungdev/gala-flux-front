@@ -36,7 +36,6 @@ export default class ResponsiveDialog extends React.Component {
 
     render() {
         let props = Object.assign({}, this.props);
-            // console.log('render:'+props.open)
         props.autoScrollBodyContent = true;
         props.className = 'ResponsiveDialog ' + (props.className || '');
         props.actionsContainerClassName = 'ResponsiveDialog__actions ' + (props.actionsContainerClassName || '');

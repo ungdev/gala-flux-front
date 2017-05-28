@@ -4,6 +4,7 @@ import NotificationActions from 'actions/NotificationActions';
 import BarrelService from 'services/BarrelService';
 import BottleActionService from 'services/BottleActionService';
 import BottleTypeStore from 'stores/BottleTypeStore';
+import BarrelStore from 'stores/BarrelStore';
 import BarrelTypeStore from 'stores/BarrelTypeStore';
 import TeamStore from 'stores/TeamStore';
 
@@ -49,9 +50,9 @@ export default class MoveDialog extends React.Component {
             for (let teamId in this.state.bottles) {
                 for (let typeId in this.state.bottles[teamId]) {
                     promises.push(BottleActionService.create({
-                            team: this.state.team,
-                            fromTeam: teamId,
-                            type: typeId,
+                            teamId: this.state.team,
+                            fromTeamId: teamId && teamId != 'null' ? teamId : null,
+                            typeId: typeId && typeId != 'null' ? typeId : null,
                             quantity: this.state.bottles[teamId][typeId],
                             operation: 'moved',
                         })
@@ -98,12 +99,13 @@ export default class MoveDialog extends React.Component {
 
                         <div className="BarrelChipContainer">
                             {
-                                this.state.barrels.map((barrel, i) => {
+                                this.state.barrels.map((id, i) => {
+                                    let barrel = BarrelStore.findById(id);
                                     return <BarrelChip
                                                 key={i}
                                                 barrel={barrel}
-                                                team={TeamStore.findById(barrel.place)}
-                                                type={BarrelTypeStore.findById(barrel.type)}
+                                                team={TeamStore.findById(barrel.teamId)}
+                                                type={BarrelTypeStore.findById(barrel.typeId)}
                                             />
                                 })
                             }

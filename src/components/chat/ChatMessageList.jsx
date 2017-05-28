@@ -137,7 +137,7 @@ export default class ChatMessageList extends React.Component {
         let last = null;
         for (let message of messages) {
             // Group if same sender and first message of the has been post less than 15 min ago, and last message less than 5 min ago
-            if(last && first && last.sender == message.sender &&
+            if(last && first && last.userId == message.userId &&
             Math.abs((new Date(last.createdAt)).getTime() - (new Date(message.createdAt)).getTime()) < (5 * 60 * 1000) &&
             Math.abs((new Date(first.createdAt)).getTime() - (new Date(message.createdAt)).getTime()) < (15 * 60 * 1000) &&
             messagesGroups[messagesGroups.length - 1].length < 15
@@ -209,13 +209,13 @@ export default class ChatMessageList extends React.Component {
                     :
                         // For each message, create a Message component
                         this.state.messages.map((messageGroup, i) => {
-                            let user = UserStore.findById(messageGroup[0].sender) || {name: 'Utilisateur supprimé'};
-                            let team = TeamStore.findById(user.team) || {name: 'Utilisateur supprimé'};
+                            let user = UserStore.findById(messageGroup[0].userId) || {name: 'Utilisateur supprimé'};
+                            let team = TeamStore.findById(user.teamId) || {name: 'Utilisateur supprimé'};
                             return (
                                 <div className={(AuthStore.user && user.id === AuthStore.user.id ? 'ChatMessageList__container--own' : 'ChatMessageList__container')} key={messageGroup[0].id}>
                                     <Avatar
                                         className="ChatMessageList__avatar"
-                                        src={(constants.avatarBasePath + messageGroup[0].sender)}
+                                        src={(constants.avatarBasePath + messageGroup[0].userId + '?u=' + user.updatedAt)}
                                         backgroundColor="white"
                                         title={user.name}
                                         />

@@ -4,7 +4,7 @@ import BottleTypeService from 'services/BottleTypeService';
 class BottleTypeStore extends BaseStore {
 
     constructor() {
-        super('bottletype', BottleTypeService);
+        super('bottleType', BottleTypeService);
     }
 
     get types() {

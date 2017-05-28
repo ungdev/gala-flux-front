@@ -46,7 +46,6 @@ export default class UpdateBottleDialog extends React.Component {
 
     componentWillReceiveProps(props) {
 
-        console.log('props', props.total)
         this.setState({
             type: props.type,
             count: props.count || 0,
@@ -119,8 +118,8 @@ export default class UpdateBottleDialog extends React.Component {
 
         if(quantity != 0) {
             BottleActionService.create({
-                team: this.state.team.id,
-                type: this.state.type.id,
+                teamId: this.state.team.id,
+                typeId: this.state.type.id,
                 quantity: quantity,
                 operation: 'purchased',
             })

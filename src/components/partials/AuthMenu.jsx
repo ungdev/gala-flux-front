@@ -71,12 +71,11 @@ class AuthMenu extends React.Component {
      * Close the menu and call the AuthActions to logout the user.
      */
     _logout() {
-        this._closeMenu();
+        // Tell the server we logout but don't wait for the answer
         AuthService.logout()
-        .then(() => AuthActions.logout())
-        .catch((error) => {
-            NotificationActions.error("Une erreur s'est produite lors de la deconnexion", error, null, true);
-        });
+
+        // Delete jwt from localStorage
+        AuthActions.logout();
     }
 
     /**
@@ -150,7 +149,7 @@ class AuthMenu extends React.Component {
             return null;
         }
 
-        let avatarUri = constants.avatarBasePath + this.state.user.id;
+        let avatarUri = constants.avatarBasePath + this.state.user.id + '?u=' + this.state.user.updatedAt;
 
         return (
             <div className="AuthMenu">

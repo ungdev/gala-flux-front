@@ -62,7 +62,6 @@ export class ApiError extends Error {
 
                         }
                     }
-                    console.log(formErrors);
 
                     // Create formErrors with english text if french doesn't exist
                     for (let error of jwres.data._error.validation) {

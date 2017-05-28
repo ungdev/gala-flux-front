@@ -28,7 +28,7 @@ class AlertStore extends BaseStore {
      */
     _handleNewAlert(alert) {
         // it's a new alert only if the sender is not the authenticated user
-        if (AuthStore.user.id !== alert.sender) {
+        if (AuthStore.team.id !== alert.senderTeamId) {
             // increment the number of unviewed messages for this channel
             this._newAlerts.processing ? this._newAlerts.processing++ : this._newAlerts.processing = 1;
             this.emitNew(alert);
@@ -159,6 +159,7 @@ class AlertStore extends BaseStore {
                     if(this._match(e.data, this.getFiltersSet())) {
                         this._set(e.id, e.data);
                     }
+                    console.log('new alert', e.data)
                     // notification
                     this._handleNewAlert(e.data);
                 }

@@ -34,7 +34,7 @@ export default class StockPage extends React.Component {
                 reference: ""
             },
             selectedRows: [],
-            selectedBarrels: [],
+            selectedBarrels: new Set(),
             selectedBottles: {},
             showMoveDialog: false
         };
@@ -146,24 +146,26 @@ export default class StockPage extends React.Component {
      * Update data according to stores without adding new filter to it
      */
     _updateData() {
+        console.log('udpate data')
         let filteredData = {};
 
         // Add barrels to filteredData
         const filters = this.state.filters;
         filters.rgx = new RegExp(filters.reference);
         for (let barrel of BarrelStore.barrels) {
-            if (!filters.types.length || filters.types.includes(barrel.type)) {
-                if (!filters.locations.length || filters.locations.includes(barrel.place)) {
+            let type = BarrelTypeStore.findById(barrel.typeId)
+            if (!filters.types.length || filters.types.includes(barrel.typeId)) {
+                if (!filters.locations.length || filters.locations.includes(barrel.teamId)) {
                     if (!filters.states.length || filters.states.includes(barrel.state)) {
-                        if (barrel.reference.match(filters.rgx)) {
+                        if (type && ('' + type.shortName + barrel.num).match(filters.rgx)) {
                             // the barrel match the filters
-                            if (!filteredData[barrel.place]) {
-                                filteredData[barrel.place] = { barrels: {}, bottles: {} };
+                            if (!filteredData[barrel.teamId]) {
+                                filteredData[barrel.teamId] = { barrels: {}, bottles: {} };
                             }
-                            if (filteredData[barrel.place].barrels[barrel.type]) {
-                                filteredData[barrel.place].barrels[barrel.type].push(barrel);
+                            if (filteredData[barrel.teamId].barrels[barrel.typeId]) {
+                                filteredData[barrel.teamId].barrels[barrel.typeId].push(barrel);
                             } else {
-                                filteredData[barrel.place].barrels[barrel.type] = [barrel];
+                                filteredData[barrel.teamId].barrels[barrel.typeId] = [barrel];
                             }
                         }
                     }
@@ -201,6 +203,7 @@ export default class StockPage extends React.Component {
         }
 
 
+            console.log('udpate data save state')
         this.setState({
             filteredData: filteredData,
         });
@@ -244,7 +247,7 @@ export default class StockPage extends React.Component {
     _toggleMoveDialog(emptySelected) {
         let state = this.state;
         if (emptySelected === true) {
-            state.selectedBarrels = [];
+            state.selectedBarrels = new Set();
             state.selectedBottles = {};
         }
         state.showMoveDialog = !state.showMoveDialog;
@@ -262,9 +265,9 @@ export default class StockPage extends React.Component {
         let selectedBarrels = this.state.selectedBarrels;
 
         if (selected) {
-            selectedBarrels.push(clickedBarrel);
+            selectedBarrels.add(clickedBarrel.id);
         } else {
-            selectedBarrels = selectedBarrels.filter(barrel => barrel !== clickedBarrel);
+            selectedBarrels.delete(clickedBarrel.id);
         }
 
         this.setState({ selectedBarrels });
@@ -303,8 +306,8 @@ export default class StockPage extends React.Component {
 
     render() {
         let selectionCount = 0;
-        if(this.state.selectedBarrels.length) {
-            selectionCount += this.state.selectedBarrels.length;
+        if(this.state.selectedBarrels.size) {
+            selectionCount += this.state.selectedBarrels.size;
         }
         if(Object.keys(this.state.selectedBottles).length) {
             for (let teamId in this.state.selectedBottles) {
@@ -328,7 +331,7 @@ export default class StockPage extends React.Component {
                             <RaisedButton
                                 label={'Déselectionner les fûts ' + (selectionCount ? '(' + selectionCount + ')' : '')}
                                 disabled={selectionCount === 0}
-                                onClick={_ => this.setState({ selectedBarrels: [], selectedBottles: {} })}
+                                onClick={_ => this.setState({ selectedBarrels: new Set(), selectedBottles: {} })}
                                 fullWidth={true}
                             />
                         </Col>
@@ -347,7 +350,7 @@ export default class StockPage extends React.Component {
                     data={this.state.filteredData}
                     handleBarrelSelection={this._handleBarrelSelection}
                     handleBottleSelection={this._handleBottleSelection}
-                    selectedBarrels={this.state.selectedBarrels}
+                    selectedBarrels={[...this.state.selectedBarrels]}
                     selectedBottles={this.state.selectedBottles}
                 />
 
@@ -375,7 +378,7 @@ export default class StockPage extends React.Component {
                         show={this.state.showMoveDialog}
                         close={this._toggleMoveDialog}
                         teams={TeamStore.findByPermission('ui/receiveStock')}
-                        barrels={this.state.selectedBarrels}
+                        barrels={[...this.state.selectedBarrels]}
                         bottles={this.state.selectedBottles}
                     />
 

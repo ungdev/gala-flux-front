@@ -4,7 +4,7 @@ export default class BaseService {
 
     constructor(modelName) {
         this._modelName = modelName;
-        this._baseUrl = '/' + modelName;
+        this._baseUrl = '/' + modelName.toLowerCase();
     }
 
     /**
@@ -19,7 +19,7 @@ export default class BaseService {
         return io.request({
             method,
             url,
-            data: data || {},
+            data: data || null,
         });
     }
 
@@ -47,7 +47,7 @@ export default class BaseService {
      * @param {object} filters:
      * @returns {Promise}
      */
-    get(filters = {}) {
+    get(filters = null) {
         return this.request('get', this._baseUrl, {filters});
     }
 

@@ -91,10 +91,10 @@ export default class BarrelTypeList extends React.Component {
     _updateData() {
         let counts = {};
         for (let barrel of BarrelStore.find()) {
-            if(!counts[barrel.type]) {
-                counts[barrel.type] = 0;
+            if(!counts[barrel.typeId]) {
+                counts[barrel.typeId] = 0;
             }
-            counts[barrel.type]++;
+            counts[barrel.typeId]++;
         }
 
         this.setState({

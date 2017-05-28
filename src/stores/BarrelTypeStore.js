@@ -4,7 +4,7 @@ import BarrelTypeService from 'services/BarrelTypeService';
 class BarrelTypeStore extends BaseStore {
 
     constructor() {
-        super('barreltype', BarrelTypeService);
+        super('barrelType', BarrelTypeService);
     }
 
     get types() {

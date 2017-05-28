@@ -94,7 +94,7 @@ export default class ChatMessageForm extends React.Component {
         // Create new message
         ChatService.create({
             text: this.state.value,
-            channel: this.props.channel,
+            channel: this.state.channel,
         })
         .then(() => {
             ChatActions.viewMessages(this.state.channel);

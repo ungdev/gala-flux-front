@@ -3,6 +3,7 @@ import React from 'react';
 import ChatStore from 'stores/ChatStore';
 import UserStore from 'stores/UserStore';
 import TeamStore from 'stores/TeamStore';
+import AuthStore from 'stores/AuthStore';
 
 import ChatMessageList from 'components/chat/ChatMessageList.jsx';
 import ChatMessageForm from 'components/chat/ChatMessageForm.jsx';
@@ -24,7 +25,7 @@ export default class BarHomepage extends React.Component {
         };
 
     }
-    
+
     componentWillReceiveProps(nextProps) {
         this.setState({
             route: nextProps.route
@@ -41,7 +42,7 @@ export default class BarHomepage extends React.Component {
             <div onClick={this._hideNotification}>
                 <div className="BarHomePage">
                     <div className={('BarHomePage__alerts ' + (name !== 'alert' ? 'BarHomePage__col--secondary':''))}>
-                        <BarAlertButtons />
+                        <BarAlertButtons barId={AuthStore.team.id} />
                     </div>
                     <div className={('BarHomePage__stock ' + (name !== 'stock' ? 'BarHomePage__col--secondary':''))}>
                         <BarBarrels />

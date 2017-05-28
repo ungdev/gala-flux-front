@@ -6,7 +6,7 @@ import BaseService from 'services/BaseService';
 class BarrelTypeService extends BaseService {
 
     constructor() {
-        super('barreltype');
+        super('barrelType');
     }
 
     /**
@@ -16,9 +16,9 @@ class BarrelTypeService extends BaseService {
      * @param {number} number Number of barrels wanted
      * @return {Promise}
      */
-    setBarrelNumber(id, number) {
+    setBarrelCount(id, count) {
         return this.request('post', '/barreltype/barrel', {
-            id, number,
+            id, count,
         });
     }
 

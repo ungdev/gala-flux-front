@@ -143,7 +143,7 @@ export default class ButtonList extends React.Component {
                                 return <div key={i}>
                                     <Subheader>{category}</Subheader>
                                     {this.state.buttons[category].map((button, i) => {
-                                        let team = TeamStore.findById(button.receiver);
+                                        let team = TeamStore.findById(button.receiverTeamId);
                                         team = team ? team.name : 'équipe supprimé';
 
                                         return  <ListItem

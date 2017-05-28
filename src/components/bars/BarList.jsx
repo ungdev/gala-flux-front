@@ -149,22 +149,22 @@ export default class BarList extends React.Component {
         let barrels = {};
 
         for (let barrel of storeBarrels) {
-            if (barrel.place) {
+            if (barrel.teamId) {
                 // if the place doesn't exists in the barrels object, create it
-                if (!barrels[barrel.place]) {
-                    barrels[barrel.place] = {cost: 0, profitability: 0};
+                if (!barrels[barrel.teamId]) {
+                    barrels[barrel.teamId] = {cost: 0, profitability: 0};
                 }
                 // if the state doesn't exist in the place, create it
-                if (!barrels[barrel.place][barrel.state]) {
-                    barrels[barrel.place][barrel.state] = [];
+                if (!barrels[barrel.teamId][barrel.state]) {
+                    barrels[barrel.teamId][barrel.state] = [];
                 }
-                barrels[barrel.place][barrel.state].push(barrel);
+                barrels[barrel.teamId][barrel.state].push(barrel);
 
                 // price
-                const barrelType = BarrelTypeStore.findById(barrel.type);
+                const barrelType = BarrelTypeStore.findById(barrel.typeId);
                 if (barrel.state === "empty") {
-                    barrels[barrel.place].cost += barrelType.supplierPrice;
-                    barrels[barrel.place].profitability += barrelType.sellPrice;
+                    barrels[barrel.teamId].cost += barrelType.supplierPrice;
+                    barrels[barrel.teamId].profitability += barrelType.sellPrice;
                 }
             }
         }

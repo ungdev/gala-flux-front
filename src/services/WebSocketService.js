@@ -57,7 +57,6 @@ class WebSocketService {
         let jwtError = null;
         // Authenticate with stored jwt
         let jwt = localStorage.getItem(constants.jwtName);
-        console.log('Authenticate with jwt', jwt)
         AuthService.tryToAuthenticateWithJWT(jwt)
         .then((data) => {
             AuthActions.saveJWT(data.jwt);
@@ -106,11 +105,9 @@ class WebSocketService {
                         }
                     }
 
-                    console.log('Auth par ip try')
                     // Authenticate with IP
                     AuthService.tryToAuthenticateWithIP()
                     .then((data) => {
-                        console.log('Auth par ip success', data.jwt)
                         AuthActions.saveJWT(data.jwt);
                         WebSocketActions.connected();
                         AuthActions.authEtuuttDone();

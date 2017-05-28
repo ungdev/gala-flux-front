@@ -50,7 +50,12 @@ export default class AddEtuuttMemberForm extends React.Component {
             })
             .catch((error) => {
                 this.setState({ loading: false });
-                NotificationActions.error('Une erreur s\'est produite lors de la recherche de compte EtuUTT', error)
+                if(error.status == 'NotEtuuttUser') {
+                    this.setState({ error: 'Seul les comptes EtuUTT peuvent ajouter des membres via EtuUTT'});
+                }
+                else {
+                    NotificationActions.error('Une erreur s\'est produite lors de la recherche de compte EtuUTT', error);
+                }
             });
         }
     }
@@ -64,7 +69,7 @@ export default class AddEtuuttMemberForm extends React.Component {
         let createdUser = null;
         let avatarUri = user.avatar;
         UserService.create({
-            team: this.state.team.id,
+            teamId: this.state.team.id,
             login: user.login,
             name: user.name,
         })

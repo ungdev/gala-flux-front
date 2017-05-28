@@ -93,13 +93,13 @@ export default class BarAlertButtons extends React.Component {
      * Update the alerts in the state with the alerts from the alerts store
      */
     _setAlerts() {
-        const storeAlerts = this.state.barId ? AlertStore.find([{sender: this.state.barId}]) : AlertStore.alerts;
+        const storeAlerts = this.state.barId ? AlertStore.find([{senderTeamId: this.state.barId}]) : AlertStore.alerts;
         let alerts = {};
 
         // store them by button (because only one alert by button by team)
         for (let alert of storeAlerts) {
-            if (alert.button) {
-                alerts[alert.button] = alert;
+            if (alert.buttonId) {
+                alerts[alert.buttonId] = alert;
             }
         }
 

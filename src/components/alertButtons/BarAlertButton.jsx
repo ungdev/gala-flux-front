@@ -79,10 +79,15 @@ export default class BarAlertButton extends React.Component {
             }
         }
         else {
-            AlertButtonService.createAlert({
-                button: this.state.button.id,
+            console.log(this.state.teamId)
+
+            AlertService.create({
+                title: this.state.button.title,
+                severity: 'warning',
                 message: this.state.message,
-                team: this.state.teamId
+                buttonId: this.state.button.id,
+                senderTeamId: this.state.teamId,
+                receiverTeamId: this.state.button.receiverTeamId,
             })
             .then(_ => {
                 this.setState({ showInput: false });
@@ -241,7 +246,7 @@ export default class BarAlertButton extends React.Component {
                         rowsMax={10}
                         onKeyDown={this._handleKeyDown}
                         onChange={this._handleInputChange}
-                        value={this.state.showInput ? this.state.message : ''}
+                        value={(this.state.showInput ? this.state.message : '') || ''}
                         hintText={this.state.button.messageRequired ? "Commentaire obligatoire" : ""}
                         fullWidth={true}
                         autoFocus={true}

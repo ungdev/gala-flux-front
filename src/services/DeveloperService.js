@@ -13,9 +13,7 @@ class DeveloperService extends BaseService {
      * Trigger a refresh of all browsers connected to flux
      */
     refresh() {
-        return this.request('post', '/developer/refresh', {
-            id, number,
-        });
+        return this.request('post', '/developer/refresh');
     }
 
 }

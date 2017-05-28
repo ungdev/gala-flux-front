@@ -40,7 +40,7 @@ export default class LoginAs extends React.Component {
             // save the component token
             this.UserStoreToken = data.token;
             // get distinct teams id and create objects with their id
-            let teams = [...new Set(data.result.map(user => user.team))];
+            let teams = [...new Set(data.result.map(user => user.teamId))];
             for (let i in teams) {
                 teams[i] = {id: teams[i]};
             }
@@ -85,7 +85,7 @@ export default class LoginAs extends React.Component {
         let out = [];
 
         for (let user of UserStore.users) {
-            let team = TeamStore.findById(user.team);
+            let team = TeamStore.findById(user.teamId);
             out.push({
                 text: user.name + ' : ' + (team ? team.name : undefined),
                 value: user.id,

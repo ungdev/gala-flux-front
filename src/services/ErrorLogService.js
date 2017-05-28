@@ -5,7 +5,7 @@ import {ApiError} from 'errors';
 class ErrorLogService extends BaseService {
 
     constructor() {
-        super('errorlog');
+        super('errorLog');
     }
 }
 

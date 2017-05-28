@@ -31,7 +31,7 @@ export default class NewButton extends React.Component {
                 title: (props.button ? props.button.title : ''),
                 category: (props.button ? props.button.category : ''),
                 senderGroup: (props.button ? props.button.senderGroup : null),
-                receiver: (props.button ? props.button.receiver : ''),
+                receiverTeamId: (props.button ? props.button.receiverTeamId : ''),
                 messageRequired: (props.button ? props.button.messageRequired : false),
                 messagePrompt: (props.button ? props.button.messagePrompt : ''),
                 messageDefault: (props.button ? props.button.messageDefault : ''),
@@ -60,7 +60,7 @@ export default class NewButton extends React.Component {
                 title: (props.button ? props.button.title : this.state.values.title),
                 category: (props.button ? props.button.category : this.state.values.category),
                 senderGroup: (props.button ? props.button.senderGroup : this.state.values.senderGroup),
-                receiver: (props.button ? props.button.receiver : this.state.values.receiver),
+                receiverTeamId: (props.button ? props.button.receiverTeamId : this.state.values.receiverTeamId),
                 messageRequired: (props.button ? props.button.messageRequired : this.state.values.messageRequired),
                 messagePrompt: (props.button ? props.button.messagePrompt : this.state.values.messagePrompt),
                 messageDefault: (props.button ? props.button.messageDefault : this.state.values.messageDefault),
@@ -216,9 +216,9 @@ export default class NewButton extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <SelectField
-                                onChange={(e, i, v) => this._handleFieldChange("receiver", v)}
-                                value={this.state.values.receiver}
-                                errorText={this.state.errors.receiver}
+                                onChange={(e, i, v) => this._handleFieldChange("receiverTeamId", v)}
+                                value={this.state.values.receiverTeamId}
+                                errorText={this.state.errors.receiverTeamId}
                                 fullWidth={true}
                                 floatingLabelText="Destinataire de l'alerte"
                             >

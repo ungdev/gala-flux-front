@@ -32,7 +32,7 @@ export default class NewButton extends React.Component {
                 title: '',
                 category: '',
                 senderGroup: null,
-                receiver: '',
+                receiverTeamId: '',
                 messageRequired: false,
                 messagePrompt: 'Quel est le problème ?',
                 messageDefault: '',
@@ -84,7 +84,7 @@ export default class NewButton extends React.Component {
                 title: '',
                 category: '',
                 senderGroup: null,
-                receiver: '',
+                receiverTeamId: '',
                 messageRequired: false,
                 messagePrompt: 'Quel est le problème ?',
                 messageDefault: '',
@@ -179,9 +179,9 @@ export default class NewButton extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <SelectField
-                                onChange={(e, i, v) => this._handleFieldChange("receiver", v)}
-                                value={this.state.values.receiver}
-                                errorText={this.state.errors.receiver}
+                                onChange={(e, i, v) => this._handleFieldChange("receiverTeamId", v)}
+                                value={this.state.values.receiverTeamId}
+                                errorText={this.state.errors.receiverTeamId}
                                 fullWidth={true}
                                 floatingLabelText="Destinataire de l'alerte"
                             >

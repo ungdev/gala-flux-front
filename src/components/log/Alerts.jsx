@@ -68,7 +68,7 @@ export default class Alerts extends React.Component {
                     if(AuthStore.can('ui/receiveAlerts')) {
                         receiverFilter.push(AuthStore.team.id);
                     }
-                    if(AuthStore.can('ui/receiveDefaultAlerts')) {
+                    if(AuthStore.can('alert/nullReceiver')) {
                         receiverFilter.push(null);
                     }
                     if(receiverFilter.length == 0) {
@@ -123,8 +123,7 @@ export default class Alerts extends React.Component {
             let alerts = [];
             let alertsDone = [];
             for (let alert of AlertStore.alerts) {
-                alert.sender = TeamStore.findById(alert.sender);
-                alert.receiver = TeamStore.findById(alert.receiver);
+                alert.sender = TeamStore.findById(alert.senderTeamId);
                 if (alert.severity !== 'done') {
                     alerts.push(alert);
                 } else {
@@ -138,7 +137,7 @@ export default class Alerts extends React.Component {
     }
 
     _setNewAlerts(alert) {
-        let team = TeamStore.findById(alert.sender);
+        let team = TeamStore.findById(alert.senderTeamId);
         this.setState({
             newAlerts: AlertStore.newAlerts,
         });
@@ -146,11 +145,11 @@ export default class Alerts extends React.Component {
 
     _setFilteredAlerts() {
         if (this.state.alerts.length || this.state.alertsDone.length) {
-            let receiveDefaultTeams = TeamStore.findByPermission('ui/receiveDefaultAlerts');
+            let receiveDefaultTeams = TeamStore.findByPermission('alert/nullReceiver');
             let filteredAlerts = (this.state.isDoneFilter?this.state.alertsDone:this.state.alerts).filter((alert) => (
                 ((this.state.isDoneFilter && alert.severity === 'done') || (!this.state.isDoneFilter && alert.severity !== 'done')) &&
                 (this.state.receiverFilter.length === 0 ||
-                (this.state.receiverFilter.includes((alert.receiver && alert.receiver.id) || null)))
+                (this.state.receiverFilter.includes(alert.receiverTeamId || null)))
             ));
 
             // Order by modification for "done" list and by creation and assignation for "not done" list

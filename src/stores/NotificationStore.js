@@ -133,8 +133,8 @@ class NotificationStore extends BaseStore {
         .catch(error => NotificationActions.error("Erreur lors de la lecture des messages et alertes non lus.", error));
 
         // Listen for new events
-        io.on('message', this._handleMessageEvent);
-        io.on('alert', this._handleAlertEvent);
+        io.on('model:message', this._handleMessageEvent);
+        io.on('model:alert', this._handleAlertEvent);
     }
 
 
@@ -293,11 +293,11 @@ class NotificationStore extends BaseStore {
         if(e.verb == 'created')
         {
             let message = e.data;
-            let user = UserStore.findById(message.sender);
-            let team = user ? TeamStore.findById(user.team) : null;
+            let user = UserStore.findById(message.userId);
+            let team = user ? TeamStore.findById(user.teamId) : null;
 
             // it's new message only if the sender is not the authenticated user
-            if (AuthStore.user.id !== message.sender) {
+            if (AuthStore.user.id !== message.userId) {
                 // increment the number of unviewed messages for this channel
                 this._newMessageCounts[message.channel] = this._newMessageCounts[message.channel] ? this._newMessageCounts[message.channel]+1 : 1;
 
@@ -335,7 +335,7 @@ class NotificationStore extends BaseStore {
         if(e.verb == 'created')
         {
             let alert = e.data;
-            let team = TeamStore.findById(alert.sender);
+            let team = TeamStore.findById(alert.senderId);
 
             let receiverFilter = [];
             if(localStorage.getItem('alertReceivers')) {
@@ -347,7 +347,7 @@ class NotificationStore extends BaseStore {
                 }
             }
 
-            if (AuthStore.team.id !== alert.sender && (receiverFilter.length === 0 || receiverFilter.includes(alert.receiver || null))) {
+            if (AuthStore.team.id !== alert.senderId && (receiverFilter.length === 0 || receiverFilter.includes(alert.receiverId || null))) {
 
                 // increment the number of unread alerts if not already on the page
                 if(router.getState() && router.getState().name == 'alert') {

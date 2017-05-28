@@ -28,7 +28,7 @@ export default class MemberListItem extends React.Component {
     }
 
     render() {
-        let avatarUri = constants.avatarBasePath + this.props.member.id;
+        let avatarUri = constants.avatarBasePath + this.props.member.id  + '?u=' + this.props.member.updatedAt;
         return (
             <ListItem
                 primaryText={this.props.member.name}

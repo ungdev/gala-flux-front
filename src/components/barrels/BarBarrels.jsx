@@ -91,7 +91,7 @@ export default class BarBarrels extends React.Component {
      */
     _loadData() {
         // fill the stores
-        return BarrelStore.loadData(this.state.barId ? null : {place: AuthStore.team && AuthStore.team.id})
+        return BarrelStore.loadData(this.state.barId ? null : {teamId: AuthStore.team && AuthStore.team.id})
         .then(data => {
             // ensure that last token doesn't exist anymore.
             BarrelStore.unloadData(this.BarrelStoreToken);
@@ -165,11 +165,11 @@ export default class BarBarrels extends React.Component {
         };
 
         // Init barrels
-        for (let barrel of BarrelStore.find({place: state.barId ? state.barId : AuthStore.team.id})) {
-            if(!state.barrels[barrel.state][barrel.type]) {
-                state.barrels[barrel.state][barrel.type] = [];
+        for (let barrel of BarrelStore.find({teamId: state.barId ? state.barId : AuthStore.team.id})) {
+            if(!state.barrels[barrel.state][barrel.typeId]) {
+                state.barrels[barrel.state][barrel.typeId] = [];
             }
-            state.barrels[barrel.state][barrel.type].push(barrel);
+            state.barrels[barrel.state][barrel.typeId].push(barrel);
         }
 
         // Init bottles

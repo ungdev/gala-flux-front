@@ -63,7 +63,7 @@ export default class UpdateAlertPopover extends React.Component {
     _loadData() {
         let newState = {};
         if(this.state.alert) {
-            UserStore.loadData({team: (this.state.alert.receiver ? this.state.alert.receiver.id : AuthStore.team.id) })
+            UserStore.loadData({teamId: (this.state.alert.receiverTeamId ? this.state.alert.receiverTeamId : AuthStore.team.id) })
             .then(data => {
                 UserStore.unloadData(this.UserStoreToken);
                 this.UserStoreToken = data.token;
@@ -80,7 +80,7 @@ export default class UpdateAlertPopover extends React.Component {
     }
 
     _updateData() {
-        let users = UserStore.find({team: (this.state.alert.receiver ? this.state.alert.receiver.id : AuthStore.team.id) });
+        let users = UserStore.find({teamId: (this.state.alert.receiverTeamId ? this.state.alert.receiverTeamId : AuthStore.team.id) });
         users.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
         users.unshift(null);
         this.setState({ users: users });
@@ -124,7 +124,7 @@ export default class UpdateAlertPopover extends React.Component {
         }
 
         // Submit
-        AlertService.updateAssignedUsers(this.state.alert.id, selectedUsers)
+        AlertService.update(this.state.alert.id, {users: selectedUsers})
             .then(alert => {
                 this.props.onRequestClose();
             })
@@ -172,7 +172,7 @@ export default class UpdateAlertPopover extends React.Component {
                                 return <ListItem
                                         key={i}
                                         primaryText={user ? user.name : "Quelqu'un d'autre"}
-                                        leftAvatar={<Avatar src={(constants.avatarBasePath + (user ? user.id : null))} backgroundColor="white" />}
+                                        leftAvatar={<Avatar src={(constants.avatarBasePath + (user ? user.id + '?u=' + user.updatedAt : null))} backgroundColor="white" />}
                                         onClick={(e) => this._handleSelection(e, user)}
                                     />;
                             }

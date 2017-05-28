@@ -85,7 +85,7 @@ export default class StockList extends React.Component {
                                                                                 type={type}
                                                                                 barrel={barrel}
                                                                                 selectable={barrel.state != 'empty'}
-                                                                                selected={this.state.selectedBarrels.includes(barrel)}
+                                                                                selected={this.state.selectedBarrels.includes(barrel.id)}
                                                                             />
                                                                 })
                                                             }

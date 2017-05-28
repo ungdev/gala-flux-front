@@ -182,7 +182,7 @@ export default class BaseStore extends EventEmitter {
         // If store was empty before, subscribe
         if(!this._subscribed && (Object.keys(this._filters).length == 1 || this._forceSubscribe)) {
             // listen model changes
-            io.on(this._modelName, this._handleModelEvents);
+            io.on('model:' + this._modelName, this._handleModelEvents);
 
             // Subscribe
             this._service.subscribe();
@@ -209,7 +209,7 @@ export default class BaseStore extends EventEmitter {
             // If store is now empty
             if(Object.keys(this._filters).length === 0 && !this._forceSubscribe) {
                 // unlisten model changes
-                io.off(this._modelName, this._handleModelEvents);
+                io.off('model:' + this._modelName, this._handleModelEvents);
 
                 // unsubscribe
                 this._service.unsubscribe();
@@ -434,8 +434,8 @@ export default class BaseStore extends EventEmitter {
                 // If filter was not empty re-subscribe
                 if(this._forceSubscribe || Object.keys(this._filters).length >= 1) {
                     // listen model changes
-                    io.off(this._modelName, this._handleModelEvents);
-                    io.on(this._modelName, this._handleModelEvents);
+                    io.off('model:' + this._modelName, this._handleModelEvents);
+                    io.on('model:' + this._modelName, this._handleModelEvents);
 
                     // Subscribe
                     this._service.subscribe();

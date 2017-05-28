@@ -5,7 +5,7 @@ import AlertButtonService from 'services/AlertButtonService';
 class AlertButtonStore extends BaseStore {
 
     constructor() {
-        super('alertbutton', AlertButtonService);
+        super('alertButton', AlertButtonService);
     }
 
     get buttons() {

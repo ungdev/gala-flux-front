@@ -143,7 +143,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
         .then((type) => {
 
             // Set the barrel number
-            return BarrelTypeService.setBarrelNumber(type.id, this.state.values.count);
+            return BarrelTypeService.setBarrelCount(type.id, this.state.values.count);
         })
         .then(() => {
             this.setState({

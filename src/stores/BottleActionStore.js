@@ -5,7 +5,7 @@ import NotificationActions from 'actions/NotificationActions';
 class BottleActionStore extends BaseStore {
 
     constructor() {
-        super('bottleaction', BottleActionService);
+        super('bottleAction', BottleActionService);
 
         this._count = {};
         this._countRequest = 0;
@@ -60,23 +60,23 @@ class BottleActionStore extends BaseStore {
     _handleModelEvents(e) {
         if(this._countRequest) {
             // init count object
-            if(!this._count[e.data.team || null]) this._count[e.data.team || null] = {};
-            if(!this._count[e.data.team || null][e.data.type]) this._count[e.data.team || null][e.data.type] = {empty: 0, new: 0};
-            if(e.data.fromTeam) {
-                if(!this._count[e.data.fromTeam || null]) this._count[e.data.fromTeam || null] = {};
-                if(!this._count[e.data.fromTeam || null][e.data.type]) this._count[e.data.fromTeam || null][e.data.type] = {empty: 0, new: 0};
+            if(!this._count[e.data.teamId || null]) this._count[e.data.teamId || null] = {};
+            if(!this._count[e.data.teamId || null][e.data.typeId]) this._count[e.data.teamId || null][e.data.typeId] = {empty: 0, new: 0};
+            if(e.data.fromTeamId) {
+                if(!this._count[e.data.fromTeamId || null]) this._count[e.data.fromTeamId || null] = {};
+                if(!this._count[e.data.fromTeamId || null][e.data.typeId]) this._count[e.data.fromTeamId || null][e.data.typeId] = {empty: 0, new: 0};
             }
 
             switch (e.verb) {
                 case "created":
                     // Update count
                     if(e.data.operation == 'purchased') {
-                        this._count[e.data.team || null][e.data.type].new -= e.data.quantity;
-                        this._count[e.data.team || null][e.data.type].empty += e.data.quantity;
+                        this._count[e.data.teamId || null][e.data.typeId].new -= e.data.quantity;
+                        this._count[e.data.teamId || null][e.data.typeId].empty += e.data.quantity;
                     }
                     else if(e.data.operation == 'moved') {
-                        this._count[e.data.fromTeam || null][e.data.type].new -= e.data.quantity;
-                        this._count[e.data.team || null][e.data.type].new += e.data.quantity;
+                        this._count[e.data.fromTeamId || null][e.data.typeId].new -= e.data.quantity;
+                        this._count[e.data.teamId || null][e.data.typeId].new += e.data.quantity;
                     }
                     this.emitChange();
                     break;

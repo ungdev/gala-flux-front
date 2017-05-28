@@ -56,7 +56,7 @@ function logout() {
 function loginAs(id) {
     return new Promise((resolve, reject) => {
         AuthService.tryToLoginAs(id)
-        .then((jwt) => {
+        .then(({jwt}) => {
             // Backup original jwt
             localStorage.setItem(constants.firstJwtName, localStorage.getItem(constants.jwtName));
 
@@ -85,7 +85,7 @@ function loginBack() {
         // get original jwt
         let jwt = localStorage.getItem(constants.firstJwtName);
         AuthService.tryToAuthenticateWithJWT(jwt)
-        .then((jwt) => {
+        .then(({jwt}) => {
             // Save new jwt
             saveJWT(jwt);
 

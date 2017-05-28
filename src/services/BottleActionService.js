@@ -6,7 +6,7 @@ import BaseService from 'services/BaseService';
 class BottleActionService extends BaseService {
 
     constructor() {
-        super('bottleaction');
+        super('bottleAction');
     }
 
     /**
