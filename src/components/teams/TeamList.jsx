@@ -9,6 +9,7 @@ import { ListItem } from 'material-ui/List';
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import NewTeamDialog from 'components/teams/dialogs/NewTeamDialog.jsx';
+import DataLoader from "components/partials/DataLoader.jsx";
 
 
 /**
@@ -22,76 +23,18 @@ export default class TeamList extends React.Component {
         super(props);
 
         this.state = {
-            teams: [],
             selectedId: props.selectedId,
             showCreateDialog: false,
+            datastore: null,
         };
 
         // binding
         this._toggleCreateDialog = this._toggleCreateDialog.bind(this);
-        this._loadData = this._loadData.bind(this);
-        this._unloadData = this._unloadData.bind(this);
-        this._updateData = this._updateData.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
             selectedId: nextProps.selectedId
-        });
-    }
-
-    componentDidMount() {
-        // Load data from store
-        this._loadData();
-
-        // listen the stores changes
-        TeamStore.addChangeListener(this._updateData);
-    }
-
-    componentWillUnmount() {
-        // clear store
-        this._unloadData();
-
-        // remove the stores listeners
-        TeamStore.removeChangeListener(this._updateData);
-    }
-
-    /**
-     * Load data from all stores and update state
-     */
-    _loadData() {
-        let newState = {};
-        // Load team in store
-        TeamStore.loadData(null)
-            .then(data => {
-                // ensure that last token doen't exist anymore.
-                TeamStore.unloadData(this.TeamStoreToken);
-
-                // save the component token
-                this.TeamStoreToken = data.token;
-
-                // Save the new state value
-                newState.teams = data.result;
-                this.setState(newState);
-            })
-            .catch(error => {
-                NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des équipes', error);
-            });
-    }
-
-    /**
-     * clear stores
-     */
-    _unloadData() {
-        TeamStore.unloadData(this.TeamStoreToken);
-    }
-
-    /**
-     * Update data according to stores without adding new filter to it
-     */
-    _updateData() {
-        this.setState({
-            teams: TeamStore.find(),
         });
     }
 
@@ -105,21 +48,30 @@ export default class TeamList extends React.Component {
     render() {
         return (
             <div className="FloatingButtonContainer">
-                <div>
-                    <SelectableList value={this.state.selectedId}>
-                        {
-                            this.state.teams.map((team, i) => {
-                                return <ListItem
-                                            value={team.id}
-                                            key={i}
-                                            primaryText={team.name}
-                                            secondaryText={team.role}
-                                            onTouchTap={_ => this.props.onTeamSelection(team)}
-                                        />
-                            })
-                        }
-                    </SelectableList>
-                </div>
+                <DataLoader
+                    filters={new Map([
+                        ['Team', null],
+                    ])}
+                    onChange={ datastore => this.setState({datastore}) }
+                >{ () => {
+                    const teams = [...this.state.datastore.Team.values()];
+
+                    return (
+                        <SelectableList value={this.state.selectedId}>
+                            {
+                                teams.map((team, i) => {
+                                    return <ListItem
+                                                value={team.id}
+                                                key={i}
+                                                primaryText={team.name}
+                                                secondaryText={team.role}
+                                                onTouchTap={_ => this.props.onTeamSelection(team)}
+                                            />
+                                })
+                            }
+                        </SelectableList>
+                    )
+                }}</DataLoader>
 
                 { AuthStore.can('team/admin') &&
                     <FloatingActionButton

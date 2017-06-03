@@ -7,6 +7,8 @@ class TeamStore extends BaseStore {
     constructor() {
         super('team', TeamService);
 
+        console.log('teamstore constructor')
+
         // Force subscribe
         this._forceSubscribe = true;
     }
@@ -48,4 +50,5 @@ class TeamStore extends BaseStore {
     }
 }
 
-export default new TeamStore();
+module.exports = new TeamStore();
+export default module.exports;

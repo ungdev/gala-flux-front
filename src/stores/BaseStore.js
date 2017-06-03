@@ -7,7 +7,7 @@ export default class BaseStore extends EventEmitter {
         super();
 
         // the fetched data
-        this._modelData = [];
+        this._modelData = new Map();
         // the model name
         this._modelName = modelName;
         // the service of this model
@@ -117,24 +117,24 @@ export default class BaseStore extends EventEmitter {
 
             return new Promise((resolve, reject) => {
                 // Fetch from the server only if it use usefull
-                if(fetch || force) {
+                // if(fetch || force) { // TODO promise shoudln't be resolve if there is a get started, should resolve when are loading are over
                     this._service.get(this.getFiltersSet())
                         .then(result => {
                             this._setModelData(result);
 
                             resolve({
-                                result: this.find(this._filters[componentToken]),
+                                result: this.find2future(this._filters[componentToken]),
                                 token: componentToken
                             });
                         })
                         .catch(error => reject(error));
-                }
-                else {
-                    resolve({
-                        result: this.find(this._filters[componentToken]),
-                        token: componentToken
-                    });
-                }
+                // }
+                // else {
+                //     resolve({
+                //         result: this.find(this._filters[componentToken]),
+                //         token: componentToken
+                //     });
+                // }
             })
         }
     }
@@ -279,9 +279,9 @@ export default class BaseStore extends EventEmitter {
      * @param {Array} data: array of objects
      */
     _setModelData(data) {
-        let newModelData = [];
+        let newModelData = new Map();
         for (let item of data) {
-            newModelData[item.id] = item;
+            newModelData.set(item.id, Object.freeze(item));
         }
         this._modelData = newModelData;
         this.emitChange();
@@ -319,11 +319,32 @@ export default class BaseStore extends EventEmitter {
      * @return {Array} Array of elements
      */
     find(filters) {
+        console.log('Store.find is deprecated');
         let out = [];
 
         for (let i in this._modelData) {
             if(this._match(this._modelData[i], filters)) {
                 out.push(Object.assign({}, this._modelData[i]));
+            }
+        }
+
+        return out;
+    }
+
+    /**
+     * Find list of elements that match filters
+     *
+     * Will replace find() once all component don't use it
+     *
+     * @param  {Object|Array} filters: Object of filters or array of list of filter
+     * @return {Map} Map of elements indexed by id
+     */
+    find2future(filters) {
+        let out = new Map();
+
+        for (let [key, val] of this._modelData) {
+            if(this._match(val, filters)) {
+                out.set(key, val);
             }
         }
 

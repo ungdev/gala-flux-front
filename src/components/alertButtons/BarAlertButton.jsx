@@ -79,7 +79,6 @@ export default class BarAlertButton extends React.Component {
             }
         }
         else {
-            console.log(this.state.teamId)
 
             AlertService.create({
                 title: this.state.button.title,

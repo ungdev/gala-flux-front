@@ -146,7 +146,6 @@ export default class StockPage extends React.Component {
      * Update data according to stores without adding new filter to it
      */
     _updateData() {
-        console.log('udpate data')
         let filteredData = {};
 
         // Add barrels to filteredData
@@ -203,7 +202,6 @@ export default class StockPage extends React.Component {
         }
 
 
-            console.log('udpate data save state')
         this.setState({
             filteredData: filteredData,
         });

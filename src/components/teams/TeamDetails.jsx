@@ -15,6 +15,7 @@ import UpdateTeamDialog from 'components/teams/dialogs/UpdateTeamDialog.jsx';
 import UpdateMemberDialog from 'components/teams/dialogs/UpdateMemberDialog.jsx';
 import AddMemberDialog from 'components/teams/dialogs/AddMemberDialog.jsx';
 import CenteredMessage from 'components/partials/CenteredMessage.jsx';
+import DataLoader from "components/partials/DataLoader.jsx";
 
 
 /**
@@ -27,108 +28,23 @@ export default class TeamDetails extends React.Component {
         super(props);
 
         this.state = {
-            team: null,
-            members: null,
             showUpdateTeamDialog: false,
             showUpdateMemberDialog: false,
             showAddMemberDialog: false,
             selectedMember: null,
+            datastore: null,
+            teamId: this.props.id || null,
         };
 
         // binding
         this._toggleUpdateTeamDialog = this._toggleUpdateTeamDialog.bind(this);
         this._toggleUpdateMemberDialog = this._toggleUpdateMemberDialog.bind(this);
         this._toggleAddMemberDialog = this._toggleAddMemberDialog.bind(this);
-        this._loadData = this._loadData.bind(this);
-        this._unloadData = this._unloadData.bind(this);
-        this._updateData = this._updateData.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        // clear stores
-        this._unloadData();
-
-        // Reload new team info
-        this._loadData(nextProps.id);
+    componentWillReceiveProps(props) {
+        this.setState({ teamId: props.id || null});
     }
-
-    componentDidMount() {
-        // Load data from the store
-        this._loadData(this.props.id);
-
-        // listen the stores changes
-        TeamStore.addChangeListener(this._updateData);
-        UserStore.addChangeListener(this._updateData);
-    }
-
-    componentWillUnmount() {
-        // clear stores
-        this._unloadData();
-
-        // remove the stores listeners
-        TeamStore.removeChangeListener(this._updateData);
-        UserStore.removeChangeListener(this._updateData);
-    }
-
-    /**
-     * Load data from all stores and update state
-     * @param {strnig} id
-     */
-    _loadData(id) {
-        // Load only if a team is specified
-        if(!id) {
-            return;
-        }
-
-        // Load team in store
-        TeamStore.loadData({id: id})
-            .then(data => {
-                // ensure that last token doen't exist anymore.
-                TeamStore.unloadData(this.TeamStoreToken);
-
-                // save the component token
-                this.TeamStoreToken = data.token;
-
-                // Load members in store7
-                return UserStore.loadData({teamId: id});
-            })
-            .then(data => {
-                // ensure that last token doen't exist anymore.
-                UserStore.unloadData(this.UserStoreToken);
-
-                // save the component token
-                this.UserStoreToken = data.token;
-
-                // Finally update component state
-                this._updateData();
-            })
-            .catch(error => {
-                NotificationActions.error('Une erreur s\'est produite pendant le chargement des informations sur l\'équipe', error);
-            });
-    }
-
-    /**
-     * clear stores
-     */
-    _unloadData() {
-        TeamStore.unloadData(this.TeamStoreToken);
-        UserStore.unloadData(this.UserStoreToken);
-        this.setState({
-            team: null,
-            members: null,
-        });
-    }
-
-    /**
-     * Update data according to stores without adding new filter to it
-     */
-    _updateData() {
-        this.setState({
-            team: TeamStore.findById(this.props.id),
-            members: UserStore.find({teamId: this.props.id}),
-        });
-    }
-
 
     /**
      * Show or hide the update team dialog
@@ -144,7 +60,7 @@ export default class TeamDetails extends React.Component {
      * @param {User} member Selected member (optional)
      */
     _toggleUpdateMemberDialog(member) {
-        if(AuthStore.can('user/admin') || (AuthStore.can('user/team') && this.state.team.id == AuthStore.user.team)) {
+        if(AuthStore.can('user/admin') || (AuthStore.can('user/team') && this.state.teamId == AuthStore.user.team)) {
             this.setState({
                 showUpdateMemberDialog: (!this.state.showUpdateMemberDialog && member != false),
                 selectedMember: member ? member : null,
@@ -160,101 +76,111 @@ export default class TeamDetails extends React.Component {
     }
 
     render() {
-        // if there is a selected team, display details about it
-        if (this.state.team) {
-
-            return (
-                <div className="FloatingButtonContainer">
-                    <div>
-                        <h2 className="ListHeader">{this.state.team.name}</h2>
-                        <List>
-                            <ListItem
-                                primaryText="Nom de l'équipe"
-                                secondaryText={this.state.team.name}
-                                onTouchTap={this._toggleUpdateTeamDialog}
-                            />
-                            <ListItem
-                                primaryText="Emplacement"
-                                secondaryText={this.state.team.location}
-                                onTouchTap={this._toggleUpdateTeamDialog}
-                            />
-                            <ListItem
-                                primaryText="Autorisations"
-                                secondaryText={this.state.team.role}
-                                onTouchTap={this._toggleUpdateTeamDialog}
-                            />
-                            <ListItem
-                                primaryText="Groupe de discussion"
-                                secondaryText={this.state.team.group}
-                                onTouchTap={this._toggleUpdateTeamDialog}
-                            />
-                        </List>
-
-                        <Divider />
-                        <h3 className="ListHeader">Liste des membres de l'équipe</h3>
-                        {
-                            // if there are members in the team, display them.
-                            // else, show a message
-                            (this.state.members && this.state.members.length)
-                                ?
-                                <List>
-                                    {
-                                        this.state.members.map((member, i) => {
-                                            return <MemberListItem
-                                                member={member}
-                                                key={i}
-                                                onSelection={(member) => this._toggleUpdateMemberDialog(member)}
-                                            />
-                                        })
-                                    }
-                                </List>
-                                :
-                                <CenteredMessage>Il n'y a personne dans cette équipe</CenteredMessage>
-                        }
-                    </div>
-
-                    { AuthStore.can('team/admin') &&
-                        <FloatingActionButton
-                            className="FloatingButton--secondary"
-                            onTouchTap={this._toggleUpdateTeamDialog}
-                            secondary={true}
-                        >
-                            <EditorModeEditIcon />
-                        </FloatingActionButton>
-                    }
-
-                    { (AuthStore.can('user/admin') || (AuthStore.can('user/team') && this.state.team.id == AuthStore.user.team)) &&
-                        <FloatingActionButton
-                            className="FloatingButton"
-                            onTouchTap={this._toggleAddMemberDialog}
-                        >
-                            <ContentAddIcon />
-                        </FloatingActionButton>
-                    }
-
-
-                    <AddMemberDialog
-                        show={this.state.showAddMemberDialog}
-                        close={this._toggleAddMemberDialog}
-                        team={this.state.team}
-                    />
-                    <UpdateTeamDialog
-                        show={this.state.showUpdateTeamDialog}
-                        close={this._toggleUpdateTeamDialog}
-                        team={this.state.team}
-                    />
-                    <UpdateMemberDialog
-                        show={this.state.showUpdateMemberDialog}
-                        close={() => this._toggleUpdateMemberDialog()}
-                        member={this.state.selectedMember}
-                    />
-                </div>
-            );
-        }
-
-        // if no selected team, display a message
         return (
-            <CenteredMessage>Veuillez sélectionner une équipe</CenteredMessage>
+            <DataLoader
+                filters={new Map([
+                    ['Team', {id: parseInt(this.state.teamId) || null}],
+                    ['User', {teamId: parseInt(this.state.teamId) || null}],
+                ])}
+                onChange={ datastore => this.setState({datastore}) }
+            >{ () => {
+                const team = this.state.datastore.Team.values().next().value;
+                const users = [...this.state.datastore.User.values()];
+
+
+                // if there is a selected team, display details about it
+                if(team) {
+                    return (
+                    <div className="FloatingButtonContainer">
+                        <div>
+                            <h2 className="ListHeader">{team.name}</h2>
+                            <List>
+                                <ListItem
+                                    primaryText="Nom de l'équipe"
+                                    secondaryText={team.name}
+                                    onTouchTap={this._toggleUpdateTeamDialog}
+                                />
+                                <ListItem
+                                    primaryText="Emplacement"
+                                    secondaryText={team.location}
+                                    onTouchTap={this._toggleUpdateTeamDialog}
+                                />
+                                <ListItem
+                                    primaryText="Autorisations"
+                                    secondaryText={team.role}
+                                    onTouchTap={this._toggleUpdateTeamDialog}
+                                />
+                                <ListItem
+                                    primaryText="Groupe de discussion"
+                                    secondaryText={team.group}
+                                    onTouchTap={this._toggleUpdateTeamDialog}
+                                />
+                            </List>
+
+                            <Divider />
+                            <h3 className="ListHeader">Liste des membres de l'équipe</h3>
+                            {
+                                // if there are members in the team, display them.
+                                // else, show a message
+                                (users && users.length)
+                                    ?
+                                    <List>
+                                        {
+                                            users.map((member, i) => {
+                                                return <MemberListItem
+                                                    member={member}
+                                                    key={i}
+                                                    onSelection={(member) => this._toggleUpdateMemberDialog(member)}
+                                                />
+                                            })
+                                        }
+                                    </List>
+                                    :
+                                    <CenteredMessage>Il n'y a personne dans cette équipe</CenteredMessage>
+                            }
+                        </div>
+
+                        { AuthStore.can('team/admin') &&
+                            <FloatingActionButton
+                                className="FloatingButton--secondary"
+                                onTouchTap={this._toggleUpdateTeamDialog}
+                                secondary={true}
+                            >
+                                <EditorModeEditIcon />
+                            </FloatingActionButton>
+                        }
+
+                        { (AuthStore.can('user/admin') || (AuthStore.can('user/team') && team.id == AuthStore.user.team)) &&
+                            <FloatingActionButton
+                                className="FloatingButton"
+                                onTouchTap={this._toggleAddMemberDialog}
+                            >
+                                <ContentAddIcon />
+                            </FloatingActionButton>
+                        }
+
+
+                        <AddMemberDialog
+                            show={this.state.showAddMemberDialog}
+                            close={this._toggleAddMemberDialog}
+                            team={team}
+                        />
+                        <UpdateTeamDialog
+                            show={this.state.showUpdateTeamDialog}
+                            close={this._toggleUpdateTeamDialog}
+                            team={team}
+                        />
+                        <UpdateMemberDialog
+                            show={this.state.showUpdateMemberDialog}
+                            close={() => this._toggleUpdateMemberDialog()}
+                            member={this.state.selectedMember}
+                        />
+                    </div>)
+                }
+                else {
+                    return <CenteredMessage>Veuillez sélectionner une équipe</CenteredMessage>
+                }
+            }}</DataLoader>
         );
     }
 

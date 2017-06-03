@@ -16,4 +16,5 @@ class UserStore extends BaseStore {
 
 }
 
-export default new UserStore();
+module.exports = new UserStore();
+export default module.exports;
