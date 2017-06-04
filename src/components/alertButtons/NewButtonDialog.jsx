@@ -125,7 +125,6 @@ export default class NewButtonDialog extends React.Component {
                     <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
                     <Row>
                         <Col xs={12} sm={6}>
-                            {console.log('bite', this.state)}
                             <TextField
                                 floatingLabelText="Nom de l'alerte"
                                 errorText={this.state.errors.title}

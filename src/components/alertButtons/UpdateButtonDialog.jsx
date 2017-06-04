@@ -129,9 +129,6 @@ export default class UpdateButtonDialog extends React.Component {
     }
 
     render() {
-
-        console.log('state', this.state)
-
         const actions = [
             <FlatButton
                 label="Supprimer"
