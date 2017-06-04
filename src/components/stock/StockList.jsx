@@ -1,47 +1,35 @@
 import React from 'react';
 
-import TeamStore from 'stores/TeamStore';
-import BarrelTypeStore from 'stores/BarrelTypeStore';
-import BottleTypeStore from 'stores/BottleTypeStore';
-
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import BarrelChip from 'components/barrels/partials/BarrelChip.jsx';
 import BottleChip from 'components/bottles/partials/BottleChip.jsx';
 
+/**
+ * @param {ModelCollection} teams
+ * @param {ModelCollection} barrelTypes
+ * @param {ModelCollection} bottleTypes
+ * @param {Object} data
+ * @param {function} handleBarrelSelection
+ * @param {function} handleBottleSelection
+ * @param {Object} selectedBarrels
+ * @param {Object} selectedBottles
+ */
 export default class StockList extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            data: props.data,
-            selectedBarrels: props.selectedBarrels,
-            selectedBottles: props.selectedBottles,
-        };
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            data: nextProps.data,
-            selectedBarrels: nextProps.selectedBarrels,
-            selectedBottles: nextProps.selectedBottles,
-        });
-    }
 
     render() {
         return (
             <div>
                 {
-                    Object.keys(this.state.data)
+                    Object.keys(this.props.data)
                     .sort((a,b) => {
-                        a = TeamStore.findById(a);
+                        a = this.props.teams.get(a);
                         a = a ? a.name : '';
-                        b = TeamStore.findById(b);
+                        b = this.props.teams.get(b);
                         b = b ? b.name : '';
                         return a.localeCompare(b)
                     })
                     .map(location => {
-                        let team = TeamStore.findById(location);
+                        let team = this.props.teams.get(location);
                         return  <Card className="StockPage__card" key={location}>
                                     <CardHeader
                                         title={team ? team.name : "Reserve"}
@@ -53,20 +41,20 @@ export default class StockList extends React.Component {
                                     />
                                     <CardText className="StockPage__card__body">
                                         {
-                                            Object.keys(this.state.data[location].bottles).map(typeId => {
-                                                let type = BottleTypeStore.findById(typeId);
+                                            Object.keys(this.props.data[location].bottles).map(typeId => {
+                                                let type = this.props.bottleTypes.get(typeId);
                                                 return  <div key={typeId} className="BarrelChipContainer">
                                                         {
-                                                            Object.keys(this.state.data[location].bottles[typeId]).map((state, i) => {
+                                                            Object.keys(this.props.data[location].bottles[typeId]).map((state, i) => {
                                                                 return  <BottleChip
                                                                     key={i}
-                                                                    count={this.state.data[location].bottles[typeId][state]}
+                                                                    count={this.props.data[location].bottles[typeId][state]}
                                                                     state={state}
                                                                     type={type}
-                                                                    team={TeamStore.findById(location)}
+                                                                    team={team}
                                                                     onSelection={this.props.handleBottleSelection}
                                                                     selectable={state != 'empty'}
-                                                                    selected={this.state.selectedBottles && this.state.selectedBottles[location] && this.state.selectedBottles[location][typeId]}
+                                                                    selected={this.props.selectedBottles && this.props.selectedBottles[location] && this.props.selectedBottles[location][typeId]}
                                                                 />
                                                             })
                                                         }
@@ -74,18 +62,18 @@ export default class StockList extends React.Component {
                                             })
                                         }
                                         {
-                                            Object.keys(this.state.data[location].barrels).map(typeId => {
-                                                let type = BarrelTypeStore.findById(typeId);
+                                            Object.keys(this.props.data[location].barrels).map(typeId => {
+                                                let type = this.props.barrelTypes.get(typeId);
                                                 return  <div key={typeId} className="BarrelChipContainer">
                                                             {
-                                                                this.state.data[location].barrels[typeId].map(barrel => {
+                                                                this.props.data[location].barrels[typeId].map(barrel => {
                                                                     return  <BarrelChip
                                                                                 onSelection={this.props.handleBarrelSelection}
                                                                                 key={barrel.id}
                                                                                 type={type}
                                                                                 barrel={barrel}
                                                                                 selectable={barrel.state != 'empty'}
-                                                                                selected={this.state.selectedBarrels.includes(barrel.id)}
+                                                                                selected={this.props.selectedBarrels.includes(barrel.id)}
                                                                             />
                                                                 })
                                                             }

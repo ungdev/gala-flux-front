@@ -11,6 +11,7 @@ import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import UpdateBarrelTypeDialog from 'components/barrels/dialogs/UpdateBarrelTypeDialog.jsx';
 import NewBarrelTypeDialog from 'components/barrels/dialogs/NewBarrelTypeDialog.jsx';
+import DataLoader from "components/partials/DataLoader.jsx";
 
 
 /**
@@ -22,8 +23,8 @@ export default class BarrelTypeList extends React.Component {
         super(props);
 
         this.state = {
-            barrelTypes: [],
-            counts: {},
+            barrelTypes: null,
+            barrels: null,
             showUpdateBarrelTypeDialog: false,
             showNewBarrelTypeDialog: false,
             selectedType: null,
@@ -32,75 +33,6 @@ export default class BarrelTypeList extends React.Component {
         // binding
         this._toggleNewBarrelTypeDialog = this._toggleNewBarrelTypeDialog.bind(this);
         this._toggleUpdateBarrelTypeDialog = this._toggleUpdateBarrelTypeDialog.bind(this);
-        this._loadData = this._loadData.bind(this);
-        this._updateData = this._updateData.bind(this);
-    }
-
-    componentDidMount() {
-        // Load data from store
-        this._loadData();
-
-        // listen the stores changes
-        BarrelStore.addChangeListener(this._updateData);
-        BarrelTypeStore.addChangeListener(this._updateData);
-    }
-
-    componentWillUnmount() {
-        // clear store
-        BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
-
-        // remove the stores listeners
-        BarrelStore.removeChangeListener(this._updateData);
-        BarrelTypeStore.removeChangeListener(this._updateData);
-    }
-
-    /**
-     * Load data from all stores and update state
-     */
-    _loadData() {
-        // Load data from store
-        BarrelTypeStore.loadData(null)
-        .then(data => {
-            // ensure that last token doen't exist anymore.
-            BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
-
-            // save the component token
-            this.BarrelTypeStoreToken = data.token;
-
-            // Load Barrel counts per types
-            return BarrelStore.loadData(null);
-        })
-        .then(data => {
-            // ensure that last token doen't exist anymore.
-            BarrelStore.unloadData(this.BarrelStoreToken);
-
-            // save the component token
-            this.BarrelStoreToken = data.token;
-
-            // Save the new state value
-            this._updateData();
-        })
-        .catch(error => {
-            NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des types de fûts', error);
-        });
-    }
-
-    /**
-     * Update data according to stores without adding new filter to it
-     */
-    _updateData() {
-        let counts = {};
-        for (let barrel of BarrelStore.find()) {
-            if(!counts[barrel.typeId]) {
-                counts[barrel.typeId] = 0;
-            }
-            counts[barrel.typeId]++;
-        }
-
-        this.setState({
-            barrelTypes: BarrelTypeStore.find(),
-            counts: counts,
-        });
     }
 
     /**
@@ -126,46 +58,59 @@ export default class BarrelTypeList extends React.Component {
     render() {
         return (
             <div className="FloatingButtonContainer">
-                <div>
-                    <h2 className="ListHeader">Types de fûts</h2>
-                    <SelectableList value={this.state.selectedId}>
-                        {
-                            this.state.barrelTypes.map((type, i) => {
-                                return  <BarrelTypeListItem
-                                        key={type.id}
-                                        type={type}
-                                        count={this.state.counts[type.id]}
-                                        onSelection={_ => this._toggleUpdateBarrelTypeDialog(type)}
-                                    />
-                            })
-                        }
-                    </SelectableList>
-                </div>
+                <DataLoader
+                    filters={new Map([
+                        ['BarrelType', null],
+                        ['Barrel', null],
+                    ])}
+                    onChange={ datastore => this.setState({
+                        barrelTypes: datastore.BarrelType.sortBy('name'),
+                        barrels: datastore.Barrel.groupBy('typeId'),
+                    })}
+                >
+                    { () => (
+                        <div className="FloatingButtonContainer">
+                            <div>
+                                <h2 className="ListHeader">Types de fûts</h2>
+                                <SelectableList value={this.state.selectedId}>
+                                    {
+                                        this.state.barrelTypes.map((type, i) => {
+                                            return  <BarrelTypeListItem
+                                                    key={type.id}
+                                                    type={type}
+                                                    count={this.state.barrels[type.id] ? this.state.barrels[type.id].length : 0}
+                                                    onSelection={_ => this._toggleUpdateBarrelTypeDialog(type)}
+                                                />
+                                        })
+                                    }
+                                </SelectableList>
+                            </div>
 
-                { AuthStore.can('barrelType/admin') &&
-                    <FloatingActionButton
-                        className="FloatingButton"
-                        onTouchTap={this._toggleNewBarrelTypeDialog}
-                    >
-                        <ContentAddIcon />
-                    </FloatingActionButton>
-                }
+                            { AuthStore.can('barrelType/admin') &&
+                                <FloatingActionButton
+                                    className="FloatingButton"
+                                    onTouchTap={this._toggleNewBarrelTypeDialog}
+                                >
+                                    <ContentAddIcon />
+                                </FloatingActionButton>
+                            }
 
-                <NewBarrelTypeDialog
-                    show={this.state.showNewBarrelTypeDialog}
-                    close={this._toggleNewBarrelTypeDialog}
-                />
+                            <NewBarrelTypeDialog
+                                show={this.state.showNewBarrelTypeDialog}
+                                close={this._toggleNewBarrelTypeDialog}
+                            />
 
-                <UpdateBarrelTypeDialog
-                    show={this.state.showUpdateBarrelTypeDialog}
-                    type={this.state.selectedType}
-                    count={
-                        (this.state.selectedType && this.state.counts[this.state.selectedType.id])
-                        ? this.state.counts[this.state.selectedType.id]
-                        : 0
-                    }
-                    close={this._toggleUpdateBarrelTypeDialog}
-                />
+                            { this.state.selectedType &&
+                                <UpdateBarrelTypeDialog
+                                    show={this.state.showUpdateBarrelTypeDialog}
+                                    type={this.state.selectedType}
+                                    count={this.state.barrels[this.state.selectedType.id] ? this.state.barrels[this.state.selectedType.id].length : 0}
+                                    close={this._toggleUpdateBarrelTypeDialog}
+                                />
+                            }
+                        </div>
+                    )}
+                </DataLoader>
             </div>
         );
 

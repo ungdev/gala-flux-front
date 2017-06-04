@@ -11,18 +11,20 @@ import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 
+/**
+ * @param {Object} button
+ * @param {Object} alert
+ * @param {Object} team
+ */
 export default class BarAlertButton extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            button: props.button,
-            alert: props.alert,
             showInput: false,
             message: props.alert ? props.alert.message : (props.button.messageDefault || ''),
             messageError: '',
-            teamId: props.teamId
         };
 
         // binding
@@ -37,12 +39,9 @@ export default class BarAlertButton extends React.Component {
         this._handleScrolOnBlur = this._handleScrolOnBlur.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(props) {
         this.setState({
-            teamId: nextProps.teamId,
-            button: nextProps.button,
-            alert: nextProps.alert,
-            message: nextProps.alert ? nextProps.alert.message : (nextProps.button.messageDefault || ''),
+            message: props.alert ? props.alert.message : (props.button.messageDefault || ''),
         });
     }
 
@@ -65,13 +64,13 @@ export default class BarAlertButton extends React.Component {
      */
     _createAlert() {
         // if comment required but no comment
-        if (this.state.button.messageRequired && (this.state.message.trim() === "" ||
-                this.state.message === this.state.button.messageDefault)) {
+        if (this.props.button.messageRequired && (this.state.message.trim() === "" ||
+                this.state.message === this.props.button.messageDefault)) {
             // If input not shown, only show input, else print in field error
             if(!this.state.showInput) {
                 this.setState({ showInput: true });
             }
-            else if(this.state.message === this.state.button.messageDefault && this.state.message.trim() !== "") {
+            else if(this.state.message === this.props.button.messageDefault && this.state.message.trim() !== "") {
                 this.setState({ showInput: true, messageError: 'Veuillez modifier le commentaire par défaut' });
             }
             else if(this.state.message.trim() === "") {
@@ -81,12 +80,12 @@ export default class BarAlertButton extends React.Component {
         else {
 
             AlertService.create({
-                title: this.state.button.title,
+                title: this.props.button.title,
                 severity: 'warning',
                 message: this.state.message,
-                buttonId: this.state.button.id,
-                senderTeamId: this.state.teamId,
-                receiverTeamId: this.state.button.receiverTeamId,
+                buttonId: this.props.button.id,
+                senderTeamId: this.props.team.id,
+                receiverTeamId: this.props.button.receiverTeamId,
             })
             .then(_ => {
                 this.setState({ showInput: false });
@@ -100,13 +99,13 @@ export default class BarAlertButton extends React.Component {
      */
     _updateAlertSeverity(severity) {
         // if there is no alert
-        if (!this.state.alert) return;
+        if (!this.props.alert) return;
         // if the state is already serious and the user clicked on the button
-        if (this.state.alert.severity === severity) return;
+        if (this.props.alert.severity === severity) return;
 
         // if the severity is valid
         if (severity === "done" || severity === "serious") {
-            AlertService.update(this.state.alert.id, {severity})
+            AlertService.update(this.props.alert.id, {severity})
                 .then(data => {
                     // if the alert is closed, remove it from the store
                     if (data.severity === "done") {
@@ -124,14 +123,14 @@ export default class BarAlertButton extends React.Component {
      */
     _updateAlertMessage() {
         // if comment required but no comment empty print in field error
-        if (this.state.button.messageRequired && this.state.message.trim() === "") {
+        if (this.props.button.messageRequired && this.state.message.trim() === "") {
             this.setState({ showInput: true, messageError: 'Commentaire obligatoire' });
         }
-        else if (this.state.button.messageRequired && this.state.message === this.state.button.messageDefault) {
+        else if (this.props.button.messageRequired && this.state.message === this.props.button.messageDefault) {
             this.setState({ showInput: true, messageError: 'Vous devez modifier ce commentaire' });
         }
         else {
-            AlertService.update(this.state.alert.id, {message: this.state.message})
+            AlertService.update(this.props.alert.id, {message: this.state.message})
             .then(_ => this.setState({ showInput: false }))
             .catch(error => NotificationActions.error("Erreur lors de la modification du commentaire.", error));
         }
@@ -184,7 +183,7 @@ export default class BarAlertButton extends React.Component {
      * else, create a new alert with this message
      */
     _commentAlert() {
-        if (this.state.alert) {
+        if (this.props.alert) {
             this._updateAlertMessage();
         } else {
             this._createAlert();
@@ -204,15 +203,15 @@ export default class BarAlertButton extends React.Component {
 
     render() {
         // true if it's
-        const commentRequired = this.state.button.messageRequired && !this.state.alert && this.state.showInput;
+        const commentRequired = this.props.button.messageRequired && !this.props.alert && this.state.showInput;
 
-        let alertButton = (this.state.alert && this.state.alert.severity != 'done') ?
+        let alertButton = (this.props.alert && this.props.alert.severity != 'done') ?
                 (<div className="AlertButton_active_container">
-                    <button className={`AlertButton_button AlertButton_autowidth ${this.state.alert.severity === "warning" ? "orange_background" : "red_background"}`} onClick={_ => this._updateAlertSeverity("serious")}>
-                        {this.state.button.title}
+                    <button className={`AlertButton_button AlertButton_autowidth ${this.props.alert.severity === "warning" ? "orange_background" : "red_background"}`} onClick={_ => this._updateAlertSeverity("serious")}>
+                        {this.props.button.title}
                     </button>
                     <IconButton className="AlertButton_iconButton" onClick={this._toggleMessageInput}>
-                        <Comment className={`SmallIcon ${(this.state.alert && this.state.alert.message) && "greenIcon"}`} />
+                        <Comment className={`SmallIcon ${(this.props.alert && this.props.alert.message) && "greenIcon"}`} />
                     </IconButton>
                     <IconButton className="AlertButton_iconButton green_background" onClick={_ => this._updateAlertSeverity("done")}>
                         <Check className="SmallIcon whiteIcon" />
@@ -221,7 +220,7 @@ export default class BarAlertButton extends React.Component {
             :
                 (<div className={`AlertButton_active_container ${commentRequired && "AlertButton_required"}`}>
                     <button className="AlertButton_button AlertButton_autowidth" onClick={this._createAlert}>
-                        {this.state.button.title}
+                        {this.props.button.title}
                     </button>
                 </div>);
 
@@ -237,7 +236,7 @@ export default class BarAlertButton extends React.Component {
                     style={(this.state.showInput ? {} : {display:'none'})}
                     className={`AlertButton_input_container ${commentRequired && "AlertButton_required"}`}>
 
-                    <div className="AlertButton_input_label">{this.state.button.messagePrompt || "Commentaire"}</div>
+                    <div className="AlertButton_input_label">{this.props.button.messagePrompt || "Commentaire"}</div>
                     <TextField
                         className="AlertButton_input__TextField"
                         multiLine={true}
@@ -246,12 +245,12 @@ export default class BarAlertButton extends React.Component {
                         onKeyDown={this._handleKeyDown}
                         onChange={this._handleInputChange}
                         value={(this.state.showInput ? this.state.message : '') || ''}
-                        hintText={this.state.button.messageRequired ? "Commentaire obligatoire" : ""}
+                        hintText={this.props.button.messageRequired ? "Commentaire obligatoire" : ""}
                         fullWidth={true}
                         autoFocus={true}
                         errorText={this.state.messageError}
                         ref={(input) => { this.textInput = input; }}
-                        id={"button-"+this.state.button.id}
+                        id={"button-"+this.props.button.id}
                         />
                     <div className="AlertButton_input_actions">
                         <FlatButton

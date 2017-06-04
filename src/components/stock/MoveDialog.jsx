@@ -14,46 +14,44 @@ import BarrelChip from 'components/barrels/partials/BarrelChip.jsx';
 import BottleChip from 'components/bottles/partials/BottleChip.jsx';
 import LocationSelect from 'components/stock/LocationSelect.jsx';
 
+/**
+ * @param {boolean} show
+ * @param {functon} close
+ * @param {ModelCollection} teams
+ * @param {Object} barrels
+ * @param {Object} bottles
+ * @param {Object} barrelTypes
+ * @param {Object} bottleTypes
+*/
 export default class MoveDialog extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            barrels: props.barrels,
-            bottles: props.bottles,
-            teams: props.teams,
-            team: null
+            teamId: null
         };
 
         // binding
         this._moveBarrels = this._moveBarrels.bind(this);
     }
 
-    componentWillReceiveProps(props) {
-        this.setState({
-            barrels: props.barrels,
-            bottles: props.bottles,
-            teams: props.teams
-        });
-    }
-
     /**
      * Call the service method to update the location of the selected barrels
      */
     _moveBarrels() {
-        BarrelService.moveBarrels(this.state.barrels, this.state.team)
+        BarrelService.moveBarrels(this.props.barrels, this.state.teamId)
         .then(_ => {
 
             // Prepare to move bottles
             let promises = [];
-            for (let teamId in this.state.bottles) {
-                for (let typeId in this.state.bottles[teamId]) {
+            for (let teamId in this.props.bottles) {
+                for (let typeId in this.props.bottles[teamId]) {
                     promises.push(BottleActionService.create({
-                            teamId: this.state.team,
+                            teamId: this.state.teamId,
                             fromTeamId: teamId && teamId != 'null' ? teamId : null,
                             typeId: typeId && typeId != 'null' ? typeId : null,
-                            quantity: this.state.bottles[teamId][typeId],
+                            quantity: this.props.bottles[teamId][typeId],
                             operation: 'moved',
                         })
                     );
@@ -85,7 +83,6 @@ export default class MoveDialog extends React.Component {
         return (
             <div>
                 {
-                    this.state.barrels && this.state.teams &&
                     <Dialog
                         title={"Déplacement de fûts"}
                         open={this.props.show}
@@ -99,24 +96,23 @@ export default class MoveDialog extends React.Component {
 
                         <div className="BarrelChipContainer">
                             {
-                                this.state.barrels.map((id, i) => {
-                                    let barrel = BarrelStore.findById(id);
+                                this.props.barrels.map((barrel, i) => {
                                     return <BarrelChip
                                                 key={i}
                                                 barrel={barrel}
-                                                team={TeamStore.findById(barrel.teamId)}
-                                                type={BarrelTypeStore.findById(barrel.typeId)}
+                                                team={this.props.teams.get(barrel.teamId)}
+                                                type={this.props.barrelTypes.get(barrel.typeId)}
                                             />
                                 })
                             }
                             {
-                                Object.keys(this.state.bottles).map(teamId => {
-                                    let team = TeamStore.findById(teamId);
-                                    return Object.keys(this.state.bottles[teamId]).map(typeId => {
-                                        let type = BottleTypeStore.findById(typeId);
+                                Object.keys(this.props.bottles).map(teamId => {
+                                    let team = this.props.teams.get(teamId);
+                                    return Object.keys(this.props.bottles[teamId]).map(typeId => {
+                                        let type = this.props.bottleTypes.get(typeId);
                                         return  <BottleChip
                                             key={(teamId + typeId)}
-                                            count={this.state.bottles[teamId][typeId]}
+                                            count={this.props.bottles[teamId][typeId]}
                                             state="new"
                                             type={type}
                                             team={team}
@@ -127,9 +123,9 @@ export default class MoveDialog extends React.Component {
                         </div>
 
                         <LocationSelect
-                            teams={this.state.teams}
-                            value={this.state.team}
-                            setValue={(e, i, v) => this.setState({ team: v })}
+                            teams={this.props.teams.findByPermission('ui/receiveStock').sortBy('name')}
+                            value={this.state.teamId}
+                            setValue={(e, i, v) => this.setState({ teamId: v })}
                             floatingLabel="Destination"
                         />
                     </Dialog>

@@ -7,10 +7,7 @@ class BarrelTypeStore extends BaseStore {
         super('barrelType', BarrelTypeService);
     }
 
-    get types() {
-        return this.getUnIndexedData();
-    }
-
 }
 
-export default new BarrelTypeStore();
+module.exports = new BarrelTypeStore();
+export default module.exports;

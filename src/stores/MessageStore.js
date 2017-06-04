@@ -1,20 +1,16 @@
 import BaseStore from 'stores/BaseStore';
-import ChatService from 'services/ChatService';
+import MessageService from 'services/MessageService';
 import NotificationActions from 'actions/NotificationActions';
 import AuthStore from 'stores/AuthStore';
 
-class ChatStore extends BaseStore {
+class MessageStore extends BaseStore {
 
     constructor() {
-        super('message', ChatService);
+        super('message', MessageService);
 
         // Force subscribe
         this._forceSubscribe = true;
 
-    }
-
-    get messages() {
-        return this.getUnIndexedData();
     }
 
     /**
@@ -36,4 +32,6 @@ class ChatStore extends BaseStore {
     }
 }
 
-export default new ChatStore();
+
+module.exports = new MessageStore();
+export default module.exports;

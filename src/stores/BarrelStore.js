@@ -6,11 +6,7 @@ class BarrelStore extends BaseStore {
     constructor() {
         super('barrel', BarrelService);
     }
-
-    get barrels() {
-        return this.getUnIndexedData();
-    }
-
 }
 
-export default new BarrelStore();
+module.exports = new BarrelStore();
+export default module.exports;

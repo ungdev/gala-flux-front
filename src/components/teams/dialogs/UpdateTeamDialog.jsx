@@ -18,12 +18,11 @@ export default class UpdateTeamDialog extends React.Component {
         super(props);
 
         this.state = {
-            id: (props.team ? props.team.id : null),
             values: {
-                'name': (props.team ? props.team.name : ''),
-                'role': (props.team ? props.team.role : ''),
-                'group': (props.team ? props.team.group : ''),
-                'location': (props.team ? props.team.location : ''),
+                'name': props.team.name || '',
+                'role': props.team.role || '',
+                'group': props.team.group || '',
+                'location': props.team.location || '',
             },
             errors: {},
             showDeleteDialog: false,
@@ -36,14 +35,13 @@ export default class UpdateTeamDialog extends React.Component {
         this._handleDelete = this._handleDelete.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(props) {
         this.setState({
-            id: (nextProps.team ? nextProps.team.id : null),
             values: {
-                'name': (nextProps.team ? nextProps.team.name : this.state.values.name),
-                'role': (nextProps.team ? nextProps.team.role : this.state.values.role),
-                'group': (nextProps.team ? nextProps.team.group : this.state.values.group),
-                'location': (nextProps.team ? nextProps.team.location : this.state.values.location),
+                'name': props.team.name || '',
+                'role': props.team.role || '',
+                'group': props.team.group || '',
+                'location': props.team.location || '',
             }
         });
     }
@@ -71,7 +69,7 @@ export default class UpdateTeamDialog extends React.Component {
         }
 
         // Submit
-        TeamService.update(this.state.id, this.state.values)
+        TeamService.update(this.props.team.id, this.state.values)
         .then((team) => {
             NotificationActions.snackbar('L\'équipe ' + team.name + ' a bien été modifié.');
             if(this.focusField) this.focusField.focus();
@@ -93,7 +91,7 @@ export default class UpdateTeamDialog extends React.Component {
      */
     _handleDelete() {
         // Submit
-        TeamService.destroy(this.state.id)
+        TeamService.destroy(this.props.team.id)
         .then(() => {
             NotificationActions.snackbar('L\'équipe a bien été supprimé.');
             this.props.close();

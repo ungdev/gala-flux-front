@@ -8,6 +8,7 @@ import NotificationActions from 'actions/NotificationActions';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'components/partials/ResponsiveDialog.jsx';
 import AutoComplete from 'material-ui/AutoComplete';
+import DataLoader from 'components/partials/DataLoader.jsx';
 
 export default class LoginAs extends React.Component {
 
@@ -16,101 +17,32 @@ export default class LoginAs extends React.Component {
 
         this.state = {
             value: '',
-            users: [],
             error: '',
+            users: null,
         };
 
-        this.UserStoreToken = null;
-        this.TeamStoreToken = null;
-
         // binding
-        this._handleChange = this._handleChange.bind(this);
-        this._submitForm= this._submitForm.bind(this);
-        this._closeDialog= this._closeDialog.bind(this);
-        this._setUsers = this._setUsers.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.submitForm= this.submitForm.bind(this);
+        this.closeDialog= this.closeDialog.bind(this);
     }
-
-    componentDidMount() {
-        // fill the stores
-        UserStore.loadData(null)
-        .then(data => {
-            // ensure that last token doen't exist anymore.
-            UserStore.unloadData(this.UserStoreToken);
-
-            // save the component token
-            this.UserStoreToken = data.token;
-            // get distinct teams id and create objects with their id
-            let teams = [...new Set(data.result.map(user => user.teamId))];
-            for (let i in teams) {
-                teams[i] = {id: teams[i]};
-            }
-
-
-            return TeamStore.loadData(teams)
-        })
-        .then(data => {
-            // ensure that last token doen't exist anymore.
-            TeamStore.unloadData(this.TeamStoreToken);
-
-            // save the component token
-            this.TeamStoreToken = data.token;
-
-            // focus
-            if(this.textInput) {
-                this.textInput.focus();
-            }
-        })
-        .catch(error => NotificationActions.error("Erreur lors de la lecture des utilisateurs.", error));
-
-        // listen the store change
-        UserStore.addChangeListener(this._setUsers);
-        TeamStore.addChangeListener(this._setUsers);
-        // set component state
-        this._setUsers();
-    }
-
-    componentWillUnmount() {
-        // clear the stores
-        UserStore.unloadData(this.UserStoreToken);
-        TeamStore.unloadData(this.TeamStoreToken);
-        // remove store listeners
-        UserStore.removeChangeListener(this._setUsers);
-        TeamStore.removeChangeListener(this._setUsers);
-    }
-
-    /**
-     * Called on store update to update state
-     */
-    _setUsers() {
-        let out = [];
-
-        for (let user of UserStore.users) {
-            let team = TeamStore.findById(user.teamId);
-            out.push({
-                text: user.name + ' : ' + (team ? team.name : undefined),
-                value: user.id,
-            });
-        }
-
-        this.setState({ users: out });
-   }
 
     /**
      * Update input value change
      * @param {string} value
      */
-    _handleChange(value) {
+    handleChange(value) {
         this.setState({ value: value });
     }
 
     /**
      * Submit the login as form
      */
-    _submitForm(item) {
+    submitForm(item) {
         AuthActions.loginAs(item.value)
         .then(() => {
             location.href = '/';
-            this._closeDialog();
+            this.closeDialog();
         })
         .catch((error) => {
             switch(error.status) {
@@ -130,7 +62,7 @@ export default class LoginAs extends React.Component {
      * Reset the state of the LoginAs component and
      * call the closeDialog method of his parent to hide the Dialog
      */
-    _closeDialog() {
+    closeDialog() {
         this.setState({ id: '', error: '' });
         this.props.closeDialog();
     }
@@ -140,32 +72,44 @@ export default class LoginAs extends React.Component {
             <FlatButton
                 label="Annuler"
                 primary={true}
-                onTouchTap={this._closeDialog}
+                onTouchTap={this.closeDialog}
                 />,
         ];
 
         return (
-            <div>
-                <Dialog
-                    title="Se connecter en tant que ..."
-                    actions={actions}
-                    modal={false}
-                    open={this.props.open}
-                    onRequestClose={this._closeDialog}
-                    >
-                        <AutoComplete
-                            floatingLabelText="Nom de l'utilisateur"
-                            searchText={this.state.value}
-                            onUpdateInput={this._handleChange}
-                            dataSource={this.state.users}
-                            filter={AutoComplete.caseInsensitiveFilter}
-                            errorText={this.state.error}
-                            onNewRequest={this._submitForm}
-                            maxSearchResults={10}
-                            ref={(input) => { this.textInput = input; }}
-                        />
-                </Dialog>
-            </div>
+            <DataLoader
+                filters={new Map([
+                    ['Team', null],
+                    ['User', null],
+                ])}
+                onChange={ datastore => this.setState({
+                    users: datastore.User.map(user => ({ value: user.id, text: user.name + ' : ' + datastore.Team.get(user.teamId).name})),
+                })}
+            >
+                { () => (
+                    <div>
+                        <Dialog
+                            title="Se connecter en tant que ..."
+                            actions={actions}
+                            modal={false}
+                            open={this.props.open}
+                            onRequestClose={this.closeDialog}
+                            >
+                                <AutoComplete
+                                    floatingLabelText="Nom de l'utilisateur"
+                                    searchText={this.state.value}
+                                    onUpdateInput={this.handleChange}
+                                    dataSource={this.state.users}
+                                    filter={AutoComplete.caseInsensitiveFilter}
+                                    errorText={this.state.error}
+                                    onNewRequest={this.submitForm}
+                                    maxSearchResults={10}
+                                    ref={(input) => { this.textInput = input; }}
+                                />
+                        </Dialog>
+                    </div>
+                )}
+            </DataLoader>
         );
     }
 

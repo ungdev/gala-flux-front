@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import AppDispatcher from 'dispatchers/AppDispatcher';
+import ModelCollection from 'lib/ModelCollection';
 
 export default class BaseStore extends EventEmitter {
 
@@ -123,7 +124,7 @@ export default class BaseStore extends EventEmitter {
                             this._setModelData(result);
 
                             resolve({
-                                result: this.find2future(this._filters[componentToken]),
+                                result: this.find(this._filters[componentToken]),
                                 token: componentToken
                             });
                         })
@@ -241,7 +242,7 @@ export default class BaseStore extends EventEmitter {
      * @param {string} id: the item id
      */
     _delete(id) {
-        delete this._modelData[id];
+        this._modelData.delete(id);
         this.emitChange();
     }
 
@@ -253,9 +254,9 @@ export default class BaseStore extends EventEmitter {
     _set(id, data) {
         // Test if data is different
         let same = true;
-        if(this._modelData[id] && Object.keys(this._modelData[id]).length == Object.keys(data).length) {
-            for (let attr in this._modelData[id]) {
-                if(this._modelData[id][attr] != data[attr]) {
+        if(this._modelData.has(id) && Object.keys(this._modelData.get(id)).length == Object.keys(data).length) {
+            for (let attr in this._modelData.get(id)) {
+                if(this._modelData.get(id)[attr] != data[attr]) {
                     same = false;
                     break;
                 }
@@ -267,7 +268,7 @@ export default class BaseStore extends EventEmitter {
 
         // Update and trigger redrawinf if necessary
         if(!same) {
-            this._modelData[id] = data;
+            this._modelData.set(id, data);
             this.emitChange();
         }
     }
@@ -295,60 +296,27 @@ export default class BaseStore extends EventEmitter {
      */
     findById(id) {
         if(this._modelData[id]) {
-            return Object.assign({}, this._modelData[id]);
+            return Object.assign({}, this._modelData.get(id));
         }
         return undefined;
     }
 
     /**
-     * This will find data according to an object list and the name of the foreign key in theses objects.
-     * @param {Array} list Array of foreign objects containing a foreign key to this object
-     * @param {String} key Name of the foreign key in theses foreign object
-     * @returns {Promise}
-     */
-    findByRelation(list, key) {
-        return this.find([...new Set(list.map((foreignObject) => {
-            return {id: foreignObject[key]};
-        } ))]);
-    }
-
-    /**
      * Find list of elements that match filters
-     *
-     * @param  {Object|Array} filters: Object of filters or array of list of filter
-     * @return {Array} Array of elements
-     */
-    find(filters) {
-        console.log('Store.find is deprecated');
-        let out = [];
-
-        for (let i in this._modelData) {
-            if(this._match(this._modelData[i], filters)) {
-                out.push(Object.assign({}, this._modelData[i]));
-            }
-        }
-
-        return out;
-    }
-
-    /**
-     * Find list of elements that match filters
-     *
-     * Will replace find() once all component don't use it
      *
      * @param  {Object|Array} filters: Object of filters or array of list of filter
      * @return {Map} Map of elements indexed by id
      */
-    find2future(filters) {
+    find(filters) {
         let out = new Map();
 
         for (let [key, val] of this._modelData) {
-            if(this._match(val, filters)) {
+            if(BaseStore.match(val, filters)) {
                 out.set(key, val);
             }
         }
 
-        return out;
+        return new ModelCollection(out);
     }
 
     /**
@@ -358,61 +326,34 @@ export default class BaseStore extends EventEmitter {
      * @param  {Object|Array} filters Object of filters or array of list of filter
      * @return {Boolean} True if the object match
      */
-    _match(obj, filters) {
+    static match(obj, filters) {
         if(!Array.isArray(filters)) {
             filters = [filters];
         }
 
         for (let filter of filters) {
-            let match = true;
-            for (let key in filter) {
-                if(obj[key] !== filter[key]) {
-                    match = false;
-                    break;
+            if(filter !== undefined) {
+                let match = true;
+                for (let key in filter) {
+                    // if filter is an array, check if the value is included
+                    if(Array.isArray(filter[key]) && !Array.isArray(obj[key])) {
+                        if(!filter[key].includes(obj[key])) {
+                            match = false;
+                            break;
+                        }
+                    }
+                    // Else try to match values
+                    else if(obj[key] !== filter[key]) {
+                        match = false;
+                        break;
+                    }
+                }
+                if(match) {
+                    return true;
                 }
             }
-            if(match) {
-                return true;
-            }
         }
-    }
-
-    /**
-     * Return the first element that matches the filters
-     *
-     * @param {Object} filters: Object of filters
-     * @return {Object|null} the object found or null by default
-     */
-    findOne(filters) {
-        for (let i in this._modelData) {
-            let add = true;
-            for (let key in filters) {
-                if(this._modelData[i][key] !== filters[key]) {
-                    add = false;
-                    break;
-                }
-            }
-            if(add) {
-                return Object.assign({}, this._modelData[i]);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Return a classic Array from the indexed objects in modelData
-     *
-     * @returns {Array}
-     */
-    getUnIndexedData() {
-        let out = [];
-
-        for (let i in this._modelData) {
-            out.push(Object.assign({}, this._modelData[i]));
-        }
-
-        return out;
+        return false;
     }
 
     /**
@@ -424,9 +365,9 @@ export default class BaseStore extends EventEmitter {
         console.log('DB Event for ' + this._modelName, e);
         switch (e.verb) {
             case "created":
-                if(!this.findById(e.id)) {
+                if(!this._modelData.has(e.id)) {
                     // Add to the list only if it match our list
-                    if(this._match(e.data, this.getFiltersSet())) {
+                    if(BaseStore.match(e.data, this.getFiltersSet())) {
                         this._set(e.id, e.data);
                         this.emitNew(e.data);
                     }
@@ -439,7 +380,7 @@ export default class BaseStore extends EventEmitter {
                 this._set(e.id, e.data);
                 break;
             case "destroyed":
-                if(this.findById(e.id)) {
+                if(this._modelData.has(e.id)) {
                     this._delete(e.id);
                 }
                 break;

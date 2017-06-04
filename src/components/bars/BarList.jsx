@@ -9,195 +9,142 @@ import NotificationActions from 'actions/NotificationActions';
 
 import { Row, Col } from 'react-flexbox-grid';
 import BarCard from 'components/bars/BarCard.jsx';
+import DataLoader from 'components/partials/DataLoader.jsx';
 
 require('styles/bars/BarList.scss');
 
 export default class BarList extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
-            teams: [],
-            barrels: {},
-            users: {}
+            userNames: null,
         };
 
-        this.TeamStoreToken = null;
-        this.BarrelStoreToken = null;
-        this.BarrelTypeStoreToken = null;
-        this.UserStoreToken = null;
-        this.SessionStoreToken = null;
-
         // binding
-        this._setTeams = this._setTeams.bind(this);
-        this._setBarrels = this._setBarrels.bind(this);
-        this._setUsers = this._setUsers.bind(this);
-    }
-
-    componentDidMount() {
-        // fill the team store
-        TeamStore.loadData(null)
-        .then(data => {
-            // ensure that last token doesn't exist anymore.
-            TeamStore.unloadData(this.TeamStoreToken);
-            // save the component token
-            this.TeamStoreToken = data.token;
-
-            return BarrelStore.loadData(null);
-        })
-        .then(data => {
-            // ensure that last token doesn't exist anymore.
-            BarrelStore.unloadData(this.BarrelStoreToken);
-            // save the component token
-            this.BarrelStoreToken = data.token;
-
-            return BarrelTypeStore.loadData(null);
-        })
-        .then(data => {
-            // ensure that last token doesn't exist anymore.
-            BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
-            // save the component token
-            this.BarrelTypeStoreToken = data.token;
-
-            return SessionStore.loadData(null);
-
-        })
-        .then(data => {
-            // ensure that last token doesn't exist anymore.
-            SessionStore.unloadData(this.SessionStoreToken);
-            // save the component token
-            this.SessionStoreToken = data.token;
-
-            return UserStore.loadData(null);
-
-        })
-        .then(data => {
-            // ensure that last token doesn't exist anymore.
-            UserStore.unloadData(this.UserStoreToken);
-            // save the component token
-            this.UserStoreToken = data.token;
-
-            // listen the stores changes
-            TeamStore.addChangeListener(this._setTeams);
-            BarrelStore.addChangeListener(this._setBarrels);
-            UserStore.addChangeListener(this._setUsers);
-            SessionStore.addChangeListener(this._setUsers);
-            // init teams
-            this._setTeams();
-            this._setBarrels();
-            this._setUsers();
-        })
-        .catch(error => NotificationActions.error("Erreur lors de la lecture des infos sur les bars.", error));
-    }
-
-    componentWillUnmount() {
-        // clear store
-        TeamStore.unloadData(this.TeamStoreToken);
-        BarrelStore.unloadData(this.TeamStoreToken);
-        BarrelTypeStore.unloadData(this.TeamStoreToken);
-        UserStore.unloadData(this.UserStoreToken);
-        SessionStore.unloadData(this.SessionStoreToken);
-        // remove the listener
-        TeamStore.removeChangeListener(this._setTeams);
-        BarrelStore.removeChangeListener(this._setBarrels);
-        UserStore.removeChangeListener(this._setUsers);
-        SessionStore.removeChangeListener(this._setUsers);
+        this.handleDatastoreChange = this.handleDatastoreChange.bind(this);
     }
 
     /**
-     * Update the teams in the state with the teams from TeamStore
+     * Update state when store are updated
      */
-    _setTeams() {
-        this.setState({ teams: TeamStore.teams });
-    }
-
-    /**
-     * Count the number of active users for each team, and set the localStorage
-     */
-    _setUsers() {
-        const storeUsers = UserStore.users;
-        let users = {};
-
-        // loop through sessions
-        for (let session of SessionStore.sessions) {
+    handleDatastoreChange(datastore) {
+        // Count the number of active users for each team and generate username list
+        let userNames = {};
+        for (let session of datastore.Session.values()) {
             // get the user
-            const user = UserStore.findById(session.user);
+            const user = datastore.User.get(session.userId);
             if (user) {
                 // if the user is active, increment the number of active user for this team
-                if (session.lastAction >= session.disconnectedAt) {
-                    if (users[user.team]) {
-                        // check if the user is not already in the active users of this team
-                        if (!users[user.team].includes(user.id)) {
-                            users[user.team].push(user.id);
-                        }
-                    } else {
-                        users[user.team] = [user.id];
+                if (userNames[user.teamId]) {
+                    // check if the user is not already in the active users of this team
+                    if (!userNames[user.teamId].includes(user.name)) {
+                        userNames[user.teamId].push(user.name);
                     }
+                } else {
+                    userNames[user.teamId] = [user.name];
                 }
             }
         }
 
-        this.setState({ users });
-    }
-
-    /**
-     * Update the barrels in the state with the barrels from BarrelStore
-     */
-    _setBarrels() {
-        const storeBarrels = BarrelStore.barrels;
-        let barrels = {};
-
-        for (let barrel of storeBarrels) {
+        // Count barrels for each team
+        let prices = {};
+        let barrelList = {};
+        let barrelCount = {};
+        for (let barrel of datastore.Barrel.values()) {
             if (barrel.teamId) {
-                // if the place doesn't exists in the barrels object, create it
-                if (!barrels[barrel.teamId]) {
-                    barrels[barrel.teamId] = {cost: 0, profitability: 0};
-                }
-                // if the state doesn't exist in the place, create it
-                if (!barrels[barrel.teamId][barrel.state]) {
-                    barrels[barrel.teamId][barrel.state] = [];
-                }
-                barrels[barrel.teamId][barrel.state].push(barrel);
+                const barrelType = datastore.BarrelType.get(barrel.typeId);
 
-                // price
-                const barrelType = BarrelTypeStore.findById(barrel.typeId);
-                if (barrel.state === "empty") {
-                    barrels[barrel.teamId].cost += barrelType.supplierPrice;
-                    barrels[barrel.teamId].profitability += barrelType.sellPrice;
+                // prices
+                if (!prices[barrel.teamId]) {
+                    prices[barrel.teamId] = {supplierPrice: 0, sellPrice: 0};
                 }
+                if (barrel.state === 'empty') {
+                    prices[barrel.teamId].supplierPrice += barrelType.supplierPrice;
+                    prices[barrel.teamId].sellPrice += barrelType.sellPrice;
+                }
+
+                // BarrelList
+                if (!barrelList[barrel.teamId]) {
+                    barrelList[barrel.teamId] = {};
+                }
+                if (!barrelList[barrel.teamId][barrel.state]) {
+                    barrelList[barrel.teamId][barrel.state] = {};
+                }
+                if (!barrelList[barrel.teamId][barrel.state][barrelType.shortName]) {
+                    barrelList[barrel.teamId][barrel.state][barrelType.shortName] = 0;
+                }
+                barrelList[barrel.teamId][barrel.state][barrelType.shortName] += 1;
+
+                // count
+                if (!barrelCount[barrel.teamId]) {
+                    barrelCount[barrel.teamId] = {};
+                }
+                if (!barrelCount[barrel.teamId][barrel.state]) {
+                    barrelCount[barrel.teamId][barrel.state] = 0;
+                }
+                barrelCount[barrel.teamId][barrel.state] += 1;
             }
         }
 
-        this.setState({ barrels });
+        // Count alerts for each team
+        let alertList = {};
+        for (let alert of datastore.Alert.values()) {
+            if (!alertList[alert.senderTeamId]) {
+                alertList[alert.senderTeamId] = {};
+            }
+            if (!alertList[alert.senderTeamId][alert.severity]) {
+                alertList[alert.senderTeamId][alert.severity] = [];
+            }
+            alertList[alert.senderTeamId][alert.severity].push(alert.title);
+        }
+
+        this.setState({
+            userNames,
+            prices,
+            barrelList,
+            barrelCount,
+            alertList,
+            teams: datastore.Team.sortBy('name'),
+        });
     }
 
     render() {
-
-        const fakeAlerts = {
-            "done": [],
-            "warning": [],
-            "serious": [],
-        };
-
         return (
-            <div className="BarList_container">
-                <Row>
-                {
-                    this.state.teams.map(team => {
-                        return <Col key={team.id} xs sm={3}>
-                                    <BarCard
-                                        team={team}
-                                        barrels={this.state.barrels[team.id]}
-                                        users={this.state.users[team.id]}
-                                        alerts={fakeAlerts}
-                                    />
-                                </Col>
-                    })
-                }
-                </Row>
-            </div>
-        );
+            <DataLoader
+                filters={new Map([
+                    ['Team', null],
+                    ['Alert', null],
+                    ['Barrel', null],
+                    ['BarrelType', null],
+                    ['User', null],
+                    ['Session', {disconnectedAt: null}],
+                ])}
+                onChange={ datastore => this.handleDatastoreChange(datastore) }
+            >
+                { () => (
+                    <div className="BarList_container">
+                        <Row>
+                        {
+                            this.state.teams.map(team => {
+                                return <Col key={team.id} xs sm={3}>
+                                            <BarCard
+                                                team={team}
+                                                userNames={this.state.userNames[team.id] || []}
+                                                prices={this.state.prices[team.id] || {}}
+                                                barrelList={this.state.barrelList[team.id] || {}}
+                                                barrelCount={this.state.barrelCount[team.id] || {}}
+                                                alertList={this.state.alertList[team.id] || {}}
+                                            />
+                                        </Col>
+                            })
+                        }
+                        </Row>
+                    </div>
+                )}
+            </DataLoader>
+        )
     }
 
 }

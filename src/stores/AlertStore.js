@@ -14,10 +14,6 @@ class AlertStore extends BaseStore {
         this._forceSubscribe = true;
     }
 
-    get alerts() {
-        return this.getUnIndexedData();
-    }
-
     get newAlerts() {
         return this._newAlerts;
     }
@@ -152,34 +148,12 @@ class AlertStore extends BaseStore {
      * @param {object} e : the event
      */
     _handleModelEvents(e) {
-        switch (e.verb) {
-            case "created":
-                if(!this.findById(e.id)) {
-                    // Add to the list only if it match our list
-                    if(this._match(e.data, this.getFiltersSet())) {
-                        this._set(e.id, e.data);
-                    }
-                    console.log('new alert', e.data)
-                    // notification
-                    this._handleNewAlert(e.data);
-                }
-                else {
-                    console.warn('Received `created` socket event more than once for the store `' + this._modelName + '`', e);
-                }
-                break;
-            case "updated":
-                if(this.findById(e.id)) {
-                    this._set(e.id, e.data);
-                }
-                break;
-            case "destroyed":
-                if(this.findById(e.id)) {
-                    this._delete(e.id);
-                }
-                break;
+        super._handleModelEvents(e);
+        if(e.verb == 'created' && !this.findById(e.id)) {
+            return this._handleNewAlert(e.data);
         }
     }
-
 }
 
-export default new AlertStore();
+module.exports = new AlertStore();
+export default module.exports;

@@ -1,8 +1,8 @@
 import React from 'react';
 import router from 'router';
 
-import ChatService from 'services/ChatService';
-import ChatStore from 'stores/ChatStore';
+import MessageService from 'services/MessageService';
+import MessageStore from 'stores/MessageStore';
 import NotificationStore from 'stores/NotificationStore';
 import ChatActions from 'actions/ChatActions';
 import AuthStore from 'stores/AuthStore';
@@ -50,7 +50,7 @@ export default class ChatMenu extends React.Component {
     componentDidMount() {
 
         // Pull channel list
-        ChatService.getChannels()
+        MessageService.getChannels()
         .then((channels) => {
             let newChannels = {
                 private: [],
@@ -227,7 +227,7 @@ export default class ChatMenu extends React.Component {
     }
 
     /**
-     * Call the ChatStore method to reset the new messages counter of this channel
+     * Call the MessageStore method to reset the new messages counter of this channel
      * @param {string} channel
      */
     _messagesViewed(channel) {

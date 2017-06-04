@@ -2,20 +2,21 @@
 
 .BarCard {
     margin-bottom: 20px;
-    position: relative;
     cursor: pointer;
-
-
 }
 
 .BarCard:hover {
     background-color: #e6e6e6 !important;
 }
 
+.BarCard__header {
+    margin-right: 64px;
+}
+
 .UsersLogged {
-    position: absolute;
-    right: 16px;
-    top: 16px;
+    float: right;
+    margin-top: 16px;
+    margin-right: 16px;
 }
 
 .CardInfo {

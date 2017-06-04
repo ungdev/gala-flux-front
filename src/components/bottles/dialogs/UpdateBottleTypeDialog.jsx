@@ -21,14 +21,13 @@ export default class UpdateBottleTypeDialog extends React.Component {
 
 
         this.state = {
-            type: props.type,
             values: {
-                'name': props.type ? props.type.name : null,
-                'shortName': props.type ? props.type.shortName : null,
-                'quantityPerBox': props.type ? props.type.quantityPerBox : null,
-                'sellPrice': props.type ? props.type.sellPrice : null,
-                'supplierPrice': props.type ? props.type.supplierPrice : null,
-                'originalStock': (props.type ? props.type.originalStock : 0),
+                'name': props.type.name || '',
+                'shortName': props.type.shortName || '',
+                'quantityPerBox': props.type.quantityPerBox || '',
+                'sellPrice': props.type.sellPrice || '',
+                'supplierPrice': props.type.supplierPrice || '',
+                'originalStock': props.type.originalStock || '',
             },
             errors: {},
             shortNameModified: true,
@@ -47,14 +46,13 @@ export default class UpdateBottleTypeDialog extends React.Component {
     componentWillReceiveProps(props) {
         if(!this.submitted) {
             this.setState({
-                type: props.type,
                 values: {
-                    'name': props.type ? props.type.name : this.state.values.name,
-                    'shortName': props.type ? props.type.shortName : this.state.values.shortName,
-                    'quantityPerBox': props.type ? props.type.quantityPerBox : this.state.values.quantityPerBox,
-                    'sellPrice': props.type ? props.type.sellPrice : this.state.values.sellPrice,
-                    'supplierPrice': props.type ? props.type.supplierPrice : this.state.values.supplierPrice,
-                    'originalStock': (props.type ? props.type.originalStock : this.state.values.originalStock),
+                    'name': props.type.name || '',
+                    'shortName': props.type.shortName || '',
+                    'quantityPerBox': props.type.quantityPerBox || '',
+                    'sellPrice': props.type.sellPrice || '',
+                    'supplierPrice': props.type.supplierPrice || '',
+                    'originalStock': props.type.originalStock || '',
                 },
                 errors: {},
             });
@@ -139,7 +137,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
 
         // Submit
         this.submitted = true;
-        BottleTypeService.update(this.state.type.id, this.state.values)
+        BottleTypeService.update(this.props.type.id, this.state.values)
         .then((type) => {
             this.setState({
                 errors: {},
@@ -187,7 +185,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
      */
     _handleDelete() {
         // Submit
-        BottleTypeService.destroy(this.state.type.id)
+        BottleTypeService.destroy(this.props.type.id)
         .then(() => {
             NotificationActions.snackbar('Les bouteilles ont bien été supprimées.');
             this.setState({showDeleteDialog: false});

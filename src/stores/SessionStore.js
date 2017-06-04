@@ -7,10 +7,7 @@ class SessionStore extends BaseStore {
         super('session', SessionService);
     }
 
-    get sessions() {
-        return this.getUnIndexedData();
-    }
-
 }
 
-export default new SessionStore();
+module.exports = new SessionStore();
+export default module.exports;

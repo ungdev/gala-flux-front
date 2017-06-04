@@ -1,6 +1,5 @@
 import React from 'react';
 
-import ChatStore from 'stores/ChatStore';
 import UserStore from 'stores/UserStore';
 import TeamStore from 'stores/TeamStore';
 import AuthStore from 'stores/AuthStore';
@@ -42,10 +41,10 @@ export default class BarHomepage extends React.Component {
             <div onClick={this._hideNotification}>
                 <div className="BarHomePage">
                     <div className={('BarHomePage__alerts ' + (name !== 'alert' ? 'BarHomePage__col--secondary':''))}>
-                        <BarAlertButtons barId={AuthStore.team.id} />
+                        <BarAlertButtons team={AuthStore.team} />
                     </div>
                     <div className={('BarHomePage__stock ' + (name !== 'stock' ? 'BarHomePage__col--secondary':''))}>
-                        <BarBarrels />
+                        <BarBarrels team={AuthStore.team} />
                     </div>
                     <div className={('BarHomePage__chat ' + (name !== 'chat' ? 'BarHomePage__col--secondary':''))}>
                         <ChatMessageList channel={null}/>

@@ -7,10 +7,7 @@ class BottleTypeStore extends BaseStore {
         super('bottleType', BottleTypeService);
     }
 
-    get types() {
-        return this.getUnIndexedData();
-    }
-
 }
 
-export default new BottleTypeStore();
+module.exports = new BottleTypeStore();
+export default module.exports;

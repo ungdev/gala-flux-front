@@ -9,11 +9,6 @@ class UserStore extends BaseStore {
         // Force subscribe
         this._forceSubscribe = true;
     }
-
-    get users() {
-        return this.getUnIndexedData();
-    }
-
 }
 
 module.exports = new UserStore();

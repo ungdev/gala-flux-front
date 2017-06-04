@@ -3,10 +3,8 @@ import React from 'react';
 import * as constants from 'config/constants';
 import NotificationActions from 'actions/NotificationActions';
 import ChatActions from 'actions/ChatActions';
-import ChatStore from 'stores/ChatStore';
-import UserStore from 'stores/UserStore';
-import TeamStore from 'stores/TeamStore';
 import AuthStore from 'stores/AuthStore';
+import DataLoader from "components/partials/DataLoader.jsx";
 
 import DateTime from 'components/partials/DateTime.jsx';
 import CenteredMessage from 'components/partials/CenteredMessage.jsx';
@@ -36,106 +34,20 @@ export default class ChatMessageList extends React.Component {
         this.scrollBottom = 0;
         this.clientHeight = 0;
 
-        this.ChatStoreToken = null;
-        this.UserStoreToken = null;
-        this.TeamStoreToken = null;
-
-        this._updateData = this._updateData.bind(this);
-        this._handleNewChannel = this._handleNewChannel.bind(this);
         this._handleWindowResize = this._handleWindowResize.bind(this);
         this._handleScroll = this._handleScroll.bind(this);
-    }
-
-    componentDidMount() {
-        this._handleNewChannel();
-
-        // Init scroll listening
-        window.addEventListener("resize", this._handleWindowResize);
-        this.scrollArea.addEventListener("scroll", this._handleScroll);
-        this.clientHeight = this.scrollArea.clientHeight;
-        this.scrollBottom = 0;
-
-        // listen the store change
-        ChatStore.addChangeListener(this._updateData);
-    }
-
-    componentWillUnmount() {
-        // clear the store
-        ChatStore.unloadData(this.ChatStoreToken);
-        UserStore.unloadData(this.UserStoreToken);
-        TeamStore.unloadData(this.TeamStoreToken);
-
-        // clear scroll listening
-        window.removeEventListener("resize", this._handleWindowResize);
-        this.scrollArea.removeEventListener("scroll", this._handleScroll);
-        // remove the store change listener
-        ChatStore.removeChangeListener(this._updateData);
-    }
-
-    componentDidUpdate() {
-        this.scrollArea.scrollTop = this.scrollArea.scrollHeight;
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if(nextProps.channel !== this.channel) {
-            this.setState({loading: true})
-            this._handleNewChannel(nextProps);
-        }
+        this.handleDatastoreChange = this.handleDatastoreChange.bind(this);
     }
 
     /**
-     * Update message list in the store then get it
+     * Update state when store are updated
      */
-    _handleNewChannel(props) {
-        // fill the store
-        if(!props) {
-            props = this.props;
-        }
-
-        ChatStore.loadData(this._getChannelFilter(props))
-        .then(data => {
-            // ensure that last token doen't exist anymore.
-            ChatStore.unloadData(this.ChatStoreToken);
-
-            // save the component token
-            this.ChatStoreToken = data.token;
-
-            // Save current channel
-            this.channel = this.props.channel;
-
-            return UserStore.loadData(null);
-        })
-        .then(data => {
-            UserStore.unloadData(this.UserStoreToken);
-            this.UserStoreToken = data.token;
-            return TeamStore.loadData(null);
-        })
-        .then(data => {
-            TeamStore.unloadData(this.TeamStoreToken);
-            this.TeamStoreToken = data.token;
-
-            // Update messages
-            this._updateData(props);
-        })
-        .catch(error => {
-            NotificationActions.error('Une erreur s\'est produite pendant le chargement des messages', error);
-        });
-    }
-
-    /**
-     * Update message from store and request new data from user and team store
-     */
-    _updateData(props) {
-        if(!props) {
-            props = this.props;
-        }
-        let messages = ChatStore.find(this._getChannelFilter(this.props));
-
+    handleDatastoreChange(datastore) {
         // Group messages
         let messagesGroups = [];
         let first = null;
         let last = null;
-        for (let message of messages) {
+        for (let message of datastore.Message.values()) {
             // Group if same sender and first message of the has been post less than 15 min ago, and last message less than 5 min ago
             if(last && first && last.userId == message.userId &&
             Math.abs((new Date(last.createdAt)).getTime() - (new Date(message.createdAt)).getTime()) < (5 * 60 * 1000) &&
@@ -154,9 +66,34 @@ export default class ChatMessageList extends React.Component {
         // Save messages
         this.setState({
             messages: messagesGroups,
+            users: datastore.User,
+            teams: datastore.Team,
             loading: false,
-        })
+        });
     }
+
+    componentDidUpdate() {
+        // Run too soon without setImmediate
+        setImmediate(() => {
+            this.scrollArea.scrollTop = this.scrollArea.scrollHeight
+        });
+    }
+
+
+    componentDidMount() {
+        // Init scroll listening
+        window.addEventListener("resize", this._handleWindowResize);
+        this.scrollArea.addEventListener("scroll", this._handleScroll);
+        this.clientHeight = this.scrollArea.clientHeight;
+        this.scrollBottom = 0;
+    }
+
+    componentWillUnmount() {
+        // clear scroll listening
+        window.removeEventListener("resize", this._handleWindowResize);
+        this.scrollArea.removeEventListener("scroll", this._handleScroll);
+    }
+
 
     /**
      * Generate channel filter according to props
@@ -200,17 +137,22 @@ export default class ChatMessageList extends React.Component {
     render() {
         return (
             <div className="ChatMessageList" ref={(scrollArea) => { this.scrollArea = scrollArea; }} onClick={() => ChatActions.viewMessages(this.channel)}>
-                { this.state.loading ?
-                    <CenteredMessage>Chargement..</CenteredMessage>
-                :
-
-                    ( this.state.messages.length == 0 ?
-                        <CenteredMessage>Aucun message</CenteredMessage>
+                <DataLoader
+                    filters={new Map([
+                        ['Message', this._getChannelFilter(this.props) ],
+                        ['User', (datastore) => ({id: datastore.Message.map(message => message.userId)}) ],
+                        ['Team', (datastore) => ({id: datastore.User.map(user => user.teamId)}) ],
+                    ])}
+                    onChange={ datastore => this.handleDatastoreChange(datastore) }
+                    loadingContent={<CenteredMessage>Chargement...</CenteredMessage>}
+                >
+                    { () => ( this.state.messages.length == 0 ?
+                            <CenteredMessage>Aucun message</CenteredMessage>
                     :
                         // For each message, create a Message component
                         this.state.messages.map((messageGroup, i) => {
-                            let user = UserStore.findById(messageGroup[0].userId) || {name: 'Utilisateur supprimé'};
-                            let team = TeamStore.findById(user.teamId) || {name: 'Utilisateur supprimé'};
+                            let user = this.state.users.get(messageGroup[0].userId) || {name: 'Utilisateur supprimé'};
+                            let team = this.state.teams.get(user.teamId) || {name: 'Utilisateur supprimé'};
                             return (
                                 <div className={(AuthStore.user && user.id === AuthStore.user.id ? 'ChatMessageList__container--own' : 'ChatMessageList__container')} key={messageGroup[0].id}>
                                     <Avatar
@@ -244,8 +186,8 @@ export default class ChatMessageList extends React.Component {
                                 </div>
                             )
                         })
-                    )
-                }
+                    )}
+                </DataLoader>
             </div>
         );
     }

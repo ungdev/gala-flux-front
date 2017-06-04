@@ -20,24 +20,21 @@ import Confirm from 'components/partials/Confirm.jsx';
  * @param {array} categories List of existing categories
  * @param {array} teams List of receiving teams
  */
-export default class NewButton extends React.Component {
+export default class UpdateButtonDialog extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            id: (props.button ? props.button.id : null),
             values: {
-                title: (props.button ? props.button.title : ''),
-                category: (props.button ? props.button.category : ''),
-                senderGroup: (props.button ? props.button.senderGroup : null),
-                receiverTeamId: (props.button ? props.button.receiverTeamId : ''),
-                messageRequired: (props.button ? props.button.messageRequired : false),
-                messagePrompt: (props.button ? props.button.messagePrompt : ''),
-                messageDefault: (props.button ? props.button.messageDefault : ''),
+                title: props.button.title || '',
+                category: props.button.category || '',
+                senderGroup: props.button.senderGroup || null,
+                receiverTeamId: props.button.receiverTeamId || '',
+                messageRequired: props.button.messageRequired || false,
+                messagePrompt: props.button.messagePrompt || '',
+                messageDefault: props.button.messageDefault || '',
             },
-            categories: props.categories,
-            teams: props.teams,
             groups: TeamStore.groups,
             errors: {},
             showDeleteDialog: false,
@@ -52,18 +49,14 @@ export default class NewButton extends React.Component {
 
     componentWillReceiveProps(props) {
         this.setState({
-            categories: props.categories,
-            teams: props.teams,
-            groups: TeamStore.groups,
-            id: (props.button ? props.button.id : null),
             values: {
-                title: (props.button ? props.button.title : this.state.values.title),
-                category: (props.button ? props.button.category : this.state.values.category),
-                senderGroup: (props.button ? props.button.senderGroup : this.state.values.senderGroup),
-                receiverTeamId: (props.button ? props.button.receiverTeamId : this.state.values.receiverTeamId),
-                messageRequired: (props.button ? props.button.messageRequired : this.state.values.messageRequired),
-                messagePrompt: (props.button ? props.button.messagePrompt : this.state.values.messagePrompt),
-                messageDefault: (props.button ? props.button.messageDefault : this.state.values.messageDefault),
+                title: props.button.title || '',
+                category: props.button.category || '',
+                senderGroup: props.button.senderGroup || null,
+                receiverTeamId: props.button.receiverTeamId || '',
+                messageRequired: props.button.messageRequired || false,
+                messagePrompt: props.button.messagePrompt || '',
+                messageDefault: props.button.messageDefault || '',
             },
         });
     }
@@ -89,19 +82,18 @@ export default class NewButton extends React.Component {
         if(e) {
             e.preventDefault();
         }
-
         // Submit
-        AlertButtonService.update(this.state.id, this.state.values)
+        AlertButtonService.update(this.props.button.id, this.state.values)
         .then((button) => {
             NotificationActions.snackbar('Le bouton ' + button.title + ' a bien été modifié.');
             if(this.focusField) this.focusField.focus();
             this.props.close();
         })
         .catch((error) => {
-            let errors = error.userFormErrors;
-            this.setState({ errors: errors });
-
-            if(!Object.keys(errors).length) {
+            if(error.formErrors && Object.keys(error.formErrors).length) {
+                this.setState({ errors: error.formErrors });
+            }
+            else {
                 NotificationActions.error('Une erreur s\'est produite pendant la modification du bouton', error);
             }
         });
@@ -113,7 +105,7 @@ export default class NewButton extends React.Component {
      */
     _handleDelete() {
         // Submit
-        AlertButtonService.destroy(this.state.id)
+        AlertButtonService.destroy(this.props.button.id)
         .then(() => {
             NotificationActions.snackbar('Le bouton a bien été supprimé.');
             this.setState({showDeleteDialog: false});
@@ -137,6 +129,8 @@ export default class NewButton extends React.Component {
     }
 
     render() {
+
+        console.log('state', this.state)
 
         const actions = [
             <FlatButton
@@ -191,7 +185,7 @@ export default class NewButton extends React.Component {
                                 fullWidth={true}
                                 onUpdateInput={v => this._handleFieldChange('category', v)}
                                 filter={AutoComplete.fuzzyFilter}
-                                dataSource={this.state.categories}
+                                dataSource={this.props.categories}
                                 openOnFocus={true}
                             />
                         </Col>
@@ -223,7 +217,7 @@ export default class NewButton extends React.Component {
                                 floatingLabelText="Destinataire de l'alerte"
                             >
                                 {
-                                    this.state.teams.map((team, i) => {
+                                    this.props.teams.map((team, i) => {
                                         return <MenuItem key={i} value={team.id} primaryText={team.name} />
                                     })
                                 }

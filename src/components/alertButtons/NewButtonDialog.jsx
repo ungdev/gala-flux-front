@@ -19,14 +19,12 @@ import AutoComplete from 'material-ui/AutoComplete';
  * @param {array} categories List of existing categories
  * @param {array} teams List of receiving teams
  */
-export default class NewButton extends React.Component {
+export default class NewButtonDialog extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            categories: props.categories,
-            teams: props.teams,
             groups: TeamStore.groups,
             values: {
                 title: '',
@@ -45,15 +43,6 @@ export default class NewButton extends React.Component {
         this._handleFieldChange = this._handleFieldChange.bind(this);
         this._handleSubmit = this._handleSubmit.bind(this);
     }
-
-    componentWillReceiveProps(props) {
-        this.setState({
-            categories: props.categories,
-            teams: props.teams,
-            groups: TeamStore.groups,
-        });
-    }
-
 
     /**
      * Called on field change
@@ -93,10 +82,10 @@ export default class NewButton extends React.Component {
             if(this.focusField) this.focusField.focus();
         })
         .catch((error) => {
-            let errors = error.userFormErrors;
-            this.setState({ errors: errors });
-
-            if(!Object.keys(errors).length) {
+            if(error.formErrors && Object.keys(error.formErrors).length) {
+                this.setState({ errors: error.formErrors });
+            }
+            else {
                 NotificationActions.error('Une erreur s\'est produite pendant la création du bouton', error);
             }
         });
@@ -136,6 +125,7 @@ export default class NewButton extends React.Component {
                     <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
                     <Row>
                         <Col xs={12} sm={6}>
+                            {console.log('bite', this.state)}
                             <TextField
                                 floatingLabelText="Nom de l'alerte"
                                 errorText={this.state.errors.title}
@@ -154,7 +144,7 @@ export default class NewButton extends React.Component {
                                 fullWidth={true}
                                 onUpdateInput={v => this._handleFieldChange('category', v)}
                                 filter={AutoComplete.fuzzyFilter}
-                                dataSource={this.state.categories}
+                                dataSource={this.props.categories}
                                 openOnFocus={true}
                             />
                         </Col>
@@ -186,7 +176,7 @@ export default class NewButton extends React.Component {
                                 floatingLabelText="Destinataire de l'alerte"
                             >
                                 {
-                                    this.state.teams.map((team, i) => {
+                                    this.props.teams.map((team, i) => {
                                         return <MenuItem key={i} value={team.id} primaryText={team.name} />
                                     })
                                 }

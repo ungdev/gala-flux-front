@@ -11,36 +11,13 @@ import MenuItem from 'material-ui/MenuItem';
  */
 export default class ReceiverSelect extends React.Component {
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            teams: props.teams
-        };
-
-        // binding
-        this._handleChange = this._handleChange.bind(this);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            teams: nextProps.teams
-        });
-    }
-
-    _handleChange(e, i, v) {
-        if(this.props.onChange) {
-            this.props.onChange(v);
-        }
-    }
-
     render() {
         return (
             <SelectField
                 multiple={true}
                 hintText="Destinataire"
                 value={this.props.value}
-                onChange={this._handleChange}
+                onChange={(e,i,v) => this.props.onChange(v)}
                 fullWidth={true}
             >
                 <MenuItem
@@ -51,7 +28,7 @@ export default class ReceiverSelect extends React.Component {
                     primaryText="Alertes auto"
                 />
                 {
-                    this.state.teams.map(team => {
+                    this.props.teams.map(team => {
                         return <MenuItem
                             key={team.id}
                             insetChildren={true}

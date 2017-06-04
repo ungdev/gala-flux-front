@@ -6,7 +6,6 @@ import AdminTabs from 'components/partials/AdminTabs.jsx';
 import NotificationsDialog from 'components/partials/NotificationsDialog.jsx';
 import NotificationStore from 'stores/NotificationStore';
 import AuthStore from 'stores/AuthStore';
-import ChatStore from 'stores/ChatStore';
 import UserStore from 'stores/UserStore';
 import TeamStore from 'stores/TeamStore';
 import AlertActions from 'actions/AlertActions.jsx';

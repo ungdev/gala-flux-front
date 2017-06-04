@@ -4,11 +4,15 @@ import AlertButtonStore from 'stores/AlertButtonStore';
 import AuthStore from 'stores/AuthStore';
 import AlertStore from 'stores/AlertStore';
 import NotificationActions from 'actions/NotificationActions';
+import DataLoader from 'components/partials/DataLoader.jsx';
 
 import BarAlertButton from 'components/alertButtons/BarAlertButton.jsx';
 
 require('styles/bar/AlertButton.scss');
 
+/**
+ * @param {Team} team
+ */
 export default class BarAlertButtons extends React.Component {
 
     constructor(props) {
@@ -17,118 +21,69 @@ export default class BarAlertButtons extends React.Component {
         this.state = {
             buttons: {},
             alerts: {},
-            barId: props.barId
         };
 
-        this.AlertButtonStoreToken = null;
-        this.AlertStoreToken = null;
-
         // binding
-        this._setButtons = this._setButtons.bind(this);
-        this._setAlerts = this._setAlerts.bind(this);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            barId: nextProps.barId
-        }, _ => {
-            this._setAlerts();
-        });
-    }
-
-    componentDidMount() {
-        // fill the alert buttons store
-        AlertButtonStore.loadData([{senderGroup: (AuthStore.team ? AuthStore.team.group : '')}, {senderGroup: null}])
-            .then(data => {
-                // ensure that last token doesn't exist anymore.
-                AlertButtonStore.unloadData(this.AlertButtonStoreToken);
-                // save the component token
-                this.AlertButtonStoreToken = data.token;
-
-                return AlertStore.loadData(null);
-            })
-            .then(data => {;
-                // ensure that last token doesn't exist anymore.
-                AlertStore.unloadData(this.AlertStoreToken);
-                // save the component token
-                this.AlertStoreToken = data.token;
-
-                // listen the stores changes
-                AlertButtonStore.addChangeListener(this._setButtons);
-                AlertStore.addChangeListener(this._setAlerts);
-                // init teams
-                this._setButtons();
-                this._setAlerts();
-            })
-            .catch(error => NotificationActions.error("Erreur lors de la lecture des boutons d'alerte.", error));
-    }
-
-    componentWillUnmount() {
-        // clear store
-        AlertButtonStore.unloadData(this.AlertButtonStoreToken);
-        AlertStore.unloadData(this.AlertStoreToken);
-        // remove the listener
-        AlertButtonStore.removeChangeListener(this._setButtons);
-        AlertStore.removeChangeListener(this._setAlerts);
+        this.handleDatastoreChange = this.handleDatastoreChange.bind(this);
     }
 
     /**
-     * Update the buttons in the state with the buttons from the alert buttons store
+     * Update state when store are updated
      */
-    _setButtons() {
-        const storeButtons = AlertButtonStore.find([{senderGroup: (AuthStore.team ? AuthStore.team.group : '')}, {senderGroup: null}]);
+    handleDatastoreChange(datastore) {
+        // Set buttons
         let buttons = {};
-
-        for (let button of storeButtons) {
+        for (let button of datastore.AlertButton.values()) {
             if (!buttons[button.category]) {
                 buttons[button.category] = [];
             }
             buttons[button.category].push(button);
         }
 
-        this.setState({ buttons });
-    }
-
-    /**
-     * Update the alerts in the state with the alerts from the alerts store
-     */
-    _setAlerts() {
-        const storeAlerts = this.state.barId ? AlertStore.find([{senderTeamId: this.state.barId}]) : AlertStore.alerts;
+        // set alerts indexed by button id
         let alerts = {};
-
-        // store them by button (because only one alert by button by team)
-        for (let alert of storeAlerts) {
+        for (let alert of datastore.Alert.values()) {
             if (alert.buttonId) {
                 alerts[alert.buttonId] = alert;
             }
         }
 
-        this.setState({ alerts });
+        this.setState({ buttons, alerts });
     }
+
 
     render() {
         const categories = Object.keys(this.state.buttons);
-
-        return(
-            <div className="AlertButtons_container">
-                {
-                    categories.map((category, i) => {
-                        return  <div key={i}>
-                                    <h3>{category}</h3>
-                                    {
-                                        this.state.buttons[category].map(button => {
-                                            return <BarAlertButton
-                                                        key={button.id}
-                                                        button={button}
-                                                        alert={this.state.alerts[button.id]}
-                                                        teamId={this.state.barId}
-                                                    />
-                                        })
-                                    }
-                                </div>
-                    })
-                }
-            </div>
+        return (
+            <DataLoader
+                filters={new Map([
+                    ['AlertButton', [{senderGroup: this.props.team.group}, {senderGroup: null}]],
+                    ['Alert', (datastore) => {return {senderTeamId: this.props.team.id, buttonId: datastore.AlertButton.map(button => button.id), severity: ['warning', 'serious']}}],
+                ])}
+                onChange={ datastore => this.handleDatastoreChange(datastore) }
+            >
+                { () => (
+                    <div className="AlertButtons_container">
+                        {
+                            categories.map((category, i) => {
+                                return  <div key={i}>
+                                            <h3>{category}</h3>
+                                            {
+                                                this.state.buttons[category].map(button => {
+                                                    return <BarAlertButton
+                                                                key={button.id}
+                                                                button={button}
+                                                                alert={this.state.alerts[button.id]}
+                                                                team={this.props.team}
+                                                            />
+                                                })
+                                            }
+                                        </div>
+                            })
+                        }
+                    </div>
+                )}
+            </DataLoader>
         );
     }
 

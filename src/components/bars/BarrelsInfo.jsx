@@ -2,30 +2,25 @@ import React from 'react';
 
 import { Row, Col } from 'react-flexbox-grid';
 import Euro from 'material-ui/svg-icons/action/euro-symbol';
-import BarrelsInfoItem from 'components/bars/BarrelsInfoItem.jsx';
+import Barrel from 'material-ui/svg-icons/device/battery-full';
 
 import * as color from 'material-ui/styles/colors';
 
+/**
+ * @param {Object} prices
+ * @param {Object} barrelList
+ * @param {Object} barrelCount
+ */
 export default class BarrelsInfo extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            barrels: props.barrels
-        };
 
         this.states = {
             "new": color.teal600,
             "opened": color.orange600,
             "empty": color.red600,
         }
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            barrels: nextProps.barrels
-        });
     }
 
     render() {
@@ -35,18 +30,18 @@ export default class BarrelsInfo extends React.Component {
         return (
             <div className="CardInfo_container">
                 {
-                    this.state.barrels &&
                     <div>
                         <div className="CardInfo_title">Fûts :</div>
                         <Row>
                             {
                                 states.map((state, i) => {
-                                    if (this.state.barrels[state] && this.state.barrels[state].length > 0) {
-                                        return <BarrelsInfoItem
-                                            key={i}
-                                            color={this.states[state]}
-                                            number={this.state.barrels[state].length}
-                                        />
+                                    if (this.props.barrelCount[state] && this.props.barrelCount[state] > 0) {
+                                        return <Col xs={4} className="CardInfo" key={i}>
+                                                <Barrel color={this.states[state]} />
+                                                <span>{this.props.barrelCount[state]}</span>
+                                            </Col>
+                                    } else {
+                                        emptyCounter++;
                                     }
                                 })
                             }
@@ -60,14 +55,14 @@ export default class BarrelsInfo extends React.Component {
                         <Row className="Barrels_profitability">
                             <Col xs={6} className="CardInfo CardInfo_bordered">
                                 <div>
+                                    <span>{Math.round(this.props.prices.supplierPrice)}</span>
                                     <Euro color={color.red600} />
-                                    <span>{Math.round(this.state.barrels.cost)}</span>
                                 </div>
                             </Col>
                             <Col xs={6} className="CardInfo CardInfo_bordered">
                                 <div>
+                                    <span>{Math.round(this.props.prices.sellPrice)}</span>
                                     <Euro color={color.teal600} />
-                                    <span>{Math.round(this.state.barrels.profitability)}</span>
                                 </div>
                             </Col>
                         </Row>

@@ -23,19 +23,12 @@ export default class TeamList extends React.Component {
         super(props);
 
         this.state = {
-            selectedId: props.selectedId,
             showCreateDialog: false,
-            datastore: null,
+            teams: null,
         };
 
         // binding
         this._toggleCreateDialog = this._toggleCreateDialog.bind(this);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            selectedId: nextProps.selectedId
-        });
     }
 
     /**
@@ -52,26 +45,27 @@ export default class TeamList extends React.Component {
                     filters={new Map([
                         ['Team', null],
                     ])}
-                    onChange={ datastore => this.setState({datastore}) }
-                >{ () => {
-                    const teams = [...this.state.datastore.Team.values()];
-
-                    return (
-                        <SelectableList value={this.state.selectedId}>
-                            {
-                                teams.map((team, i) => {
-                                    return <ListItem
-                                                value={team.id}
-                                                key={i}
-                                                primaryText={team.name}
-                                                secondaryText={team.role}
-                                                onTouchTap={_ => this.props.onTeamSelection(team)}
-                                            />
-                                })
-                            }
-                        </SelectableList>
-                    )
-                }}</DataLoader>
+                    onChange={ datastore => this.setState({
+                        teams: datastore.Team,
+                    })}
+                >
+                    { () => (
+                            <SelectableList value={parseInt(this.props.selectedId)}>
+                                {
+                                    this.state.teams.map((team, i) => {
+                                        return <ListItem
+                                                    value={team.id}
+                                                    key={i}
+                                                    primaryText={team.name}
+                                                    secondaryText={team.role}
+                                                    onTouchTap={_ => this.props.onTeamSelection(team)}
+                                                />
+                                    })
+                                }
+                            </SelectableList>
+                        )
+                    }
+                </DataLoader>
 
                 { AuthStore.can('team/admin') &&
                     <FloatingActionButton

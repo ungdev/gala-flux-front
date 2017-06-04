@@ -1,7 +1,7 @@
 import React from 'react';
 
-import ChatService from 'services/ChatService';
-import ChatStore from 'stores/ChatStore';
+import MessageService from 'services/MessageService';
+import MessageStore from 'stores/MessageStore';
 import ChatActions from 'actions/ChatActions';
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -92,7 +92,7 @@ export default class ChatMessageForm extends React.Component {
         }
 
         // Create new message
-        ChatService.create({
+        MessageService.create({
             text: this.state.value,
             channel: this.state.channel,
         })

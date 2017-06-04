@@ -4,7 +4,7 @@ import {ApiError} from 'errors';
 /**
  * Class used for all about Authentication
  */
-class ChatService extends BaseService {
+class MessageService extends BaseService {
 
     constructor() {
         super('message');
@@ -21,4 +21,4 @@ class ChatService extends BaseService {
 
 }
 
-export default new ChatService();
+export default new MessageService();

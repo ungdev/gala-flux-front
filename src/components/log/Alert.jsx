@@ -20,6 +20,11 @@ import Avatar from 'material-ui/Avatar';
 
 require('styles/log/Alert.scss');
 
+/**
+ * @param {Alert} alert
+ * @param {ModelCollection} users
+ * @param {ModelCollection} teams
+ */
 export default class Alert extends React.Component {
 
     constructor(props) {
@@ -27,7 +32,6 @@ export default class Alert extends React.Component {
 
         this.state = {
             showUpdateAlertPopover: false,
-            alert: props.alert,
             popoverAnchor: null,
         };
 
@@ -35,12 +39,6 @@ export default class Alert extends React.Component {
         this._toggleUpdateAlertPopover = this._toggleUpdateAlertPopover.bind(this);
         this._closeAlert = this._closeAlert.bind(this);
         this._restoreAlert = this._restoreAlert.bind(this);
-    }
-
-    componentWillReceiveProps(props) {
-        this.setState({
-            alert: props.alert
-        });
     }
 
     /**
@@ -60,7 +58,7 @@ export default class Alert extends React.Component {
      * Call the service method to close this alert
      */
     _closeAlert() {
-        AlertService.update(this.state.alert.id, {severity: "done"})
+        AlertService.update(this.props.alert.id, {severity: "done"})
         .catch(error => NotificationActions.error("Erreur lors de la modification de l'alerte.", error));
     }
 
@@ -68,33 +66,34 @@ export default class Alert extends React.Component {
      * Call the service method to restore this alert
      */
     _restoreAlert() {
-        AlertService.update(this.state.alert.id, {severity: "serious"})
+        AlertService.update(this.props.alert.id, {severity: "serious"})
         .catch(error => NotificationActions.error("Erreur lors de la modification de l'alerte.", error));
     }
 
     render() {
-        let date = new Date(this.state.alert.createdAt);
+        let date = new Date(this.props.alert.createdAt);
         date = date.getHours() + ':' + (date.getMinutes() < 10 ? '0':'') + date.getMinutes();
 
+        let senderTeam = this.props.teams.get(this.props.alert.senderTeamId);
         return (
             <Col xs={12} sm={6} className="alert">
                 <div className="alert__container">
                     <button
                         data-tip
-                        data-for={"team-" + this.state.alert.id}
-                        className={ 'alert__team-name__container alert__team-name__container--' + this.state.alert.severity}
-                        onClick={() => (this.state.alert.sender && router.navigate('barhome.id', {id: this.state.alert.sender.id}))}>
+                        data-for={"team-" + this.props.alert.id}
+                        className={ 'alert__team-name__container alert__team-name__container--' + this.props.alert.severity}
+                        onClick={() => (this.props.alert.sender && router.navigate('barhome.id', {id: this.props.alert.sender.id}))}>
                         <div className="alert__team-name">
-                            {this.props.alert.sender ? this.state.alert.sender.name : '-'}
+                            {senderTeam.name || '-'}
                         </div>
                     </button>
                     <ReactTooltip
-                        id={"team-" + this.state.alert.id}
+                        id={"team-" + this.props.alert.id}
                         place="bottom"
                     >
                         <span>
-                            {this.props.alert.sender ? this.props.alert.sender.name : 'Équipe supprimé ou alerte automatique'}<br/>
-                            {this.props.alert.sender && this.props.alert.sender.location}
+                            {senderTeam.name || 'Alerte automatique'}<br/>
+                            {senderTeam.location}
                         </span>
                     </ReactTooltip>
 
@@ -102,21 +101,21 @@ export default class Alert extends React.Component {
                     </div>
                     <div className="alert__content"
                         data-tip
-                        data-for={"content-" + this.state.alert.id}
+                        data-for={"content-" + this.props.alert.id}
                     >
                         <div>
                             <span
                                 className="alert__title"
                             >
                                 <p>
-                                    {this.state.alert.title}
+                                    {this.props.alert.title}
                                 </p>
                             </span>
-                            {this.state.alert.message &&
+                            {this.props.alert.message &&
                                 <div>
                                     <span className="alert__description">
                                         <p>
-                                            {this.state.alert.message}
+                                            {this.props.alert.message}
                                         </p>
                                     </span>
                                 </div>
@@ -124,35 +123,35 @@ export default class Alert extends React.Component {
                         </div>
                     </div>
                     <ReactTooltip
-                        id={"content-" + this.state.alert.id}
+                        id={"content-" + this.props.alert.id}
                         place="bottom"
                     >
-                        <strong>{this.state.alert.title}</strong> - {date}<br/>
-                        {this.state.alert.message}
+                        <strong>{this.props.alert.title}</strong> - {date}<br/>
+                        {this.props.alert.message}
                     </ReactTooltip>
 
 
 
                     <button className="alert__action--icon" onClick={this._toggleUpdateAlertPopover}>
-                        {(Array.isArray(this.state.alert.users) && this.state.alert.users.length > 0) ?
+                        {(Array.isArray(this.props.alert.users) && this.props.alert.users.length > 0) ?
                             <div>
                                 <div
                                     className="alert__action--icon__avatars"
                                     data-tip
-                                    data-for={"avatar-" + this.state.alert.id}
+                                    data-for={"avatar-" + this.props.alert.id}
                                 >
-                                    { this.state.alert.users.map((id, i) => {
+                                    { this.props.alert.users.map((id, i) => {
                                         return <div key={i}><Avatar src={(constants.avatarBasePath + id)} backgroundColor="#00AFCA" /></div>
                                     })}
                                 </div>
                                 <div style={{whiteSpace: 'pre-line'}}>
                                     <ReactTooltip
-                                        id={"avatar-" + this.state.alert.id}
+                                        id={"avatar-" + this.props.alert.id}
                                         place="bottom"
                                     >
                                         <span style={{whiteSpace: 'pre-line'}} className="bite">
-                                            {this.state.alert.users.map((id, i) => {
-                                                let user = UserStore.findById(id);
+                                            {this.props.alert.users.map((id, i) => {
+                                                let user = this.props.users.get(id);
                                                 if(user) {
                                                     return <span key={i}>{user.name}<br/></span>
                                                 }
@@ -168,15 +167,16 @@ export default class Alert extends React.Component {
 
                         { this.state.showUpdateAlertPopover &&
                             <UpdateAlertPopover
-                                alert={this.state.alert}
+                                alert={this.props.alert}
                                 onRequestClose={this._toggleUpdateAlertPopover}
                                 open={this.state.showUpdateAlertPopover}
                                 anchor={this.state.popoverAnchor}
+                                users={this.props.users}
                             />
                         }
                     </button>
 
-                    {this.state.alert.severity != 'done' ?
+                    {this.props.alert.severity != 'done' ?
                         <button className="alert__action--primary" onClick={this._closeAlert}>
                             <CheckIcon />
                         </button>

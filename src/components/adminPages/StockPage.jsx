@@ -1,10 +1,6 @@
 import React from 'react';
 
-import BarrelStore from 'stores/BarrelStore';
-import BarrelTypeStore from 'stores/BarrelTypeStore';
 import BottleActionStore from 'stores/BottleActionStore';
-import BottleTypeStore from 'stores/BottleTypeStore';
-import TeamStore from 'stores/TeamStore';
 import AuthStore from 'stores/AuthStore';
 import NotificationActions from 'actions/NotificationActions';
 
@@ -17,6 +13,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import LocalShipping from 'material-ui/svg-icons/maps/local-shipping';
 import Navagiation from 'material-ui/svg-icons/maps/navigation';
 import Paper from 'material-ui/Paper';
+import DataLoader from 'components/partials/DataLoader.jsx';
 
 require('styles/stock/StockPage.scss');
 
@@ -36,123 +33,40 @@ export default class StockPage extends React.Component {
             selectedRows: [],
             selectedBarrels: new Set(),
             selectedBottles: {},
-            showMoveDialog: false
+            showMoveDialog: false,
+            datastore: null,
         };
 
-        this.BarrelStoreToken = null;
-        this.BarrelTypeStoreToken = null;
-        this.TeamStoreToken = null;
-        this.BottleActionStoreToken = null;
-        this.BottleTypeStoreToken = null;
 
         // binding
-        this._loadData = this._loadData.bind(this);
-        this._unloadData = this._unloadData.bind(this);
-        this._updateData = this._updateData.bind(this);
-        this._toggleMoveDialog = this._toggleMoveDialog.bind(this);
-        this._handleBarrelSelection = this._handleBarrelSelection.bind(this);
-        this._handleBottleSelection = this._handleBottleSelection.bind(this);
-        this._setFilters = this._setFilters.bind(this);
-        this._resetFilters = this._resetFilters.bind(this);
-    }
-
-    componentDidMount() {
-        // Load data from the store
-        this._loadData()
-        .then(() => {
-            // listen the stores changes
-            BarrelStore.addChangeListener(this._updateData);
-            BarrelTypeStore.addChangeListener(this._updateData);
-            TeamStore.addChangeListener(this._updateData);
-            BottleActionStore.addChangeListener(this._updateData);
-            BottleTypeStore.addChangeListener(this._updateData);
-        })
-    }
-
-    componentWillUnmount() {
-        // clear store
-        this._unloadData();
-
-        // remove the stores listeners
-        BarrelStore.removeChangeListener(this._updateData);
-        BarrelTypeStore.removeChangeListener(this._updateData);
-        TeamStore.removeChangeListener(this._updateData);
-        BottleActionStore.removeChangeListener(this._updateData);
-        BottleTypeStore.removeChangeListener(this._updateData);
+        this.toggleMoveDialog = this.toggleMoveDialog.bind(this);
+        this.handleBarrelSelection = this.handleBarrelSelection.bind(this);
+        this.handleBottleSelection = this.handleBottleSelection.bind(this);
+        this.applyFilter = this.applyFilter.bind(this);
+        this.setFilters = this.setFilters.bind(this);
+        this.resetFilters = this.resetFilters.bind(this);
+        this.handleDatastoreChange = this.handleDatastoreChange.bind(this);
     }
 
     /**
-     * Load data from all stores and update state
+     * Update state when store are updated
      */
-    _loadData() {
-        // fill the stores
-        return BarrelStore.loadData(null)
-        .then(data => {
-            // ensure that last token doesn't exist anymore.
-            BarrelStore.unloadData(this.BarrelStoreToken);
-            // save the component token
-            this.BarrelStoreToken = data.token;
-
-            return BarrelTypeStore.loadData(null);
-        })
-        .then(data => {
-            // ensure that last token doesn't exist anymore.
-            BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
-            // save the component token
-            this.BarrelTypeStoreToken = data.token;
-
-            return BottleActionStore.loadCount()
-        })
-        .then(data => {
-            // ensure that last token doesn't exist anymore.
-            BottleActionStore.unloadCount(this.BottleActionStoreToken);
-            // save the component token
-            this.BottleActionStoreToken = data.token;
-
-            return BottleTypeStore.loadData(null);
-        })
-        .then(data => {
-            // ensure that last token doesn't exist anymore.
-            BottleTypeStore.unloadData(this.BottleTypeStoreToken);
-            // save the component token
-            this.BottleTypeStoreToken = data.token;
-
-            return TeamStore.loadData(null);
-        })
-        .then(data => {
-            // ensure that last token doesn't exist anymore.
-            TeamStore.unloadData(this.TeamStoreToken);
-            // save the component token
-            this.TeamStoreToken = data.token;
-
-            // init values
-            this._updateData();
-        })
-        .catch(error => NotificationActions.error("Erreur lors de la récupération des stocks.", error));
+    handleDatastoreChange(datastore) {
+        this.applyFilter(datastore);
     }
 
     /**
-     * clear stores
+     * Apply filter to data in the given datastore and save it in state
      */
-    _unloadData() {
-        BarrelStore.unloadData(this.BarrelStoreToken);
-        BarrelTypeStore.unloadData(this.BarrelTypeStoreToken);
-        TeamStore.unloadData(this.TeamStoreToken);
-        BottleActionStore.unloadCount(this.BottleActionStoreToken);
-        BottleTypeStore.unloadData(this.BottleTypeStoreToken);
-    }
-
-    /**
-     * Update data according to stores without adding new filter to it
-     */
-    _updateData() {
+    applyFilter(datastore) {
+        if(!datastore) datastore = this.state.datastore;
         let filteredData = {};
 
         // Add barrels to filteredData
         const filters = this.state.filters;
         filters.rgx = new RegExp(filters.reference);
-        for (let barrel of BarrelStore.barrels) {
-            let type = BarrelTypeStore.findById(barrel.typeId)
+        for (let barrel of datastore.Barrel.values()) {
+            let type = datastore.BarrelType.get(barrel.typeId)
             if (!filters.types.length || filters.types.includes(barrel.typeId)) {
                 if (!filters.locations.length || filters.locations.includes(barrel.teamId)) {
                     if (!filters.states.length || filters.states.includes(barrel.state)) {
@@ -178,7 +92,7 @@ export default class StockPage extends React.Component {
             if (!filters.locations.length || filters.locations.includes(teamId != 'null' ? teamId : null)) {
                 for(let typeId in count[teamId])
                 {
-                    let type = BottleTypeStore.findById(typeId);
+                    let type = datastore.BottleType.get(typeId);
                     if (!filters.types.length || filters.types.includes('-'+typeId)) {
                         if (type && type.shortName.match(filters.rgx)) {
                             for(let state in count[teamId][typeId]) {
@@ -203,7 +117,11 @@ export default class StockPage extends React.Component {
 
 
         this.setState({
-            filteredData: filteredData,
+            filteredData,
+            datastore,
+            teams: datastore.Team,
+            bottleTypes: datastore.BottleType,
+            barrelTypes: datastore.BarrelType,
         });
     }
 
@@ -213,17 +131,17 @@ export default class StockPage extends React.Component {
      * @param attribute: the filter to update
      * @param value: the new filter value
      */
-    _setFilters(attribute, value) {
+    setFilters(attribute, value) {
         let state = this.state;
         state.filters[attribute] = value;
         this.setState(state);
-        this._updateData();
+        this.applyFilter();
     }
 
     /**
      * Reset the filters in the state
      */
-    _resetFilters() {
+    resetFilters() {
         this.setState({
             filters: {
                 types: [],
@@ -232,7 +150,7 @@ export default class StockPage extends React.Component {
                 reference: ""
             }
         });
-        this._updateData();
+        this.applyFilter();
     }
 
     /**
@@ -242,7 +160,7 @@ export default class StockPage extends React.Component {
      *
      * @param {boolean|undefined} emptySelected
      */
-    _toggleMoveDialog(emptySelected) {
+    toggleMoveDialog(emptySelected) {
         let state = this.state;
         if (emptySelected === true) {
             state.selectedBarrels = new Set();
@@ -259,7 +177,7 @@ export default class StockPage extends React.Component {
      * @param {object} clickedBarrel the barrel
      * @param {boolean} selected is the barrel selected or not
      */
-    _handleBarrelSelection(clickedBarrel, selected) {
+    handleBarrelSelection(clickedBarrel, selected) {
         let selectedBarrels = this.state.selectedBarrels;
 
         if (selected) {
@@ -278,7 +196,7 @@ export default class StockPage extends React.Component {
      * @param {Team} team owner team
      * @param {int} count Number of bottle selected
      */
-    _handleBottleSelection(type, team, count) {
+    handleBottleSelection(type, team, count) {
         let selectedBottles = this.state.selectedBottles;
         if(team) team = team.id;
 
@@ -298,8 +216,8 @@ export default class StockPage extends React.Component {
     /**
      * Scroll to the top of the page
      */
-    static _scrollTop() {
-        document.getElementById('StockPage_Top').scrollTop = 0;
+    static scrollTop() {
+        document.getElementById('StockPageTop').scrollTop = 0;
     }
 
     render() {
@@ -314,73 +232,91 @@ export default class StockPage extends React.Component {
         }
 
         return (
-            <div className="StockPage_container" id="StockPage_Top">
-                <Paper className="StockPage_filters_container">
-                    <Filters
-                        teams={TeamStore.teams}
-                        barrelTypes={BarrelTypeStore.types}
-                        bottleTypes={BottleTypeStore.types}
-                        setFilters={this._setFilters}
-                        filters={this.state.filters}
-                    />
+            <DataLoader
+                filters={new Map([
+                    ['Barrel', null],
+                    ['BarrelType', null],
+                    ['BottleAction', null],
+                    ['BottleType', null],
+                    ['Team', null],
+                ])}
+                onChange={ datastore => this.handleDatastoreChange(datastore) }
+            >
+                { () => (
+                    <div className="StockPage_container" id="StockPageTop">
+                        <Paper className="StockPage_filters_container">
+                            <Filters
+                                teams={this.state.teams}
+                                barrelTypes={this.state.barrelTypes}
+                                bottleTypes={this.state.bottleTypes}
+                                setFilters={this.setFilters}
+                                filters={this.state.filters}
+                            />
 
-                    <Row center="md">
-                        <Col xs={12} sm={6} md={3}>
-                            <RaisedButton
-                                label={'Déselectionner les fûts ' + (selectionCount ? '(' + selectionCount + ')' : '')}
+                            <Row center="md">
+                                <Col xs={12} sm={6} md={3}>
+                                    <RaisedButton
+                                        label={'Déselectionner les fûts ' + (selectionCount ? '(' + selectionCount + ')' : '')}
+                                        disabled={selectionCount === 0}
+                                        onClick={_ => this.setState({ selectedBarrels: new Set(), selectedBottles: {} })}
+                                        fullWidth={true}
+                                    />
+                                </Col>
+                                <Col xs={12} sm={6} md={3}>
+                                    <RaisedButton
+                                        label="Reset les filtres"
+                                        secondary={true}
+                                        onClick={this.resetFilters}
+                                        fullWidth={true}
+                                    />
+                                </Col>
+                            </Row>
+                        </Paper>
+
+                        <StockList
+                            teams={this.state.teams}
+                            barrelTypes={this.state.barrelTypes}
+                            bottleTypes={this.state.bottleTypes}
+                            data={this.state.filteredData}
+                            handleBarrelSelection={this.handleBarrelSelection}
+                            handleBottleSelection={this.handleBottleSelection}
+                            selectedBarrels={[...this.state.selectedBarrels]}
+                            selectedBottles={this.state.selectedBottles}
+                        />
+
+
+                        <FloatingActionButton
+                            className="FloatingButton--secondary"
+                            onClick={StockPage.scrollTop}
+                            secondary={true}
+                        >
+                            <Navagiation  />
+                        </FloatingActionButton>
+
+
+                        { AuthStore.can('barrel/admin') &&
+                            <FloatingActionButton
+                                className="FloatingButton"
                                 disabled={selectionCount === 0}
-                                onClick={_ => this.setState({ selectedBarrels: new Set(), selectedBottles: {} })}
-                                fullWidth={true}
+                                onClick={this.toggleMoveDialog}
+                            >
+                                <LocalShipping  />
+                            </FloatingActionButton>
+                        }
+
+                            <MoveDialog
+                                show={this.state.showMoveDialog}
+                                close={this.toggleMoveDialog}
+                                barrels={[...this.state.selectedBarrels]}
+                                bottles={this.state.selectedBottles}
+                                teams={this.state.teams}
+                                barrelTypes={this.state.barrelTypes}
+                                bottleTypes={this.state.bottleTypes}
                             />
-                        </Col>
-                        <Col xs={12} sm={6} md={3}>
-                            <RaisedButton
-                                label="Reset les filtres"
-                                secondary={true}
-                                onClick={this._resetFilters}
-                                fullWidth={true}
-                            />
-                        </Col>
-                    </Row>
-                </Paper>
 
-                <StockList
-                    data={this.state.filteredData}
-                    handleBarrelSelection={this._handleBarrelSelection}
-                    handleBottleSelection={this._handleBottleSelection}
-                    selectedBarrels={[...this.state.selectedBarrels]}
-                    selectedBottles={this.state.selectedBottles}
-                />
-
-
-                <FloatingActionButton
-                    className="FloatingButton--secondary"
-                    onClick={StockPage._scrollTop}
-                    secondary={true}
-                >
-                    <Navagiation  />
-                </FloatingActionButton>
-
-
-                { AuthStore.can('barrel/admin') &&
-                    <FloatingActionButton
-                        className="FloatingButton"
-                        disabled={selectionCount === 0}
-                        onClick={this._toggleMoveDialog}
-                    >
-                        <LocalShipping  />
-                    </FloatingActionButton>
-                }
-
-                    <MoveDialog
-                        show={this.state.showMoveDialog}
-                        close={this._toggleMoveDialog}
-                        teams={TeamStore.findByPermission('ui/receiveStock')}
-                        barrels={[...this.state.selectedBarrels]}
-                        bottles={this.state.selectedBottles}
-                    />
-
-            </div>
+                    </div>
+                )}
+            </DataLoader>
         );
     }
 

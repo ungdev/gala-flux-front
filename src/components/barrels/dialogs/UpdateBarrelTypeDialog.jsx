@@ -21,14 +21,13 @@ export default class UpdateBarrelTypeDialog extends React.Component {
 
 
         this.state = {
-            type: props.type,
             values: {
-                'name': props.type ? props.type.name : null,
-                'shortName': props.type ? props.type.shortName : null,
-                'liters': props.type ? props.type.liters : null,
-                'sellPrice': props.type ? props.type.sellPrice : null,
-                'supplierPrice': props.type ? props.type.supplierPrice : null,
-                'count': (props.count ? props.count : 0),
+                'name': props.type.name || '',
+                'shortName': props.type.shortName || '',
+                'liters': props.type.liters || '',
+                'sellPrice': props.type.sellPrice || '',
+                'supplierPrice': props.type.supplierPrice || '',
+                'count': props.count || 0,
             },
             errors: {},
             shortNameModified: true,
@@ -47,14 +46,13 @@ export default class UpdateBarrelTypeDialog extends React.Component {
     componentWillReceiveProps(props) {
         if(!this.submitted) {
             this.setState({
-                type: props.type,
                 values: {
-                    'name': props.type ? props.type.name : this.state.values.name,
-                    'shortName': props.type ? props.type.shortName : this.state.values.shortName,
-                    'liters': props.type ? props.type.liters : this.state.values.liters,
-                    'sellPrice': props.type ? props.type.sellPrice : this.state.values.sellPrice,
-                    'supplierPrice': props.type ? props.type.supplierPrice : this.state.values.supplierPrice,
-                    'count': (props.count ? props.count : this.state.values.count),
+                    'name': props.type.name || '',
+                    'shortName': props.type.shortName || '',
+                    'liters': props.type.liters || '',
+                    'sellPrice': props.type.sellPrice || '',
+                    'supplierPrice': props.type.supplierPrice || '',
+                    'count': props.count || 0,
                 },
                 errors: {},
             });
@@ -139,7 +137,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
 
         // Submit
         this.submitted = true;
-        BarrelTypeService.update(this.state.type.id, this.state.values)
+        BarrelTypeService.update(this.props.type.id, this.state.values)
         .then((type) => {
 
             // Set the barrel number
@@ -192,7 +190,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
      */
     _handleDelete() {
         // Submit
-        BarrelTypeService.destroy(this.state.type.id)
+        BarrelTypeService.destroy(this.props.type.id)
         .then(() => {
             NotificationActions.snackbar('Les fûts ont bien été supprimés.');
             this.setState({showDeleteDialog: false});

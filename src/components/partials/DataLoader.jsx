@@ -97,13 +97,15 @@ export default class DataLoader extends React.Component {
         // Hold data read from stores
         this._datastore = {};
 
+        // Children cache: Children function is executed only once when data is available
+        this.childrenCache = null;
+
         // Binding
         this.updateData = this.updateData.bind(this);
     }
 
     componentDidMount() {
         if(!this.state.loading) {
-            console.log('setState lodaing true mount')
             this.setState({ loading: true });
         }
         this.requireData();
@@ -129,8 +131,7 @@ export default class DataLoader extends React.Component {
 
     componentWillReceiveProps(props) {
         // If filter has changed require new data
-        if(!deepEqual([...props.filters], [...this.props.filters])) {
-            console.log('setState lodaing true')
+        if(JSON.stringify(props.filters) !== JSON.stringify(this.props.filters) ) {
             this.setState({ loading: true });
             this.requireData(props);
         }
@@ -224,7 +225,7 @@ export default class DataLoader extends React.Component {
             if (typeof filter === 'function') {
                 filter = filter(datastore);
             }
-            datastore[name] = this.stores[name].find2future(filter);
+            datastore[name] = this.stores[name].find(filter);
         });
 
         // Set new datastore
@@ -232,9 +233,10 @@ export default class DataLoader extends React.Component {
     }
 
     render() {
+        // Show loading page
         if(this.state.loading) {
             if(this.props.loadingContent) {
-                {this.props.loadingContent}
+                return this.props.loadingContent;
             }
 
             return (
@@ -242,8 +244,12 @@ export default class DataLoader extends React.Component {
             );
         }
 
+        // show children
         return (
-            <div>{ typeof this.props.children === 'function' ? this.props.children() : this.props.children }</div>
+            <div>{ typeof this.props.children === 'function' ?
+                this.props.children()
+                :
+                this.props.children }</div>
         );
     }
 }

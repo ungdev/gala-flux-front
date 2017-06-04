@@ -5,38 +5,29 @@ import {Card, CardHeader, CardText} from 'material-ui/Card';
 import BarrelsInfo from 'components/bars/BarrelsInfo.jsx';
 import AlertsInfo from 'components/bars/AlertsInfo.jsx';
 import Badge from 'material-ui/Badge';
-import Face from 'material-ui/svg-icons/action/face';
+import FaceIcon from 'material-ui/svg-icons/action/face';
+import ReactTooltip from 'react-tooltip';
 
 import * as color from 'material-ui/styles/colors';
 require('styles/bars/BarCard.scss');
 
+/**
+ * @param {Object} userNames
+ * @param {Object} prices
+ * @param {Object} barrelList
+ * @param {Object} barrelCount
+ * @param {Object} alertList
+ */
 export default class BarCard extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.state = {
-            team: props.team,
-            users: props.users ? props.users.length : 0,
-            barrels: props.barrels,
-            alerts: props.alerts,
-            headerHovered: false
-        };
-
-        this._showBarHome = this._showBarHome.bind(this);
+        this.showBarHome = this.showBarHome.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            team: nextProps.team,
-            users: nextProps.users ? nextProps.users.length : 0,
-            alerts: nextProps.alerts,
-            barrels: nextProps.barrels
-        });
-    }
-
-    _showBarHome() {
-        router.navigate('barhome.id', {id: this.state.team.id});
+    showBarHome() {
+        router.navigate('barhome.id', {id: this.props.team.id});
     }
 
     render() {
@@ -44,34 +35,48 @@ export default class BarCard extends React.Component {
             title: {
                 fontSize: 20,
                 fontWeight: "bold",
-                borderBottom: "1px solid white"
             },
             badge: {
-                background: this.state.users > 0 ? color.teal600 : color.red600
+                background: this.props.userNames.length > 0 ? color.teal600 : color.red600
             }
         };
 
         return (
             <Card className="BarCard"
-                onClick={this._showBarHome}
+                onClick={this.showBarHome}
             >
-                <div className="UsersLogged">
+                <div className="UsersLogged"
+                    data-tip
+                    data-for={'BarCard-UsersLogged-' + this.props.team.id}
+                >
                     <Badge
-                        badgeContent={this.state.users}
+                        badgeContent={this.props.userNames.length}
                         primary={true}
                         badgeStyle={styles.badge}
                     >
-                        <Face />
+                        <FaceIcon />
                     </Badge>
                 </div>
+                { this.props.userNames.length &&
+                    <ReactTooltip
+                        id={'BarCard-UsersLogged-' + this.props.team.id}
+                        place="bottom"
+                        style={{textAlign: 'center', zIndex: '10'}}
+                    >
+                        Utilisateurs connectés :
+                        { '\n' + this.props.userNames.sort((a, b) => a.localeCompare(b)).join('\n') }
+                    </ReactTooltip>
+                }
+
                 <CardHeader
                     titleStyle={styles.title}
-                    title={this.state.team.name}
-                    subtitle={this.state.team.location}
+                    title={this.props.team.name}
+                    subtitle={this.props.team.location}
+                    className="BarCard__header"
                 />
                 <CardText>
-                    <AlertsInfo alerts={this.state.alerts} />
-                    <BarrelsInfo barrels={this.state.barrels} />
+                    <AlertsInfo alertList={this.props.alertList} team={this.props.team}/>
+                    <BarrelsInfo prices={this.props.prices} barrelList={this.props.barrelList} barrelCount={this.props.barrelCount} />
                 </CardText>
             </Card>
         );

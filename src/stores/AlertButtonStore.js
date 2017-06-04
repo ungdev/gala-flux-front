@@ -8,10 +8,7 @@ class AlertButtonStore extends BaseStore {
         super('alertButton', AlertButtonService);
     }
 
-    get buttons() {
-        return this.getUnIndexedData();
-    }
-
 }
 
-export default new AlertButtonStore();
+module.exports = new AlertButtonStore();
+export default module.exports;

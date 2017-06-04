@@ -1,64 +1,55 @@
 import React from 'react';
 
-import { Row } from 'react-flexbox-grid';
-import AlertsInfoItem from 'components/bars/AlertsInfoItem.jsx';
+import { Row, Col } from 'react-flexbox-grid';
+import ReactTooltip from 'react-tooltip';
+import WarningIcon from 'material-ui/svg-icons/alert/warning';
 
 import * as color from 'material-ui/styles/colors';
 
+/**
+ * @param {Object} alertList
+ */
 export default class AlertsInfo extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.state = {
-            alerts: props.alerts
-        };
-
         this.severities = {
-            "done": color.teal600,
-            "warning": color.orange600,
-            "serious": color.red600
+            done: color.teal600,
+            warning: color.orange600,
+            serious: color.red600
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            alerts: nextProps.alerts
-        });
-    }
 
     render() {
         let severities = Object.keys(this.severities);
         let emptyCounter = 0;
-
         return (
             <div className="CardInfo_container">
-                {
-                    this.props.alerts &&
-                    <div>
-                        <div className="CardInfo_title">Alertes :</div>
-                        <Row>
-                            {
-                                severities.map(severity => {
-                                    if (this.state.alerts[severity] && this.state.alerts[severity].length > 0) {
-                                        return <AlertsInfoItem
-                                                    color={this.severities[severity]}
-                                                    number={this.state.alerts[severity].length}
-                                                />
-                                    } else {
-                                        emptyCounter++;
-                                    }
-                                })
-                            }
-                        </Row>
+                <div>
+                    <div className="CardInfo_title">Alertes :</div>
+                    <Row>
                         {
-                            emptyCounter === severities.length &&
-                            <div style={{textAlign: "center"}}>
-                                Aucune alerte
-                            </div>
+                            severities.map(severity => {
+                                if (this.props.alertList[severity] && this.props.alertList[severity].length > 0) {
+                                    return <Col xs={4} className="CardInfo" key={severity}>
+                                            <WarningIcon color={this.severities[severity]} />
+                                            <span>{this.props.alertList[severity].length}</span>
+                                        </Col>
+                                } else {
+                                    emptyCounter++;
+                                }
+                            })
                         }
-                    </div>
-                }
+                    </Row>
+                    {
+                        emptyCounter === severities.length &&
+                        <div style={{textAlign: "center"}}>
+                            Aucune alerte
+                        </div>
+                    }
+                </div>
             </div>
         );
     }

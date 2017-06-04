@@ -1,10 +1,10 @@
 import jwtDecode from 'jwt-decode';
 import BaseStore from 'stores/BaseStore';
 import AuthStore from 'stores/AuthStore';
-import ChatStore from 'stores/ChatStore';
+import MessageStore from 'stores/MessageStore';
 import UserStore from 'stores/UserStore';
 import TeamStore from 'stores/TeamStore';
-import ChatService from 'services/ChatService';
+import MessageService from 'services/MessageService';
 import AlertService from 'services/AlertService';
 import NotificationActions from 'actions/NotificationActions';
 import router from 'router';
@@ -80,7 +80,7 @@ class NotificationStore extends BaseStore {
      */
     _init() {
         // fetch new messages counts
-        ChatService.get()
+        MessageService.get()
         .then(messages => {
             // read the last messages viewed
             const newMessages = {};
@@ -118,7 +118,7 @@ class NotificationStore extends BaseStore {
             this.emitChange();
 
             // Update configuration with new channels
-            return ChatService.getChannels();
+            return MessageService.getChannels();
         })
         .then(channels => {
             for (let channel of channels) {
@@ -277,7 +277,7 @@ class NotificationStore extends BaseStore {
      * @param {string} channel
      */
     _resetNewMessages(channel) {
-        let lastReadMessage = ChatStore.getLastChannelMessage(channel);
+        let lastReadMessage = MessageStore.getLastChannelMessage(channel);
         this._newMessageCounts[channel] = 0;
         this._lastReadMessages[channel] = lastReadMessage ? lastReadMessage.createdAt : null;
 

@@ -11,6 +11,7 @@ import NotificationStore from 'stores/NotificationStore';
 import NotificationActions from 'actions/NotificationActions';
 import ReceiverSelect from 'components/log/ReceiverSelect.jsx';
 import { Row, Col } from 'react-flexbox-grid';
+import DataLoader from "components/partials/DataLoader.jsx";
 
 require('styles/log/Alerts.scss');
 
@@ -22,6 +23,8 @@ export default class Alerts extends React.Component {
         this.state = {
             alertsDone: [],
             alerts: [],
+            users: null,
+            teams: null,
             filteredAlerts: [],
 
             receiverFilter: [],
@@ -29,149 +32,61 @@ export default class Alerts extends React.Component {
             newAlerts: {},
         };
 
-        this.AlertStoreToken = null;
-        this.TeamStoreToken = null;
-        this.UserStoreToken = null;
-
-        this._setAlerts = this._setAlerts.bind(this);
-        this._setNewAlerts = this._setNewAlerts.bind(this);
-        this._handleFilter = this._handleFilter.bind(this);
-    }
-
-    componentDidMount() {
-        AlertStore.loadData(null)
-            .then(data => {
-                AlertStore.unloadData(this.AlertStoreToken);
-                this.AlertStoreToken = data.token;
-                return UserStore.loadData(null);
-            })
-            .then(data => {
-                UserStore.unloadData(this.UserStoreToken);
-                this.UserStoreToken = data.token;
-                return TeamStore.loadData(null);
-            })
-            .then(data => {
-                TeamStore.unloadData(this.TeamStoreToken);
-                this.TeamStoreToken = data.token;
-
-                // Init receiver filter
-                let receiverFilter = [];
-                if(localStorage.getItem('alertReceivers')) {
-                    try {
-                        receiverFilter = JSON.parse(localStorage.getItem('alertReceivers'));
-                    } catch (e) {
-                        receiverFilter = [];
-                        console.error('localstorage notificationConfiguration json parsing error', e);
-                    }
-                }
-                else {
-                    if(AuthStore.can('ui/receiveAlerts')) {
-                        receiverFilter.push(AuthStore.team.id);
-                    }
-                    if(AuthStore.can('alert/nullReceiver')) {
-                        receiverFilter.push(null);
-                    }
-                    if(receiverFilter.length == 0) {
-                        let teams = TeamStore.findByPermission('ui/receiveAlerts');
-                        for (let team of teams) {
-                            receiverFilter.push(team.id);
-                        }
-                        receiverFilter.push(null);
-                    }
-                }
-                this.setState({receiverFilter});
-                localStorage.setItem('alertReceivers', JSON.stringify(this.state.receiverFilter));
-                if(global.Android) Android.setAlertReceivers(JSON.stringify(this.state.receiverFilter));
-
-                // First update of the component with data
-                this._setAlerts();
-            })
-            .catch(error => {
-                NotificationActions.error('Une erreur s\'est produite pendant le chargement des alertes', error);
-            });
-
-        AlertStore.addChangeListener(this._setAlerts);
-        AlertStore.addNewListener(this._setNewAlerts);
-        TeamStore.addChangeListener(this._setAlerts);
-    }
-
-    componentWillUnmount() {
-        // clean stores
-        AlertStore.unloadData(this.AlertStoreToken);
-        TeamStore.unloadData(this.TeamStoreToken);
-        // remove listeners
-        AlertStore.removeChangeListener(this._setAlerts);
-        AlertStore.removeNewListener(this._setNewAlerts);
-        TeamStore.removeChangeListener(this._setAlerts);
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (this.state.alerts.length || this.state.alertsDone.length) {
-            if (prevState.isDoneFilter !== this.state.isDoneFilter || prevState.receiverFilter.length !== this.state.receiverFilter.length ) {
-                this._setFilteredAlerts();
+        // Init filters
+        if(localStorage.getItem('alertReceivers')) {
+            try {
+                this.state.receiverFilter = JSON.parse(localStorage.getItem('alertReceivers'));
+            } catch (e) {
+                this.state.receiverFilter = [];
+                console.error('localstorage notificationConfiguration json parsing error', e);
+            }
+        }
+        if (this.state.receiverFilter.length == 0) {
+            if(AuthStore.can('ui/receiveAlerts')) {
+                this.state.receiverFilter.push(AuthStore.team.id);
+            }
+            if(AuthStore.can('alert/nullReceiver')) {
+                this.state.receiverFilter.push(null);
             }
         }
 
+        // this._handleFilter = this._handleFilter.bind(this);
+        this.handleDatastoreChange = this.handleDatastoreChange.bind(this);
+    }
+
+    /**
+     * Update state when store are updated
+     */
+    handleDatastoreChange(datastore) {
+        this.setState({
+            alerts: datastore.Alert.sort((a, b) => {
+                // If not done, order by assigned then createdAt
+                if(a.severity !== 'done') {
+                    // Order by "assigned" only if not done
+                    if (a.users.length < b.users.length) return -1;
+                    if (a.users.length > b.users.length) return 1;
+                    // Then order by created date
+                    if (a.createdAt < b.createdAt) return -1;
+                    if (a.createdAt > b.createdAt) return 1;
+                }
+                // If done, order by updated date (should be the date of validation)
+                // We want last validated error to be on top
+                else {
+                    if (a.updatedAt > b.updatedAt) return -1;
+                    if (a.updatedAt < b.updatedAt) return 1;
+                }
+                return 0;
+            }),
+            users: datastore.User,
+            teams: datastore.Team,
+        })
+    }
+
+
+    componentDidUpdate(prevProps, prevState) {
         if(prevState.receiverFilter.length != this.state.receiverFilter.length) {
             localStorage.setItem('alertReceivers', JSON.stringify(this.state.receiverFilter));
             if(global.Android) Android.setAlertReceivers(JSON.stringify(this.state.receiverFilter));
-        }
-    }
-
-    _setAlerts() {
-        if (AlertStore.length && TeamStore.length) {
-            let alerts = [];
-            let alertsDone = [];
-            for (let alert of AlertStore.alerts) {
-                alert.sender = TeamStore.findById(alert.senderTeamId);
-                if (alert.severity !== 'done') {
-                    alerts.push(alert);
-                } else {
-                    alertsDone.push(alert);
-                }
-            }
-
-            this.setState({ alerts, alertsDone, newAlerts: AlertStore.newAlerts });
-            this._setFilteredAlerts();
-        }
-    }
-
-    _setNewAlerts(alert) {
-        let team = TeamStore.findById(alert.senderTeamId);
-        this.setState({
-            newAlerts: AlertStore.newAlerts,
-        });
-    }
-
-    _setFilteredAlerts() {
-        if (this.state.alerts.length || this.state.alertsDone.length) {
-            let receiveDefaultTeams = TeamStore.findByPermission('alert/nullReceiver');
-            let filteredAlerts = (this.state.isDoneFilter?this.state.alertsDone:this.state.alerts).filter((alert) => (
-                ((this.state.isDoneFilter && alert.severity === 'done') || (!this.state.isDoneFilter && alert.severity !== 'done')) &&
-                (this.state.receiverFilter.length === 0 ||
-                (this.state.receiverFilter.includes(alert.receiverTeamId || null)))
-            ));
-
-            // Order by modification for "done" list and by creation and assignation for "not done" list
-            if(this.state.isDoneFilter) {
-                filteredAlerts = filteredAlerts.sort((a, b) => {
-                    return new Date(b.updatedAt) - new Date(a.updatedAt);
-                });
-                filteredAlerts = filteredAlerts.slice(0, 30);
-            }
-            else {
-                filteredAlerts = filteredAlerts.sort((a, b) => {
-                    if((a.users.length == 0) == (b.users.length == 0)) {
-                        return new Date(a.createdAt) - new Date(b.createdAt);
-                    }
-                    else if(a.users.length == 0) {
-                        return -1;
-                    }
-                    return 1;
-                });
-            }
-
-            this.setState({filteredAlerts: filteredAlerts});
         }
     }
 
@@ -209,7 +124,7 @@ export default class Alerts extends React.Component {
                             AuthStore.can('alert/admin') &&
                             <Col xs={12} sm={4}>
                                 <ReceiverSelect
-                                    teams={TeamStore.findByPermission('ui/receiveAlerts')}
+                                    teams={this.state.teams ? this.state.teams.findByPermission('ui/receiveAlerts') : []}
                                     value={this.state.receiverFilter}
                                     onChange={(v) => this.setState({ receiverFilter: v })}
                                 />
@@ -217,9 +132,34 @@ export default class Alerts extends React.Component {
                         }
                     </Row>
                 </Paper>
-                <div className="alerts__container">
-                    <AlertList alerts={this.state.filteredAlerts} />
-                </div>
+                <DataLoader
+                    filters={new Map([
+                        ['Alert', [{
+                            severity: (this.state.isDoneFilter ? 'done' : ['warning', 'serious']),
+                            receiverTeamId: this.state.receiverFilter,
+                        },
+                        (this.state.receiverFilter.includes(null) ? {
+                            severity: (this.state.isDoneFilter ? 'done' : ['warning', 'serious']),
+                            receiverTeamId: null,
+                        }
+                        : undefined),
+
+                        ]],
+                        ['User', null ],
+                        ['Team', null ],
+                    ])}
+                    onChange={ datastore => this.handleDatastoreChange(datastore) }
+                >
+                    { () => (
+                            <div className="alerts__container">
+                                <AlertList
+                                    alerts={this.state.alerts}
+                                    teams={this.state.teams}
+                                    users={this.state.users}
+                                    />
+                            </div>
+                    )}
+                </DataLoader>
             </div>
         );
     }
