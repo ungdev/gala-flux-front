@@ -1,0 +1,157 @@
+@import '../../../config/Constants';
+@import '../../../config/Colors';
+
+.AlertButtons__Button {
+    box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
+    border-radius: 2px;
+}
+
+.AlertButtons__Button_button {
+    background-color: #fff;
+    border: none;
+    padding: 4px 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 2px;
+    transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+}
+
+.AlertButtons__Button_button.AlertButtons__green_background, .AlertButtons__Button_button.AlertButtons__orange_background {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+
+.AlertButtons__Button_iconButton {
+    border: none !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 4px 8px !important;
+    background-color: #fff !important;
+    transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+}
+
+.AlertButtons__fullWidth {
+    width: 100%;
+}
+
+.AlertButtons__Button_button:hover {
+    cursor: pointer;
+    background-color: #e6e6e6;
+}
+.AlertButtons__Button_button:focus {
+    outline: none;
+}
+
+.AlertButtons__Button_active_container {
+    width: 100%;
+    display: flex;
+    margin-top: 4px;
+
+    > * {
+        display: inline-block;
+    }
+
+    > .AlertButtons__Button_iconButton:last-child {
+        border-top-right-radius: 2px;
+        border-bottom-right-radius: 2px;
+    }
+}
+
+.AlertButtons__Button_autowidth {
+    width: 100%;
+}
+
+.AlertButtons__Button_input_blur {
+    z-index: 1400;
+    background-color: rgba(0, 0, 0, 0.541176);
+    opacity: 0.6;
+    top:0;
+    left:0;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+}
+
+.AlertButtons__Button--required {
+    z-index: 1500;
+    position: relative;
+    box-shadow: rgba(0, 0, 0, 0.247059) 0px 14px 45px, rgba(0, 0, 0, 0.219608) 0px 10px 18px;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+
+    > .AlertButtons__Button_button {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+}
+
+.AlertButtons__Button_input_container {
+    padding: 0 10px 10px 10px;
+    background: #fff;
+}
+
+.AlertButtons__Button_input__TextField {
+    textarea {
+        font-size: 14px !important;
+        line-height: 15px !important;
+    }
+}
+
+.AlertButtons__Button_status {
+    width: 20px;
+    border-right: 2px solid #fff;
+}
+
+.AlertButtons__green_background {
+    background: $background-ok !important;
+    color: #fff !important;
+}
+button.AlertButtons__green_background:hover {
+    background: $background-ok--hover !important;
+}
+
+.AlertButtons__orange_background {
+    background: $background-warning;
+    color: #fff;
+}
+.AlertButtons__orange_background:hover {
+    background: $background-warning--hover;
+}
+
+.AlertButtons__red_background {
+    background: $background-serious;
+    color: #fff;
+}
+button.AlertButtons__red_background:hover {
+    background: $background-serious--hover;
+}
+
+
+.AlertButtons__SmallIcon {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+.AlertButtons__whiteIcon {
+    color: #fff !important;
+}
+
+.AlertButtons__greenIcon {
+    color: $background-ok !important;
+}
+
+.AlertButtons__Button_input_actions > * {
+    display: flex;
+    width: 50%;
+}
+
+.AlertButtons__Button_input_label {
+    color: $theme-primary1Color;
+    font-size: 13px;
+    white-space: pre-line;
+    padding-top: 8px;
+}

@@ -1,6 +1,6 @@
-
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import { render } from 'react-dom';
+import { Router, browserHistory } from 'react-router';
 
 // TapEvent
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -12,23 +12,20 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import themeConfiguration from 'config/theme';
 const muiTheme = getMuiTheme(themeConfiguration);
 
-// Font awesome
+// Loading fonts
 require('font-awesome/scss/font-awesome.scss');
+require('typeface-roboto');
 
 // Configure sound manager
+import Sound from 'react-sound';
 soundManager.setup({debugMode: false});
 
-// Router
-import router from 'router';
-import { RouterProvider } from 'react-router5';
-
 // Pages
-import App from "components/App.jsx";
+import App from "app/App.jsx";
 
-// constants
+// Config
 import * as constants from 'config/constants';
-
-import jwtDecode from 'jwt-decode';
+import routes from 'config/routes.jsx';
 
 // actions and services
 import WebSocketService from 'services/WebSocketService';
@@ -38,14 +35,15 @@ import SessionService from 'services/SessionService';
 WebSocketService.connect();
 
 // Render the app using router
-ReactDOM.render(
+render((
     <MuiThemeProvider muiTheme={muiTheme}>
-        <RouterProvider router={ router }>
-            <App />
-        </RouterProvider>
-    </MuiThemeProvider>,
-    document.getElementById('app')
-);
+        <Router history={browserHistory}>
+            {routes}
+        </Router>
+    </MuiThemeProvider>
+), document.getElementById('app'));
+
+
 
 // Init android interface
 if (global.Android) {
@@ -53,7 +51,7 @@ if (global.Android) {
 
     // Add method that execute js code
     Android.navigate = (route, param) => {
-        router.navigate(route, param);
+        // browserHistory.push(route, param); // TODO fix
     }
 }
 

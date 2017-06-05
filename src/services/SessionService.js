@@ -1,6 +1,6 @@
 import BaseService from 'services/BaseService';
 import NotificationActions from 'actions/NotificationActions';
-import {ApiError} from 'errors';
+import {ApiError} from 'lib/errors';
 import * as constants from '../config/constants';
 
 class SessionService extends BaseService {

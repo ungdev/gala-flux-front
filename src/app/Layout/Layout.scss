@@ -1,0 +1,32 @@
+@import '../../config/Constants';
+
+.Layout {}
+.Layout__AppBar {}
+
+// Container under the appbar
+.Layout__Main {
+    width: 100%;
+    position: fixed;
+    top: $AppBarHeight + $TabsHeight;
+    bottom: 0px;
+    overflow: auto;
+}
+
+@media only screen and (min-width: $screen-min-md) {
+    .Layout__Main--desktopTabsHidden {
+        top: $AppBarHeight;
+    }
+}
+
+@media only screen and (min-width: $screen-min-sm) and (max-width: $screen-max-sm) {
+    .Layout__Main--tabletTabsHidden {
+        top: $AppBarHeight;
+    }
+}
+
+// Reduce Appbar size for xs
+@media only screen and (max-width: $screen-max-xs) {
+    .Layout__Main {
+        top: $AppBarHeight-xs;
+    }
+}

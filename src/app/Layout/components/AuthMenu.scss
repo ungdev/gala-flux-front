@@ -1,0 +1,60 @@
+@import '../../../config/Constants';
+
+.Layout__AuthMenu {
+    .Layout__AuthMenu__button {
+        background: none;
+        color: $theme-alternateTextColor;
+        padding: 0;
+        outline: none;
+        cursor: pointer;
+        border: 0;
+
+        white-space: nowrap;
+        overflow: hidden;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 48px;
+
+        .Layout__AuthMenu__button__avatar {
+            margin-left: 10px;
+        }
+
+        .Layout__AuthMenu__button__details {
+            text-align: right;
+            display: inline-block;
+        }
+    }
+}
+
+.Layout__AuthMenu__menuDetails {
+    margin: 15px 15px 0 15px;
+
+    > hr {
+        margin-top: 15px !important;
+    }
+
+    // This is usefull only if AuthMenu__button__details is hidden
+    display: none;
+}
+
+
+
+/**
+ * Reduce size for xs
+ */
+@media only screen and (max-width: $screen-max-xs) {
+    .Layout__AuthMenu__button__avatar {
+        height: 30px !important;
+        width: 30px !important;
+    }
+
+    .Layout__AuthMenu__button__details {
+        display: none !important;
+    }
+
+    .Layout__AuthMenu__menuDetails {
+        display: block;
+    }
+}

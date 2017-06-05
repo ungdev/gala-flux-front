@@ -1,0 +1,59 @@
+@import '../../config/Constants';
+
+.StockScene {
+    height: 100%;
+    background-color: $background-gray;
+}
+
+.StockScene__container {
+    padding: 0 10px 10px 10px;
+    background-color: $background-gray;
+
+    .BarrelChipContainer {
+        margin-bottom: 12px;
+    }
+
+    .StockScene__card__body {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .StockScene__card {
+        margin-top: 10px;
+    }
+}
+
+.StockScene__filters__container {
+    background-color: white;
+    margin: 0 10px 10px 10px;
+    padding: 10px;
+}
+
+
+
+
+
+/**
+ * For big screen, but the filter paper on the bottom of the screen
+ */
+@media only screen and (min-width: $screen-min-md) and (min-height: 768px) {
+    .StockScene__container {
+        position: absolute;
+        top: 130px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: auto;
+    }
+
+    .StockScene__filters__container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        box-shadow: rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px !important;
+        margin: 0;
+        height: 130px;
+    }
+}

@@ -1,0 +1,81 @@
+@import '../../config/Constants';
+@import '../../config/Colors';
+
+/**
+ * Container of a splitscreen view (with independant scrooling) under appbar+tabs
+ * Each child of this element will split the screen vertically and be scrollable
+ */
+.pages__VerticalSplitLayout {
+    width: 100%;
+    height:100%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+
+    > * {
+        flex-grow: 1;
+        flex-basis: 0;
+        overflow: auto;
+        border-right: solid color($blue-grey, 800) 1px;
+    }
+
+    > *:last-child {
+        border-right: none;
+    }
+}
+
+
+/**
+ * This menu can be used in the splitscreen
+ */
+.pages__VerticalSplitLayout__menu {
+    z-index: 1;
+    flex-basis: 256px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    border-right: 0;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16), 0px 3px 10px rgba(0, 0, 0, 0.23);
+}
+
+/**
+ * This layout will center the page and put gray outside when the screen is big
+ */
+.pages__MonoPageLayout {
+    width: 100%;
+    height:100%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: $background-gray;
+
+    > * {
+        flex-grow: 1;
+        flex-basis: 0;
+        overflow: auto;
+        max-width: 900px;
+        height: 100%;
+        background-color: white;
+        box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16), 0px 3px 10px rgba(0, 0, 0, 0.23);
+    }
+}
+
+
+@media only screen and (max-width: $screen-max-sm) {
+    /**
+     * Hide secondary part of the splitscreen
+     */
+    .pages__VerticalSplitLayout__secondary {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: $screen-max-xs) {
+    /**
+     * Hide menu enable drawer
+     */
+    .pages__VerticalSplitLayout__menu {
+        display: none;
+    }
+}

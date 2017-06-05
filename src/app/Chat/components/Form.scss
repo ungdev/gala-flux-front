@@ -1,0 +1,33 @@
+@import '../../../config/Constants';
+
+.Chat__Form {
+    display: flex;
+    flex-basis: 48px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    overflow: hidden;
+    border-left: 1px solid $background-gray;
+
+    .Chat__Form__input, .Chat__Form__input:focus {
+        flex-grow: 1;
+        border: 0;
+        outline: 0;
+        padding: 4px 8px;
+        height: 40px;
+        line-height: 40px;
+    }
+
+    .Chat__Form__button {
+        border-radius: 0;
+        flex-basis: 48px;
+        flex-shrink: 0;
+        flex-grow: 0;
+        min-width: 48px !important;
+
+        * {
+            height: 48px !important;
+            width: 100%;
+            border-radius: 0 !important;
+        }
+    }
+}

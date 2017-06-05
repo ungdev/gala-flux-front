@@ -1,0 +1,20 @@
+@import '../../../config/Constants';
+
+.Layout__AppBar {}
+
+// Reduce Appbar size for xs
+@media only screen and (max-width: $screen-max-xs) {
+    .Layout__AppBar {
+        height: $AppBarHeight-xs;
+
+        > div {
+            margin-top: 0 !important;
+        }
+        > h1 {
+            height: $AppBarHeight-xs !important;
+            line-height: $AppBarHeight-xs !important;
+            font-size: 20px !important;
+            font-weight: normal !important;
+        }
+    }
+}

@@ -7,7 +7,6 @@ import TeamStore from 'stores/TeamStore';
 import MessageService from 'services/MessageService';
 import AlertService from 'services/AlertService';
 import NotificationActions from 'actions/NotificationActions';
-import router from 'router';
 
 class NotificationStore extends BaseStore {
 

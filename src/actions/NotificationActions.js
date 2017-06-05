@@ -1,4 +1,4 @@
-import AppDispatcher from 'dispatchers/AppDispatcher.js';
+import AppDispatcher from 'lib/AppDispatcher.js';
 
 export default {
 

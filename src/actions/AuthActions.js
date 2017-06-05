@@ -1,8 +1,7 @@
-import AppDispatcher from 'dispatchers/AppDispatcher.js';
+import AppDispatcher from 'lib/AppDispatcher.js';
 import * as constants from 'config/constants';
 import NotificationActions from 'actions/NotificationActions';
 import AuthService from 'services/AuthService';
-import router from 'router';
 
 /**
  * Create or update the token in the localStorage

@@ -1,0 +1,60 @@
+@import '../../config/Constants';
+@import '../../config/Colors';
+
+.TeamSpace {
+    width: 100%;
+    height:100%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+
+    > * {
+        flex-grow: 1;
+        flex-basis: 0;
+        overflow: auto;
+    }
+
+    > .TeamSpace__alerts {
+        flex-grow: 0.8;
+
+        // Prevent button in comment form to become two lines
+        min-width: 250px;
+
+        // Fix TextField hidding a line when scrollbar appear when alert button is deployed
+        overflow-y:scroll;
+    }
+
+    > .TeamSpace__stock {
+        flex-grow: 1.5;
+    }
+
+    > .TeamSpace__chat {
+        flex-grow: 1.5;
+    }
+
+    > .TeamSpace_nav {
+        flex-grow: 0.5;
+    }
+}
+
+@media only screen and (max-width: $screen-max-sm) {
+    .TeamSpace__chat {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: $screen-max-xs) {
+    .TeamSpace {
+        > .TeamSpace__alerts, > .TeamSpace__chat, > .TeamSpace__stock {
+            flex-grow: 1;
+        }
+    }
+
+
+    /**
+     * Show only primary view
+     */
+    .TeamSpace__col--secondary {
+        display: none !important;
+    }
+}

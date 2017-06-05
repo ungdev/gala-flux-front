@@ -1,0 +1,52 @@
+@import '../../../config/Constants';
+
+.Overview__TeamCard {
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.Overview__TeamCard:hover {
+    background-color: #e6e6e6 !important;
+}
+
+.Overview__TeamCard__header {
+    margin-right: 64px;
+}
+
+.Overview__TeamCard__UsersLogged {
+    float: right;
+    margin-top: 16px;
+    margin-right: 16px;
+}
+
+.Overview__CardInfo {
+    display: flex;
+}
+
+.Overview__CardInfo > * {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.Overview__CardInfo--bordered {
+    padding: 4px 0;
+    background: $theme-primary1Color;
+    color: #fff;
+}
+
+.Overview__CardInfo__container {
+    margin-top: 5px;
+    padding-top: 5px;
+    border-top: 1px solid $theme-primary1Color;
+}
+
+.Overview__CardInfo__profitability {
+    margin-top: 15px;
+}
+
+.Overview__CardInfo__title {
+    font-size: 14px;
+    color: $theme-primary1Color;
+    font-weight: 600;
+    margin-bottom: 5px;
+}

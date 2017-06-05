@@ -4,8 +4,8 @@ import WebSocketActions from 'actions/WebSocketActions';
 import AuthService from 'services/AuthService';
 import AuthActions from 'actions/AuthActions';
 import socketIOClient from 'socket.io-client';
-import {ApiError} from 'errors';
-import router from 'router';
+import { ApiError } from 'lib/errors';
+import { browserHistory } from 'react-router'
 
 // Hold the set interval identifier which will try to reconnect every 5 sec
 let watchdog = null;
@@ -90,11 +90,11 @@ class WebSocketService {
                 .then((data) => {
                     AuthActions.saveJWT(data.jwt);
                     history.replaceState({}, 'Flux', '/');
-                    router.navigate('home');
+                    browserHistory.push('/');
                     AuthActions.authEtuuttDone();
                 })
                 .catch((error) => {
-                    router.navigate('home');
+                    browserHistory.push('/');
                     AuthActions.authEtuuttDone();
                     if(authCode) {
                         if(error && error.status == 'LoginNotFound') {
