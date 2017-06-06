@@ -68,7 +68,7 @@ export default class AdminAlertButtonScene extends React.Component {
                         ['AlertButton', null],
                     ])}
                     onChange={ datastore => this.setState({
-                        teams: datastore.Team.findByPermission('ui/receiveAlerts'),
+                        teams: datastore.Team.findByPermission('ui/alertReceiver'),
                         buttons: datastore.AlertButton.sortBy('title').groupBy('category'),
                     })}
                 >

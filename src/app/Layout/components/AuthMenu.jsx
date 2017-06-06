@@ -26,15 +26,15 @@ class AuthMenu extends React.Component {
         super(props);
 
         this.state = {
-            user: null,
-            team: null,
+            team: AuthStore.team,
+            user: AuthStore.user,
+            loginAs: AuthStore.loginAs,
+            connected: AuthStore.connected,
+            canLoginAs: AuthStore.can('auth/as'),
             menuAnchor: null,
             openMenu: false,
             openLoginAs: false,
-            loginAs: false,
-            canLoginAs: false,
             openNotificationsDialog: false,
-            connected: false,
         };
 
         this._palette = props.muiTheme.palette;
@@ -47,11 +47,16 @@ class AuthMenu extends React.Component {
         this._closeDialog = this._closeDialog.bind(this);
         this._backToMainAccount = this._backToMainAccount.bind(this);
         this._toggleNotificationsDialog = this._toggleNotificationsDialog.bind(this);
+        this._onAuthStoreChange = this._onAuthStoreChange.bind(this);
     }
 
     componentDidMount() {
         // listen the store change
-        AuthStore.addChangeListener(this._onAuthStoreChange.bind(this));
+        AuthStore.addChangeListener(this._onAuthStoreChange);
+    }
+
+    componentWillUnmount() {
+        AuthStore.removeChangeListener(this._onAuthStoreChange);
     }
 
     /**
@@ -71,9 +76,6 @@ class AuthMenu extends React.Component {
      * Close the menu and call the AuthActions to logout the user.
      */
     _logout() {
-        // Tell the server we logout but don't wait for the answer
-        AuthService.logout()
-
         // Delete jwt from localStorage
         AuthActions.logout();
     }
@@ -124,14 +126,8 @@ class AuthMenu extends React.Component {
      * Close the menu and call the AuthService's method to come back to the main account
      */
     _backToMainAccount() {
+        AuthActions.loginBack();
         this._closeMenu();
-        AuthActions.loginBack()
-        .then(() => {
-            location.href = '/';
-        })
-        .catch((error) => {
-            NotificationActions.error('Une erreur s\'est produite pendant que votre tentative de reconnexion sur votre compte d\'origine', error);
-        })
     }
 
     /**
@@ -143,7 +139,6 @@ class AuthMenu extends React.Component {
     }
 
     render() {
-
         // Disable if not authenticated
         if(!this.state.user || !this.state.team) {
             return null;

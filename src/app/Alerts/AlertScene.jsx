@@ -42,7 +42,7 @@ export default class AlertScene extends React.Component {
             }
         }
         if (this.state.receiverFilter.length == 0) {
-            if(AuthStore.can('ui/receiveAlerts')) {
+            if(AuthStore.can('ui/alertReceiver')) {
                 this.state.receiverFilter.push(AuthStore.team.id);
             }
             if(AuthStore.can('alert/nullReceiver')) {
@@ -124,7 +124,7 @@ export default class AlertScene extends React.Component {
                             AuthStore.can('alert/admin') &&
                             <Col xs={12} sm={4}>
                                 <ReceiverSelect
-                                    teams={this.state.teams ? this.state.teams.findByPermission('ui/receiveAlerts') : []}
+                                    teams={this.state.teams ? this.state.teams.findByPermission('ui/alertReceiver') : []}
                                     value={this.state.receiverFilter}
                                     onChange={(v) => this.setState({ receiverFilter: v })}
                                 />

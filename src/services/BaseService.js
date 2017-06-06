@@ -16,11 +16,7 @@ export default class BaseService {
      * @returns {Promise}
      */
     request(method, url, data) {
-        return io.request({
-            method,
-            url,
-            data: data || null,
-        });
+        return io.request(method, url, data);
     }
 
     /**

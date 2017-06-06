@@ -25,8 +25,12 @@ class AuthService extends BaseService {
      *
      * @return {Promise}
      */
-    tryToAuthenticateWithIP() {
-        return this.request('post', '/auth/ip');
+    authByIP() {
+
+        return this.request('post', '/auth/ip', {
+            firebaseToken: global.Android ? global.Android.getFirebaseToken() : undefined,
+            deviceId: global.Android ? global.Android.getFirebaseToken() : undefined,
+        });
     }
 
     /**
@@ -35,7 +39,7 @@ class AuthService extends BaseService {
      *
      * @return {Promise}
      */
-    authWithEtuUTT() {
+    getEtuUTTRedirectionURI() {
         return this.request('get', '/auth/oauth');
     }
 
@@ -49,31 +53,15 @@ class AuthService extends BaseService {
      * @param authorizationCode
      * @return {Promise} Promise for the jwt
      */
-    sendAuthorizationCode(authorizationCode) {
+    authByEtuUTT(authorizationCode) {
         if(!authorizationCode) {
             return Promise.reject(new Error('No authorizationCode'));
         }
-        return this.request('post', '/auth/oauth/submit', {authorizationCode});
-    }
-
-    /**
-     * Cut the current URL and search for the authorization code in it
-     * @returns {String|null} The authorization code or null
-     */
-    getAuthorizationCode() {
-        // get the part of the URL after '?'
-        const query = (window.location.href).split("?")[1];
-        if (query) {
-            // look at each parameters
-            const parameters = query.split("&");
-            for (let i = 0; i < parameters.length; i++) {
-                // if the parameter name is authorization_code, return the value
-                const parameter = parameters[i].split("=");
-                if (parameter[0] == "authorization_code")
-                    return parameter[1];
-            }
-        }
-        return null;
+        return this.request('post', '/auth/oauth/submit', {
+            authorizationCode,
+            firebaseToken: global.Android ? global.Android.getFirebaseToken() : undefined,
+            deviceId: global.Android ? global.Android.getFirebaseToken() : undefined,
+        });
     }
 
     /**
@@ -85,11 +73,15 @@ class AuthService extends BaseService {
      *
      * @return {Promise} Promise for the new authenticated jwt
      */
-    tryToAuthenticateWithJWT(jwt) {
+    authByJWT(jwt) {
         if(!jwt) {
             return Promise.reject(new Error('No JWT'));
         }
-        return this.request('post', '/auth/jwt', {jwt});
+        return this.request('post', '/auth/jwt', {
+            jwt,
+            firebaseToken: global.Android ? global.Android.getFirebaseToken() : undefined,
+            deviceId: global.Android ? global.Android.getFirebaseToken() : undefined,
+        });
     }
 
     /**
@@ -99,7 +91,7 @@ class AuthService extends BaseService {
      * @param {String} id : the user id
      * @return {Promise} Promise for the jwt
      */
-    tryToLoginAs(id) {
+    authByUserId(id) {
         return this.request('post',  '/auth/as/' + id);
     }
 

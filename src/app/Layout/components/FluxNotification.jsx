@@ -46,6 +46,8 @@ export default class FluxNotification extends React.Component {
     componentWillUnmount() {
         // remove the store listener
         NotificationStore.removeChangeListener(this._updateData);
+        document.body.removeEventListener('click', this._clearNotifications, true);
+        document.body.removeEventListener('keydown', this._clearNotifications, true);
     }
 
     /**

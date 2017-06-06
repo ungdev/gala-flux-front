@@ -1,139 +1,105 @@
 import * as constants from 'config/constants';
-import NotificationActions from 'actions/NotificationActions';
 import WebSocketActions from 'actions/WebSocketActions';
-import AuthService from 'services/AuthService';
-import AuthActions from 'actions/AuthActions';
-import socketIOClient from 'socket.io-client';
 import { ApiError } from 'lib/errors';
-import { browserHistory } from 'react-router'
-
-// Hold the set interval identifier which will try to reconnect every 5 sec
-let watchdog = null;
-
-// This request ID is used to associate socket request with answer. (socket io doesn't have any built-in answer system like HTTP)
-let lastRequestId = 0;
+import socketIOClient from 'socket.io-client';
 
 /**
  * Service which will create and manage webSocket connection
  */
 class WebSocketService {
 
-    /**
-     * connect - Connect to the websocket server if we are not already connected
-     */
-    connect() {
-        if(!global.io) { //  || !global.io.isConnected()
-            global.io = socketIOClient.connect(constants.webSocketUri, {reconnect: true});
+    constructor() {
+        // This request ID is used to associate socket request with answer.
+        // (because socket io doesn't have any built-in answer system like HTTP)
+        this.lastRequestId = 0;
 
-            io.on('connect', () => this._handleConnected());
-            io.on('disconnect', () => this._handleDisconnected());
-            io.on('refresh', () => this._handleRefresh());
+        // Init the global io object
+        global.io = socketIOClient(constants.webSocketUri);
 
+        // Hook event listeners
+        io.on('connect', this._handleConnection.bind(this));
+        io.on('disconnect', this._handleDisconnection.bind(this));
+        io.on('refresh', this._handleRefresh.bind(this));
 
-            // When we wan to start a new fake HTTP request
-            // TODO implement timeout
-            io.request = (data) => {
-                return new Promise((resolve, reject) => {
-                    data.requestId = ++lastRequestId;
-
-                    io.emit('request', data);
-                    io.once('response-' + data.requestId, (data) => {
-                        if(data.statusCode != 200) {
-                            return reject(new ApiError(data));
-                        }
-                        return resolve(data.data);
-                    });
-                });
-            };
-        }
-
-        // Try to reconnect every 5 seconds
-        // if(!watchdog) {
-            // watchdog = setInterval(() => this.connect(), 5000);
-        // }
+        // Add our request builder method
+        io.request = this.request.bind(this);
     }
 
-    _handleConnected() {
-        let jwtError = null;
-        // Authenticate with stored jwt
-        let jwt = localStorage.getItem(constants.jwtName);
-        AuthService.tryToAuthenticateWithJWT(jwt)
-        .then((data) => {
-            AuthActions.saveJWT(data.jwt);
-            WebSocketActions.connected();
-        })
-        .catch((error) => {
-            if(jwt) {
-                jwtError = error;
-                localStorage.removeItem(constants.jwtName);
-            }
+    /**
+     * Flux API Request builder
+     * @param {string} method Equivalent of HTTP method (`post`, `get`, `put`)
+     * @param {string} url Path of the request (eg: ``/user/12`)
+     * @param {Object} data object that will be serialzed (to json) and sent as endpoint parameter
+     * @return {Promise} to the request answer or error (timeout or server error)
+     */
+    request(method, url, data) {
+        return new Promise((resolve, reject) => {
+            let requestId = ++this.lastRequestId;
+            let timeout = null;
 
-            // Authenticate with jwt stored before 'login as'
-            jwt = localStorage.getItem(constants.firstJwtName);
-            AuthService.tryToAuthenticateWithJWT(jwt)
-            .then((data) => {
-                AuthActions.saveJWT(data.jwt);
-                localStorage.removeItem(constants.firstJwtName);
-                WebSocketActions.connected();
-            })
-            .catch((error) => {
-                if(jwt) {
-                    jwtError = error;
-                }
-
-                // Authenticate via EtuUTT
-                let authCode = AuthService.getAuthorizationCode();
-                if(authCode) {
-                    AuthActions.authEtuuttStarted();
-                }
-                AuthService.sendAuthorizationCode(authCode)
-                .then((data) => {
-                    AuthActions.saveJWT(data.jwt);
-                    history.replaceState({}, 'Flux', '/');
-                    browserHistory.push('/');
-                    AuthActions.authEtuuttDone();
-                })
-                .catch((error) => {
-                    browserHistory.push('/');
-                    AuthActions.authEtuuttDone();
-                    if(authCode) {
-                        if(error && error.status == 'LoginNotFound') {
-                            NotificationActions.error('Un administrateur de Flux doit vous ajouter avant que vous puissiez vous connecter.', error, null, true);
-                        }
-                        else {
-                            NotificationActions.error('Une erreur s\'est produite pendant votre authentification via EtuUTT. Veuillez recommencer.', error, null, true);
-                        }
-                    }
-
-                    // Authenticate with IP
-                    AuthService.tryToAuthenticateWithIP()
-                    .then((data) => {
-                        AuthActions.saveJWT(data.jwt);
-                        WebSocketActions.connected();
-                        AuthActions.authEtuuttDone();
-                    })
-                    // Ignore this error
-                    .catch((error) => {
-                        AuthActions.noJWT();
-                        WebSocketActions.connected();
-                        AuthActions.authEtuuttDone();
-                        if(jwtError) {
-                            AuthActions.logout();
-                            location.href = '/';
-                        }
-                    });
-                });
+            // Emit request
+            io.emit('request', {
+                method,
+                url,
+                data: data || null,
+                requestId,
             });
+
+            // Listen for answer
+            io.once('response-' + requestId, (data) => {
+                // Cancel timeout
+                clearTimeout(timeout);
+
+                if(data.statusCode != 200) {
+                    return reject(new ApiError(data));
+                }
+                return resolve(data.data);
+            });
+
+            // In case of timeout
+            timeout = setTimeout(() => {
+                // Cancel answer listening
+                io.removeAllListeners('response-' + requestId);
+
+                // Throw warning in console
+                console.warn('Server timeout on request', {
+                    method,
+                    url,
+                    data: data || null,
+                    requestId,
+                });
+
+                // We don't throw an error because in case of connetion lost
+                // it would force flux to show an error and then force page refresh
+                // and we don't want a page refresh in case of lost connection.
+                // But it's also not a success, so we do nothing but a warning
+                // in the console (and clean the memory by removing listeners)
+            }, 30000);
+
         });
     }
 
-    _handleDisconnected() {
+    /**
+     * Will be called each time socket.io get connected (first time or reconnection)
+     */
+    _handleConnection() {
+        WebSocketActions.connected();
+    }
+
+    /**
+     * Will be called on socket connetion lost
+     */
+    _handleDisconnection() {
         WebSocketActions.disconnected();
     }
 
+    /**
+     * Will be called when and admin request a client refresh
+     * So we refresh Flux to the homepage
+     */
     _handleRefresh() {
         location.href = '/';
     }
 }
 
-export default new WebSocketService();
+export default WebSocketService;

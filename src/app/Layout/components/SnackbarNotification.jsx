@@ -20,11 +20,17 @@ export default class SnackbarNotification extends React.Component {
         // binding
         this._openMessageIfNecessary = this._openMessageIfNecessary.bind(this);
         this._handleRequestClose = this._handleRequestClose.bind(this);
+        this._onNotificationStoreChange = this._onNotificationStoreChange.bind(this);
     }
 
     componentDidMount() {
         // listen the store change
-        NotificationStore.addChangeListener(this._onNotificationStoreChange.bind(this));
+        NotificationStore.addChangeListener(this._onNotificationStoreChange);
+    }
+
+    componentWillUnmount() {
+        // unlisten the store change
+        NotificationStore.removeChangeListener(this._onNotificationStoreChange);
     }
 
     componentDidUpdate() {

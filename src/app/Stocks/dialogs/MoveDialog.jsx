@@ -123,7 +123,7 @@ export default class MoveDialog extends React.Component {
                         </div>
 
                         <LocationSelect
-                            teams={this.props.teams.findByPermission('ui/receiveStock').sortBy('name')}
+                            teams={this.props.teams.findByPermission('ui/stockReceiver').sortBy('name')}
                             value={this.state.teamId}
                             setValue={(e, i, v) => this.setState({ teamId: v })}
                             floatingLabel="Destination"

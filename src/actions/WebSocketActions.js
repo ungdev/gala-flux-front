@@ -1,21 +1,21 @@
 import AppDispatcher from 'lib/AppDispatcher.js';
 
-/**
- * Emit a websocket connected event
- */
-function connected () {
-    AppDispatcher.dispatch({
-        type: 'WEBSOCKET_CONNECTED',
-    });
-}
-/**
- * Emit a websocket disconnected event
- */
-function disconnected () {
-    AppDispatcher.dispatch({
-        type: 'WEBSOCKET_DISCONNECTED',
-    });
-}
+export default {
+    /**
+     * Emit a websocket connected event
+     */
+    connected() {
+        AppDispatcher.dispatch({
+            type: 'WEBSOCKET_CONNECTED',
+        });
+    },
 
-exports.connected = connected;
-exports.disconnected = disconnected;
+    /**
+     * Emit a websocket disconnected event
+     */
+    disconnected() {
+        AppDispatcher.dispatch({
+            type: 'WEBSOCKET_DISCONNECTED',
+        });
+    }
+}

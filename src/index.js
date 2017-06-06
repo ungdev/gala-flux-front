@@ -21,7 +21,7 @@ import Sound from 'react-sound';
 soundManager.setup({debugMode: false});
 
 // Pages
-import App from "app/App.jsx";
+import BootComponent from "app/Boot.jsx";
 
 // Config
 import * as constants from 'config/constants';
@@ -32,14 +32,16 @@ import WebSocketService from 'services/WebSocketService';
 import SessionService from 'services/SessionService';
 
 // Connect to websocket server
-WebSocketService.connect();
+const websocket = new WebSocketService();
 
 // Render the app using router
 render((
     <MuiThemeProvider muiTheme={muiTheme}>
-        <Router history={browserHistory}>
-            {routes}
-        </Router>
+        <BootComponent>
+            <Router history={browserHistory}>
+                {routes}
+            </Router>
+        </BootComponent>
     </MuiThemeProvider>
 ), document.getElementById('app'));
 

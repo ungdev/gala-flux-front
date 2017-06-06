@@ -10,7 +10,7 @@ import Dialog from 'app/components/ResponsiveDialog.jsx';
 import AutoComplete from 'material-ui/AutoComplete';
 import DataLoader from 'app/components/DataLoader.jsx';
 
-export default class LoginAs extends React.Component {
+export default class LoginAsDialog extends React.Component {
 
     constructor(props) {
         super(props);
@@ -40,22 +40,7 @@ export default class LoginAs extends React.Component {
      */
     submitForm(item) {
         AuthActions.loginAs(item.value)
-        .then(() => {
-            location.href = '/';
-            this.closeDialog();
-        })
-        .catch((error) => {
-            switch(error.status) {
-                case 'IdNotFound':
-                    this.setState({ error: 'Cet utilisateur n\'existe pas' });
-                    break;
-                case 'forbidden':
-                    this.setState({ error: 'Vous n\'avez pas le droit d\'utiliser cette fonctionnalité' });
-                    break;
-                default:
-                    NotificationActions.error('Une erreur inattendu s\'est produite pendant la tentative de connexion "en tant que".', error)
-            }
-        });
+        this.closeDialog();
     }
 
     /**

@@ -7,11 +7,14 @@ export const firstJwtName = 'firstToken';
 // The value of firebaseTokenName is the name of the firebase token in the localStorage
 export const firebaseTokenName = 'firebaseToken';
 
+// Api server uri without ending /
+export const apiUri = process.env.FLUX_API_URI || 'http://localhost:3000';
+
 // websocket target full uri
-export const webSocketUri = process.env.FLUX_API_URI || 'http://localhost:3000';
+export const webSocketUri = apiUri;
 
 // To show an user avatar, show an image with (avatarBasePath + userId) as src
-export const avatarBasePath = webSocketUri + '/user/avatar/';
+export const avatarBasePath = apiUri + '/user/avatar/';
 
 // build vars
 export const build = {

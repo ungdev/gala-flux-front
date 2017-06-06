@@ -48,7 +48,7 @@ export default class LoginScene extends React.Component {
      */
     _login() {
         AuthActions.authEtuuttStarted();
-        AuthService.authWithEtuUTT()
+        AuthService.getEtuUTTRedirectionURI()
         .then((data) => {
             window.location = data.redirectUri;
         })

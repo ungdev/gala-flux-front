@@ -29,11 +29,17 @@ export default class ErrorNotification extends React.Component {
         this._openDialogIfNecessary = this._openDialogIfNecessary.bind(this);
         this._closeDialog = this._closeDialog.bind(this);
         this._handleTechnicalToggle = this._handleTechnicalToggle.bind(this);
+        this._onNotificationStoreChange = this._onNotificationStoreChange.bind(this);
     }
 
     componentDidMount() {
         // listen the store change
-        NotificationStore.addChangeListener(this._onNotificationStoreChange.bind(this));
+        NotificationStore.addChangeListener(this._onNotificationStoreChange);
+    }
+
+    componentWillUnmount() {
+        // unlisten the store change
+        NotificationStore.removeChangeListener(this._onNotificationStoreChange);
     }
 
     componentDidUpdate() {

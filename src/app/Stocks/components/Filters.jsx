@@ -53,7 +53,7 @@ export default class Filters extends React.Component {
 
                 <Col xs={12} sm={6} md={3}>
                     <LocationSelect
-                        teams={this.props.teams.findByPermission('ui/receiveStock').sortBy('name')}
+                        teams={this.props.teams.findByPermission('ui/stockReceiver').sortBy('name')}
                         value={this.props.filters.locations}
                         setValue={(e, i, v) => this.props.setFilters("locations", v)}
                         multiple={true}
