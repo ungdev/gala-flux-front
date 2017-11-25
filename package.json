@@ -30,6 +30,7 @@
     "font-awesome": "^4.7.0",
     "jwt-decode": "^2.2.0",
     "material-ui": "^1.0.0-beta.21",
+    "material-ui-icons": "^1.0.0-beta.17",
     "node-sass": "^4.5.2",
     "path": "^0.12.7",
     "react": "^16.1.1",
