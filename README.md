@@ -9,7 +9,7 @@ These instructions will get you a copy of the project on your local machine for 
 ### Prerequisites
 
 * [Yarn](https://yarnpkg.com/lang/en/docs/install/)
-* NodeJS 7
+* NodeJS 8.9
 
 ### Installing
 
