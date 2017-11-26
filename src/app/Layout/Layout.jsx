@@ -2,7 +2,6 @@ import React from 'react';
 
 import AppBar from 'app/Layout/components/AppBar.jsx';
 import MainTabs from 'app/Layout/components/MainTabs.jsx';
-import ErrorNotification from "app/Layout/components/ErrorNotification.jsx";
 import FluxNotification from "app/Layout/components/FluxNotification.jsx";
 import SnackbarNotification from "app/Layout/components/SnackbarNotification.jsx";
 
@@ -46,7 +45,6 @@ export default class Layout extends React.Component {
                 </main>
                 <FluxNotification />
                 <SnackbarNotification/>
-                <ErrorNotification />
             </div>
         );
     }

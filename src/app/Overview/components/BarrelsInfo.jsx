@@ -52,6 +52,7 @@ export default class BarrelsInfo extends React.Component {
                                 Aucun fût
                             </div>
                         }
+                        { Object.keys(this.props.prices).length != 0 &&
                         <Row className="Overview__CardInfo__profitability">
                             <Col xs={6} className="Overview__CardInfo Overview__CardInfo--bordered">
                                 <div>
@@ -66,6 +67,7 @@ export default class BarrelsInfo extends React.Component {
                                 </div>
                             </Col>
                         </Row>
+                        }
                     </div>
                 }
             </div>

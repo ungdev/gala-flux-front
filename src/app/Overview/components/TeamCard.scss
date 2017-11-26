@@ -1,4 +1,5 @@
 @import '../../../config/Constants';
+@import '../../../config/Colors';
 
 .Overview__TeamCard {
     margin-bottom: 20px;
@@ -17,6 +18,14 @@
     float: right;
     margin-top: 16px;
     margin-right: 16px;
+    .Overview__TeamCard__UsersLogged__badge--danger {
+        background-color: color($red, 600);
+        color: white;
+    }
+    .Overview__TeamCard__UsersLogged__badge--success {
+        background-color: color($teal, 600);
+        color: white;
+    }
 }
 
 .Overview__CardInfo {

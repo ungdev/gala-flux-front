@@ -1,7 +1,9 @@
 .Layout__ErrorNotification {
     .Layout__ErrorNotification__technicalSwitch {
-        float: left;
-        width: auto !important;
-        padding-top: 8px;
+        padding-left: 16px;
+    }
+    
+    .Layout__ErrorNotification__action:first-of-type {
+        flex: auto;
     }
 }

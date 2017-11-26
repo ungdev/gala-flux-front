@@ -411,6 +411,7 @@ class AuthStore extends BaseStore {
                 // And a refresh can be good to fix problems and clean everything.
                 localStorage.removeItem(constants.jwtName);
                 localStorage.removeItem(constants.firstJwtName);
+                console.log('Logout refresh')
                 location.href = '/';
                 break;
             }

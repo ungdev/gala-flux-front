@@ -88,22 +88,19 @@ export default class BarrelChip extends React.Component {
         return (
             <Chip
                 className="BarrelChip"
-                backgroundColor={background}
+                style={{backgroundColor: background}}
+                avatar={<Avatar className="BarrelChip__shortname"  style={{backgroundColor: avatarBackground}}>{this.state.type.shortName}</Avatar>}
                 onRequestDelete={this.props.onRequestDelete ? (() => this.props.onRequestDelete(this.state.barrel)) : null}
-                onTouchTap={((this.props.selectable && this.props.onSelection) || this.props.onClick) ? this._handleClick : undefined}
+                onClick={((this.props.selectable && this.props.onSelection) || this.props.onClick) ? this._handleClick : undefined}
                 title={tooltip}
+                label={<span
+                        className="BarrelChip__number"
+                        style={{fontWeight: this.state.selected ? 'bold': 'normal'}}
+                    >
+                        {this.state.barrel.num}
+                    </span>}
                 key={this.state.barrel.id}
-            >
-                <Avatar className="BarrelChip__shortname"  backgroundColor={avatarBackground}>
-                    {this.state.type.shortName}
-                </Avatar>
-                <span
-                    className="BarrelChip__number"
-                    style={{fontWeight: this.state.selected ? 'bold': 'normal'}}
-                >
-                    {this.state.barrel.num}
-                </span>
-            </Chip>
+            />
 
         );
     }

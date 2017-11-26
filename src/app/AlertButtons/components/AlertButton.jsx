@@ -143,8 +143,8 @@ export default class AlertButton extends React.Component {
      *
      * @param e: event
      */
-    _handleInputChange(e, v) {
-        this.setState({ message: v, messageError: ''  });
+    _handleInputChange(e) {
+        this.setState({ message: e.target.value, messageError: ''  });
     }
 
     /**
@@ -233,42 +233,42 @@ export default class AlertButton extends React.Component {
                     this.state.showInput && commentRequired &&
                     <div className="AlertButtons__Button_input_blur" onWheel={this._handleScrolOnBlur} onTouchTap={_ => this._toggleMessageInput("done")}></div>
                 }
-                <form
-                    onSubmit={this._handleSubmit}
-                    style={(this.state.showInput ? {} : {display:'none'})}
-                    className={`AlertButtons__Button_input_container ${commentRequired && "AlertButtons__Button--required"}`}>
+                { this.state.showInput &&
+                    <form
+                        onSubmit={this._handleSubmit}
+                        className={`AlertButtons__Button_input_container ${commentRequired && "AlertButtons__Button--required"}`}>
 
-                    <div className="AlertButtons__Button_input_label">{this.props.button.messagePrompt || "Commentaire"}</div>
-                    <TextField
-                        className="AlertButtons__Button_input__TextField"
-                        multiLine={true}
-                        rows={2}
-                        rowsMax={10}
-                        onKeyDown={this._handleKeyDown}
-                        onChange={this._handleInputChange}
-                        value={(this.state.showInput ? this.state.message : '') || ''}
-                        hintText={this.props.button.messageRequired ? "Commentaire obligatoire" : ""}
-                        fullWidth={true}
-                        autoFocus={true}
-                        errorText={this.state.messageError}
-                        ref={(input) => { this.textInput = input; }}
-                        id={"button-"+this.props.button.id}
-                        />
-                    <div className="AlertButtons__Button_input_actions">
-                        <Button
-                            secondary={true}
-                            onClick={_ => this._toggleMessageInput("done")}
-                        >
-                            Annuler
-                        </Button>
-                        <Button
-                            primary={true}
-                            type="submit"
-                        >
-                            {commentRequired ? "Créer l'alerte" : "Envoyer"}
-                        </Button>
-                    </div>
-                </form>
+                        <div className="AlertButtons__Button_input_label">{this.props.button.messagePrompt || "Commentaire"}</div>
+                        <TextField
+                            className="AlertButtons__Button_input__TextField"
+                            multiline
+                            autoFocus
+                            rows={2}
+                            rowsMax={10}
+                            onKeyDown={this._handleKeyDown}
+                            onChange={this._handleInputChange}
+                            value={(this.state.showInput ? this.state.message : '') || ''}
+                            placeholder={this.props.button.messageRequired ? "Commentaire obligatoire" : ""}
+                            error={this.state.messageError != ''}
+                            helperText={this.state.messageError}
+                            id={"button-"+this.props.button.id}
+                            />
+                        <div className="AlertButtons__Button_input_actions">
+                            <Button
+                                color="accent"
+                                onClick={_ => this._toggleMessageInput("done")}
+                            >
+                                Annuler
+                            </Button>
+                            <Button
+                                color="primary"
+                                type="submit"
+                            >
+                                {commentRequired ? "Créer l'alerte" : "Envoyer"}
+                            </Button>
+                        </div>
+                    </form>
+                }
             </div>
         );
     }

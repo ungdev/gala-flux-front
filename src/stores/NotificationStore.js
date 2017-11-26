@@ -7,6 +7,7 @@ import TeamStore from 'stores/TeamStore';
 import MessageService from 'services/MessageService';
 import AlertService from 'services/AlertService';
 import NotificationActions from 'actions/NotificationActions';
+import { Router, browserHistory } from 'react-router';
 
 class NotificationStore extends BaseStore {
 
@@ -349,7 +350,7 @@ class NotificationStore extends BaseStore {
             if (AuthStore.team.id !== alert.senderId && (receiverFilter.length === 0 || receiverFilter.includes(alert.receiverId || null))) {
 
                 // increment the number of unread alerts if not already on the page
-                if(router.getState() && router.getState().name == 'alert') {
+                if(browserHistory.getCurrentLocation().pathname == '/dashboard' || browserHistory.getCurrentLocation().pathname == '/alerts') {
                     this._newAlertCount = 0;
                     this._lastReadAlert = (new Date()).toISOString();
                     localStorage.setItem('lastReadAlert', this._lastReadAlert);

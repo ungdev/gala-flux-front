@@ -20,7 +20,7 @@ export default class MyspacePage extends React.Component {
                         <TeamStockScene team={AuthStore.team} />
                     </div>
                     <div className="TeamSpace__chat">
-                        <ChatScene />
+                        <ChatScene hideMenu/>
                     </div>
                 </div>
 

@@ -98,6 +98,7 @@ class WebSocketService {
      * So we refresh Flux to the homepage
      */
     _handleRefresh() {
+        console.log('Client refresh requested from server.')
         location.href = '/';
     }
 }

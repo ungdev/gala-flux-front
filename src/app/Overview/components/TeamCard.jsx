@@ -37,9 +37,6 @@ export default class TeamCard extends React.Component {
                 fontSize: 20,
                 fontWeight: "bold",
             },
-            badge: {
-                background: this.props.userNames.length > 0 ? teal[600] : red[600]
-            }
         };
 
         return (
@@ -53,12 +50,12 @@ export default class TeamCard extends React.Component {
                     <Badge
                         badgeContent={this.props.userNames.length}
                         color="accent"
-                        style={styles.badge}
+                        classes={{badge: this.props.userNames.length > 0 ? 'Overview__TeamCard__UsersLogged__badge--success' : 'Overview__TeamCard__UsersLogged__badge--danger'}}
                     >
                         <FaceIcon />
                     </Badge>
                 </div>
-                { this.props.userNames.length &&
+                { this.props.userNames.length ?
                     <ReactTooltip
                         id={'Overview__TeamCard--' + this.props.team.id}
                         place="bottom"
@@ -67,6 +64,7 @@ export default class TeamCard extends React.Component {
                         Utilisateurs connectés :
                         { '\n' + this.props.userNames.sort((a, b) => a.localeCompare(b)).join('\n') }
                     </ReactTooltip>
+                :null
                 }
 
                 <CardContent>

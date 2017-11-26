@@ -9,13 +9,17 @@ import SelectableList from 'app/components/SelectableList.jsx';
 import { ListItem } from 'material-ui/List';
 import DataLoader from "app/components/DataLoader.jsx";
 
+
+/**
+ * @param {int} teamId Team id
+ */
 export default class TeamSpaceMenu extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            selected: props.team.id,
+            selected: props.teamId,
             teams: null,
         };
 
@@ -43,12 +47,12 @@ export default class TeamSpaceMenu extends React.Component {
             >
                 { () => (
                     <div>
-                        <Button raised onClick={this._redirect} color="secondary" fullWidth={true}>Retour à la liste</Button>
+                        <Button raised onClick={this._redirect} color="accent" style={{width: '100%'}}>Retour à la liste</Button>
                         <SelectableList onChange={this._handleChange} value={this.state.selected}>
                             {
                                 this.state.teams.map(team => <ListItem key={team.id} value={team.id}>{team.name}</ListItem>)
                             }
-                        </SelectableList >
+                        </SelectableList>
                     </div>
                 )}
             </DataLoader>

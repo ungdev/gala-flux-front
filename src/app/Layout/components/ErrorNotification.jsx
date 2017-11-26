@@ -3,6 +3,7 @@ import React from 'react';
 import Button from 'material-ui/Button';
 import Switch from 'material-ui/Switch';
 import { FormControlLabel } from 'material-ui/Form';
+import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 
 import ErrorLogService from 'services/ErrorLogService';
@@ -162,90 +163,92 @@ export default class ErrorNotification extends React.Component {
                 buttonLabel += ' ('+this.state.errorMessage.timeout+')';
             }
         }
-        const actions = [
-            <FormControlLabel 
-                label="Données techniques"
-                className="Layout__ErrorNotification__technicalSwitch"
-                control={
-                    <Switch
-                        labelPosition="right"
-                        onChange={(e, v) => this._handleTechnicalToggle(v)}
-                        checked={this.state.showTechnical}
-                    />
-                }
-            />,
-            <Button
-                primary={true}
-                keyboardFocused={true}
-                onTouchTap={this._closeDialog}
-            >
-                {buttonLabel}
-            </Button>,
-        ];
-
+        
         return (
             <Dialog
                 className="Layout__ErrorNotification"
-                title={<div>Erreur !</div>}
-                actions={actions}
-                modal={false}
                 open={(this.state.errorMessage != null && this.preventDialog != null)}
                 onRequestClose={this._closeDialog}
                 style={{zIndex: 2000}}
             >
-                {(this.state.errorMessage ? this.state.errorMessage.message : '')}
+                <DialogTitle>
+                    {<div>Erreur !</div>}
+                </DialogTitle>
+                <DialogContent>
+                    {(this.state.errorMessage ? this.state.errorMessage.message : '')}
 
-                { this.state.showTechnical &&  this.state.errorMessage &&
-                    <div>
-                        { this.state.errorMessage.error &&
-                            <div>
-                                <h4>Error</h4>
-                                <pre>
-                                    { (typeof this.state.errorMessage.error === 'string' || this.state.errorMessage.error instanceof String) ?
-                                        this.state.errorMessage.error
-                                        :
-                                        JSON.stringify(
-                                            Object.assign(
-                                                {},
-                                                (this.state.errorMessage.error.message ? {message: this.state.errorMessage.error.message} : {}),
-                                                this.state.errorMessage.error,
-                                            ), null, 4
-                                        )
-                                    }
-                                </pre>
-                            </div>
+                    { this.state.showTechnical &&  this.state.errorMessage &&
+                        <div>
+                            { this.state.errorMessage.error &&
+                                <div>
+                                    <h4>Error</h4>
+                                    <pre>
+                                        { (typeof this.state.errorMessage.error === 'string' || this.state.errorMessage.error instanceof String) ?
+                                            this.state.errorMessage.error
+                                            :
+                                            JSON.stringify(
+                                                Object.assign(
+                                                    {},
+                                                    (this.state.errorMessage.error.message ? {message: this.state.errorMessage.error.message} : {}),
+                                                    this.state.errorMessage.error,
+                                                ), null, 4
+                                            )
+                                        }
+                                    </pre>
+                                </div>
+                            }
+                            { this.state.errorMessage.details &&
+                                <div>
+                                    <h4>Details</h4>
+                                    <pre>
+                                        {
+                                            (typeof this.state.errorMessage.details === 'string' || this.state.errorMessage.details instanceof String) ?
+                                            this.state.errorMessage.details
+                                            :
+                                            JSON.stringify(this.state.errorMessage.details, null, 4)
+                                        }
+                                    </pre>
+                                </div>
+                            }
+                            { this.state.errorMessage.error.stack &&
+                                <div>
+                                    <h4>Error stack</h4>
+                                    <pre>
+                                        {this.state.errorMessage.error.stack}
+                                    </pre>
+                                </div>
+                            }
+                            { this.state.errorMessage.stack &&
+                                <div>
+                                    <h4>Error Notification stack</h4>
+                                    <pre>
+                                        {this.state.errorMessage.stack}
+                                    </pre>
+                                </div>
+                            }
+                        </div>
+                    }
+                </DialogContent>
+                <DialogActions
+                    classes={{action: 'Layout__ErrorNotification__action'}}
+                >
+                    <FormControlLabel 
+                        label="Données techniques"
+                        className="Layout__ErrorNotification__technicalSwitch"
+                        control={
+                            <Switch
+                                onChange={(e, v) => this._handleTechnicalToggle(v)}
+                                checked={this.state.showTechnical}
+                            />
                         }
-                        { this.state.errorMessage.details &&
-                            <div>
-                                <h4>Details</h4>
-                                <pre>
-                                    {
-                                        (typeof this.state.errorMessage.details === 'string' || this.state.errorMessage.details instanceof String) ?
-                                        this.state.errorMessage.details
-                                        :
-                                        JSON.stringify(this.state.errorMessage.details, null, 4)
-                                    }
-                                </pre>
-                            </div>
-                        }
-                        { this.state.errorMessage.error.stack &&
-                            <div>
-                                <h4>Error stack</h4>
-                                <pre>
-                                    {this.state.errorMessage.error.stack}
-                                </pre>
-                            </div>
-                        }
-                        { this.state.errorMessage.stack &&
-                            <div>
-                                <h4>Error Notification stack</h4>
-                                <pre>
-                                    {this.state.errorMessage.stack}
-                                </pre>
-                            </div>
-                        }
-                    </div>
-                }
+                    />
+                    <Button
+                        color="primary"
+                        onTouchTap={this._closeDialog}
+                    >
+                        {buttonLabel}
+                    </Button>
+                </DialogActions>
             </Dialog>
         );
     }

@@ -9,6 +9,7 @@ require('./ChatScene.scss');
 /**
  * This component will print thet chat page for the admin panel
  * @param {string} channel The channel selected or null
+ * @param {bool} hideMenu If true, channel selector will not be shown
  */
 export default class ChatScene extends React.Component {
 
@@ -25,7 +26,9 @@ export default class ChatScene extends React.Component {
                     <Messages channel={this.props.channel} />
                     <Form channel={this.props.channel} />
                 </div>
-                <Channels channel={this.props.channel} selectDefault={true}/>
+                {!this.props.hideMenu &&
+                    <Channels channel={this.props.channel} selectDefault={true}/>
+                }
             </div>
         );
     }

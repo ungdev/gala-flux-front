@@ -49,21 +49,18 @@ export default class App extends React.Component {
     // {createElement(this.state.homepage, {route: this.state.route})}
 
     render() {
-        if(this.state.ready) {
             return (
                 <div>
-                    {this.props.children}
+                    {this.state.ready ?
+                        this.props.children
+                    :
+                        <div className="Layout_LoginScene">
+                            <img src={LOGO} alt="Flux" className="Layout_LoginScene__logo" height="200"/>
+                            <CircularProgress className="Layout_LoginScene__spinner"/>
+                        </div>
+                    }
+                    <ErrorNotification />
                 </div>
             );
         }
-        else {
-            return (
-                <div className="Layout_LoginScene">
-                    <img src={LOGO} alt="Flux" className="Layout_LoginScene__logo" height="200"/>
-                    <CircularProgress className="Layout_LoginScene__spinner"/>
-                    <ErrorNotification />
-                </div>
-            )
-        }
-    }
 }

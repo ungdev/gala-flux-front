@@ -25,16 +25,16 @@ export default class TeamSpacePage extends React.Component {
                     const channel = 'public:' + this.state.team.name;
                     return (
                         <div className="TeamSpace">
-                            <div className={('TeamSpace__alerts ' +  (!this.props.router.isActive('/overview/:id/stock') ? 'TeamSpace__col--secondary' : ''))}>
+                            <div className="TeamSpace__alerts TeamSpace__col--secondary">
                                 <AlertButtonScene team={this.state.team} />
                             </div>
-                            <div className={('TeamSpace__stock ' + (this.props.router.isActive('/overview/:id/stock') ? 'TeamSpace__col--secondary' : ''))}>
+                            <div className="TeamSpace__stock">
                                 <TeamStockScene team={this.state.team} />
                             </div>
-                            <div className="BarHomePage__chat">
-                                <ChatScene channel={channel} />
+                            <div className="TeamSpace__chat">
+                                <ChatScene channel={channel} hideMenu/>
                             </div>
-                            <div className="BarHomePage_nav">
+                            <div className="BarHomePage_nav TeamSpace__col--secondary">
                                 <TeamSpaceMenu team={this.state.team} />
                             </div>
                         </div>

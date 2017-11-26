@@ -31,6 +31,7 @@
     padding: 4px 8px !important;
     background-color: #fff !important;
     transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+    border-radius: 0 !important;
 }
 
 .AlertButtons__fullWidth {
@@ -99,6 +100,7 @@
         font-size: 14px !important;
         line-height: 15px !important;
     }
+    width: 100%;
 }
 
 .AlertButtons__Button_status {
