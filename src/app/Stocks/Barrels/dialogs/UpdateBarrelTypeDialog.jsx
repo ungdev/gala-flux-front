@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Dialog from 'app/components/ResponsiveDialog.jsx';
-import FlatButton from 'material-ui/FlatButton';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 
@@ -205,23 +205,26 @@ export default class UpdateBarrelTypeDialog extends React.Component {
     render() {
 
         const actions = [
-            <FlatButton
-                label="Supprimer"
+            <Button
                 secondary={true}
                 onTouchTap={() => this.setState({showDeleteDialog: true})}
                 className="Dialog__DeleteButon"
-            />,
-            <FlatButton
-                label="Fermer"
+            >
+                Supprimer
+            </Button>,
+            <Button
                 secondary={true}
                 onTouchTap={this.props.close}
-            />,
-            <FlatButton
-                label="Modifier"
+            >
+                Fermer
+            </Button>,
+            <Button
                 primary={true}
                 type="submit"
                 onTouchTap={this._handleSubmit}
-            />,
+            >
+                Modifier
+            </Button>,
         ];
 
         return (
@@ -243,7 +246,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Nom"
+                                label="Nom"
                                 errorText={this.state.errors.name}
                                 value={this.state.values.name}
                                 fullWidth={true}
@@ -254,7 +257,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Abréviation"
+                                label="Abréviation"
                                 maxLength="3"
                                 errorText={this.state.errors.shortName}
                                 value={this.state.values.shortName}
@@ -266,7 +269,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                         <TextField
-                            floatingLabelText="Prix fournisseur d'un fût (€)"
+                            label="Prix fournisseur d'un fût (€)"
                             errorText={this.state.errors.supplierPrice}
                             value={this.state.values.supplierPrice}
                             fullWidth={true}
@@ -275,7 +278,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Prix de revente d'un fût (€)"
+                                label="Prix de revente d'un fût (€)"
                                 errorText={this.state.errors.sellPrice}
                                 value={this.state.values.sellPrice}
                                 fullWidth={true}
@@ -286,7 +289,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Nombre de litres par fût"
+                                label="Nombre de litres par fût"
                                 errorText={this.state.errors.liters}
                                 value={this.state.values.liters}
                                 fullWidth={true}
@@ -295,7 +298,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Nombre de fûts"
+                                label="Nombre de fûts"
                                 errorText={this.state.errors.count}
                                 value={this.state.values.count}
                                 fullWidth={true}

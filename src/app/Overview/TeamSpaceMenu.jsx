@@ -3,7 +3,7 @@ import React from 'react';
 import TeamStore from '../../stores/TeamStore';
 
 import { browserHistory } from 'react-router';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from 'material-ui/Button';
 
 import SelectableList from 'app/components/SelectableList.jsx';
 import { ListItem } from 'material-ui/List';
@@ -43,7 +43,7 @@ export default class TeamSpaceMenu extends React.Component {
             >
                 { () => (
                     <div>
-                        <RaisedButton onClick={this._redirect} label="Retour à la liste" secondary={true} fullWidth={true} />
+                        <Button raised onClick={this._redirect} color="secondary" fullWidth={true}>Retour à la liste</Button>
                         <SelectableList onChange={this._handleChange} value={this.state.selected}>
                             {
                                 this.state.teams.map(team => <ListItem key={team.id} value={team.id}>{team.name}</ListItem>)

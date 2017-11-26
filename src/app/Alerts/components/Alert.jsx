@@ -9,13 +9,12 @@ import * as constants from 'config/constants';
 import { Col } from 'react-flexbox-grid';
 import ReactTooltip from 'react-tooltip';
 import UpdateAlertPopover from 'app/Alerts/components/UpdateAlertPopover.jsx';
-import Assignment from 'material-ui/svg-icons/action/assignment-ind';
-import Close from 'material-ui/svg-icons/navigation/close';
-import RaisedButton from 'material-ui/RaisedButton';
+import Assignment from 'material-ui-icons/AssignmentInd';
+import Close from 'material-ui-icons/Close';
 import IconButton from 'material-ui/IconButton';
-import AccountCircleIcon from 'material-ui/svg-icons/action/account-circle';
-import UndoIcon from 'material-ui/svg-icons/content/undo';
-import CheckIcon from 'material-ui/svg-icons/navigation/check';
+import AccountCircleIcon from 'material-ui-icons/AccountCircle';
+import UndoIcon from 'material-ui-icons/Undo';
+import CheckIcon from 'material-ui-icons/Check';
 import Avatar from 'material-ui/Avatar';
 
 require('./Alert.scss');
@@ -29,6 +28,7 @@ export default class Alert extends React.Component {
 
     constructor(props) {
         super(props);
+        console.log('Alert constructor', props.alert.id)
 
         this.state = {
             showUpdateAlertPopover: false,
@@ -36,7 +36,8 @@ export default class Alert extends React.Component {
         };
 
         // binding
-        this._toggleUpdateAlertPopover = this._toggleUpdateAlertPopover.bind(this);
+        this._showUpdateAlertPopover = this._showUpdateAlertPopover.bind(this);
+        this._hideUpdateAlertPopover = this._hideUpdateAlertPopover.bind(this);
         this._closeAlert = this._closeAlert.bind(this);
         this._restoreAlert = this._restoreAlert.bind(this);
     }
@@ -44,13 +45,25 @@ export default class Alert extends React.Component {
     /**
      * toggle the boolean to show the popover to assign users to this alert
      */
-    _toggleUpdateAlertPopover(e) {
+    _showUpdateAlertPopover(e) {
+        console.log('show')
         let state = {
-            showUpdateAlertPopover: !this.state.showUpdateAlertPopover,
+            showUpdateAlertPopover: true,
         };
         if(e && e.currentTarget) {
             state['popoverAnchor'] = e.currentTarget;
         }
+        this.setState(state);
+    }
+
+    /**
+     * toggle the boolean to show the popover to assign users to this alert
+     */
+    _hideUpdateAlertPopover(e) {
+        console.log('hide')
+        let state = {
+            showUpdateAlertPopover: false,
+        };
         this.setState(state);
     }
 
@@ -132,7 +145,7 @@ export default class Alert extends React.Component {
 
 
 
-                    <button className="Alerts__Alert__action--icon" onClick={this._toggleUpdateAlertPopover}>
+                    <button className="Alerts__Alert__action--icon" onClick={this._showUpdateAlertPopover}>
                         {(Array.isArray(this.props.alert.users) && this.props.alert.users.length > 0) ?
                             <div>
                                 <div
@@ -141,7 +154,7 @@ export default class Alert extends React.Component {
                                     data-for={"avatar-" + this.props.alert.id}
                                 >
                                     { this.props.alert.users.map((id, i) => {
-                                        return <div key={i}><Avatar src={(constants.avatarBasePath + id)} backgroundColor="#00AFCA" /></div>
+                                        return <div key={i}><Avatar src={(constants.avatarBasePath + id)} /></div>
                                     })}
                                 </div>
                                 <div style={{whiteSpace: 'pre-line'}}>
@@ -164,16 +177,6 @@ export default class Alert extends React.Component {
                         :
                             <AccountCircleIcon />
                         }
-
-                        { this.state.showUpdateAlertPopover &&
-                            <UpdateAlertPopover
-                                alert={this.props.alert}
-                                onRequestClose={this._toggleUpdateAlertPopover}
-                                open={this.state.showUpdateAlertPopover}
-                                anchor={this.state.popoverAnchor}
-                                users={this.props.users}
-                            />
-                        }
                     </button>
 
                     {this.props.alert.severity != 'done' ?
@@ -184,6 +187,16 @@ export default class Alert extends React.Component {
                         <button className="Alerts__Alert__action--primary" onClick={this._restoreAlert}>
                             <UndoIcon />
                         </button>
+                    }
+
+                    { this.state.showUpdateAlertPopover &&
+                        <UpdateAlertPopover
+                            alert={this.props.alert}
+                            onRequestClose={this._hideUpdateAlertPopover}
+                            open={this.state.showUpdateAlertPopover}
+                            anchor={this.state.popoverAnchor}
+                            users={this.props.users}
+                        />
                     }
                 </div>
             </Col>

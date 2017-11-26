@@ -7,10 +7,9 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 // material ui
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import themeConfiguration from 'config/theme';
-const muiTheme = getMuiTheme(themeConfiguration);
+const theme = createMuiTheme(themeConfiguration);
 
 // Loading fonts
 require('font-awesome/scss/font-awesome.scss');
@@ -36,7 +35,7 @@ const websocket = new WebSocketService();
 
 // Render the app using router
 render((
-    <MuiThemeProvider muiTheme={muiTheme}>
+    <MuiThemeProvider theme={theme}>
         <BootComponent>
             <Router history={browserHistory}>
                 {routes}

@@ -2,7 +2,7 @@ import React from 'react';
 
 import Avatar from 'material-ui/Avatar';
 import Chip from 'material-ui/Chip';
-import * as color from 'material-ui/styles/colors';
+import { teal, orange, red } from 'material-ui/colors';
 
 require('./BarrelChip.scss');
 
@@ -64,17 +64,17 @@ export default class BarrelChip extends React.Component {
         let avatarBackground = null;
         switch(this.state.barrel.state) {
             case 'new':
-                background = this.state.selected ? color.teal300 : color.teal100;
-                avatarBackground = color.teal600;
+                background = this.state.selected ? teal[300] : teal[100];
+                avatarBackground = teal[600];
                 break;
             case 'opened':
-                background = this.state.selected ? color.orange300 : color.orange100;
-                avatarBackground = color.orange600;
+                background = this.state.selected ? orange[300] : orange[100];
+                avatarBackground = orange[600];
                 break;
             case 'empty':
             default:
-                background = this.state.selected ? color.red300 : color.red100;
-                avatarBackground = color.red600;
+                background = this.state.selected ? red[300] : red[100];
+                avatarBackground = red[600];
                 break;
 
         }

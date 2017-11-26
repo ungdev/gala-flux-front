@@ -8,7 +8,7 @@ import ChatActions from 'actions/ChatActions';
 import AuthStore from 'stores/AuthStore';
 import NotificationActions from 'actions/NotificationActions';
 import Divider from 'material-ui/Divider';
-import Subheader from 'material-ui/Subheader';
+import Subheader from 'material-ui-old/Subheader';
 import SelectableList from 'app/components/SelectableList.jsx';
 import FontAwesome from 'react-fontawesome';
 import { ListItem } from 'material-ui/List';
@@ -251,7 +251,14 @@ export default class Channels extends React.Component {
                         Object.keys(this.state.channelOrder).map((key, i) => {
                             let channel = this.state.channelOrder[key].channel;
                             return (
-                                <ListItem key={i} value={channel} className="Chat__Channels__channel" onClick={_ => this._messagesViewed(channel)}>
+                                <ListItem
+                                button
+                                dense
+                                key={i}
+                                value={channel}
+                                className="Chat__Channels__channel"
+                                onClick={_ => this._messagesViewed(channel)}
+                            >
                                     { this.state.channelOrder[key].notify && this.state.newMessages[channel] > 0 &&
                                         <span className="Notification_bubble">{this.state.newMessages[channel]}</span>
                                     }

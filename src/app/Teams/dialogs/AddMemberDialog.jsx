@@ -1,8 +1,8 @@
 import React from 'react';
 
 import Dialog from 'app/components/ResponsiveDialog.jsx';
-import FlatButton from 'material-ui/FlatButton';
-import { Tabs, Tab } from 'material-ui/Tabs';
+import Button from 'material-ui/Button';
+import Tabs, { Tab } from 'material-ui/Tabs';
 
 import AddEtuuttMemberForm from "app/Teams/components/AddEtuuttMemberForm.jsx";
 import AddIpMemberForm from "app/Teams/components/AddIpMemberForm.jsx";
@@ -25,21 +25,23 @@ export default class AddMemberDialog extends React.Component {
     render() {
 
         let actions = [
-            <FlatButton
-                label="Fermer"
+            <Button
                 secondary={true}
                 onTouchTap={this.props.close}
-            />,
+            >
+                Fermer
+            </Button>,
         ];
 
         if(this.state.value == 'ip') {
             actions.push(
-                <FlatButton
-                    label="Ajouter"
+                <Button
                     primary={true}
                     type="submit"
                     onTouchTap={(this.AddIpMemberForm ? this.AddIpMemberForm.submit : () => {})}
-                />
+                >
+                    Ajouter
+                </Button>
             )
         }
 

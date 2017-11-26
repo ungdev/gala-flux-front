@@ -6,14 +6,12 @@ import AuthStore from 'stores/AuthStore';
 import * as constants from 'config/constants';
 
 import Popover from 'material-ui/Popover';
-import FlatButton from 'material-ui/FlatButton';
-import SelectField from 'material-ui/SelectField';
+import Button from 'material-ui/Button';
 import Avatar from 'material-ui/Avatar';
-import MenuItem from 'material-ui/MenuItem';
 import { Row, Col } from 'react-flexbox-grid';
-import {List, ListItem} from 'material-ui/List';
-import CheckIcon from 'material-ui/svg-icons/navigation/check';
-import AccountCircleIcon from 'material-ui/svg-icons/action/account-circle';
+import List, { ListItem, ListItemText, ListItemAvatar } from 'material-ui/List';
+import CheckIcon from 'material-ui-icons/Check';
+import AccountCircleIcon from 'material-ui-icons/AccountCircle';
 
 import NotificationActions from 'actions/NotificationActions';
 require('./UpdateAlertPopover.scss');
@@ -105,8 +103,8 @@ export default class UpdateAlertPopover extends React.Component {
                 className="Alerts__UpdateAlertPopover"
                 open={this.props.open}
                 anchorEl={this.props.anchor}
-                anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                anchorOrigin={{horizontal: 'center', vertical: 'bottom'}}
+                transformOrigin={{horizontal: 'center', vertical: 'top'}}
                 onRequestClose={this.props.onRequestClose}
             >
                 <p><small>Info: <em>Ctrl+Click</em> permet<br/> selectionner plusieurs personnes</small></p>
@@ -116,19 +114,23 @@ export default class UpdateAlertPopover extends React.Component {
                         this.state.filteredUsers.map((user, i) => {
                             if(this.props.alert.users.includes(user ? user.id : null)) {
                                 return <ListItem
+                                        button
                                         key={i}
-                                        primaryText={user ? user.name : "Quelqu'un d'autre"}
-                                        leftAvatar={<Avatar backgroundColor="#00AFCA" ><CheckIcon color="white"/></Avatar>}
                                         onClick={(e) => this.handleSelection(e, user)}
-                                    />;
+                                    >
+                                        <ListItemAvatar><Avatar><CheckIcon color="white"/></Avatar></ListItemAvatar>
+                                        <ListItemText primary={user ? user.name : "Quelqu'un d'autre"} />
+                                    </ListItem>;
                             }
                             else {
                                 return <ListItem
+                                        button
                                         key={i}
-                                        primaryText={user ? user.name : "Quelqu'un d'autre"}
-                                        leftAvatar={<Avatar src={(constants.avatarBasePath + (user ? user.id + '?u=' + user.updatedAt : null))} backgroundColor="white" />}
                                         onClick={(e) => this.handleSelection(e, user)}
-                                    />;
+                                    >
+                                        <ListItemAvatar><Avatar src={(constants.avatarBasePath + (user ? user.id + '?u=' + user.updatedAt : null))} /></ListItemAvatar>
+                                        <ListItemText primary={user ? user.name : "Quelqu'un d'autre"} />
+                                    </ListItem>;
                             }
                         })
                     }

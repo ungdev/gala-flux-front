@@ -1,9 +1,7 @@
 import React from 'react';
 
 import Dialog from 'app/components/ResponsiveDialog.jsx';
-import FlatButton from 'material-ui/FlatButton';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
 
@@ -150,17 +148,19 @@ export default class UpdateBottleDialog extends React.Component {
     render() {
 
         const actions = [
-            <FlatButton
-                label="Annuler"
+            <Button
                 secondary={true}
                 onTouchTap={this.props.close}
-            />,
-            <FlatButton
-                label="Sauvegarder"
+            >
+                Annuler
+            </Button>,
+            <Button
                 primary={true}
                 type="submit"
                 onTouchTap={this._handleSubmit}
-            />,
+            >
+                Sauvegarder
+            </Button>,
         ];
 
         return (

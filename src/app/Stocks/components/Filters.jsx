@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { Row, Col } from 'react-flexbox-grid';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import Select from 'material-ui/Select';
 import TextField from 'material-ui/TextField';
 import LocationSelect from 'app/Stocks/components/LocationSelect.jsx';
+import SelectableMenuItem from 'app/components/SelectableMenuItem.jsx';
 
 /**
  * @param {ModelCollection} teams
@@ -13,65 +13,63 @@ import LocationSelect from 'app/Stocks/components/LocationSelect.jsx';
  * @param {function} setFilters
  * @param {Object} filters
  */
-export default class Filters extends React.Component {
+class Filters extends React.Component {
 
     render() {
         return (
             <Row>
                 <Col xs={12} sm={6} md={3}>
-                    <SelectField
-                        multiple={true}
-                        hintText="Types de fût"
+                    <Select
+                        multiple
+                        placeholder="Types de fût"
                         value={this.props.filters.types}
-                        onChange={(e, i, v) => this.props.setFilters("types", v)}
-                        fullWidth={true}
+                        onChange={(e) => this.props.setFilters("types", e.target.value)}
                     >
                         {
                             this.props.barrelTypes.map(type => {
-                                return <MenuItem
+                                return <SelectableMenuItem
                                     key={type.id}
-                                    insetChildren={true}
-                                    checked={this.props.filters.types.includes(type.id)}
+                                    selected={this.props.filters.types.includes(type.id)}
                                     value={type.id}
-                                    primaryText={type.name}
-                                />
+                                >
+                                    {type.name}
+                                </SelectableMenuItem>
                             })
                         }
                         {
                             this.props.bottleTypes.map(type => {
-                                return <MenuItem
+                                return <SelectableMenuItem
                                     key={'-'+type.id}
-                                    insetChildren={true}
-                                    checked={this.props.filters.types.includes('-'+type.id)}
+                                    selected={this.props.filters.types.includes('-'+type.id)}
                                     value={'-'+type.id}
-                                    primaryText={type.name}
-                                />
+                                >
+                                    {type.name}
+                                </SelectableMenuItem>
                             })
                         }
-                    </SelectField>
+                    </Select>
                 </Col>
 
                 <Col xs={12} sm={6} md={3}>
                     <LocationSelect
                         teams={this.props.teams.findByPermission('ui/stockReceiver').sortBy('name')}
                         value={this.props.filters.locations}
-                        setValue={(e, i, v) => this.props.setFilters("locations", v)}
+                        setValue={(v) => this.props.setFilters("locations", v)}
                         multiple={true}
                     />
                 </Col>
 
                 <Col xs={12} sm={6} md={3}>
-                    <SelectField
-                        multiple={true}
-                        hintText="Etats"
+                    <Select
+                        multiple
+                        placeholder="Etats"
                         value={this.props.filters.states}
-                        onChange={(e, i, v) => this.props.setFilters("states", v)}
-                        fullWidth={true}
+                        onChange={(e) => this.props.setFilters('states', e.target.value)}
                     >
-                        <MenuItem insetChildren={true} checked={this.props.filters.states.includes("new")} value={"new"} primaryText={"Neuf"} />
-                        <MenuItem insetChildren={true} checked={this.props.filters.states.includes("opened")} value={"opened"} primaryText={"Entamé"} />
-                        <MenuItem insetChildren={true} checked={this.props.filters.states.includes("empty")} value={"empty"} primaryText={"Terminé"} />
-                    </SelectField>
+                        <SelectableMenuItem selected={this.props.filters.states.includes("new")} value="new">Neuf</SelectableMenuItem>
+                        <SelectableMenuItem selected={this.props.filters.states.includes("opened")} value="opened">Entamé</SelectableMenuItem>
+                        <SelectableMenuItem selected={this.props.filters.states.includes("empty")} value="empty">Terminé</SelectableMenuItem>
+                    </Select>
                 </Col>
 
                 <Col xs={12} sm={6} md={3}>
@@ -85,5 +83,5 @@ export default class Filters extends React.Component {
             </Row>
         );
     }
-
 }
+export default Filters;

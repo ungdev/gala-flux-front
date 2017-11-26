@@ -1,9 +1,7 @@
 import React from 'react';
 
 import Dialog from 'app/components/ResponsiveDialog.jsx';
-import FlatButton from 'material-ui/FlatButton';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
 
@@ -122,23 +120,26 @@ export default class BottleSelectionDialog extends React.Component {
     render() {
 
         const actions = [
-            <FlatButton
-                label="Désélectionner"
+            <Button
                 secondary={true}
                 onTouchTap={() => (this.props.submit && this.props.submit(0))}
                 className="Dialog__DeleteButon"
-            />,
-            <FlatButton
-                label="Annuler"
+            >
+                Désélectionner
+            </Button>,
+            <Button
                 secondary={true}
                 onTouchTap={this.props.close}
-            />,
-            <FlatButton
-                label="Sélectionner"
+            >
+                Annuler
+            </Button>,
+            <Button
                 primary={true}
                 type="submit"
                 onTouchTap={this._handleSubmit}
-            />,
+            >
+                Sélectionner
+            </Button>,
         ];
 
         return (

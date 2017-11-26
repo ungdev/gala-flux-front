@@ -9,7 +9,7 @@ import BarrelTypeStore from 'stores/BarrelTypeStore';
 import TeamStore from 'stores/TeamStore';
 
 import Dialog from 'app/components/ResponsiveDialog.jsx';
-import FlatButton from 'material-ui/FlatButton';
+import Button from 'material-ui/Button';
 import BarrelChip from 'app/Stocks/Barrels/components/BarrelChip.jsx';
 import BottleChip from 'app/Stocks/Bottles/components/BottleChip.jsx';
 import LocationSelect from 'app/Stocks/components/LocationSelect.jsx';
@@ -68,16 +68,18 @@ export default class MoveDialog extends React.Component {
 
     render() {
         const actions = [
-            <FlatButton
-                label="Annuler"
+            <Button
                 secondary={true}
                 onClick={this.props.close}
-            />,
-            <FlatButton
-                label="Déplacer"
+            >
+                Annuler
+            </Button>,
+            <Button
                 primary={true}
                 onClick={this._moveBarrels}
-            />
+            >
+                Déplacer
+            </Button>
         ];
 
         return (
@@ -125,7 +127,7 @@ export default class MoveDialog extends React.Component {
                         <LocationSelect
                             teams={this.props.teams.findByPermission('ui/stockReceiver').sortBy('name')}
                             value={this.state.teamId}
-                            setValue={(e, i, v) => this.setState({ teamId: v })}
+                            setValue={(v) => this.setState({ teamId: v })}
                             floatingLabel="Destination"
                         />
                     </Dialog>

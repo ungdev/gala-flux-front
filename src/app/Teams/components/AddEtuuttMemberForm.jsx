@@ -114,7 +114,7 @@ export default class AddEtuuttMemberForm extends React.Component {
 
                 <SearchField
                     errorText={this.state.error}
-                    floatingLabelText="Recherche EtuUTT"
+                    label="Recherche EtuUTT"
                     onSubmit={this._handleSubmit}
                     loading={this.state.loading}
                     value={this.state.query}

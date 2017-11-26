@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Dialog from 'app/components/ResponsiveDialog.jsx';
-import FlatButton from 'material-ui/FlatButton';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 
@@ -77,17 +77,19 @@ export default class NewTeamDialog extends React.Component {
 
     render() {
         const actions = [
-            <FlatButton
-                label="Fermer"
+            <Button
                 secondary={true}
                 onTouchTap={this.props.close}
-            />,
-            <FlatButton
-                label="Créer"
+            >
+                Fermer
+            </Button>,
+            <Button
                 primary={true}
                 type="submit"
                 onTouchTap={this._handleSubmit}
-            />,
+            >
+                Créer
+            </Button>,
         ];
 
         return (
@@ -109,7 +111,7 @@ export default class NewTeamDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Nom"
+                                label="Nom"
                                 errorText={this.state.errors.name}
                                 value={this.state.values.name}
                                 fullWidth={true}
@@ -120,7 +122,7 @@ export default class NewTeamDialog extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Emplacement"
+                                label="Emplacement"
                                 errorText={this.state.errors.location}
                                 value={this.state.values.location}
                                 fullWidth={true}

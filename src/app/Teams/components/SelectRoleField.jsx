@@ -3,8 +3,8 @@ import React from 'react';
 import NotificationActions from 'actions/NotificationActions';
 import AuthService from 'services/AuthService';
 
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import SelectField from 'material-ui-old/SelectField';
+import MenuItem from 'material-ui-old/MenuItem';
 
 export default class SelectRoleField extends React.Component {
 
@@ -36,7 +36,7 @@ export default class SelectRoleField extends React.Component {
     render() {
         return (
             <SelectField
-                floatingLabelText="Autorisations"
+                label="Autorisations"
                 value={this.state.selected}
                 onChange={(e, index, value) => this.props.onChange(value)}
                 errorText={this.props.errorText}

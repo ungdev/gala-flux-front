@@ -5,9 +5,9 @@ import UserStore from 'stores/UserStore';
 import TeamStore from 'stores/TeamStore';
 import NotificationActions from 'actions/NotificationActions';
 
-import FlatButton from 'material-ui/FlatButton';
+import Button from 'material-ui/Button';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
-import AutoComplete from 'material-ui/AutoComplete';
+import AutoComplete from 'material-ui-old/AutoComplete';
 import DataLoader from 'app/components/DataLoader.jsx';
 
 export default class LoginAsDialog extends React.Component {
@@ -54,11 +54,12 @@ export default class LoginAsDialog extends React.Component {
 
     render() {
         const actions = [
-            <FlatButton
-                label="Annuler"
+            <Button
                 primary={true}
                 onTouchTap={this.closeDialog}
-                />,
+            >
+                Annuler
+            </Button>,
         ];
 
         return (
@@ -81,7 +82,7 @@ export default class LoginAsDialog extends React.Component {
                             onRequestClose={this.closeDialog}
                             >
                                 <AutoComplete
-                                    floatingLabelText="Nom de l'utilisateur"
+                                    label="Nom de l'utilisateur"
                                     searchText={this.state.value}
                                     onUpdateInput={this.handleChange}
                                     dataSource={this.state.users}

@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { Row, Col } from 'react-flexbox-grid';
-import Euro from 'material-ui/svg-icons/action/euro-symbol';
-import Barrel from 'material-ui/svg-icons/device/battery-full';
+import Euro from 'material-ui-icons/EuroSymbol';
+import Barrel from 'material-ui-icons/BatteryFull';
 
-import * as color from 'material-ui/styles/colors';
+import { teal, orange, red } from 'material-ui/colors';
 
 /**
  * @param {Object} prices
@@ -17,9 +17,9 @@ export default class BarrelsInfo extends React.Component {
         super(props);
 
         this.states = {
-            "new": color.teal600,
-            "opened": color.orange600,
-            "empty": color.red600,
+            "new": teal[600],
+            "opened": orange[600],
+            "empty": red[600],
         }
     }
 
@@ -56,13 +56,13 @@ export default class BarrelsInfo extends React.Component {
                             <Col xs={6} className="Overview__CardInfo Overview__CardInfo--bordered">
                                 <div>
                                     <span>{Math.round(this.props.prices.supplierPrice)}</span>
-                                    <Euro color={color.red600} />
+                                    <Euro color={red[600]} />
                                 </div>
                             </Col>
                             <Col xs={6} className="Overview__CardInfo Overview__CardInfo--bordered">
                                 <div>
                                     <span>{Math.round(this.props.prices.sellPrice)}</span>
-                                    <Euro color={color.teal600} />
+                                    <Euro color={teal[600]} />
                                 </div>
                             </Col>
                         </Row>

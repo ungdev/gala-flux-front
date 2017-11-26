@@ -158,7 +158,6 @@ export default class Messages extends React.Component {
                                     <Avatar
                                         className="Chat__Message__avatar"
                                         src={(constants.avatarBasePath + messageGroup[0].userId + '?u=' + user.updatedAt)}
-                                        backgroundColor="white"
                                         title={user.name}
                                         />
                                     <div className="Chat__Message__bubbles">

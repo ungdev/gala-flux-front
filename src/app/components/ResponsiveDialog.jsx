@@ -1,14 +1,12 @@
 import React from 'react';
 
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
+import Button from 'material-ui/Button';
+import Dialog, { withMobileDialog } from 'material-ui/Dialog';
 
 import NotificationStore from 'stores/NotificationStore';
-import AuthActions from 'actions/AuthActions';
-
 require('./ResponsiveDialog.scss');
 
-export default class ResponsiveDialog extends React.Component {
+class ResponsiveDialog extends React.Component {
 
     constructor(props) {
         super(props);
@@ -35,14 +33,12 @@ export default class ResponsiveDialog extends React.Component {
     }
 
     render() {
+        const { fullScreen } = this.props;
+        
         let props = Object.assign({}, this.props);
-        props.autoScrollBodyContent = true;
+        props.fullScreen = fullScreen;
         props.className = 'ResponsiveDialog ' + (props.className || '');
-        props.actionsContainerClassName = 'ResponsiveDialog__actions ' + (props.actionsContainerClassName || '');
-        props.bodyClassName = 'ResponsiveDialog__body ' + (props.bodyClassName || '');
-        props.contentClassName = 'ResponsiveDialog__content ' + (props.contentClassName || '');
-        props.overlayClassName = 'ResponsiveDialog__overlay ' + (props.overlayClassName || '');
-        props.titleClassName = 'ResponsiveDialog__title ' + (props.titleClassName || '');
         return React.createElement(Dialog, props);
     }
 }
+export default withMobileDialog()(ResponsiveDialog);

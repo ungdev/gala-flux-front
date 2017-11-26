@@ -6,7 +6,7 @@ import AlertStore from 'stores/AlertStore';
 import NotificationActions from 'actions/NotificationActions';
 import DataLoader from 'app/components/DataLoader.jsx';
 
-import Button from 'app/AlertButtons/components/Button.jsx';
+import AlertButton from 'app/AlertButtons/components/AlertButton.jsx';
 
 require('./AlertButtonScene.scss');
 
@@ -71,7 +71,7 @@ export default class AlertButtonScene extends React.Component {
                                                 <h3>{category}</h3>
                                                 {
                                                     this.state.buttons[category].map(button => {
-                                                        return <Button
+                                                        return <AlertButton
                                                                     key={button.id}
                                                                     button={button}
                                                                     alert={this.state.alerts[button.id]}

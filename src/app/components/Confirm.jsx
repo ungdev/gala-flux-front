@@ -1,6 +1,6 @@
 import React from 'react';
 
-import FlatButton from 'material-ui/FlatButton';
+import Button from 'material-ui/Button';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 
 
@@ -15,17 +15,19 @@ export default class Confirm extends React.Component {
 
     render() {
         const actions = [
-            <FlatButton
-                label="Non"
+            <Button
                 secondary={true}
                 onTouchTap={this.props.no}
-                />,
-            <FlatButton
-                label="Oui"
+            >
+                Non
+            </Button>,
+            <Button
                 primary={true}
                 keyboardFocused={true}
                 onTouchTap={this.props.yes}
-                />,
+            >
+                Oui
+            </Button>,
         ];
 
         return (

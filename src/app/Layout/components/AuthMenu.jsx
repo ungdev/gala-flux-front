@@ -6,21 +6,21 @@ import AuthActions from 'actions/AuthActions';
 import NotificationActions from 'actions/NotificationActions';
 import AuthService from 'services/AuthService';
 
-import muiThemeable from 'material-ui/styles/muiThemeable';
+import { withTheme } from 'material-ui/styles';
 import Popover from 'material-ui/Popover';
 import Avatar from 'material-ui/Avatar';
 import Divider from 'material-ui/Divider';
 import ReactTooltip from 'react-tooltip';
-import {red500} from 'material-ui/styles/colors';
-import CloudOffIcon from 'material-ui/svg-icons/file/cloud-off';
+import { red } from 'material-ui/colors';
+import CloudOffIcon from 'material-ui-icons/CloudOff';
 
 import LoginAsDialog from 'app/Layout/dialogs/LoginAsDialog.jsx';
 import NotificationsDialog from "app/Layout/dialogs/NotificationsDialog.jsx";
-import { Menu, MenuItem } from 'material-ui/Menu';
+import { MenuList, MenuItem } from 'material-ui/Menu';
 
 require('./AuthMenu.scss');
 
-class AuthMenu extends React.Component {
+export default class AuthMenu extends React.Component {
 
     constructor(props) {
         super(props);
@@ -36,8 +36,6 @@ class AuthMenu extends React.Component {
             openLoginAs: false,
             openNotificationsDialog: false,
         };
-
-        this._palette = props.muiTheme.palette;
 
         // binding
         this._openMenu = this._openMenu.bind(this);
@@ -154,13 +152,12 @@ class AuthMenu extends React.Component {
                         {this.state.user.name}
                     </div>
                     {( this.state.connected ?
-                        <Avatar src={avatarUri} backgroundColor="white" className="Layout__AuthMenu__button__avatar" />
+                        <Avatar src={avatarUri} className="Layout__AuthMenu__button__avatar" />
                         :
                         <div>
                             <Avatar
                                 data-tip
                                 data-for="authmenu-offline"
-                                backgroundColor={red500}
                                 className="Layout__AuthMenu__button__avatar"
                                 icon={<CloudOffIcon color="white" />}
                             />
@@ -177,15 +174,15 @@ class AuthMenu extends React.Component {
                     anchorEl={this.state.menuAnchor}
                     open={this.state.openMenu}
                     onRequestClose={this._closeMenu}
-                    targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
-                    anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                    anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                    transformOrigin={{horizontal: 'right', vertical: 'top'}}
                 >
                     <div className="Layout__AuthMenu__menuDetails">
                         <strong>{this.state.team.name}</strong><br/>
                         {this.state.user.name}
                         <Divider/>
                     </div>
-                    <Menu>
+                    <MenuList>
                         <MenuItem onClick={this._toggleNotificationsDialog}>Notifications</MenuItem>
 
                         { this.state.canLoginAs ?
@@ -198,7 +195,7 @@ class AuthMenu extends React.Component {
 
                         <MenuItem onClick={this._logout}>Se déconnecter</MenuItem>
 
-                    </Menu>
+                    </MenuList>
                 </Popover>
 
                 { this.state.openLoginAs ?
@@ -214,4 +211,4 @@ class AuthMenu extends React.Component {
     }
 
 }
-export default muiThemeable()(AuthMenu);
+

@@ -5,9 +5,9 @@ import AuthStore from 'stores/AuthStore';
 import NotificationActions from 'actions/NotificationActions';
 
 import SelectableList from 'app/components/SelectableList.jsx';
-import { ListItem } from 'material-ui/List';
-import ContentAddIcon from 'material-ui/svg-icons/content/add';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
+import { ListItemText, ListItem } from 'material-ui/List';
+import ContentAddIcon from 'material-ui-icons/Add';
+import Button from 'material-ui/Button';
 import NewTeamDialog from 'app/Teams/dialogs/NewTeamDialog.jsx';
 import DataLoader from "app/components/DataLoader.jsx";
 
@@ -53,13 +53,13 @@ export default class TeamListScene extends React.Component {
                             <SelectableList value={parseInt(this.props.selectedId)}>
                                 {
                                     this.state.teams.map((team, i) => {
-                                        return <ListItem
+                                        return <ListItem button
                                                     value={team.id}
                                                     key={i}
-                                                    primaryText={team.name}
-                                                    secondaryText={team.role}
                                                     onTouchTap={_ => this.props.onTeamSelection(team)}
-                                                />
+                                                >
+                                                    <ListItemText primary={team.name} secondary={team.role} />
+                                                </ListItem>
                                     })
                                 }
                             </SelectableList>
@@ -68,12 +68,13 @@ export default class TeamListScene extends React.Component {
                 </DataLoader>
 
                 { AuthStore.can('team/admin') &&
-                    <FloatingActionButton
+                    <Button
+                        fab
                         className="FloatingButton"
                         onTouchTap={this._toggleCreateDialog}
                     >
                         <ContentAddIcon />
-                    </FloatingActionButton>
+                    </Button>
                 }
 
                 <NewTeamDialog

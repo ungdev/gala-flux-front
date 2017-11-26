@@ -1,14 +1,15 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
 
-import {Card, CardHeader, CardText} from 'material-ui/Card';
+import Card, { CardActions, CardContent } from 'material-ui/Card';
+import Typography from 'material-ui/Typography';
 import BarrelsInfo from 'app/Overview/components/BarrelsInfo.jsx';
 import AlertsInfo from 'app/Overview/components/AlertsInfo.jsx';
 import Badge from 'material-ui/Badge';
-import FaceIcon from 'material-ui/svg-icons/action/face';
+import FaceIcon from 'material-ui-icons/Face';
 import ReactTooltip from 'react-tooltip';
 
-import * as color from 'material-ui/styles/colors';
+import { teal, red } from 'material-ui/colors';
 require('./TeamCard.scss');
 
 /**
@@ -37,7 +38,7 @@ export default class TeamCard extends React.Component {
                 fontWeight: "bold",
             },
             badge: {
-                background: this.props.userNames.length > 0 ? color.teal600 : color.red600
+                background: this.props.userNames.length > 0 ? teal[600] : red[600]
             }
         };
 
@@ -51,8 +52,8 @@ export default class TeamCard extends React.Component {
                 >
                     <Badge
                         badgeContent={this.props.userNames.length}
-                        primary={true}
-                        badgeStyle={styles.badge}
+                        color="accent"
+                        style={styles.badge}
                     >
                         <FaceIcon />
                     </Badge>
@@ -68,16 +69,16 @@ export default class TeamCard extends React.Component {
                     </ReactTooltip>
                 }
 
-                <CardHeader
-                    titleStyle={styles.title}
-                    title={this.props.team.name}
-                    subtitle={this.props.team.location}
-                    className="Overview__TeamCard__header"
-                />
-                <CardText>
+                <CardContent>
+                    <Typography type="headline" className="Overview__TeamCard__header" style={styles.title}>
+                        {this.props.team.name}
+                    </Typography>
+                    <Typography type="subheading" color="secondary">
+                        {this.props.team.location}
+                    </Typography>
                     <AlertsInfo alertList={this.props.alertList} team={this.props.team}/>
                     <BarrelsInfo prices={this.props.prices} barrelList={this.props.barrelList} barrelCount={this.props.barrelCount} />
-                </CardText>
+                </CardContent>
             </Card>
         );
     }

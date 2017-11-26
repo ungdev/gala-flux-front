@@ -5,8 +5,8 @@ import NotificationActions from 'actions/NotificationActions'
 
 import SelectableList from 'app/components/SelectableList.jsx'
 import BottleTypeListItem from 'app/Stocks/Bottles/components/BottleTypeListItem.jsx'
-import ContentAddIcon from 'material-ui/svg-icons/content/add';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAddIcon from 'material-ui-icons/Add';
+import Button from 'material-ui/Button';
 import UpdateBottleTypeDialog from 'app/Stocks/Bottles/dialogs/UpdateBottleTypeDialog.jsx';
 import NewBottleTypeDialog from 'app/Stocks/Bottles/dialogs/NewBottleTypeDialog.jsx';
 import DataLoader from "app/components/DataLoader.jsx";
@@ -83,12 +83,13 @@ export default class BottleTypeScene extends React.Component {
                             </div>
 
                             { AuthStore.can('bottleType/admin') &&
-                                <FloatingActionButton
+                                <Button
+                                    fab
                                     className="FloatingButton"
                                     onTouchTap={this._toggleNewBottleTypeDialog}
                                 >
                                     <ContentAddIcon />
-                                </FloatingActionButton>
+                                </Button>
                             }
 
                             <NewBottleTypeDialog

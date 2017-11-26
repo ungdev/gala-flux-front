@@ -2,9 +2,9 @@ import React from 'react';
 
 import { Row, Col } from 'react-flexbox-grid';
 import ReactTooltip from 'react-tooltip';
-import WarningIcon from 'material-ui/svg-icons/alert/warning';
+import WarningIcon from 'material-ui-icons/Warning';
 
-import * as color from 'material-ui/styles/colors';
+import { teal, orange, red } from 'material-ui/colors';
 
 /**
  * @param {Object} alertList
@@ -15,9 +15,9 @@ export default class AlertsInfo extends React.Component {
         super(props);
 
         this.severities = {
-            done: color.teal600,
-            warning: color.orange600,
-            serious: color.red600
+            done: teal[600],
+            warning: orange[600],
+            serious: red[600]
         };
     }
 

@@ -5,20 +5,20 @@ import AlertActions from 'actions/AlertActions.jsx';
 import AlertButtonService from 'services/AlertButtonService';
 import AlertService from 'services/AlertService';
 
-import Comment from 'material-ui/svg-icons/communication/comment';
-import Check from 'material-ui/svg-icons/navigation/check';
+import Comment from 'material-ui-icons/Comment';
+import Check from 'material-ui-icons/Check';
 import TextField from 'material-ui/TextField';
-import FlatButton from 'material-ui/FlatButton';
+import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 
-require('./Button.scss');
+require('./AlertButton.scss');
 
 /**
  * @param {Object} button
  * @param {Object} alert
  * @param {Object} team
  */
-export default class Button extends React.Component {
+export default class AlertButton extends React.Component {
 
     constructor(props) {
         super(props);
@@ -255,16 +255,18 @@ export default class Button extends React.Component {
                         id={"button-"+this.props.button.id}
                         />
                     <div className="AlertButtons__Button_input_actions">
-                        <FlatButton
+                        <Button
                             secondary={true}
                             onClick={_ => this._toggleMessageInput("done")}
-                            label="Annuler"
-                        />
-                        <FlatButton
+                        >
+                            Annuler
+                        </Button>
+                        <Button
                             primary={true}
                             type="submit"
-                            label={commentRequired ? "Créer l'alerte" : "Envoyer"}
-                        />
+                        >
+                            {commentRequired ? "Créer l'alerte" : "Envoyer"}
+                        </Button>
                     </div>
                 </form>
             </div>

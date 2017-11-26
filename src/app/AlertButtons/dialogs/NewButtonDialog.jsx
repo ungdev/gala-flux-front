@@ -7,11 +7,12 @@ import TeamStore from 'stores/TeamStore';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import { Row, Col } from 'react-flexbox-grid';
 import TextField from 'material-ui/TextField';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import Toggle from 'material-ui/Toggle';
-import FlatButton from 'material-ui/FlatButton';
-import AutoComplete from 'material-ui/AutoComplete';
+import SelectField from 'material-ui-old/SelectField';
+import MenuItem from 'material-ui-old/MenuItem';
+import Switch from 'material-ui/Switch';
+import { FormControlLabel } from 'material-ui/Form';
+import Button from 'material-ui/Button';
+import AutoComplete from 'material-ui-old/AutoComplete';
 
 
 
@@ -95,17 +96,19 @@ export default class NewButtonDialog extends React.Component {
 
     render() {
         const actions = [
-            <FlatButton
-                label="Fermer"
+            <Button
                 secondary={true}
                 onTouchTap={this.props.close}
-            />,
-            <FlatButton
-                label="Créer"
+            >
+                Fermer
+            </Button>,
+            <Button
                 primary={true}
                 type="submit"
                 onTouchTap={this._handleSubmit}
-            />,
+            >
+                Créer
+            </Button>,
         ];
 
 
@@ -126,7 +129,7 @@ export default class NewButtonDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Nom de l'alerte"
+                                label="Nom de l'alerte"
                                 errorText={this.state.errors.title}
                                 value={this.state.values.title}
                                 fullWidth={true}
@@ -137,7 +140,7 @@ export default class NewButtonDialog extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <AutoComplete
-                                floatingLabelText="Catégorie"
+                                label="Catégorie"
                                 errorText={this.state.errors.category}
                                 value={this.state.values.category}
                                 fullWidth={true}
@@ -155,7 +158,7 @@ export default class NewButtonDialog extends React.Component {
                                 value={this.state.values.senderGroup}
                                 errorText={this.state.errors.senderGroup}
                                 fullWidth={true}
-                                floatingLabelText="Groupe d'expéditeur de l'alerte"
+                                label="Groupe d'expéditeur de l'alerte"
                                 floatingLabelFixed={true}
                             >
                                 <MenuItem value={null} primaryText="Tous les groupes" />
@@ -172,7 +175,7 @@ export default class NewButtonDialog extends React.Component {
                                 value={this.state.values.receiverTeamId}
                                 errorText={this.state.errors.receiverTeamId}
                                 fullWidth={true}
-                                floatingLabelText="Destinataire de l'alerte"
+                                label="Destinataire de l'alerte"
                             >
                                 {
                                     this.props.teams.map((team, i) => {
@@ -186,24 +189,28 @@ export default class NewButtonDialog extends React.Component {
                         <Col xs={12} sm={6}>
                             <TextField
                                 multiLine={true}
-                                floatingLabelText="Question du message"
+                                label="Question du message"
                                 fullWidth={true}
                                 rows={3}
                                 rowsMax={3}
                                 value={this.state.values.messagePrompt}
                                 onChange={e => this._handleFieldChange('messagePrompt', e.target.value)}
                             />
-                            <Toggle
+                            <FormControlLabel
                                 label="Message obligatoire"
-                                labelPosition="right"
-                                toggled={this.state.values.messageRequired}
-                                onToggle={(e, v) => this._handleFieldChange('messageRequired', v)}
+                                control={
+                                    <Switch
+                                        labelPosition="right"
+                                        checked={this.state.values.messageRequired}
+                                        onChange={(e, v) => this._handleFieldChange('messageRequired', v)}
+                                    />
+                                }
                             />
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
                                 multiLine={true}
-                                floatingLabelText="Réponse par défaut"
+                                label="Réponse par défaut"
                                 fullWidth={true}
                                 rows={3}
                                 rowsMax={3}

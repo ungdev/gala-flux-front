@@ -6,8 +6,8 @@ import AuthActions from 'actions/AuthActions';
 
 import NotificationActions from 'actions/NotificationActions';
 
-import RaisedButton from 'material-ui/RaisedButton';
-import CircularProgress from 'material-ui/CircularProgress';
+import Button from 'material-ui/Button';
+import { CircularProgress } from 'material-ui/Progress';
 
 import LOGO from 'assets/images/logos/logo.svg';
 import GOOGLEPLAY_BADGE from 'assets/images/google-play-badge.png';
@@ -66,13 +66,15 @@ export default class LoginScene extends React.Component {
                     <CircularProgress className="Layout_LoginScene__spinner"/>
                 :
                     [
-                        <RaisedButton
+                        <Button raised
                             key={1}
                             icon={(this.state.etuuttLoading ? <CircularProgress size={20} thickness={2} style={{lineHeight: 'normal'}} /> : null)}
                             disabled={this.state.etuuttLoading}
-                            label="Se connecter avec un compte UTT"
-                            primary={true}
-                            onTouchTap={this._login} />,
+                            color="primary"
+                            onTouchTap={this._login}
+                        >
+                            Se connecter avec un compte UTT
+                        </Button>,
                         (!global.Android &&
                             <a key={2} className="Layout_LoginScene__googleplay" href="http://play.google.com/store/apps/details?id=fr.utt.ung.flux">
                                 <img src={GOOGLEPLAY_BADGE} alt="Disponible sur Google Play" />

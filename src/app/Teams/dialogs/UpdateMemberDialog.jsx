@@ -3,13 +3,19 @@ import React from 'react';
 import UserService from 'services/UserService';
 import * as constants from 'config/constants';
 
-import Dialog from 'app/components/ResponsiveDialog.jsx';
-import FlatButton from 'material-ui/FlatButton';
+import {
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from 'material-ui/Dialog';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Avatar from 'material-ui/Avatar';
-import Subheader from 'material-ui/Subheader';
+import Subheader from 'material-ui-old/Subheader';
 import { Row, Col } from 'react-flexbox-grid';
 
+import Dialog from 'app/components/ResponsiveDialog.jsx';
 import SelectGroupField from 'app/Teams/components/SelectGroupField.jsx';
 import SelectRoleField from 'app/Teams/components/SelectRoleField.jsx';
 import Confirm from 'app/components/Confirm.jsx';
@@ -156,92 +162,93 @@ export default class UpdateMemberDialog extends React.Component {
     }
 
     render() {
-
-        const actions = [
-            <FlatButton
-                label="Supprimer"
-                secondary={true}
-                onTouchTap={() => this.setState({showDeleteDialog: true})}
-                className="Dialog__DeleteButon"
-            />,
-            <FlatButton
-                label="Annuler"
-                secondary={true}
-                onTouchTap={this.props.close}
-            />,
-            <FlatButton
-                label="Modifier"
-                primary={true}
-                onTouchTap={this._handleSubmit}
-            />,
-        ];
-
         return (
             <div>
                 <Dialog
-                    title={'Modification de l\'utilisateur ' + this.state.values.name}
                     open={this.props.show}
-                    actions={actions}
-                    autoScrollBodyContent={true}
-                    modal={false}
                     onRequestClose={this.props.close}
                 >
+                    <DialogTitle>
+                        {'Modification de l\'utilisateur ' + this.state.values.name}
+                    </DialogTitle>
+                    <DialogContent>
+                        Vous pouvez modifier l'utilisateur <strong>{this.state.values.name}</strong> à l'aide du formulaire ci-dessous.
 
-                    Vous pouvez modifier l'utilisateur <strong>{this.state.values.name}</strong> à l'aide du formulaire ci-dessous.
-
-                    <form onSubmit={this._handleSubmit}>
-                        <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                        <Row>
-                            <Col xs={12} sm={6}>
-                                <TextField
-                                    floatingLabelText="Nom"
-                                    errorText={this.state.errors.name}
-                                    value={this.state.values.name}
-                                    fullWidth={true}
-                                    onChange={e => this._handleFieldChange('name', e.target.value)}
-                                    ref={(field) => { this.focusField = field; }}
-                                    autoFocus={true}
-                                />
-                            </Col>
-                            <Col xs={12} sm={6}>
-                                { this.state.values.login ?
+                        <form onSubmit={this._handleSubmit}>
+                            <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
+                            <Row>
+                                <Col xs={12} sm={6}>
                                     <TextField
-                                        floatingLabelText="Login EtuUTT"
-                                        errorText={this.state.errors.login}
-                                        value={this.state.values.login}
+                                        label="Nom"
+                                        errorText={this.state.errors.name}
+                                        value={this.state.values.name}
                                         fullWidth={true}
-                                        onChange={e => this._handleFieldChange('login', e.target.value)}
-                                        disabled={true}
+                                        onChange={e => this._handleFieldChange('name', e.target.value)}
+                                        ref={(field) => { this.focusField = field; }}
+                                        autoFocus={true}
                                     />
-                                :
-                                    <TextField
-                                        floatingLabelText="IP"
-                                        errorText={this.state.errors.ip}
-                                        value={this.state.values.ip}
-                                        fullWidth={true}
-                                        onChange={e => this._handleFieldChange('ip', e.target.value)}
-                                    />
-                                }
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12} sm={6}>
-                                <label className="FieldLabel">Avatar</label>
-                                <a href="#" onTouchTap={this._handleAvatarClick}>
-                                    <Avatar src={(constants.avatarBasePath + this.state.id + '?' + this.state.avatarRefreshTimestamp)} backgroundColor="white" size={80} />
-                                        <input
-                                            ref={(field) => { this.avatarUploadField = field; }}
-                                            type="file"
-                                            style={{"display" : "none"}}
-                                            onChange={this._handleAvatarSubmit}
+                                </Col>
+                                <Col xs={12} sm={6}>
+                                    { this.state.values.login ?
+                                        <TextField
+                                            label="Login EtuUTT"
+                                            errorText={this.state.errors.login}
+                                            value={this.state.values.login}
+                                            fullWidth={true}
+                                            onChange={e => this._handleFieldChange('login', e.target.value)}
+                                            disabled={true}
                                         />
-                                </a>
-                                <br/>
-                            </Col>
-                            <Col xs={12} sm={6}>
-                            </Col>
-                        </Row>
-                    </form>
+                                    :
+                                        <TextField
+                                            label="IP"
+                                            errorText={this.state.errors.ip}
+                                            value={this.state.values.ip}
+                                            fullWidth={true}
+                                            onChange={e => this._handleFieldChange('ip', e.target.value)}
+                                        />
+                                    }
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={12} sm={6}>
+                                    <label className="FieldLabel">Avatar</label>
+                                    <a href="#" onTouchTap={this._handleAvatarClick}>
+                                        <Avatar src={(constants.avatarBasePath + this.state.id + '?' + this.state.avatarRefreshTimestamp)} backgroundColor="white" size={80} />
+                                            <input
+                                                ref={(field) => { this.avatarUploadField = field; }}
+                                                type="file"
+                                                style={{"display" : "none"}}
+                                                onChange={this._handleAvatarSubmit}
+                                            />
+                                    </a>
+                                    <br/>
+                                </Col>
+                                <Col xs={12} sm={6}>
+                                </Col>
+                            </Row>
+                        </form>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            color="accent"
+                            onTouchTap={() => this.setState({showDeleteDialog: true})}
+                            className="Dialog__DeleteButon"
+                        >
+                            Supprimer
+                        </Button>
+                        <Button
+                            color="accent"
+                            onTouchTap={this.props.close}
+                        >
+                            Annuler
+                        </Button>
+                        <Button
+                            color="primary"
+                            onTouchTap={this._handleSubmit}
+                        >
+                            Modifier
+                        </Button>
+                    </DialogActions>
                 </Dialog>
 
                 <Confirm

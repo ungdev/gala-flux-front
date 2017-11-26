@@ -15,10 +15,10 @@ export default class DashboardPage extends React.Component {
 
         return (
             <div className="pages__VerticalSplitLayout">
-                <div className={!this.props.router.isActive('/alerts') && 'pages__VerticalSplitLayout__secondary'}>
+                <div className={!this.props.router.isActive('/alerts') ? 'pages__VerticalSplitLayout__secondary' : ''}>
                     <AlertScene />
                 </div>
-                <div className={this.props.router.isActive('/alerts') && 'pages__VerticalSplitLayout__secondary'}>
+                <div className={this.props.router.isActive('/alerts') ? 'pages__VerticalSplitLayout__secondary' : ''}>
                     <ChatScene channel={channel} />
                 </div>
             </div>

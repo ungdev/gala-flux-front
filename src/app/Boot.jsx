@@ -3,7 +3,7 @@ import React, { createElement } from 'react';
 import AuthStore from "stores/AuthStore";
 
 import ErrorNotification from "app/Layout/components/ErrorNotification.jsx";
-import CircularProgress from 'material-ui/CircularProgress'
+import { CircularProgress } from 'material-ui/Progress';
 import LOGO from 'assets/images/logos/logo.svg';
 
 import {} from 'app/App.scss';

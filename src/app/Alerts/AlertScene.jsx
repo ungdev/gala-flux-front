@@ -1,6 +1,6 @@
 import React from 'react';
-import * as c from 'material-ui/styles/colors';
-import RaisedButton from 'material-ui/RaisedButton';
+import { cyan } from 'material-ui/colors';
+import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
 import AlertStore from 'stores/AlertStore';
 import TeamStore from 'stores/TeamStore';
@@ -105,20 +105,22 @@ export default class AlertScene extends React.Component {
                 <Paper className="AlertScene__filters">
                     <Row center="sm">
                         <Col xs={6} sm={4}>
-                            <RaisedButton
-                                label={`En cours ${this.state.newAlerts.processing ? `(${this.state.newAlerts.processing})` : ''}`}
+                            <Button raised
                                 onTouchTap={_ => this._handleFilter('processing')}
-                                backgroundColor={(!this.state.isDoneFilter ? c.cyanA700 : '')}
-                                fullWidth={true}
-                            />
+                                color={!this.state.isDoneFilter ? 'accent' : 'default' }
+                                className="AlertScene__filters__fields"
+                            >
+                                {`En cours ${this.state.newAlerts.processing ? `(${this.state.newAlerts.processing})` : ''}`}
+                            </Button>
                         </Col>
                         <Col xs={6} sm={4}>
-                            <RaisedButton
-                                label={`Terminées ${this.state.newAlerts.done ? `(${this.state.newAlerts.done})` : ''}`}
+                            <Button raised
                                 onTouchTap={_ => this._handleFilter('done')}
-                                backgroundColor={(this.state.isDoneFilter ? c.cyanA700 : '')}
-                                fullWidth={true}
-                            />
+                                color={this.state.isDoneFilter ? 'accent' : 'default' }
+                                className="AlertScene__filters__fields"
+                            >
+                                {`Terminées ${this.state.newAlerts.done ? `(${this.state.newAlerts.done})` : ''}`}
+                            </Button>
                         </Col>
                         {
                             AuthStore.can('alert/admin') &&

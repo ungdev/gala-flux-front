@@ -3,7 +3,7 @@ import React from 'react';
 import NotificationActions from 'actions/NotificationActions';
 import DataLoader from 'app/components/DataLoader.jsx';
 
-import AutoComplete from 'material-ui/AutoComplete';
+import AutoComplete from 'material-ui-old/AutoComplete';
 
 export default class SelectGroupField extends React.Component {
 
@@ -42,7 +42,7 @@ export default class SelectGroupField extends React.Component {
             >
                 { () => (
                     <AutoComplete
-                        floatingLabelText="Groupe de discussion"
+                        label="Groupe de discussion"
                         searchText={this.state.value}
                         onUpdateInput={this._handleUpdateInput}
                         dataSource={this.state.options}

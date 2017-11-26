@@ -4,8 +4,8 @@ import MessageService from 'services/MessageService';
 import MessageStore from 'stores/MessageStore';
 import ChatActions from 'actions/ChatActions';
 
-import RaisedButton from 'material-ui/RaisedButton';
-import ContentSendIcon from 'material-ui/svg-icons/content/send';
+import Button from 'material-ui/Button';
+import ContentSendIcon from 'material-ui-icons/Send';
 import NotificationActions from 'actions/NotificationActions';
 
 require('./Form.scss');
@@ -146,13 +146,15 @@ export default class Form extends React.Component {
                         onClick={this._onTextAreaClick}
                     />
 
-                    <RaisedButton
+                    <Button
+                        raised
                         type="submit"
                         className="Chat__Form__button"
-                        primary={true}
+                        color="primary"
                         disabled={!this.state.value}
-                        icon={<ContentSendIcon />}
-                    />
+                    >
+                        <ContentSendIcon />
+                    </Button>
                 </form>
         );
     }

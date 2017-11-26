@@ -1,7 +1,7 @@
 import React from 'react';
 
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import Select from 'material-ui/Select';
+import SelectableMenuItem from 'app/components/SelectableMenuItem.jsx';
 
 export default class LocationSelect extends React.Component {
 
@@ -22,34 +22,33 @@ export default class LocationSelect extends React.Component {
     render() {
 
         return (
-            <SelectField
-                multiple={this.props.multiple}
-                hintText={this.props.multiple && "Emplacements"}
+            <Select
+                multiple
+                placeholder={this.props.multiple && "Emplacements"}
                 value={this.props.value}
-                onChange={this.props.setValue}
-                fullWidth={true}
+                onChange={(e) => {this.props.setValue && this.props.setValue(e.target.value)}}
                 floatingLabelFixed={this.props.floatingLabel != null}
-                floatingLabelText={this.props.floatingLabel ? this.props.floatingLabel : null}
+                label={this.props.floatingLabel ? this.props.floatingLabel : null}
             >
-                <MenuItem
+                <SelectableMenuItem
                     key={0}
-                    insetChildren={true}
-                    checked={this.props.multiple ? this.props.value.includes(null) : this.props.value === null}
+                    selected={this.props.multiple ? this.props.value.includes(null) : this.props.value === null}
                     value={null}
-                    primaryText={"Reserve"}
-                />
+                >
+                    Reserve
+                </SelectableMenuItem>
                 {
                     this.state.teams.map(team => {
-                        return <MenuItem
+                        return <SelectableMenuItem
                             key={team.id}
-                            insetChildren={true}
-                            checked={this.props.multiple ? this.props.value.includes(team.id) : this.props.value === team.id}
+                            selected={this.props.multiple ? this.props.value.includes(team.id) : this.props.value === team.id}
                             value={team.id}
-                            primaryText={team.name}
-                        />
+                        >
+                            {team.name}
+                        </SelectableMenuItem>
                     })
                 }
-            </SelectField>
+            </Select>
         );
     }
 

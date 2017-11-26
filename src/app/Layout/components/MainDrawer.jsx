@@ -1,15 +1,14 @@
 import React from 'react';
 
-import muiThemeable from 'material-ui/styles/muiThemeable';
 import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
-import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
+import NavigationMenu from 'material-ui-icons/Menu';
 // import AdminMenu from 'components/partials/AdminMenu.jsx';
 // import BarMenu from 'components/partials/BarMenu.jsx';
 import AuthStore from 'stores/AuthStore';
 import NotificationStore from 'stores/NotificationStore';
 
-class MainDrawer extends React.Component {
+export default class MainDrawer extends React.Component {
 
     constructor(props) {
         super(props);
@@ -21,8 +20,6 @@ class MainDrawer extends React.Component {
             overNewMessageCount: 0,
             underNewMessageCount: 0,
         };
-
-        this._palette = props.muiTheme.palette;
 
         // binding
         this._handleScroll = this._handleScroll.bind(this);
@@ -114,11 +111,6 @@ class MainDrawer extends React.Component {
     }
 
     render() {
-        const style = {
-            icon: {
-                color: this._palette.alternateTextColor,
-            }
-        };
 
         // Don't draw anything if user is not logged in
         if(!this.state.team) {
@@ -126,15 +118,16 @@ class MainDrawer extends React.Component {
         }
 
         return (
-            <div className="show-xs">
-                <IconButton iconStyle={style.icon} onTouchTap={this._handleToggle}>
+            <div>
+                <IconButton onTouchTap={this._handleToggle} color="contrast" className="show-xs">
                     <NavigationMenu/>
                 </IconButton>
 
                 <Drawer
-                    docked={false}
+                    type="permanent"
+                    anchor="left"
                     open={this.state.open}
-                    onRequestChange={(open) => this.setState({open})}
+                    onRequestClose={() => this.setState({open: false})}
                 >
                     {this.state.overNewMessageCount != 0 &&
                         <div className="NotificationScrollIndicator--top">
@@ -172,4 +165,3 @@ class MainDrawer extends React.Component {
         );
     }
 }
-export default muiThemeable()(MainDrawer);

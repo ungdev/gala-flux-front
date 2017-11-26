@@ -5,10 +5,9 @@ import NotificationStore from 'stores/NotificationStore';
 import NotificationActions from 'actions/NotificationActions';
 
 import Dialog from 'app/components/ResponsiveDialog.jsx';
-import FlatButton from 'material-ui/FlatButton';
-import Toggle from 'material-ui/Toggle';
+import Button from 'material-ui/Button';
+import Switch from 'material-ui/Switch';
 import Divider from 'material-ui/Divider';
-import Subheader from 'material-ui/Subheader';
 import {List, ListItem} from 'material-ui/List';
 
 export default class NotificationsDialog extends React.Component {
@@ -87,16 +86,18 @@ export default class NotificationsDialog extends React.Component {
 
     render() {
         const actions = [
-            <FlatButton
-                label={ this.props.welcome ? 'Plus tard' :  'Annuler'}
+            <Button
                 primary={true}
                 onTouchTap={this.props.close}
-            />,
-            <FlatButton
-                label="Valider"
+            >
+                { this.props.welcome ? 'Plus tard' :  'Annuler'}
+            </Button>,
+            <Button
                 primary={true}
                 onTouchTap={this._updateParameters}
-            />,
+            >
+                Valider
+            </Button>,
         ];
 
         return (
@@ -125,21 +126,21 @@ export default class NotificationsDialog extends React.Component {
                                 primaryText="Son"
                                 secondaryText="Jouer un son lors des notifications"
                                 onTouchTap={_ => this._toggleParameter('sound')}
-                                rightIcon={<Toggle toggled={this.state.configuration.sound}/>}
+                                rightIcon={<Switch checked={this.state.configuration.sound}/>}
                             />
                             <ListItem
                                 className="ToggleListItem"
                                 primaryText="Écran clignotant"
                                 secondaryText="Faire clignoter l'écran lors des notifications"
                                 onTouchTap={_ => this._toggleParameter('flash')}
-                                rightIcon={<Toggle toggled={this.state.configuration.flash}/>}
+                                rightIcon={<Switch checked={this.state.configuration.flash}/>}
                             />
                             <ListItem
                                 className="ToggleListItem"
                                 primaryText="Notifications pour bureau"
                                 secondaryText="Recevoir les notifications sur votre bureau"
                                 onTouchTap={_ => this._toggleParameter('desktop')}
-                                rightIcon={<Toggle toggled={this.state.configuration.desktop}/>}
+                                rightIcon={<Switch checked={this.state.configuration.desktop}/>}
                             />
                         </div>
                     :
@@ -148,7 +149,7 @@ export default class NotificationsDialog extends React.Component {
                             primaryText="Notifications Android"
                             secondaryText="Recevoir des notifications Android"
                             onTouchTap={_ => this._toggleParameter('android')}
-                            rightIcon={<Toggle toggled={this.state.configuration.android}/>}
+                            rightIcon={<Switch checked={this.state.configuration.android}/>}
                         />
                     }
                     <ListItem
@@ -156,7 +157,7 @@ export default class NotificationsDialog extends React.Component {
                         primaryText="Nouvelles alertes"
                         secondaryText="Recevoir des notifications pour les nouvelles alertes"
                         onTouchTap={_ => this._toggleParameter('alert')}
-                        rightIcon={<Toggle toggled={this.state.configuration.alert}/>}
+                        rightIcon={<Switch checked={this.state.configuration.alert}/>}
                     />
                 </List>
                 <Divider />
@@ -184,7 +185,7 @@ export default class NotificationsDialog extends React.Component {
                                 primaryText={this.state.configuration.channel[channel] == 'hide' ? <del>{primaryText}</del> : primaryText}
                                 secondaryText={secondaryText}
                                 onTouchTap={_ => this._onChannelClick(channel)}
-                                rightIcon={<Toggle toggled={this.state.configuration.channel[channel] == 'notify'} disabled={this.state.configuration.channel[channel] == 'hide'}/>}
+                                rightIcon={<Switch checked={this.state.configuration.channel[channel] == 'notify'} disabled={this.state.configuration.channel[channel] == 'hide'}/>}
                             />)
                         })
                     }

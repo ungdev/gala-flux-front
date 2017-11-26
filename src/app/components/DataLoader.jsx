@@ -3,7 +3,7 @@ const deepEqual = require('deep-equal');
 
 import NotificationActions from 'actions/NotificationActions';
 
-import CircularProgress from 'material-ui/CircularProgress';
+import { CircularProgress } from 'material-ui/Progress';
 import Center from 'app/components/Center.jsx';
 
 /*

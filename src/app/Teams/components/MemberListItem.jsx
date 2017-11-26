@@ -2,7 +2,7 @@ import React from 'react';
 
 import * as constants from 'config/constants';
 
-import { ListItem } from 'material-ui/List';
+import { ListItem, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 
 
@@ -31,11 +31,14 @@ export default class MemberListItem extends React.Component {
         let avatarUri = constants.avatarBasePath + this.props.member.id  + '?u=' + this.props.member.updatedAt;
         return (
             <ListItem
-                primaryText={this.props.member.name}
-                secondaryText={(this.props.member.ip ? this.props.member.ip : this.props.member.login)}
-                leftAvatar={<Avatar src={avatarUri} backgroundColor="white" />}
                 onTouchTap={this._handleSelection}
-            />
+            >
+                <Avatar src={avatarUri} />
+                <ListItemText 
+                    primary={this.props.member.name}
+                    secondary={(this.props.member.ip ? this.props.member.ip : this.props.member.login)}
+                />
+            </ListItem>
         );
     }
 

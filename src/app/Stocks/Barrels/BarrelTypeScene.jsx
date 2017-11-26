@@ -7,8 +7,8 @@ import NotificationActions from 'actions/NotificationActions'
 
 import SelectableList from 'app/components/SelectableList.jsx'
 import BarrelTypeListItem from 'app/Stocks/Barrels/components/BarrelTypeListItem.jsx'
-import ContentAddIcon from 'material-ui/svg-icons/content/add';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAddIcon from 'material-ui-icons/Add';
+import Button from 'material-ui/Button';
 import UpdateBarrelTypeDialog from 'app/Stocks/Barrels/dialogs/UpdateBarrelTypeDialog.jsx';
 import NewBarrelTypeDialog from 'app/Stocks/Barrels/dialogs/NewBarrelTypeDialog.jsx';
 import DataLoader from "app/components/DataLoader.jsx";
@@ -87,12 +87,13 @@ export default class BarrelTypeScene extends React.Component {
                             </div>
 
                             { AuthStore.can('barrelType/admin') &&
-                                <FloatingActionButton
+                                <Button
+                                    fab
                                     className="FloatingButton"
                                     onTouchTap={this._toggleNewBarrelTypeDialog}
                                 >
                                     <ContentAddIcon />
-                                </FloatingActionButton>
+                                </Button>
                             }
 
                             <NewBarrelTypeDialog

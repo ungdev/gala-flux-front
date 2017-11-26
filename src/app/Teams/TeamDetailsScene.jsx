@@ -5,10 +5,10 @@ import UserStore from 'stores/UserStore';
 import NotificationActions from 'actions/NotificationActions'
 import AuthStore from 'stores/AuthStore';
 
-import { List, ListItem } from 'material-ui/List';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAddIcon from 'material-ui/svg-icons/content/add';
-import EditorModeEditIcon from 'material-ui/svg-icons/editor/mode-edit';
+import List, { ListItem, ListItemText } from 'material-ui/List';
+import Button from 'material-ui/Button';
+import ContentAddIcon from 'material-ui-icons/Add';
+import EditorModeEditIcon from 'material-ui-icons/ModeEdit';
 import Divider from 'material-ui/Divider';
 import MemberListItem from 'app/Teams/components/MemberListItem.jsx';
 import UpdateTeamDialog from 'app/Teams/dialogs/UpdateTeamDialog.jsx';
@@ -94,25 +94,37 @@ export default class TeamDetailsScene extends React.Component {
                                     <h2 className="ListHeader">{this.state.team.name}</h2>
                                     <List>
                                         <ListItem
-                                            primaryText="Nom de l'équipe"
-                                            secondaryText={this.state.team.name}
                                             onTouchTap={this._toggleUpdateTeamDialog}
-                                        />
+                                        >
+                                            <ListItemText 
+                                                primary="Nom de l'équipe"
+                                                secondary={this.state.team.name}
+                                            />
+                                        </ListItem>
                                         <ListItem
-                                            primaryText="Emplacement"
-                                            secondaryText={this.state.team.location}
                                             onTouchTap={this._toggleUpdateTeamDialog}
-                                        />
+                                        >
+                                            <ListItemText 
+                                                primary="Emplacement"
+                                                secondary={this.state.team.location}
+                                            />
+                                        </ListItem>
                                         <ListItem
-                                            primaryText="Autorisations"
-                                            secondaryText={this.state.team.role}
                                             onTouchTap={this._toggleUpdateTeamDialog}
-                                        />
+                                        >
+                                            <ListItemText 
+                                                primary="Autorisations"
+                                                secondary={this.state.team.role}
+                                            />
+                                        </ListItem>
                                         <ListItem
-                                            primaryText="Groupe de discussion"
-                                            secondaryText={this.state.team.group}
                                             onTouchTap={this._toggleUpdateTeamDialog}
-                                        />
+                                        >
+                                            <ListItemText 
+                                                primary="Groupe de discussion"
+                                                secondary={this.state.team.group}
+                                            />
+                                        </ListItem>
                                     </List>
 
                                     <Divider />
@@ -139,22 +151,25 @@ export default class TeamDetailsScene extends React.Component {
                                 </div>
 
                                 { AuthStore.can('team/admin') &&
-                                    <FloatingActionButton
+                                    <Button
+                                        fab
                                         className="FloatingButton--secondary"
                                         onTouchTap={this._toggleUpdateTeamDialog}
-                                        secondary={true}
+                                        color="accent"
                                     >
                                         <EditorModeEditIcon />
-                                    </FloatingActionButton>
+                                    </Button>
                                 }
 
                                 { (AuthStore.can('user/admin') || (AuthStore.can('user/team') && this.state.team.id == AuthStore.user.team)) &&
-                                    <FloatingActionButton
+                                    <Button
+                                        fab
                                         className="FloatingButton"
                                         onTouchTap={this._toggleAddMemberDialog}
+                                        color="primary"
                                     >
                                         <ContentAddIcon />
-                                    </FloatingActionButton>
+                                    </Button>
                                 }
 
 

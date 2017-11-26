@@ -1,7 +1,17 @@
 import React from 'react';
 
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import Input, { InputLabel } from 'material-ui/Input';
+import SelectableMenuItem from 'app/components/SelectableMenuItem.jsx';
+import { FormControl } from 'material-ui/Form';
+import Select from 'material-ui/Select';
+import { withStyles } from 'material-ui/styles';
+
+const styles = theme => ({
+    root: {
+        width: '100%',
+        textAlign: 'left',
+    },
+});
 
 
 /**
@@ -9,37 +19,38 @@ import MenuItem from 'material-ui/MenuItem';
  * @param {Array} value List of teams selected
  * @param {function(value)} onChange Will be called on value change
  */
-export default class ReceiverSelect extends React.Component {
+class ReceiverSelect extends React.Component {
 
     render() {
+        const { classes } = this.props;
         return (
-            <SelectField
-                multiple={true}
-                hintText="Destinataire"
+            <Select
+                multiple
                 value={this.props.value}
-                onChange={(e,i,v) => this.props.onChange(v)}
-                fullWidth={true}
+                onChange={(e) => this.props.onChange(e.target.value)}
+                placeholder="Destinataire"
+                input={<Input id="name-multiple" />}
+                className={classes.root}
             >
-                <MenuItem
+                <SelectableMenuItem
                     key={0}
-                    insetChildren={true}
-                    checked={this.props.value && this.props.value.includes(null)}
+                    selected={this.props.value && this.props.value.includes(null)}
                     value={null}
-                    primaryText="Alertes auto"
-                />
+                >
+                    Alertes auto
+                </SelectableMenuItem>
                 {
                     this.props.teams.map(team => {
-                        return <MenuItem
-                            key={team.id}
-                            insetChildren={true}
-                            checked={this.props.value && this.props.value.includes(team.id)}
-                            value={team.id}
-                            primaryText={team.name}
-                        />
+                        return <SelectableMenuItem
+                                key={team.id}
+                                selected={this.props.value && this.props.value.includes(team.id)}
+                                value={team.id}
+                            >
+                            {team.name}</SelectableMenuItem>
                     })
                 }
-            </SelectField>
+            </Select>
         );
     }
-
 }
+export default withStyles(styles)(ReceiverSelect);

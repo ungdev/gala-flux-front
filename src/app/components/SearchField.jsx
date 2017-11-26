@@ -2,8 +2,8 @@ import React from 'react';
 
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
-import CircularProgress from 'material-ui/CircularProgress';
-import SearchIcon from 'material-ui/svg-icons/action/search';
+import { CircularProgress } from 'material-ui/Progress';
+import SearchIcon from 'material-ui-icons/Search';
 require('./SearchField.scss');
 
 export default class SearchField extends React.Component {
@@ -56,7 +56,7 @@ export default class SearchField extends React.Component {
             <form className="search-field" onSubmit={this._handleSubmit}>
                 <TextField
                     disabled={this.props.disabled}
-                    floatingLabelText={this.props.floatingLabelText}
+                    label={this.props.floatingLabelText}
                     fullWidth={true}
                     value={this.state.value}
                     errorText={this.props.errorText}

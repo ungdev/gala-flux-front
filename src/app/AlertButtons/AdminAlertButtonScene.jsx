@@ -5,11 +5,9 @@ import AuthStore from 'stores/AuthStore';
 import TeamStore from 'stores/TeamStore';
 import NotificationActions from 'actions/NotificationActions';
 
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import ContentAddIcon from 'material-ui/svg-icons/content/add';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import Subheader from 'material-ui/Subheader';
+import ContentAddIcon from 'material-ui-icons/Add';
+import Button from 'material-ui/Button';
+import Subheader from 'material-ui-old/Subheader';
 import Divider from 'material-ui/Divider';
 import {List, ListItem} from 'material-ui/List';
 import CenteredMessage from 'app/components/CenteredMessage.jsx'
@@ -99,12 +97,13 @@ export default class AdminAlertButtonScene extends React.Component {
                             }
 
                             { AuthStore.can('alertButton/admin') &&
-                                <FloatingActionButton
+                                <Button
+                                    fab
                                     className="FloatingButton"
                                     onTouchTap={this._toggleNewButtonDialog}
                                 >
                                     <ContentAddIcon />
-                                </FloatingActionButton>
+                                </Button>
                             }
 
 

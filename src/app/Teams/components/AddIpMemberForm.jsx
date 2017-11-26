@@ -96,7 +96,7 @@ export default class AddIpMemberForm extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Nom"
+                                label="Nom"
                                 errorText={this.state.errors.name}
                                 value={this.state.values.name}
                                 fullWidth={true}
@@ -107,7 +107,7 @@ export default class AddIpMemberForm extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="IP"
+                                label="IP"
                                 errorText={this.state.errors.ip}
                                 value={this.state.values.ip}
                                 fullWidth={true}

@@ -2,7 +2,7 @@ import React from 'react';
 
 import TeamService from 'services/TeamService';
 
-import FlatButton from 'material-ui/FlatButton';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
 
@@ -116,22 +116,25 @@ export default class UpdateTeamDialog extends React.Component {
     render() {
 
         const actions = [
-            <FlatButton
-                label="Supprimer"
+            <Button
                 secondary={true}
                 onTouchTap={() => this.setState({showDeleteDialog: true})}
                 className="Dialog__DeleteButon"
-            />,
-            <FlatButton
-                label="Annuler"
+            >
+                Supprimer
+            </Button>,
+            <Button
                 secondary={true}
                 onTouchTap={this.props.close}
-            />,
-            <FlatButton
-                label="Modifier"
+            >
+                Annuler
+            </Button>,
+            <Button
                 primary={true}
                 onTouchTap={this._handleSubmit}
-            />,
+            >
+                Modifier
+            </Button>,
         ];
 
         return (
@@ -152,7 +155,7 @@ export default class UpdateTeamDialog extends React.Component {
                         <Row>
                             <Col xs={12} sm={6}>
                                 <TextField
-                                    floatingLabelText="Nom"
+                                    label="Nom"
                                     errorText={this.state.errors.name}
                                     value={this.state.values.name}
                                     fullWidth={true}
@@ -163,7 +166,7 @@ export default class UpdateTeamDialog extends React.Component {
                             </Col>
                             <Col xs={12} sm={6}>
                                 <TextField
-                                    floatingLabelText="Emplacement"
+                                    label="Emplacement"
                                     errorText={this.state.errors.location}
                                     value={this.state.values.location}
                                     fullWidth={true}

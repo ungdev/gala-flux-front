@@ -1,7 +1,8 @@
 import React from 'react';
 
-import FlatButton from 'material-ui/FlatButton';
-import Toggle from 'material-ui/Toggle';
+import Button from 'material-ui/Button';
+import Switch from 'material-ui/Switch';
+import { FormControlLabel } from 'material-ui/Form';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 
 import ErrorLogService from 'services/ErrorLogService';
@@ -162,19 +163,24 @@ export default class ErrorNotification extends React.Component {
             }
         }
         const actions = [
-            <Toggle
+            <FormControlLabel 
                 label="Données techniques"
-                labelPosition="right"
                 className="Layout__ErrorNotification__technicalSwitch"
-                onToggle={(e, v) => this._handleTechnicalToggle(v)}
-                toggled={this.state.showTechnical}
-                />,
-            <FlatButton
-                label={buttonLabel}
+                control={
+                    <Switch
+                        labelPosition="right"
+                        onChange={(e, v) => this._handleTechnicalToggle(v)}
+                        checked={this.state.showTechnical}
+                    />
+                }
+            />,
+            <Button
                 primary={true}
                 keyboardFocused={true}
                 onTouchTap={this._closeDialog}
-                />,
+            >
+                {buttonLabel}
+            </Button>,
         ];
 
         return (

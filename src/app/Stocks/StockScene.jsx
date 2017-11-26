@@ -5,13 +5,12 @@ import AuthStore from 'stores/AuthStore';
 import NotificationActions from 'actions/NotificationActions';
 
 import { Row, Col } from 'react-flexbox-grid';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from 'material-ui/Button';
 import MoveDialog from 'app/Stocks/dialogs/MoveDialog.jsx';
 import Filters from 'app/Stocks/components/Filters.jsx';
 import StockList from 'app/Stocks/components/StockList.jsx';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import LocalShipping from 'material-ui/svg-icons/maps/local-shipping';
-import Navagiation from 'material-ui/svg-icons/maps/navigation';
+import LocalShipping from 'material-ui-icons/LocalShipping';
+import Navagiation from 'material-ui-icons/Navigation';
 import Paper from 'material-ui/Paper';
 import DataLoader from 'app/components/DataLoader.jsx';
 
@@ -246,20 +245,24 @@ export default class StockScene extends React.Component {
 
                             <Row center="md">
                                 <Col xs={12} sm={6} md={3}>
-                                    <RaisedButton
-                                        label={'Déselectionner les fûts ' + (selectionCount ? '(' + selectionCount + ')' : '')}
+                                    <Button
+                                        raised
                                         disabled={selectionCount === 0}
                                         onClick={_ => this.setState({ selectedBarrels: new Set(), selectedBottles: {} })}
                                         fullWidth={true}
-                                    />
+                                    >
+                                        {'Déselectionner les fûts ' + (selectionCount ? '(' + selectionCount + ')' : '')}
+                                    </Button>
                                 </Col>
                                 <Col xs={12} sm={6} md={3}>
-                                    <RaisedButton
-                                        label="Reset les filtres"
-                                        secondary={true}
+                                    <Button
+                                        raised
+                                        color="secondary"
                                         onClick={this.resetFilters}
                                         fullWidth={true}
-                                    />
+                                    >
+                                        Reset les filtres
+                                    </Button>
                                 </Col>
                             </Row>
                         </Paper>
@@ -302,22 +305,24 @@ export default class StockScene extends React.Component {
                     </DataLoader>
                 </div>
 
-                <FloatingActionButton
+                <Button
+                    fab
                     className="FloatingButton--secondary"
                     onClick={StockScene.scrollTop}
-                    secondary={true}
+                    color="accent"
                 >
                     <Navagiation  />
-                </FloatingActionButton>
+                </Button>
 
                 { AuthStore.can('barrel/admin') &&
-                    <FloatingActionButton
+                    <Button
+                        fab
                         className="FloatingButton"
                         disabled={selectionCount === 0}
                         onClick={this.toggleMoveDialog}
                     >
                         <LocalShipping  />
-                    </FloatingActionButton>
+                    </Button>
                 }
             </div>
         );

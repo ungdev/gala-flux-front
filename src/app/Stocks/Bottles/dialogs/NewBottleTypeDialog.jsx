@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Dialog from 'app/components/ResponsiveDialog.jsx';
-import FlatButton from 'material-ui/FlatButton';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
 
@@ -144,17 +144,19 @@ export default class NewBottleTypeDialog extends React.Component {
 
     render() {
         const actions = [
-            <FlatButton
-                label="Fermer"
+            <Button
                 secondary={true}
                 onTouchTap={this.props.close}
-            />,
-            <FlatButton
-                label="Créer"
+            >
+                Fermer
+            </Button>,
+            <Button
                 primary={true}
                 type="submit"
                 onTouchTap={this._handleSubmit}
-            />,
+            >
+                Créer
+            </Button>,
         ];
 
         return (
@@ -175,7 +177,7 @@ export default class NewBottleTypeDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Nom"
+                                label="Nom"
                                 errorText={this.state.errors.name}
                                 value={this.state.values.name}
                                 fullWidth={true}
@@ -186,7 +188,7 @@ export default class NewBottleTypeDialog extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Abréviation"
+                                label="Abréviation"
                                 maxLength="3"
                                 errorText={this.state.errors.shortName}
                                 value={this.state.values.shortName}
@@ -198,7 +200,7 @@ export default class NewBottleTypeDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                         <TextField
-                            floatingLabelText="Prix fournisseur d'une bouteille (€)"
+                            label="Prix fournisseur d'une bouteille (€)"
                             errorText={this.state.errors.supplierPrice}
                             value={this.state.values.supplierPrice}
                             fullWidth={true}
@@ -207,7 +209,7 @@ export default class NewBottleTypeDialog extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Prix de revente d'une bouteille (€)"
+                                label="Prix de revente d'une bouteille (€)"
                                 errorText={this.state.errors.sellPrice}
                                 value={this.state.values.sellPrice}
                                 fullWidth={true}
@@ -218,7 +220,7 @@ export default class NewBottleTypeDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Nombre de bouteilles par caisse"
+                                label="Nombre de bouteilles par caisse"
                                 errorText={this.state.errors.quantityPerBox}
                                 value={this.state.values.quantityPerBox}
                                 fullWidth={true}
@@ -227,7 +229,7 @@ export default class NewBottleTypeDialog extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
-                                floatingLabelText="Nombre de bouteilles"
+                                label="Nombre de bouteilles"
                                 errorText={this.state.errors.originalStock}
                                 value={this.state.values.originalStock}
                                 fullWidth={true}
