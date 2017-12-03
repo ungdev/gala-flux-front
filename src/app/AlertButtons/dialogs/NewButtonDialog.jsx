@@ -7,8 +7,7 @@ import TeamStore from 'stores/TeamStore';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import { Row, Col } from 'react-flexbox-grid';
 import TextField from 'material-ui/TextField';
-import SelectField from 'material-ui-old/SelectField';
-import MenuItem from 'material-ui-old/MenuItem';
+import SelectableMenuItem from 'app/components/SelectableMenuItem.jsx';
 import Switch from 'material-ui/Switch';
 import { FormControlLabel } from 'material-ui/Form';
 import Button from 'material-ui/Button';
@@ -97,13 +96,13 @@ export default class NewButtonDialog extends React.Component {
     render() {
         const actions = [
             <Button
-                secondary={true}
+                color="accent"
                 onTouchTap={this.props.close}
             >
                 Fermer
             </Button>,
             <Button
-                primary={true}
+                color="primary"
                 type="submit"
                 onTouchTap={this._handleSubmit}
             >
@@ -130,20 +129,22 @@ export default class NewButtonDialog extends React.Component {
                         <Col xs={12} sm={6}>
                             <TextField
                                 label="Nom de l'alerte"
-                                errorText={this.state.errors.title}
+                                error={!!this.state.errors.title}
+                                helperText={this.state.errors.title}
                                 value={this.state.values.title}
-                                fullWidth={true}
+                                fullWidth
                                 onChange={e => this._handleFieldChange('title', e.target.value)}
-                                autoFocus={true}
-                                ref={(field) => { this.focusField = field; }}
+                                autoFocus
+                                inputRef={(field) => { this.focusField = field; }}
                             />
                         </Col>
                         <Col xs={12} sm={6}>
                             <AutoComplete
                                 label="Catégorie"
-                                errorText={this.state.errors.category}
+                                error={!!this.state.errors.category}
+                                helperText={this.state.errors.category}
                                 value={this.state.values.category}
-                                fullWidth={true}
+                                fullWidth
                                 onUpdateInput={v => this._handleFieldChange('category', v)}
                                 filter={AutoComplete.fuzzyFilter}
                                 dataSource={this.props.categories}
@@ -153,28 +154,28 @@ export default class NewButtonDialog extends React.Component {
                     </Row>
                     <Row>
                         <Col xs={12} sm={6}>
-                            <SelectField
-                                onChange={(e, i, v) => this._handleFieldChange("senderGroup", v)}
-                                value={this.state.values.senderGroup}
-                                errorText={this.state.errors.senderGroup}
-                                fullWidth={true}
+                            <TextField
+                                select
                                 label="Groupe d'expéditeur de l'alerte"
-                                floatingLabelFixed={true}
+                                value={this.state.values.senderGroup}
+                                onChange={(e) => this.props.setFilters('senderGroup', e.target.value)}
+                                fullWidth
                             >
-                                <MenuItem value={null} primaryText="Tous les groupes" />
+                                <SelectableMenuItem value={null}>Tous les groupes</SelectableMenuItem>
                                 {
                                     this.state.groups.map((group, i) => {
-                                        return <MenuItem key={i} value={group} primaryText={group} />
+                                        return <SelectableMenuItem key={group} value={group} >{group}</SelectableMenuItem>
                                     })
                                 }
-                            </SelectField>
+                            </TextField>
                         </Col>
                         <Col xs={12} sm={6}>
                             <SelectField
                                 onChange={(e, i, v) => this._handleFieldChange("receiverTeamId", v)}
                                 value={this.state.values.receiverTeamId}
-                                errorText={this.state.errors.receiverTeamId}
-                                fullWidth={true}
+                                error={!!this.state.errors.receiverTeamId}
+                                helperText={this.state.errors.receiverTeamId}
+                                fullWidth
                                 label="Destinataire de l'alerte"
                             >
                                 {
@@ -188,9 +189,9 @@ export default class NewButtonDialog extends React.Component {
                     <Row>
                         <Col xs={12} sm={6}>
                             <TextField
-                                multiLine={true}
+                                multiLine
                                 label="Question du message"
-                                fullWidth={true}
+                                fullWidth
                                 rows={3}
                                 rowsMax={3}
                                 value={this.state.values.messagePrompt}
@@ -209,9 +210,9 @@ export default class NewButtonDialog extends React.Component {
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
-                                multiLine={true}
+                                multiLine
                                 label="Réponse par défaut"
-                                fullWidth={true}
+                                fullWidth
                                 rows={3}
                                 rowsMax={3}
                                 value={this.state.values.messageDefault}

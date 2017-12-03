@@ -12,7 +12,7 @@ import {} from 'app/App.scss';
  * Root of all react components
   * @param {Object} router react-router router object
  */
-export default class App extends React.Component {
+export default class Boot extends React.Component {
 
     constructor(props) {
         super(props);
@@ -46,21 +46,20 @@ export default class App extends React.Component {
         }
     }
 
-    // {createElement(this.state.homepage, {route: this.state.route})}
-
     render() {
-            return (
-                <div>
-                    {this.state.ready ?
-                        this.props.children
-                    :
-                        <div className="Layout_LoginScene">
-                            <img src={LOGO} alt="Flux" className="Layout_LoginScene__logo" height="200"/>
-                            <CircularProgress className="Layout_LoginScene__spinner"/>
-                        </div>
-                    }
-                    <ErrorNotification />
-                </div>
-            );
-        }
+        const { classes } = this.props;
+        return (
+            <div>
+                {this.state.ready ?
+                    this.props.children
+                :
+                    <div className="BootLayout">
+                        <img src={LOGO} alt="Flux" />
+                        <CircularProgress/>
+                    </div>
+                }
+                <ErrorNotification />
+            </div>
+        );
+    }
 }

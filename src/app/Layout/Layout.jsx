@@ -4,43 +4,54 @@ import AppBar from 'app/Layout/components/AppBar.jsx';
 import MainTabs from 'app/Layout/components/MainTabs.jsx';
 import FluxNotification from "app/Layout/components/FluxNotification.jsx";
 import SnackbarNotification from "app/Layout/components/SnackbarNotification.jsx";
+import { withStyles } from 'material-ui/styles';
 
-require('./Layout.scss');
+const styles = theme => ({
+    root: {
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        maxHeight: '100vh',
+        overflow: 'hidden',
+    },
+    appBar: {
+        [theme.breakpoints.down('sm')]: {
+            height: theme.custom.appBarHeightXs,
+            minHeight: theme.custom.appBarHeightXs,
+        },
+        [theme.breakpoints.up('md')]: {
+            height: theme.custom.appBarHeightMd,
+            minHeight: theme.custom.appBarHeightMd,
+        },
+    },
+    tabs: {
+        height: theme.custom.tabsHeight,
+        minHeight: theme.custom.tabsHeight,
+    },
+    main: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        height: '100%',
+        maxHeight: '100%',
+        overflow: 'hidden',
+    },
+});
 
 /**
  * This component take car of loading each part of the layout
   * @param {Object} router react-router router object
  */
-export default class Layout extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            mainClassName: '',
-        };
-
-        this.handleTabCountUpdate = this.handleTabCountUpdate.bind(this);
-    }
-
-    /**
-     * This event is triggered when the number of tabs change (because of permissions for instance)
-     * But if the number of tabs is <=1, the tabs will be hidden.
-     * We have to inform css about this fact, so we assign thoses classes if tabs are hidden
-     */
-    handleTabCountUpdate(tabletCount, desktopCount) {
-        let mainClassName = '';
-        if(tabletCount <= 1) mainClassName += 'Layout__Main--tabletTabsHidden ';
-        if(desktopCount <= 1) mainClassName += 'Layout__Main--desktopTabsHidden ';
-        this.setState({mainClassName});
-    }
-
+class Layout extends React.Component {
     render() {
+        const { classes } = this.props;
         return (
-            <div className="Layout">
-                <AppBar />
-                <MainTabs router={this.props.router} onTabCountUpdate={this.handleTabCountUpdate}/>
-                <main className={'Layout__Main '+this.state.mainClassName}>
+            <div className={classes.root}>
+                <AppBar router={this.props.router} className={classes.appBar}/>
+                <MainTabs router={this.props.router} className={classes.tabs}/>
+                <main className={classes.main}>
                     {this.props.children}
                 </main>
                 <FluxNotification />
@@ -49,3 +60,4 @@ export default class Layout extends React.Component {
         );
     }
 }
+export default withStyles(styles)(Layout);

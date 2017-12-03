@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Select from 'material-ui/Select';
+import TextField from 'material-ui/TextField';
 import SelectableMenuItem from 'app/components/SelectableMenuItem.jsx';
 
 export default class LocationSelect extends React.Component {
@@ -20,19 +20,14 @@ export default class LocationSelect extends React.Component {
     }
 
     render() {
-
+        let {setValue, ...props} = this.props;
         return (
-            <Select
-                multiple
-                placeholder={this.props.multiple && "Emplacements"}
-                value={this.props.value}
-                onChange={(e) => {this.props.setValue && this.props.setValue(e.target.value)}}
-                floatingLabelFixed={this.props.floatingLabel != null}
-                label={this.props.floatingLabel ? this.props.floatingLabel : null}
+            <TextField
+                select
+                {...props}
             >
                 <SelectableMenuItem
                     key={0}
-                    selected={this.props.multiple ? this.props.value.includes(null) : this.props.value === null}
                     value={null}
                 >
                     Reserve
@@ -41,14 +36,13 @@ export default class LocationSelect extends React.Component {
                     this.state.teams.map(team => {
                         return <SelectableMenuItem
                             key={team.id}
-                            selected={this.props.multiple ? this.props.value.includes(team.id) : this.props.value === team.id}
                             value={team.id}
                         >
                             {team.name}
                         </SelectableMenuItem>
                     })
                 }
-            </Select>
+            </TextField>
         );
     }
 

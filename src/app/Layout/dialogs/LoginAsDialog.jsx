@@ -6,6 +6,7 @@ import TeamStore from 'stores/TeamStore';
 import NotificationActions from 'actions/NotificationActions';
 
 import Button from 'material-ui/Button';
+import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import AutoComplete from 'material-ui-old/AutoComplete';
 import DataLoader from 'app/components/DataLoader.jsx';
@@ -53,15 +54,6 @@ export default class LoginAsDialog extends React.Component {
     }
 
     render() {
-        const actions = [
-            <Button
-                primary={true}
-                onTouchTap={this.closeDialog}
-            >
-                Annuler
-            </Button>,
-        ];
-
         return (
             <DataLoader
                 filters={new Map([
@@ -75,23 +67,32 @@ export default class LoginAsDialog extends React.Component {
                 { () => (
                     <div>
                         <Dialog
-                            title="Se connecter en tant que ..."
-                            actions={actions}
-                            modal={false}
                             open={this.props.open}
                             onRequestClose={this.closeDialog}
-                            >
+                        >
+                            <DialogTitle>Se connecter en tant que ...</DialogTitle>
+                            <DialogContent>
                                 <AutoComplete
                                     label="Nom de l'utilisateur"
                                     searchText={this.state.value}
                                     onUpdateInput={this.handleChange}
                                     dataSource={this.state.users}
                                     filter={AutoComplete.caseInsensitiveFilter}
-                                    errorText={this.state.error}
+                                    error={this.state.error != ''}
+                                    helperText={this.state.error}
                                     onNewRequest={this.submitForm}
                                     maxSearchResults={10}
-                                    ref={(input) => { this.textInput = input; }}
+                                    inputRef={(input) => { this.textInput = input; }}
                                 />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button
+                                    color="primary"
+                                    onTouchTap={this.closeDialog}
+                                >
+                                    Annuler
+                                </Button>
+                            </DialogActions>
                         </Dialog>
                     </div>
                 )}

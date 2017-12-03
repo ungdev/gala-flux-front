@@ -3,6 +3,7 @@ import React from 'react';
 import AuthService from 'services/AuthService';
 import AuthStore from 'stores/AuthStore';
 import AuthActions from 'actions/AuthActions';
+import { withStyles } from 'material-ui/styles';
 
 import NotificationActions from 'actions/NotificationActions';
 
@@ -12,9 +13,31 @@ import { CircularProgress } from 'material-ui/Progress';
 import LOGO from 'assets/images/logos/logo.svg';
 import GOOGLEPLAY_BADGE from 'assets/images/google-play-badge.png';
 
-require('./LoginScene.scss');
+const styles = theme => ({
+    root: {
+        position: 'absolute',
+        top: '112px',
+        bottom: '0',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    logo: {
+        marginTop: '10vh',
+        marginBottom: '5vh',
+        filter: 'drop-shadow(rgba(0, 0, 0, 0.25) 0px 1px 6px)',
+    },
+    googlePlayLink: {
+        marginTop: '3vh',
+    },
+    googlePlayLogo: {
+        height: '80px',
+    },
+});
 
-export default class LoginScene extends React.Component {
+class LoginScene extends React.Component {
 
     constructor(props) {
         super(props);
@@ -25,28 +48,28 @@ export default class LoginScene extends React.Component {
         };
 
         // binding
-        this._updateData = this._updateData.bind(this);
+        this.updateState = this.updateState.bind(this);
     }
 
     componentDidMount() {
-        AuthStore.addChangeListener(this._updateData);
+        AuthStore.addChangeListener(this.updateState);
     }
 
     componentWillUnmount() {
-        AuthStore.removeChangeListener(this._updateData);
+        AuthStore.removeChangeListener(this.updateState);
     }
 
-    _updateData() {
+    updateState() {
         this.setState({
             etuuttLoading: AuthStore.etuuttLoading,
             connected: AuthStore.connected,
-        })
+        });
     }
 
     /**
      *  Redirect the user to the EtuUtt auth page
      */
-    _login() {
+    login() {
         AuthActions.authEtuuttStarted();
         AuthService.getEtuUTTRedirectionURI()
         .then((data) => {
@@ -59,11 +82,13 @@ export default class LoginScene extends React.Component {
     }
 
     render() {
+        const { classes } = this.props;
+
         return (
-            <div className="Layout_LoginScene">
-                <img src={LOGO} alt="Flux" className="Layout_LoginScene__logo" height="200"/>
+            <div className={'BootLayout ' + classes.root}>
+                <img src={LOGO} alt="Flux" className={classes.logo} height="200"/>
                 { this.state.connected === null && !this.state.etuuttLoading ?
-                    <CircularProgress className="Layout_LoginScene__spinner"/>
+                    <CircularProgress/>
                 :
                     [
                         <Button raised
@@ -71,13 +96,13 @@ export default class LoginScene extends React.Component {
                             icon={(this.state.etuuttLoading ? <CircularProgress size={20} thickness={2} style={{lineHeight: 'normal'}} /> : null)}
                             disabled={this.state.etuuttLoading}
                             color="primary"
-                            onTouchTap={this._login}
+                            onTouchTap={this.login}
                         >
                             Se connecter avec un compte UTT
                         </Button>,
                         (!global.Android &&
-                            <a key={2} className="Layout_LoginScene__googleplay" href="http://play.google.com/store/apps/details?id=fr.utt.ung.flux">
-                                <img src={GOOGLEPLAY_BADGE} alt="Disponible sur Google Play" />
+                            <a key={2} className={classes.googlePlayLink} href="http://play.google.com/store/apps/details?id=fr.utt.ung.flux">
+                                <img className={classes.googlePlayLogo} src={GOOGLEPLAY_BADGE} alt="Disponible sur Google Play" />
                             </a>
                         )
                     ]
@@ -87,3 +112,4 @@ export default class LoginScene extends React.Component {
     }
 
 }
+export default withStyles(styles)(LoginScene);

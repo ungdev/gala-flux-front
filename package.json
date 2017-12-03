@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/prudywsh/flux2-client#readme",
   "dependencies": {
+    "autosuggest-highlight": "^3.1.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.23.0",
     "css-loader": "^0.27.3",
@@ -36,6 +37,7 @@
     "node-sass": "^4.5.2",
     "path": "^0.12.7",
     "react": "^16.1.1",
+    "react-autosuggest": "^9.3.2",
     "react-dom": "^16.1.1",
     "react-flexbox-grid": "^1.0.2",
     "react-fontawesome": "^1.6.1",

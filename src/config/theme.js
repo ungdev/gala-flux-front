@@ -38,12 +38,14 @@ const themeConfiguration = {
             'contrastDefaultColor': 'light'
         },
     },
-    
+
     // Custom variables
     'custom': {
         'appBarHeightXs': '48px',
+        'appBarHeightMd': '64px',
+        'tabsHeight': '48px',
     }
-    
+
     // TODO fix it because it probably doen't work anymore on mui-1.0
     // spacing: spacing,
     // fontFamily: 'Roboto, sans-serif',

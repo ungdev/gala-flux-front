@@ -3,7 +3,7 @@ import React from 'react';
 import NotificationActions from 'actions/NotificationActions';
 import DataLoader from 'app/components/DataLoader.jsx';
 
-import AutoComplete from 'material-ui-old/AutoComplete';
+import AutoComplete from 'app/components/AutoComplete.jsx';
 
 export default class SelectGroupField extends React.Component {
 
@@ -12,55 +12,61 @@ export default class SelectGroupField extends React.Component {
 
         this.state = {
             options: [],
-            value: props.value,
         };
-
-        // binding
-        this._handleUpdateInput = this._handleUpdateInput.bind(this);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({ value: nextProps.value });
-    }
-
-    _handleUpdateInput(value) {
-        this.props.onChange(value);
-        this.setState({
-            value: value,
-        });
     }
 
     render() {
+        let {...props} = this.props;
+
         return (
             <DataLoader
                 filters={new Map([
                     ['Team', null],
                 ])}
-                onChange={ datastore => this.setState({
-                    options: [...(new Set(datastore.Team.map(team => team.group)))],
-                })}
+                onChange={ datastore => {
+                    let suggestions = datastore.Team.map(team => team.group);
+
+                    // Make them unique
+                    suggestions = [...(new Set(suggestions))];
+
+                    // Remove empty entries
+                    suggestions = suggestions.filter(v => (v != undefined));
+
+                    // Put them in the good format
+                    suggestions = suggestions.map(label => ({label: label}));
+
+                    this.setState({
+                        options: suggestions
+                    })
+                }}
             >
-                { () => (
-                    <AutoComplete
-                        label="Groupe de discussion"
-                        searchText={this.state.value}
-                        onUpdateInput={this._handleUpdateInput}
-                        dataSource={this.state.options}
-                        filter={(searchText, key) => (key.indexOf(searchText) !== -1)}
+                {() => {
+
+                    return (<AutoComplete
+                        {...props}
                         openOnFocus={true}
                         maxSearchResults={5}
-                        errorText={this.props.errorText}
-                        fullWidth={this.props.fullWidth}
-                        onNewRequest={(value, index) => {
-                            // Only if enter is pressed
-                            if(index == -1 && this.props.onSubmit) {
-                                this.props.onSubmit();
-                            }
-                        }}
+                        suggestions={this.state.options}
                     />
-                )}
+
+                )}}
             </DataLoader>
         );
     }
 
 }
+
+    // {/* () => {
+    //
+    //     return (<AutoComplete
+    //         searchText={this.state.value}
+    //         onUpdateInput={this._handleUpdateInput}
+    //         onNewRequest={(value, index) => {
+    //             // Only if enter is pressed
+    //             if(index == -1 && this.props.onSubmit) {
+    //                 this.props.onSubmit();
+    //             }
+    //         }}
+    //     />
+    //
+    // )*/}

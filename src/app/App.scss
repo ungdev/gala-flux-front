@@ -35,7 +35,7 @@ html, body {
     }
 }
 .FloatingButton {
-    position: absolute;
+    position: absolute !important;
     right: 36px;
     bottom: 32px;
     height: 56px;

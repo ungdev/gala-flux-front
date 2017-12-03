@@ -4,7 +4,8 @@ import TeamStore from 'stores/TeamStore';
 import AuthStore from 'stores/AuthStore';
 import NotificationActions from 'actions/NotificationActions';
 
-import SelectableList from 'app/components/SelectableList.jsx';
+import MenuContainer from 'app/Layout/components/MenuContainer.jsx';
+import SelectableListItem from 'app/components/SelectableListItem.jsx';
 import { ListItemText, ListItem } from 'material-ui/List';
 import ContentAddIcon from 'material-ui-icons/Add';
 import Button from 'material-ui/Button';
@@ -14,8 +15,7 @@ import DataLoader from "app/components/DataLoader.jsx";
 
 /**
  * This component will show a clickable list of teams
- * @param {string} selectedId id of the selected team
- * @param {function(Team)} onTeamSelection event emitted when a team is selected
+ * @param {Object} router React router object
  */
 export default class TeamListScene extends React.Component {
 
@@ -50,25 +50,25 @@ export default class TeamListScene extends React.Component {
                     })}
                 >
                     { () => (
-                            <SelectableList value={parseInt(this.props.selectedId)}>
+                            <MenuContainer router={this.props.router}>
                                 {
                                     this.state.teams.map((team, i) => {
-                                        return <ListItem button
-                                                    value={team.id}
-                                                    key={i}
-                                                    onTouchTap={_ => this.props.onTeamSelection(team)}
+                                        return <SelectableListItem
+                                                    value={'/admin/team/'+team.id}
+                                                    key={team.id}
                                                 >
                                                     <ListItemText primary={team.name} secondary={team.role} />
-                                                </ListItem>
+                                                </SelectableListItem>
                                     })
                                 }
-                            </SelectableList>
+                            </MenuContainer>
                         )
                     }
                 </DataLoader>
 
                 { AuthStore.can('team/admin') &&
                     <Button
+                        color="primary"
                         fab
                         className="FloatingButton"
                         onTouchTap={this._toggleCreateDialog}

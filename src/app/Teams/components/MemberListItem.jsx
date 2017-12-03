@@ -1,6 +1,7 @@
 import React from 'react';
 
 import * as constants from 'config/constants';
+import AuthStore from 'stores/AuthStore';
 
 import { ListItem, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
@@ -32,9 +33,10 @@ export default class MemberListItem extends React.Component {
         return (
             <ListItem
                 onTouchTap={this._handleSelection}
+                button={AuthStore.can('user/admin') || (AuthStore.can('user/team') && this.state.team.id == AuthStore.user.team)}
             >
                 <Avatar src={avatarUri} />
-                <ListItemText 
+                <ListItemText
                     primary={this.props.member.name}
                     secondary={(this.props.member.ip ? this.props.member.ip : this.props.member.login)}
                 />

@@ -29,6 +29,7 @@ export default (
         </Route>
         <Route path="/myspace" component={MySpacePage} onEnter={AuthMiddleware('ui/myspace')}>
             <Route path="/mystock" component={MySpacePage} onEnter={AuthMiddleware('ui/stockReceiver')}/>
+            <Route path="/myalerts" component={MySpacePage} onEnter={AuthMiddleware('ui/stockReceiver')}/>
         </Route>
         <Route path="/stocks" component={StockPage} onEnter={AuthMiddleware('ui/stocks')}/>
         <Route path="/overview" component={UselessLayout}>

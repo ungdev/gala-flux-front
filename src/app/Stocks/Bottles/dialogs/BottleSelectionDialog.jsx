@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
@@ -118,64 +119,64 @@ export default class BottleSelectionDialog extends React.Component {
 
 
     render() {
-
-        const actions = [
-            <Button
-                secondary={true}
-                onTouchTap={() => (this.props.submit && this.props.submit(0))}
-                className="Dialog__DeleteButon"
-            >
-                Désélectionner
-            </Button>,
-            <Button
-                secondary={true}
-                onTouchTap={this.props.close}
-            >
-                Annuler
-            </Button>,
-            <Button
-                primary={true}
-                type="submit"
-                onTouchTap={this._handleSubmit}
-            >
-                Sélectionner
-            </Button>,
-        ];
-
         return (
-
             <Dialog
-                title={'Sélection de ' + (this.state.values.byBottle?'bouteilles':'cartons') + ' : ' + this.state.type.name}
                 open={this.props.show}
-                actions={actions}
                 onRequestClose={this.props.close}
             >
+                <DialogTitle>{'Sélection de ' + (this.state.values.byBottle?'bouteilles':'cartons') + ' : ' + this.state.type.name}</DialogTitle>
+                <DialogContent>
 
-                <form onSubmit={this._handleSubmit}>
-                    <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                    Selectionner
-                    <TextField
-                        name="box"
-                        errorText={this.state.errors.box}
-                        maxLength="3"
-                        value={this.state.values.box}
-                        onChange={e => this._handleFieldChange('box', e.target.value)}
-                        autoFocus={true}
-                        ref={(field) => { this.focusField = field; }}
-                        style={{width: '40px', display: 'inline-block', verticalAlign: 'middle', margin: '0 3px'}}
-                        inputStyle={{textAlign: 'center'}}
-                        /> carton{(this.state.values.box > 1 ? 's' : '')} et
-                    <TextField
-                        name="bottle"
-                        errorText={this.state.errors.bottle}
-                        maxLength="3"
-                        value={this.state.values.bottle}
-                        onChange={e => this._handleFieldChange('bottle', e.target.value)}
-                        style={{width: '40px', display: 'inline-block', verticalAlign: 'middle', margin: '0 3px'}}
-                        inputStyle={{textAlign: 'center'}}
-                        /> bouteille{(this.state.values.bottle > 1 ? 's ' : ' ')}
-                        de <strong>{this.state.type.name}</strong> (<strong>{this.state.type.shortName}</strong>).
-                </form>
+                    <form onSubmit={this._handleSubmit}>
+                        <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
+                        Selectionner
+                        <TextField
+                            name="box"
+                            error={this.state.errors.box != ''}
+                            helperText={this.state.errors.box}
+                            maxLength="3"
+                            value={this.state.values.box}
+                            onChange={e => this._handleFieldChange('box', e.target.value)}
+                            autoFocus={true}
+                            inputRef={(field) => { this.focusField = field; }}
+                            style={{width: '40px', display: 'inline-block', verticalAlign: 'middle', margin: '0 3px'}}
+                            inputStyle={{textAlign: 'center'}}
+                            /> carton{(this.state.values.box > 1 ? 's' : '')} et
+                        <TextField
+                            name="bottle"
+                            error={this.state.errors.bottle != ''}
+                            helperText={this.state.errors.bottle}
+                            maxLength="3"
+                            value={this.state.values.bottle}
+                            onChange={e => this._handleFieldChange('bottle', e.target.value)}
+                            style={{width: '40px', display: 'inline-block', verticalAlign: 'middle', margin: '0 3px'}}
+                            inputStyle={{textAlign: 'center'}}
+                            /> bouteille{(this.state.values.bottle > 1 ? 's ' : ' ')}
+                            de <strong>{this.state.type.name}</strong> (<strong>{this.state.type.shortName}</strong>).
+                    </form>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color="accent"
+                        onTouchTap={() => (this.props.submit && this.props.submit(0))}
+                        className="Dialog__DeleteButon"
+                    >
+                        Désélectionner
+                    </Button>
+                    <Button
+                        color="accent"
+                        onTouchTap={this.props.close}
+                    >
+                        Annuler
+                    </Button>
+                    <Button
+                        color="primary"
+                        type="submit"
+                        onTouchTap={this._handleSubmit}
+                    >
+                        Sélectionner
+                    </Button>
+                </DialogActions>
             </Dialog>
         );
     }

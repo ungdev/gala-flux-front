@@ -113,12 +113,13 @@ export default class AddEtuuttMemberForm extends React.Component {
                 Vous pouvez rechercher par prénom, nom, surnom, numéro étudiant, login UTT et email.<br/>
 
                 <SearchField
-                    errorText={this.state.error}
+                    error={this.state.error != ''}
+                    helperText={this.state.error}
                     label="Recherche EtuUTT"
                     onSubmit={this._handleSubmit}
                     loading={this.state.loading}
                     value={this.state.query}
-                    ref={(field) => { this.searchField = field; }}
+                    inputRef={(field) => { this.searchField = field; }}
                 />
                 { this.state.users ?
                 <List>

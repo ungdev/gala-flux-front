@@ -171,9 +171,7 @@ export default class ErrorNotification extends React.Component {
                 onRequestClose={this._closeDialog}
                 style={{zIndex: 2000}}
             >
-                <DialogTitle>
-                    {<div>Erreur !</div>}
-                </DialogTitle>
+                <DialogTitle>Erreur !</DialogTitle>
                 <DialogContent>
                     {(this.state.errorMessage ? this.state.errorMessage.message : '')}
 

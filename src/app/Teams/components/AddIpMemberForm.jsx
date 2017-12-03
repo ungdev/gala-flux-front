@@ -97,20 +97,22 @@ export default class AddIpMemberForm extends React.Component {
                         <Col xs={12} sm={6}>
                             <TextField
                                 label="Nom"
-                                errorText={this.state.errors.name}
+                                error={this.state.errors.name != ''}
+                                helperText={this.state.errors.name}
                                 value={this.state.values.name}
-                                fullWidth={true}
+                                fullWidth
                                 onChange={e => this._handleFieldChange('name', e.target.value)}
                                 autoFocus={true}
-                                ref={(field) => { this.focusField = field; }}
+                                inputRef={(field) => { this.focusField = field; }}
                             />
                         </Col>
                         <Col xs={12} sm={6}>
                             <TextField
                                 label="IP"
-                                errorText={this.state.errors.ip}
+                                error={this.state.errors.ip != ''}
+                                helperText={this.state.errors.ip}
                                 value={this.state.values.ip}
-                                fullWidth={true}
+                                fullWidth
                                 onChange={e => this._handleFieldChange('ip', e.target.value)}
                             />
                         </Col>

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
@@ -133,101 +134,105 @@ export default class NewBarrelTypeDialog extends React.Component {
     }
 
     render() {
-        const actions = [
-            <Button
-                secondary={true}
-                onTouchTap={this.props.close}
-            >
-                Fermer
-            </Button>,
-            <Button
-                primary={true}
-                type="submit"
-                onTouchTap={this._handleSubmit}
-            >
-                Créer
-            </Button>,
-        ];
-
         return (
             <Dialog
-                title={'Création d\'un type de fût'}
                 open={this.props.show}
-                actions={actions}
-                autoScrollBodyContent={true}
-                modal={false}
                 onRequestClose={this.props.close}
             >
+                <DialogTitle>Création d'un type de fût</DialogTitle>
+                <DialogContent>
 
-                Remplissez le formulaire ci-dessous pour créer un nouveau type de fût.
+                    Remplissez le formulaire ci-dessous pour créer un nouveau type de fût.
 
 
-                <form onSubmit={this._handleSubmit}>
-                    <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                    <Row>
-                        <Col xs={12} sm={6}>
+                    <form onSubmit={this._handleSubmit}>
+                        <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
+                        <Row>
+                            <Col xs={12} sm={6}>
+                                <TextField
+                                    label="Nom"
+                                    error={this.state.errors.name != ''}
+                                    helperText={this.state.errors.name}
+                                    value={this.state.values.name}
+                                    fullWidth
+                                    onChange={e => this._handleFieldChange('name', e.target.value)}
+                                    autoFocus={true}
+                                    inputRef={(field) => { this.focusField = field; }}
+                                />
+                            </Col>
+                            <Col xs={12} sm={6}>
+                                <TextField
+                                    label="Abréviation"
+                                    maxLength="3"
+                                    error={this.state.errors.shortName != ''}
+                                    helperText={this.state.errors.shortName}
+                                    value={this.state.values.shortName}
+                                    fullWidth
+                                    onChange={e => this._handleFieldChange('shortName', e.target.value)}
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12} sm={6}>
                             <TextField
-                                label="Nom"
-                                errorText={this.state.errors.name}
-                                value={this.state.values.name}
-                                fullWidth={true}
-                                onChange={e => this._handleFieldChange('name', e.target.value)}
-                                autoFocus={true}
-                                ref={(field) => { this.focusField = field; }}
+                                label="Prix fournisseur d'un fût (€)"
+                                error={this.state.errors.supplierPrice != ''}
+                                helperText={this.state.errors.supplierPrice}
+                                value={this.state.values.supplierPrice}
+                                fullWidth
+                                onChange={e => this._handleFieldChange('supplierPrice', e.target.value)}
                             />
-                        </Col>
-                        <Col xs={12} sm={6}>
-                            <TextField
-                                label="Abréviation"
-                                maxLength="3"
-                                errorText={this.state.errors.shortName}
-                                value={this.state.values.shortName}
-                                fullWidth={true}
-                                onChange={e => this._handleFieldChange('shortName', e.target.value)}
-                            />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12} sm={6}>
-                        <TextField
-                            label="Prix fournisseur d'un fût (€)"
-                            errorText={this.state.errors.supplierPrice}
-                            value={this.state.values.supplierPrice}
-                            fullWidth={true}
-                            onChange={e => this._handleFieldChange('supplierPrice', e.target.value)}
-                        />
-                        </Col>
-                        <Col xs={12} sm={6}>
-                            <TextField
-                                label="Prix de revente d'un fût (€)"
-                                errorText={this.state.errors.sellPrice}
-                                value={this.state.values.sellPrice}
-                                fullWidth={true}
-                                onChange={e => this._handleFieldChange('sellPrice', e.target.value)}
-                            />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12} sm={6}>
-                            <TextField
-                                label="Nombre de litres par fût"
-                                errorText={this.state.errors.liters}
-                                value={this.state.values.liters}
-                                fullWidth={true}
-                                onChange={e => this._handleFieldChange('liters', e.target.value)}
-                            />
-                        </Col>
-                        <Col xs={12} sm={6}>
-                            <TextField
-                                label="Nombre de fûts"
-                                errorText={this.state.errors.count}
-                                value={this.state.values.count}
-                                fullWidth={true}
-                                onChange={e => this._handleFieldChange('count', e.target.value)}
-                            />
-                        </Col>
-                    </Row>
-                </form>
+                            </Col>
+                            <Col xs={12} sm={6}>
+                                <TextField
+                                    label="Prix de revente d'un fût (€)"
+                                    error={this.state.errors.sellPrice != ''}
+                                    helperText={this.state.errors.sellPrice}
+                                    value={this.state.values.sellPrice}
+                                    fullWidth
+                                    onChange={e => this._handleFieldChange('sellPrice', e.target.value)}
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12} sm={6}>
+                                <TextField
+                                    label="Nombre de litres par fût"
+                                    error={this.state.errors.liters != ''}
+                                    helperText={this.state.errors.liters}
+                                    value={this.state.values.liters}
+                                    fullWidth
+                                    onChange={e => this._handleFieldChange('liters', e.target.value)}
+                                />
+                            </Col>
+                            <Col xs={12} sm={6}>
+                                <TextField
+                                    label="Nombre de fûts"
+                                    error={this.state.errors.count != ''}
+                                    helperText={this.state.errors.count}
+                                    value={this.state.values.count}
+                                    fullWidth
+                                    onChange={e => this._handleFieldChange('count', e.target.value)}
+                                />
+                            </Col>
+                        </Row>
+                    </form>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color="accent"
+                        onTouchTap={this.props.close}
+                    >
+                        Fermer
+                    </Button>
+                    <Button
+                        color="primary"
+                        type="submit"
+                        onTouchTap={this._handleSubmit}
+                    >
+                        Créer
+                    </Button>
+                </DialogActions>
             </Dialog>
         );
     }

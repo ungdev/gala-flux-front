@@ -31,7 +31,7 @@ class SelectableMenuItem extends React.Component {
     }
 
     render() {
-        var { selected, selected, ...props } = this.props;
+        var { selected, ...props } = this.props;
         props.className = (props.className ? props.className + ' ' : '') + (this.state.selected ? this.props.classes.selected : '');
 
         return (

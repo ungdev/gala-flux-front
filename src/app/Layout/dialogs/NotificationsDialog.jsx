@@ -4,6 +4,7 @@ import AuthStore from 'stores/AuthStore';
 import NotificationStore from 'stores/NotificationStore';
 import NotificationActions from 'actions/NotificationActions';
 
+import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import Button from 'material-ui/Button';
 import Switch from 'material-ui/Switch';
@@ -85,111 +86,109 @@ export default class NotificationsDialog extends React.Component {
     }
 
     render() {
-        const actions = [
-            <Button
-                primary={true}
-                onTouchTap={this.props.close}
-            >
-                { this.props.welcome ? 'Plus tard' :  'Annuler'}
-            </Button>,
-            <Button
-                primary={true}
-                onTouchTap={this._updateParameters}
-            >
-                Valider
-            </Button>,
-        ];
-
         return (
             <Dialog
-                title={ this.props.welcome ? 'Bienvenue sur Flux !' :  'Notifications'}
-                actions={actions}
-                modal={false}
                 open={true}
-                contentStyle={{maxWidth: '600px'}}
                 onRequestClose={this.props.close}
             >
-                { this.props.welcome ?
-                    <div>
-                        <p></p>
-                        <p>Comme c'est la première fois que vous vous connectez depuis cet appareil, nous vous proposons de parametrer dès maintenant les notifications.</p>
-                        <p>Notez que vous pouvez à tous moment modifier ces paramètres en cliquant sur votre photo de profil en haut à droite de l'écran.</p>
-                    </div>
-                    :
-                    <p>Modification des paramètres de notifications</p>
-                }
-                <List>
-                    { !global.Android ?
+                <DialogTitle>{ this.props.welcome ? 'Bienvenue sur Flux !' :  'Notifications'}</DialogTitle>
+                <DialogContent style={{maxWidth: '600px'}}>
+                    { this.props.welcome ?
                         <div>
-                            <ListItem
-                                className="ToggleListItem"
-                                primaryText="Son"
-                                secondaryText="Jouer un son lors des notifications"
-                                onTouchTap={_ => this._toggleParameter('sound')}
-                                rightIcon={<Switch checked={this.state.configuration.sound}/>}
-                            />
-                            <ListItem
-                                className="ToggleListItem"
-                                primaryText="Écran clignotant"
-                                secondaryText="Faire clignoter l'écran lors des notifications"
-                                onTouchTap={_ => this._toggleParameter('flash')}
-                                rightIcon={<Switch checked={this.state.configuration.flash}/>}
-                            />
-                            <ListItem
-                                className="ToggleListItem"
-                                primaryText="Notifications pour bureau"
-                                secondaryText="Recevoir les notifications sur votre bureau"
-                                onTouchTap={_ => this._toggleParameter('desktop')}
-                                rightIcon={<Switch checked={this.state.configuration.desktop}/>}
-                            />
+                            <p></p>
+                            <p>Comme c'est la première fois que vous vous connectez depuis cet appareil, nous vous proposons de parametrer dès maintenant les notifications.</p>
+                            <p>Notez que vous pouvez à tous moment modifier ces paramètres en cliquant sur votre photo de profil en haut à droite de l'écran.</p>
                         </div>
-                    :
+                        :
+                        <p>Modification des paramètres de notifications</p>
+                    }
+                    <List>
+                        { !global.Android ?
+                            <div>
+                                <ListItem
+                                    className="ToggleListItem"
+                                    primaryText="Son"
+                                    secondaryText="Jouer un son lors des notifications"
+                                    onTouchTap={_ => this._toggleParameter('sound')}
+                                    rightIcon={<Switch checked={this.state.configuration.sound}/>}
+                                />
+                                <ListItem
+                                    className="ToggleListItem"
+                                    primaryText="Écran clignotant"
+                                    secondaryText="Faire clignoter l'écran lors des notifications"
+                                    onTouchTap={_ => this._toggleParameter('flash')}
+                                    rightIcon={<Switch checked={this.state.configuration.flash}/>}
+                                />
+                                <ListItem
+                                    className="ToggleListItem"
+                                    primaryText="Notifications pour bureau"
+                                    secondaryText="Recevoir les notifications sur votre bureau"
+                                    onTouchTap={_ => this._toggleParameter('desktop')}
+                                    rightIcon={<Switch checked={this.state.configuration.desktop}/>}
+                                />
+                            </div>
+                        :
+                            <ListItem
+                                className="ToggleListItem"
+                                primaryText="Notifications Android"
+                                secondaryText="Recevoir des notifications Android"
+                                onTouchTap={_ => this._toggleParameter('android')}
+                                rightIcon={<Switch checked={this.state.configuration.android}/>}
+                            />
+                        }
                         <ListItem
                             className="ToggleListItem"
-                            primaryText="Notifications Android"
-                            secondaryText="Recevoir des notifications Android"
-                            onTouchTap={_ => this._toggleParameter('android')}
-                            rightIcon={<Switch checked={this.state.configuration.android}/>}
+                            primaryText="Nouvelles alertes"
+                            secondaryText="Recevoir des notifications pour les nouvelles alertes"
+                            onTouchTap={_ => this._toggleParameter('alert')}
+                            rightIcon={<Switch checked={this.state.configuration.alert}/>}
                         />
-                    }
-                    <ListItem
-                        className="ToggleListItem"
-                        primaryText="Nouvelles alertes"
-                        secondaryText="Recevoir des notifications pour les nouvelles alertes"
-                        onTouchTap={_ => this._toggleParameter('alert')}
-                        rightIcon={<Switch checked={this.state.configuration.alert}/>}
-                    />
-                </List>
-                <Divider />
-                <h3>Channels du chat</h3>
-                <List>
-                    {this.state.configuration && this.state.configuration.channel &&
-                        Object.keys(this.state.configuration.channel).sort((a,b) => a.replace('public:','0:').localeCompare(b.replace('public:','0:'))).map((channel, i) => {
+                    </List>
+                    <Divider />
+                    <h3>Channels du chat</h3>
+                    <List>
+                        {this.state.configuration && this.state.configuration.channel &&
+                            Object.keys(this.state.configuration.channel).sort((a,b) => a.replace('public:','0:').localeCompare(b.replace('public:','0:'))).map((channel, i) => {
 
-                            let primaryText = channel.split(':')[1];
-                            switch(channel.split(':')[0]) {
-                                case 'group': primaryText = 'Groupe : ' + channel.split(':')[1]; break;
-                                case 'private': primaryText = 'Privé : ' + channel.split(':')[1]; break;
-                            }
+                                let primaryText = channel.split(':')[1];
+                                switch(channel.split(':')[0]) {
+                                    case 'group': primaryText = 'Groupe : ' + channel.split(':')[1]; break;
+                                    case 'private': primaryText = 'Privé : ' + channel.split(':')[1]; break;
+                                }
 
-                            let secondaryText = 'Notifications activées';
-                            if (this.state.configuration.channel[channel] == 'hide') secondaryText = 'Channel caché';
-                            if (this.state.configuration.channel[channel] == 'show') secondaryText = 'Ne pas notifier';
+                                let secondaryText = 'Notifications activées';
+                                if (this.state.configuration.channel[channel] == 'hide') secondaryText = 'Channel caché';
+                                if (this.state.configuration.channel[channel] == 'show') secondaryText = 'Ne pas notifier';
 
 
-                            return (
-                            <ListItem
-                                key={i}
-                                className="ToggleListItem"
-                                style={this.state.configuration.channel[channel] == 'hide' ? {color: 'gray'} : {}}
-                                primaryText={this.state.configuration.channel[channel] == 'hide' ? <del>{primaryText}</del> : primaryText}
-                                secondaryText={secondaryText}
-                                onTouchTap={_ => this._onChannelClick(channel)}
-                                rightIcon={<Switch checked={this.state.configuration.channel[channel] == 'notify'} disabled={this.state.configuration.channel[channel] == 'hide'}/>}
-                            />)
-                        })
-                    }
-                </List>
+                                return (
+                                <ListItem
+                                    key={i}
+                                    className="ToggleListItem"
+                                    style={this.state.configuration.channel[channel] == 'hide' ? {color: 'gray'} : {}}
+                                    primaryText={this.state.configuration.channel[channel] == 'hide' ? <del>{primaryText}</del> : primaryText}
+                                    secondaryText={secondaryText}
+                                    onTouchTap={_ => this._onChannelClick(channel)}
+                                    rightIcon={<Switch checked={this.state.configuration.channel[channel] == 'notify'} disabled={this.state.configuration.channel[channel] == 'hide'}/>}
+                                />)
+                            })
+                        }
+                    </List>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color="primary"
+                        onTouchTap={this.props.close}
+                    >
+                        { this.props.welcome ? 'Plus tard' :  'Annuler'}
+                    </Button>
+                    <Button
+                        color="primary"
+                        onTouchTap={this._updateParameters}
+                    >
+                        Valider
+                    </Button>
+                </DialogActions>
             </Dialog>
         );
     }

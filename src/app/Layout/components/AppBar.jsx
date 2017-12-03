@@ -14,10 +14,16 @@ const styles = theme => ({
         [theme.breakpoints.down('sm')]: {
             height: theme.custom.appBarHeightXs,
         },
+        [theme.breakpoints.up('md')]: {
+            height: theme.custom.appBarHeightMd,
+        },
     },
     toolbar: {
         [theme.breakpoints.down('sm')]: {
             minHeight: theme.custom.appBarHeightXs,
+        },
+        [theme.breakpoints.up('md')]: {
+            minHeight: theme.custom.appBarHeightMd,
         },
     },
     title: {
@@ -27,6 +33,7 @@ const styles = theme => ({
 
 /**
  * This is the top bar shown on every pages of the layout
+ * @param {Object} router react-router router object
  */
 class AppBar extends React.Component {
 
@@ -36,33 +43,7 @@ class AppBar extends React.Component {
         this.state = {
             title: 'Flux',
         };
-
-        // this._handleRouteUpdate = this._handleRouteUpdate.bind(this);
     }
-
-    // componentDidMount() {
-    //     // Re-render every route change
-    //     router.addListener((route) => {
-    //         this._handleRouteUpdate(route);
-    //     });
-    //
-    //     // Init route
-    //     this._handleRouteUpdate(router.getState());
-    // }
-
-    // _handleRouteUpdate(route) {
-    //     for (let routeConf of routes) {
-    //         if(routeConf.name === route.name && routeConf.title) {
-    //             let title = routeConf.title;
-    //             if(typeof routeConf.title === 'function') {
-    //                 title = routeConf.title(route);
-    //             }
-    //             this.setState({title: title});
-    //             return;
-    //         }
-    //     }
-    //     this.setState({title: 'Flux'});
-    // }
 
     render() {
         const { classes } = this.props;
@@ -72,7 +53,7 @@ class AppBar extends React.Component {
                 position="static"
             >
                 <Toolbar className={classes.toolbar}>
-                    <MainDrawer />
+                    <MainDrawer router={this.props.router}/>
                     <Typography type="title" color="inherit" className={classes.title} component="h1">
                         {this.state.title}
                     </Typography>
@@ -82,5 +63,4 @@ class AppBar extends React.Component {
         );
     }
 }
-
 export default withStyles(styles)(AppBar);

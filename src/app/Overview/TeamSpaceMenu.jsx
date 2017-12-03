@@ -47,7 +47,7 @@ export default class TeamSpaceMenu extends React.Component {
             >
                 { () => (
                     <div>
-                        <Button raised onClick={this._redirect} color="accent" style={{width: '100%'}}>Retour à la liste</Button>
+                        <Button raised onClick={this._redirect} color="accent" fullWidth>Retour à la liste</Button>
                         <SelectableList onChange={this._handleChange} value={this.state.selected}>
                             {
                                 this.state.teams.map(team => <ListItem key={team.id} value={team.id}>{team.name}</ListItem>)

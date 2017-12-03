@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import Button from 'material-ui/Button';
 import Tabs, { Tab } from 'material-ui/Tabs';
@@ -26,7 +27,7 @@ export default class AddMemberDialog extends React.Component {
 
         let actions = [
             <Button
-                secondary={true}
+                color="accent"
                 onTouchTap={this.props.close}
             >
                 Fermer
@@ -36,7 +37,7 @@ export default class AddMemberDialog extends React.Component {
         if(this.state.value == 'ip') {
             actions.push(
                 <Button
-                    primary={true}
+                    color="primary"
                     type="submit"
                     onTouchTap={(this.AddIpMemberForm ? this.AddIpMemberForm.submit : () => {})}
                 >
@@ -49,11 +50,8 @@ export default class AddMemberDialog extends React.Component {
         return (
             <Dialog
                 open={this.props.show}
-                actions={actions}
-                autoScrollBodyContent={true}
-                modal={false}
                 onRequestClose={this.props.close}
-                bodyClassName="TabDialog__body"
+                className="TabDialog__body"
             >
                 <Tabs contentContainerClassName="TabDialog__TabsContent"
                     onChange={(value) => this.setState({value: value})}
@@ -62,10 +60,9 @@ export default class AddMemberDialog extends React.Component {
                         <AddEtuuttMemberForm team={this.state.team} />
                     </Tab>
                     <Tab label="Par IP" value="ip">
-                        <AddIpMemberForm team={this.state.team} ref={(ref) => { this.AddIpMemberForm = ref; }}/>
+                        <AddIpMemberForm team={this.state.team} inputRef={(ref) => { this.AddIpMemberForm = ref; }}/>
                     </Tab>
                 </Tabs>
-
             </Dialog>
         );
     }

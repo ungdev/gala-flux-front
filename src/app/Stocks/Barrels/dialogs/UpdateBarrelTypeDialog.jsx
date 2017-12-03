@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
@@ -203,127 +204,129 @@ export default class UpdateBarrelTypeDialog extends React.Component {
 
 
     render() {
-
-        const actions = [
-            <Button
-                secondary={true}
-                onTouchTap={() => this.setState({showDeleteDialog: true})}
-                className="Dialog__DeleteButon"
-            >
-                Supprimer
-            </Button>,
-            <Button
-                secondary={true}
-                onTouchTap={this.props.close}
-            >
-                Fermer
-            </Button>,
-            <Button
-                primary={true}
-                type="submit"
-                onTouchTap={this._handleSubmit}
-            >
-                Modifier
-            </Button>,
-        ];
-
         return (
-
             <Dialog
-                title={'Modification des fûts ' + this.state.values.name}
                 open={this.props.show}
-                actions={actions}
-                autoScrollBodyContent={true}
-                modal={false}
                 onRequestClose={this.props.close}
             >
+                <DialogTitle>{'Modification des fûts ' + this.state.values.name}</DialogTitle>
+                <DialogContent>
 
-                Modifier le formulaire ci-dessous pour modifier les fûts <strong>{this.state.values.name}</strong>.
+                    Modifier le formulaire ci-dessous pour modifier les fûts <strong>{this.state.values.name}</strong>.
 
 
-                <form onSubmit={this._handleSubmit}>
-                    <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                    <Row>
-                        <Col xs={12} sm={6}>
+                    <form onSubmit={this._handleSubmit}>
+                        <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
+                        <Row>
+                            <Col xs={12} sm={6}>
+                                <TextField
+                                    label="Nom"
+                                    error={this.state.errors.name != ''}
+                                    helperText={this.state.errors.name}
+                                    value={this.state.values.name}
+                                    fullWidth
+                                    onChange={e => this._handleFieldChange('name', e.target.value)}
+                                    autoFocus={true}
+                                    inputRef={(field) => { this.focusField = field; }}
+                                />
+                            </Col>
+                            <Col xs={12} sm={6}>
+                                <TextField
+                                    label="Abréviation"
+                                    maxLength="3"
+                                    error={this.state.errors.shortName != ''}
+                                    helperText={this.state.errors.shortName}
+                                    value={this.state.values.shortName}
+                                    fullWidth
+                                    onChange={e => this._handleFieldChange('shortName', e.target.value)}
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12} sm={6}>
                             <TextField
-                                label="Nom"
-                                errorText={this.state.errors.name}
-                                value={this.state.values.name}
-                                fullWidth={true}
-                                onChange={e => this._handleFieldChange('name', e.target.value)}
-                                autoFocus={true}
-                                ref={(field) => { this.focusField = field; }}
+                                label="Prix fournisseur d'un fût (€)"
+                                error={this.state.errors.supplierPrice != ''}
+                                helperText={this.state.errors.supplierPrice}
+                                value={this.state.values.supplierPrice}
+                                fullWidth
+                                onChange={e => this._handleFieldChange('supplierPrice', e.target.value)}
                             />
-                        </Col>
-                        <Col xs={12} sm={6}>
-                            <TextField
-                                label="Abréviation"
-                                maxLength="3"
-                                errorText={this.state.errors.shortName}
-                                value={this.state.values.shortName}
-                                fullWidth={true}
-                                onChange={e => this._handleFieldChange('shortName', e.target.value)}
-                            />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12} sm={6}>
-                        <TextField
-                            label="Prix fournisseur d'un fût (€)"
-                            errorText={this.state.errors.supplierPrice}
-                            value={this.state.values.supplierPrice}
-                            fullWidth={true}
-                            onChange={e => this._handleFieldChange('supplierPrice', e.target.value)}
-                        />
-                        </Col>
-                        <Col xs={12} sm={6}>
-                            <TextField
-                                label="Prix de revente d'un fût (€)"
-                                errorText={this.state.errors.sellPrice}
-                                value={this.state.values.sellPrice}
-                                fullWidth={true}
-                                onChange={e => this._handleFieldChange('sellPrice', e.target.value)}
-                            />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12} sm={6}>
-                            <TextField
-                                label="Nombre de litres par fût"
-                                errorText={this.state.errors.liters}
-                                value={this.state.values.liters}
-                                fullWidth={true}
-                                onChange={e => this._handleFieldChange('liters', e.target.value)}
-                            />
-                        </Col>
-                        <Col xs={12} sm={6}>
-                            <TextField
-                                label="Nombre de fûts"
-                                errorText={this.state.errors.count}
-                                value={this.state.values.count}
-                                fullWidth={true}
-                                onChange={e => this._handleFieldChange('count', e.target.value)}
-                            />
-                        </Col>
-                    </Row>
-                </form>
+                            </Col>
+                            <Col xs={12} sm={6}>
+                                <TextField
+                                    label="Prix de revente d'un fût (€)"
+                                    error={this.state.errors.sellPrice != ''}
+                                    helperText={this.state.errors.sellPrice}
+                                    value={this.state.values.sellPrice}
+                                    fullWidth
+                                    onChange={e => this._handleFieldChange('sellPrice', e.target.value)}
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12} sm={6}>
+                                <TextField
+                                    label="Nombre de litres par fût"
+                                    error={this.state.errors.liters != ''}
+                                    helperText={this.state.errors.liters}
+                                    value={this.state.values.liters}
+                                    fullWidth
+                                    onChange={e => this._handleFieldChange('liters', e.target.value)}
+                                />
+                            </Col>
+                            <Col xs={12} sm={6}>
+                                <TextField
+                                    label="Nombre de fûts"
+                                    error={this.state.errors.count != ''}
+                                    helperText={this.state.errors.count}
+                                    value={this.state.values.count}
+                                    fullWidth
+                                    onChange={e => this._handleFieldChange('count', e.target.value)}
+                                />
+                            </Col>
+                        </Row>
+                    </form>
 
-                <Confirm
-                    show={this.state.showReduceDialog}
-                    no={() => this.setState({showReduceDialog: false})}
-                    yes={() => this._handleSubmit(null, true)}
-                >
-                    Vous avez réduit le nombre de fûts. Ces fûts ainsi que toutes les informations associés à ces fûts (historique, état, position) seront supprimés.
-                    Voulez-vous continuer ?
-                </Confirm>
+                    <Confirm
+                        show={this.state.showReduceDialog}
+                        no={() => this.setState({showReduceDialog: false})}
+                        yes={() => this._handleSubmit(null, true)}
+                    >
+                        Vous avez réduit le nombre de fûts. Ces fûts ainsi que toutes les informations associés à ces fûts (historique, état, position) seront supprimés.
+                        Voulez-vous continuer ?
+                    </Confirm>
 
-                <Confirm
-                    show={this.state.showDeleteDialog}
-                    no={() => this.setState({showDeleteDialog: false})}
-                    yes={this._handleDelete}
-                >
-                    Voulez-vous vraiment supprimer le type de fût <strong>{this.state.values.name}</strong> ainsi que tout les fûts associés ?
-                </Confirm>
+                    <Confirm
+                        show={this.state.showDeleteDialog}
+                        no={() => this.setState({showDeleteDialog: false})}
+                        yes={this._handleDelete}
+                    >
+                        Voulez-vous vraiment supprimer le type de fût <strong>{this.state.values.name}</strong> ainsi que tout les fûts associés ?
+                    </Confirm>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color="accent"
+                        onTouchTap={() => this.setState({showDeleteDialog: true})}
+                        className="Dialog__DeleteButon"
+                    >
+                        Supprimer
+                    </Button>
+                    <Button
+                        color="accent"
+                        onTouchTap={this.props.close}
+                    >
+                        Fermer
+                    </Button>
+                    <Button
+                        color="primary"
+                        type="submit"
+                        onTouchTap={this._handleSubmit}
+                    >
+                        Modifier
+                    </Button>
+                </DialogActions>
             </Dialog>
         );
     }

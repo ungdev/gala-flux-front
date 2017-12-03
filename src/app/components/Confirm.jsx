@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Button from 'material-ui/Button';
+import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 
 
@@ -14,32 +15,31 @@ import Dialog from 'app/components/ResponsiveDialog.jsx';
 export default class Confirm extends React.Component {
 
     render() {
-        const actions = [
-            <Button
-                secondary={true}
-                onTouchTap={this.props.no}
-            >
-                Non
-            </Button>,
-            <Button
-                primary={true}
-                keyboardFocused={true}
-                onTouchTap={this.props.yes}
-            >
-                Oui
-            </Button>,
-        ];
-
         return (
             <div>
                 <Dialog
-                    title={'Confirmation'}
                     open={this.props.show}
-                    actions={actions}
-                    modal={false}
                     onRequestClose={this.props.no}
                 >
-                    {this.props.children}
+                    <DialogTitle>Confirmation</DialogTitle>
+                    <DialogContent>
+                        {this.props.children}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            color="accent"
+                            onTouchTap={this.props.no}
+                        >
+                            Non
+                        </Button>
+                        <Button
+                            color="primary"
+                            keyboardFocused={true}
+                            onTouchTap={this.props.yes}
+                        >
+                            Oui
+                        </Button>
+                    </DialogActions>
                 </Dialog>
             </div>
         );

@@ -2,26 +2,25 @@ import React from 'react';
 
 import ChatScene from 'app/Chat/ChatScene.jsx';
 import AlertScene from 'app/Alerts/AlertScene.jsx';
+import Page from 'app/components/Page.jsx';
+import PagePart from 'app/components/PagePart.jsx';
+import PagePartSeparator from 'app/components/PagePartSeparator.jsx';
 
-require('./pages.scss');
-
+/**
+ * @param {Object} router react-router router object
+ */
 export default class DashboardPage extends React.Component {
     render() {
-        let channel = null;
-        // Set channel if we are on chat path
-        if(this.props.router.routes.map(route => route.path).includes('/chat/**') && this.props.router.params.splat) {
-            channel = this.props.router.params.splat;
-        }
-
         return (
-            <div className="pages__VerticalSplitLayout">
-                <div className={!this.props.router.isActive('/alerts') ? 'pages__VerticalSplitLayout__secondary' : ''}>
+            <Page>
+                <PagePart main={this.props.router.isActive('/alerts')}>
                     <AlertScene />
-                </div>
-                <div className={this.props.router.isActive('/alerts') ? 'pages__VerticalSplitLayout__secondary' : ''}>
-                    <ChatScene channel={channel} />
-                </div>
-            </div>
+                </PagePart>
+                <PagePartSeparator main={false}/>
+                <PagePart main={!this.props.router.isActive('/alerts')}>
+                    <ChatScene router={this.props.router} />
+                </PagePart>
+            </Page>
         );
     }
 }

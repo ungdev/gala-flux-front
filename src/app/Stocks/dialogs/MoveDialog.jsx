@@ -7,6 +7,9 @@ import BottleTypeStore from 'stores/BottleTypeStore';
 import BarrelStore from 'stores/BarrelStore';
 import BarrelTypeStore from 'stores/BarrelTypeStore';
 import TeamStore from 'stores/TeamStore';
+import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
+import { FormControl, FormHelperText } from 'material-ui/Form';
+import Input, { InputLabel } from 'material-ui/Input';
 
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import Button from 'material-ui/Button';
@@ -29,7 +32,7 @@ export default class MoveDialog extends React.Component {
         super(props);
 
         this.state = {
-            teamId: null
+            teamId: ""
         };
 
         // binding
@@ -67,69 +70,74 @@ export default class MoveDialog extends React.Component {
     }
 
     render() {
-        const actions = [
-            <Button
-                secondary={true}
-                onClick={this.props.close}
-            >
-                Annuler
-            </Button>,
-            <Button
-                primary={true}
-                onClick={this._moveBarrels}
-            >
-                Déplacer
-            </Button>
-        ];
-
+        console.log('barrels', this.props.barrels)
+        console.log('bottles', this.props.bottles)
         return (
             <div>
                 {
                     <Dialog
-                        title={"Déplacement de fûts"}
                         open={this.props.show}
-                        modal={false}
                         onRequestClose={this.props.close}
-                        actions={actions}
                     >
-                        <p>
-                            Les fûts et bouteilles suivantes vont être déplacés.
-                        </p>
+                        <DialogTitle>Déplacement de fûts</DialogTitle>
+                        <DialogContent>
+                            <p>
+                                Les fûts et bouteilles suivantes vont être déplacés.
+                            </p>
 
-                        <div className="BarrelChipContainer">
-                            {
-                                this.props.barrels.map((barrel, i) => {
-                                    return <BarrelChip
-                                                key={i}
-                                                barrel={barrel}
-                                                team={this.props.teams.get(barrel.teamId)}
-                                                type={this.props.barrelTypes.get(barrel.typeId)}
-                                            />
-                                })
-                            }
-                            {
-                                Object.keys(this.props.bottles).map(teamId => {
-                                    let team = this.props.teams.get(teamId);
-                                    return Object.keys(this.props.bottles[teamId]).map(typeId => {
-                                        let type = this.props.bottleTypes.get(typeId);
-                                        return  <BottleChip
-                                            key={(teamId + typeId)}
-                                            count={this.props.bottles[teamId][typeId]}
-                                            state="new"
-                                            type={type}
-                                            team={team}
-                                        />
+                            <div className="BarrelChipContainer">
+                                {
+                                    this.props.barrels.map((barrel, i) => {
+                                        console.log(barrel)
+                                        return <BarrelChip
+                                                    key={i}
+                                                    barrel={barrel}
+                                                    team={this.props.teams.get(barrel.teamId)}
+                                                    type={this.props.barrelTypes.get(barrel.typeId)}
+                                                />
                                     })
-                                })
-                            }
-                        </div>
-
-                        <LocationSelect
-                            teams={this.props.teams.findByPermission('ui/stockReceiver').sortBy('name')}
-                            value={this.state.teamId}
-                            setValue={(v) => this.setState({ teamId: v })}
-                            floatingLabel="Destination"
-                        />
+                                }
+                                {
+                                    Object.keys(this.props.bottles).map(teamId => {
+                                        let team = this.props.teams.get(teamId);
+                                        return Object.keys(this.props.bottles[teamId]).map(typeId => {
+                                            let type = this.props.bottleTypes.get(typeId);
+                                            return  <BottleChip
+                                                key={(teamId + typeId)}
+                                                count={this.props.bottles[teamId][typeId]}
+                                                state="new"
+                                                type={type}
+                                                team={team}
+                                            />
+                                        })
+                                    })
+                                }
+                            </div>
+                            
+                            <InputLabel htmlFor="destination-select">Destination</InputLabel>
+                            <LocationSelect
+                                input={<Input id="destination-select" />}
+                                teams={this.props.teams.findByPermission('ui/stockReceiver').sortBy('name')}
+                                value={this.state.teamId}
+                                setValue={(v) => this.setState({ teamId: v })}
+                                fullWidth
+                            />
+                            
+                        </DialogContent>
+                        <DialogActions>
+                            <Button
+                                color="accent"
+                                onClick={this.props.close}
+                            >
+                                Annuler
+                            </Button>
+                            <Button
+                                color="primary"
+                                onClick={this._moveBarrels}
+                            >
+                                Déplacer
+                            </Button>
+                        </DialogActions>
                     </Dialog>
                 }
             </div>

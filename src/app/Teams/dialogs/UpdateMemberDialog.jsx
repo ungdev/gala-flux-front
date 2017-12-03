@@ -3,17 +3,13 @@ import React from 'react';
 import UserService from 'services/UserService';
 import * as constants from 'config/constants';
 
-import {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from 'material-ui/Dialog';
+
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Avatar from 'material-ui/Avatar';
 import Subheader from 'material-ui-old/Subheader';
 import { Row, Col } from 'react-flexbox-grid';
+import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import SelectGroupField from 'app/Teams/components/SelectGroupField.jsx';
@@ -180,11 +176,12 @@ export default class UpdateMemberDialog extends React.Component {
                                 <Col xs={12} sm={6}>
                                     <TextField
                                         label="Nom"
-                                        errorText={this.state.errors.name}
+                                        error={this.state.errors.name != ''}
+                                        helperText={this.state.errors.name}
                                         value={this.state.values.name}
-                                        fullWidth={true}
+                                        fullWidth
                                         onChange={e => this._handleFieldChange('name', e.target.value)}
-                                        ref={(field) => { this.focusField = field; }}
+                                        inputRef={(field) => { this.focusField = field; }}
                                         autoFocus={true}
                                     />
                                 </Col>
@@ -192,18 +189,20 @@ export default class UpdateMemberDialog extends React.Component {
                                     { this.state.values.login ?
                                         <TextField
                                             label="Login EtuUTT"
-                                            errorText={this.state.errors.login}
+                                            error={this.state.errors.login != ''}
+                                            helperText={this.state.errors.login}
                                             value={this.state.values.login}
-                                            fullWidth={true}
+                                            fullWidth
                                             onChange={e => this._handleFieldChange('login', e.target.value)}
                                             disabled={true}
                                         />
                                     :
                                         <TextField
                                             label="IP"
-                                            errorText={this.state.errors.ip}
+                                            error={this.state.errors.ip != ''}
+                                            helperText={this.state.errors.ip}
                                             value={this.state.values.ip}
-                                            fullWidth={true}
+                                            fullWidth
                                             onChange={e => this._handleFieldChange('ip', e.target.value)}
                                         />
                                     }
@@ -215,7 +214,7 @@ export default class UpdateMemberDialog extends React.Component {
                                     <a href="#" onTouchTap={this._handleAvatarClick}>
                                         <Avatar src={(constants.avatarBasePath + this.state.id + '?' + this.state.avatarRefreshTimestamp)} backgroundColor="white" size={80} />
                                             <input
-                                                ref={(field) => { this.avatarUploadField = field; }}
+                                                inputRef={(field) => { this.avatarUploadField = field; }}
                                                 type="file"
                                                 style={{"display" : "none"}}
                                                 onChange={this._handleAvatarSubmit}

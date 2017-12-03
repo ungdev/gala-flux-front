@@ -249,7 +249,7 @@ export default class StockScene extends React.Component {
                                         raised
                                         disabled={selectionCount === 0}
                                         onClick={_ => this.setState({ selectedBarrels: new Set(), selectedBottles: {} })}
-                                        fullWidth={true}
+                                        fullWidth
                                     >
                                         {'Déselectionner les fûts ' + (selectionCount ? '(' + selectionCount + ')' : '')}
                                     </Button>
@@ -257,9 +257,9 @@ export default class StockScene extends React.Component {
                                 <Col xs={12} sm={6} md={3}>
                                     <Button
                                         raised
-                                        color="secondary"
+                                        color="accent"
                                         onClick={this.resetFilters}
-                                        fullWidth={true}
+                                        fullWidth
                                     >
                                         Reset les filtres
                                     </Button>

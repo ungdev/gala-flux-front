@@ -57,14 +57,15 @@ export default class SearchField extends React.Component {
                 <TextField
                     disabled={this.props.disabled}
                     label={this.props.floatingLabelText}
-                    fullWidth={true}
+                    fullWidth
                     value={this.state.value}
-                    errorText={this.props.errorText}
+                    error={this.props.errorText != ''}
+                    helperText={this.props.errorText}
                     readOnly={this.props.loading}
                     onChange={this._handleChange}
                     autoFocus={true}
                     name="searchTextField"
-                    ref={(input) => { this.textInput = input; }}
+                    inputRef={(input) => { this.textInput = input; }}
                 />
                 {
                     this.props.loading

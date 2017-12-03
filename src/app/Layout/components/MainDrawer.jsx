@@ -2,12 +2,18 @@ import React from 'react';
 
 import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
+import Divider from 'material-ui/Divider';
 import NavigationMenu from 'material-ui-icons/Menu';
-// import AdminMenu from 'components/partials/AdminMenu.jsx';
-// import BarMenu from 'components/partials/BarMenu.jsx';
+import ChannelList from 'app/Chat/components/ChannelList.jsx';
+import MenuContainer from 'app/Layout/components/MenuContainer.jsx';
+import MainMenu from 'app/Layout/components/MainMenu.jsx';
 import AuthStore from 'stores/AuthStore';
 import NotificationStore from 'stores/NotificationStore';
 
+/**
+ * Main application drawer shown only on small screen
+ * @param {Object} router react-router router object
+ */
 export default class MainDrawer extends React.Component {
 
     constructor(props) {
@@ -15,151 +21,123 @@ export default class MainDrawer extends React.Component {
 
         this.state = {
             open: false,
-            // route: router.getState(),
-            team: AuthStore.team,
             overNewMessageCount: 0,
             underNewMessageCount: 0,
+            user: AuthStore.user,
         };
 
         // binding
-        this._handleScroll = this._handleScroll.bind(this);
-        this._handleToggle = this._handleToggle.bind(this);
-        this._handleChange = this._handleChange.bind(this);
-        this._handleRouteChange = this._handleRouteChange.bind(this);
-        this._handleAuthStoreChange = this._handleAuthStoreChange.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
+        this.handleToggle = this.handleToggle.bind(this);
+        this.handleCloseRequest = this.handleCloseRequest.bind(this);
+        this.onAuthStoreChange = this.onAuthStoreChange.bind(this);
     }
 
     componentDidMount() {
-        // router.addListener(this._handleRouteChange);
-        AuthStore.addChangeListener(this._handleAuthStoreChange);
-
-        // Init route
-        // this.setState({
-        //     route: router.getState(),
-        // });
+        // listen the store change
+        AuthStore.addChangeListener(this.onAuthStoreChange);
     }
 
     componentWillUnmount() {
-        // router.removeListener(this._handleRouteChange);
-        AuthStore.removeChangeListener(this._handleAuthStoreChange);
-    }
-
-    componentDidUpdate() {
-        this._handleScroll();
+        AuthStore.removeChangeListener(this.onAuthStoreChange);
     }
 
     /**
-     * Re-render when the route change
-     * @param route
+     * When there is a change in the AuthStore, update the value of user in the component state
      */
-    _handleRouteChange(route) {
+    onAuthStoreChange() {
         this.setState({
-            route: route,
+            user: AuthStore.user,
         });
     }
 
-    _handleToggle() {
-        this.setState({open: !this.state.open});
+    componentDidUpdate() {
+        this.handleScroll();
     }
 
-    _handleChange(route) {
-        this.setState({open: false});
+    handleToggle() {
+        this.setState({
+            open: !this.state.open,
+        });
     }
 
-    _handleAuthStoreChange(route) {
-        this.setState({team: AuthStore.team});
+    handleCloseRequest() {
+        this.setState({
+            open: false,
+        });
     }
 
-    _handleScroll(e) {
-        let target = this.scrollArea;
-        if(target) {
-            let over = 0;
-            let under = 0;
-
-            const scrollAreaTop = target.getBoundingClientRect().top;
-            const scrollAreaBottom = target.getBoundingClientRect().bottom;
-
-            // Calculate number of message under and over the view in the scroll area
-            let elements = target.getElementsByClassName('NotificationScrollIndicatorLine');
-            for (let i = 0 ; i < elements.length ; i++) {
-                let el = elements[i];
-                let rect = el.getBoundingClientRect();
-                if(el.dataset && el.dataset.count && rect && rect.bottom != 0) {
-                    if(rect.top - scrollAreaTop < 0) {
-                        over += parseInt(el.dataset.count) || 0;
-                    }
-                    else if(scrollAreaBottom - rect.bottom < 0) {
-                        under += parseInt(el.dataset.count) || 0;
-                    }
-                    if(el.dataset.count==24) {
-                    }
-                }
-            }
-
-            // update state if necessary
-            let state = {};
-            if(this.state.overNewMessageCount != over) {
-                state.overNewMessageCount = over;
-            }
-            if(this.state.underNewMessageCount != under) {
-                state.underNewMessageCount = under;
-            }
-            if(Object.keys(state) != 0) {
-                this.setState(state);
-            }
-        }
+    handleScroll(e) {
+        // let target = this.scrollArea;
+        // if(target) {
+        //     let over = 0;
+        //     let under = 0;
+        //
+        //     const scrollAreaTop = target.getBoundingClientRect().top;
+        //     const scrollAreaBottom = target.getBoundingClientRect().bottom;
+        //
+        //     // Calculate number of message under and over the view in the scroll area
+        //     let elements = target.getElementsByClassName('NotificationScrollIndicatorLine');
+        //     for (let i = 0 ; i < elements.length ; i++) {
+        //         let el = elements[i];
+        //         let rect = el.getBoundingClientRect();
+        //         if(el.dataset && el.dataset.count && rect && rect.bottom != 0) {
+        //             if(rect.top - scrollAreaTop < 0) {
+        //                 over += parseInt(el.dataset.count) || 0;
+        //             }
+        //             else if(scrollAreaBottom - rect.bottom < 0) {
+        //                 under += parseInt(el.dataset.count) || 0;
+        //             }
+        //             if(el.dataset.count==24) {
+        //             }
+        //         }
+        //     }
+        //
+        //     // update state if necessary
+        //     let state = {};
+        //     if(this.state.overNewMessageCount != over) {
+        //         state.overNewMessageCount = over;
+        //     }
+        //     if(this.state.underNewMessageCount != under) {
+        //         state.underNewMessageCount = under;
+        //     }
+        //     if(Object.keys(state) != 0) {
+        //         this.setState(state);
+        //     }
+        // }
     }
+
+
+                        // <div style={{
+                        //         height: '100%',
+                        //         position: 'relative',
+                        //         overflow: 'auto',
+                        //     }}
+                        //     onScroll={this.handleScroll}
+                        //     ref={(el) => { this.scrollArea = el; }}
+                        // >
 
     render() {
-
-        // Don't draw anything if user is not logged in
-        if(!this.state.team) {
+        if(!this.state.user) {
             return null;
         }
 
         return (
             <div>
-                <IconButton onTouchTap={this._handleToggle} color="contrast" className="show-xs">
+                <IconButton onTouchTap={this.handleToggle} color="contrast" className="show-xs">
                     <NavigationMenu/>
                 </IconButton>
 
                 <Drawer
-                    type="permanent"
                     anchor="left"
                     open={this.state.open}
-                    onRequestClose={() => this.setState({open: false})}
+                    onRequestClose={this.handleCloseRequest}
                 >
-                    {this.state.overNewMessageCount != 0 &&
-                        <div className="NotificationScrollIndicator--top">
-                            <div>
-                                {this.state.overNewMessageCount} Non lus ↑
-                            </div>
-                        </div>
-                    }
-
-                    <div style={{
-                            height: '100%',
-                            position: 'relative',
-                            overflow: 'auto',
-                        }}
-                        onScroll={this._handleScroll}
-                        ref={(el) => { this.scrollArea = el; }}
-                    >
-                        {/* AuthStore.can('ui/admin') ?
-                            <AdminMenu route={this.state.route} onChange={this._handleChange}/>
-                            :
-                            <BarMenu route={this.state.route} onChange={this._handleChange}/>
-                        */}
-                    </div>
-
-
-                    {this.state.underNewMessageCount != 0 &&
-                        <div className="NotificationScrollIndicator--bottom">
-                            <div>
-                                {this.state.underNewMessageCount} Non lus ↓
-                            </div>
-                        </div>
-                    }
+                    <MenuContainer router={this.props.router} onChange={this.handleCloseRequest}>
+                        <MainMenu />
+                        <Divider />
+                        <ChannelList />
+                    </MenuContainer>
                 </Drawer>
             </div>
         );

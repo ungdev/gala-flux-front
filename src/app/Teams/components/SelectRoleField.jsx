@@ -3,8 +3,11 @@ import React from 'react';
 import NotificationActions from 'actions/NotificationActions';
 import AuthService from 'services/AuthService';
 
-import SelectField from 'material-ui-old/SelectField';
-import MenuItem from 'material-ui-old/MenuItem';
+import Select from 'material-ui/Select';
+import SelectableMenuItem from 'app/components/SelectableMenuItem.jsx';
+import Input, { InputLabel } from 'material-ui/Input';
+import { FormControl, FormHelperText } from 'material-ui/Form';
+import TextField from 'material-ui/TextField';
 
 export default class SelectRoleField extends React.Component {
 
@@ -13,42 +16,34 @@ export default class SelectRoleField extends React.Component {
 
         this.state = {
             options: [],
-            selected: props.selected,
         };
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({ selected: nextProps.selected });
     }
 
     componentDidMount() {
         AuthService.getRoles()
-            .then(roles => {
-                roles = Object.keys(roles);
-                roles.sort((a,b) => {return a.localeCompare(b)});
-                this.setState({ options: roles });
-            })
-            .catch(error => {
-                NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des permissions', error);
-            });
+        .then(roles => {
+            roles = Object.keys(roles);
+            roles.sort((a,b) => {return a.localeCompare(b)});
+            this.setState({ options: roles });
+        })
+        .catch(error => {
+            NotificationActions.error('Une erreur s\'est produite pendant le chargement de la liste des permissions', error);
+        });
     }
 
     render() {
+        let {...props} = this.props;
         return (
-            <SelectField
-                label="Autorisations"
-                value={this.state.selected}
-                onChange={(e, index, value) => this.props.onChange(value)}
-                errorText={this.props.errorText}
-                fullWidth={this.props.fullWidth}
-                maxHeight={200}
+            <TextField
+                select
+                {...props}
             >
                 {
                     this.state.options.map((option, i) => {
-                        return <MenuItem key={i} value={option} primaryText={option} />
+                        return <SelectableMenuItem key={option} value={option}>{option}</SelectableMenuItem>
                     })
                 }
-            </SelectField>
+            </TextField>
         );
     }
 

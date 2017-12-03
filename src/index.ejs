@@ -28,12 +28,29 @@ branch=<%= process.env.TRAVIS_BRANCH  %>
 commit=<%= process.env.TRAVIS_COMMIT  %>
 dokkuApp=<%= process.env.DOKKU_APP_NAME %>
 -->
+        <style>
+            .BootLayout {
+                position: absolute;
+                top: 112px;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .BootLayout > img {
+                height: 200px;
+                margin-top: 8vh;
+                margin-bottom: 5vh;
+                filter: drop-shadow(rgba(0, 0, 0, 0.25) 0px 1px 6px);
+            }
+        </style>
     </head>
     <body>
         <div id="app">
             <!-- Show something while js is loading -->
-            <div style="text-align:center; margin-top:20vh; filter: drop-shadow(rgba(0, 0, 0, 0.25) 0px 1px 6px);">
-                <img src="<%= require('assets/images/logos/logo.svg') %>" height="200" alt="Flux" />
+            <div class="BootLayout">
+                <img src="<%= require('assets/images/logos/logo.svg') %>" alt="Flux" />
             </div>
         </div>
     </body>

@@ -94,33 +94,37 @@ export default class TeamDetailsScene extends React.Component {
                                     <h2 className="ListHeader">{this.state.team.name}</h2>
                                     <List>
                                         <ListItem
+                                            button={AuthStore.can('team/admin')}
                                             onTouchTap={this._toggleUpdateTeamDialog}
                                         >
-                                            <ListItemText 
+                                            <ListItemText
                                                 primary="Nom de l'équipe"
                                                 secondary={this.state.team.name}
                                             />
                                         </ListItem>
                                         <ListItem
+                                            button={AuthStore.can('team/admin')}
                                             onTouchTap={this._toggleUpdateTeamDialog}
                                         >
-                                            <ListItemText 
+                                            <ListItemText
                                                 primary="Emplacement"
                                                 secondary={this.state.team.location}
                                             />
                                         </ListItem>
                                         <ListItem
+                                            button={AuthStore.can('team/admin')}
                                             onTouchTap={this._toggleUpdateTeamDialog}
                                         >
-                                            <ListItemText 
+                                            <ListItemText
                                                 primary="Autorisations"
                                                 secondary={this.state.team.role}
                                             />
                                         </ListItem>
                                         <ListItem
+                                            button={AuthStore.can('team/admin')}
                                             onTouchTap={this._toggleUpdateTeamDialog}
                                         >
-                                            <ListItemText 
+                                            <ListItemText
                                                 primary="Groupe de discussion"
                                                 secondary={this.state.team.group}
                                             />
@@ -139,7 +143,7 @@ export default class TeamDetailsScene extends React.Component {
                                                     this.state.users.map((member, i) => {
                                                         return <MemberListItem
                                                             member={member}
-                                                            key={i}
+                                                            key={member.id}
                                                             onSelection={(member) => this._toggleUpdateMemberDialog(member)}
                                                         />
                                                     })

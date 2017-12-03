@@ -5,11 +5,12 @@ import TeamService from 'services/TeamService';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
+import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 
+import Dialog from 'app/components/ResponsiveDialog.jsx';
 import SelectGroupField from 'app/Teams/components/SelectGroupField.jsx';
 import SelectRoleField from 'app/Teams/components/SelectRoleField.jsx';
 import Confirm from 'app/components/Confirm.jsx';
-import Dialog from 'app/components/ResponsiveDialog.jsx';
 import NotificationActions from 'actions/NotificationActions';
 
 export default class UpdateTeamDialog extends React.Component {
@@ -114,86 +115,88 @@ export default class UpdateTeamDialog extends React.Component {
     }
 
     render() {
-
-        const actions = [
-            <Button
-                secondary={true}
-                onTouchTap={() => this.setState({showDeleteDialog: true})}
-                className="Dialog__DeleteButon"
-            >
-                Supprimer
-            </Button>,
-            <Button
-                secondary={true}
-                onTouchTap={this.props.close}
-            >
-                Annuler
-            </Button>,
-            <Button
-                primary={true}
-                onTouchTap={this._handleSubmit}
-            >
-                Modifier
-            </Button>,
-        ];
-
         return (
             <div>
                 <Dialog
-                    title={'Modification de l\'équipe ' + this.state.values.name}
                     open={this.props.show}
-                    actions={actions}
-                    modal={false}
                     onRequestClose={this.props.close}
                 >
+                    <DialogTitle>{'Modification de l\'équipe ' + this.state.values.name}</DialogTitle>
+                    <DialogContent>
 
-                    Vous pouvez modifier l'équipe <strong>{this.state.values.name}</strong> à l'aide du formulaire ci-dessous.
-                    <p>Pour créer un nouveau groupe de discussion, il suffit de choisir un nom qui n'est pas dans la liste proposé.</p>
+                        Vous pouvez modifier l'équipe <strong>{this.state.values.name}</strong> à l'aide du formulaire ci-dessous.
+                        <p>Pour créer un nouveau groupe de discussion, il suffit de choisir un nom qui n'est pas dans la liste proposé.</p>
 
-                    <form onSubmit={this._handleSubmit}>
-                        <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                        <Row>
-                            <Col xs={12} sm={6}>
-                                <TextField
-                                    label="Nom"
-                                    errorText={this.state.errors.name}
-                                    value={this.state.values.name}
-                                    fullWidth={true}
-                                    onChange={e => this._handleFieldChange('name', e.target.value)}
-                                    autoFocus={true}
-                                    ref={(field) => { this.focusField = field; }}
-                                />
-                            </Col>
-                            <Col xs={12} sm={6}>
-                                <TextField
-                                    label="Emplacement"
-                                    errorText={this.state.errors.location}
-                                    value={this.state.values.location}
-                                    fullWidth={true}
-                                    onChange={e => this._handleFieldChange('location', e.target.value)}
-                                />
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12} sm={6}>
-                                <SelectRoleField
-                                    errorText={this.state.errors.role}
-                                    selected={this.state.values.role}
-                                    fullWidth={true}
-                                    onChange={value => this._handleFieldChange('role', value)}
-                                />
-                            </Col>
-                            <Col xs={12} sm={6}>
-                                <SelectGroupField
-                                    errorText={this.state.errors.group}
-                                    value={this.state.values.group}
-                                    fullWidth={true}
-                                    onChange={value => this._handleFieldChange('group', value)}
-                                    onSubmit={this._handleSubmit}
-                                />
-                            </Col>
-                        </Row>
-                    </form>
+                        <form onSubmit={this._handleSubmit}>
+                            <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
+                            <Row>
+                                <Col xs={12} sm={6}>
+                                    <TextField
+                                        label="Nom"
+                                        error={this.state.errors.name != ''}
+                                        helperText={this.state.errors.name}
+                                        value={this.state.values.name}
+                                        fullWidth
+                                        onChange={e => this._handleFieldChange('name', e.target.value)}
+                                        autoFocus={true}
+                                        inputRef={(field) => { this.focusField = field; }}
+                                    />
+                                </Col>
+                                <Col xs={12} sm={6}>
+                                    <TextField
+                                        label="Emplacement"
+                                        error={this.state.errors.location != ''}
+                                        helperText={this.state.errors.location}
+                                        value={this.state.values.location}
+                                        fullWidth
+                                        onChange={e => this._handleFieldChange('location', e.target.value)}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={12} sm={6}>
+                                    <SelectRoleField
+                                        error={this.state.errors.role != ''}
+                                        helperText={this.state.errors.role}
+                                        selected={this.state.values.role}
+                                        fullWidth
+                                        onChange={value => this._handleFieldChange('role', value)}
+                                    />
+                                </Col>
+                                <Col xs={12} sm={6}>
+                                    <SelectGroupField
+                                        error={this.state.errors.group != ''}
+                                        helperText={this.state.errors.group}
+                                        value={this.state.values.group}
+                                        fullWidth
+                                        onChange={value => this._handleFieldChange('group', value)}
+                                        onSubmit={this._handleSubmit}
+                                    />
+                                </Col>
+                            </Row>
+                        </form>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            color="accent"
+                            onTouchTap={() => this.setState({showDeleteDialog: true})}
+                            className="Dialog__DeleteButon"
+                        >
+                            Supprimer
+                        </Button>
+                        <Button
+                            color="accent"
+                            onTouchTap={this.props.close}
+                        >
+                            Annuler
+                        </Button>
+                        <Button
+                            color="primary"
+                            onTouchTap={this._handleSubmit}
+                        >
+                            Modifier
+                        </Button>
+                    </DialogActions>
                 </Dialog>
 
                 <Confirm
