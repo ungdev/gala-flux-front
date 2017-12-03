@@ -33,8 +33,8 @@ export default class AdminAlertButtonScene extends React.Component {
         this.TeamStoreToken = null;
 
         // binding
-        this._toggleNewButtonDialog = this._toggleNewButtonDialog.bind(this);
-        this._toggleUpdateButtonDialog = this._toggleUpdateButtonDialog.bind(this);
+        this.toggleNewButtonDialog = this.toggleNewButtonDialog.bind(this);
+        this.toggleUpdateButtonDialog = this.toggleUpdateButtonDialog.bind(this);
     }
 
 
@@ -42,7 +42,7 @@ export default class AdminAlertButtonScene extends React.Component {
      * Set the state properties to open/close the update dialog
      * @param {object|null} button : the button to update
      */
-    _toggleUpdateButtonDialog(button) {
+    toggleUpdateButtonDialog(button) {
         this.setState({
             selectedButton: button,
             showUpdateButtonDialog: !this.state.showUpdateButtonDialog
@@ -52,7 +52,7 @@ export default class AdminAlertButtonScene extends React.Component {
     /**
      * toggle the dialog to create a new AlertButton
      */
-    _toggleNewButtonDialog() {
+    toggleNewButtonDialog() {
         this.setState({ showNewButtonDialog: !this.state.showNewButtonDialog })
     }
 
@@ -86,7 +86,7 @@ export default class AdminAlertButtonScene extends React.Component {
                                                         <ListItem
                                                             button
                                                             key={button.id}
-                                                            onTouchTap={_ => this._toggleUpdateButtonDialog(button)}
+                                                            onTouchTap={_ => this.toggleUpdateButtonDialog(button)}
                                                         >
                                                             <ListItemText primary={button.title} secondary={<span>{(button.senderGroup || '')} → {team}</span>} />
                                                         </ListItem>);
@@ -104,7 +104,7 @@ export default class AdminAlertButtonScene extends React.Component {
                                     fab
                                     color="primary"
                                     className="FloatingButton"
-                                    onTouchTap={this._toggleNewButtonDialog}
+                                    onTouchTap={this.toggleNewButtonDialog}
                                 >
                                     <ContentAddIcon />
                                 </Button>
@@ -112,7 +112,7 @@ export default class AdminAlertButtonScene extends React.Component {
 
                             <NewButtonDialog
                                 show={this.state.showNewButtonDialog}
-                                close={this._toggleNewButtonDialog}
+                                close={this.toggleNewButtonDialog}
                                 teams={this.state.teams}
                                 categories={Object.keys(this.state.buttons)}
                             />
@@ -120,7 +120,7 @@ export default class AdminAlertButtonScene extends React.Component {
                             { this.state.selectedButton &&
                                 <UpdateButtonDialog
                                     show={this.state.showUpdateButtonDialog}
-                                    close={this._toggleUpdateButtonDialog}
+                                    close={this.toggleUpdateButtonDialog}
                                     button={this.state.selectedButton}
                                     teams={this.state.teams}
                                     categories={Object.keys(this.state.buttons)}

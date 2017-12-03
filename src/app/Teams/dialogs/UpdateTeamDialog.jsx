@@ -32,9 +32,9 @@ export default class UpdateTeamDialog extends React.Component {
 
 
         // binding
-        this._handleFieldChange = this._handleFieldChange.bind(this);
-        this._handleSubmit = this._handleSubmit.bind(this);
-        this._handleDelete = this._handleDelete.bind(this);
+        this.handleFieldChange = this.handleFieldChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     componentWillReceiveProps(props) {
@@ -54,7 +54,7 @@ export default class UpdateTeamDialog extends React.Component {
      * @param  {string} field Field name
      * @param  {string} value New value
      */
-    _handleFieldChange(field, value) {
+    handleFieldChange(field, value) {
         let values = this.state.values;
         values[field] = value;
         this.setState({values: values, errors: {}});
@@ -65,7 +65,7 @@ export default class UpdateTeamDialog extends React.Component {
      *
      * @param {Event} e Event like form submit that will be stopped
      */
-    _handleSubmit(e) {
+    handleSubmit(e) {
         if(e) {
             e.preventDefault();
         }
@@ -91,7 +91,7 @@ export default class UpdateTeamDialog extends React.Component {
      * Call the Team service to delete this Team.
      * In case of success, close the update dialog (because the team doesn't exists anymore)
      */
-    _handleDelete() {
+    handleDelete() {
         // Submit
         TeamService.destroy(this.props.team.id)
         .then(() => {
@@ -109,7 +109,7 @@ export default class UpdateTeamDialog extends React.Component {
      * @param {string} attr : the team attribute to update in the state
      * @param {string} v : the new attribute value
      */
-    _setTeamAttribute(attr, v) {
+    setTeamAttribute(attr, v) {
         const team = this.state.team;
         team[attr] = v;
         this.setState({team});
@@ -128,7 +128,7 @@ export default class UpdateTeamDialog extends React.Component {
                         Vous pouvez modifier l'équipe <strong>{this.state.values.name}</strong> à l'aide du formulaire ci-dessous.
                         <p>Pour créer un nouveau groupe de discussion, il suffit de choisir un nom qui n'est pas dans la liste proposé.</p>
 
-                        <form onSubmit={this._handleSubmit}>
+                        <form onSubmit={this.handleSubmit}>
                             <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
                             <Grid container spacing={24}>
                                 <Grid item xs={12} sm={6}>
@@ -138,7 +138,7 @@ export default class UpdateTeamDialog extends React.Component {
                                         helperText={this.state.errors.name}
                                         value={this.state.values.name}
                                         fullWidth
-                                        onChange={e => this._handleFieldChange('name', e.target.value)}
+                                        onChange={e => this.handleFieldChange('name', e.target.value)}
                                         autoFocus={true}
                                         inputRef={(field) => { this.focusField = field; }}
                                     />
@@ -150,7 +150,7 @@ export default class UpdateTeamDialog extends React.Component {
                                         helperText={this.state.errors.location}
                                         value={this.state.values.location}
                                         fullWidth
-                                        onChange={e => this._handleFieldChange('location', e.target.value)}
+                                        onChange={e => this.handleFieldChange('location', e.target.value)}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
@@ -160,7 +160,7 @@ export default class UpdateTeamDialog extends React.Component {
                                         helperText={this.state.errors.role}
                                         value={this.state.values.role}
                                         fullWidth
-                                        onChange={e => this._handleFieldChange('role', e.target.value)}
+                                        onChange={e => this.handleFieldChange('role', e.target.value)}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
@@ -170,8 +170,8 @@ export default class UpdateTeamDialog extends React.Component {
                                         helperText={this.state.errors.group}
                                         value={this.state.values.group}
                                         fullWidth
-                                        onChange={e => this._handleFieldChange('group', e.target.value)}
-                                        onSuggestionSelected={option => this._handleFieldChange('group', option.label)}
+                                        onChange={e => this.handleFieldChange('group', e.target.value)}
+                                        onSuggestionSelected={option => this.handleFieldChange('group', option.label)}
                                     />
                                 </Grid>
                             </Grid>
@@ -192,7 +192,7 @@ export default class UpdateTeamDialog extends React.Component {
                         </Button>
                         <Button
                             color="primary"
-                            onTouchTap={this._handleSubmit}
+                            onTouchTap={this.handleSubmit}
                         >
                             Modifier
                         </Button>
@@ -202,7 +202,7 @@ export default class UpdateTeamDialog extends React.Component {
                 <Confirm
                     show={this.state.showDeleteDialog}
                     no={() => this.setState({showDeleteDialog: false})}
-                    yes={this._handleDelete}
+                    yes={this.handleDelete}
                 >
                     Voulez-vous vraiment supprimer l'équipe <strong>{this.state.values.name}</strong> ?<br/>
                     Tous les utilisateurs associés à cette équipe seront supprimés.

@@ -35,16 +35,16 @@ export default class Alert extends React.Component {
         };
 
         // binding
-        this._showUpdateAlertPopover = this._showUpdateAlertPopover.bind(this);
-        this._hideUpdateAlertPopover = this._hideUpdateAlertPopover.bind(this);
-        this._closeAlert = this._closeAlert.bind(this);
-        this._restoreAlert = this._restoreAlert.bind(this);
+        this.showUpdateAlertPopover = this.showUpdateAlertPopover.bind(this);
+        this.hideUpdateAlertPopover = this.hideUpdateAlertPopover.bind(this);
+        this.closeAlert = this.closeAlert.bind(this);
+        this.restoreAlert = this.restoreAlert.bind(this);
     }
 
     /**
      * toggle the boolean to show the popover to assign users to this alert
      */
-    _showUpdateAlertPopover(e) {
+    showUpdateAlertPopover(e) {
         let state = {
             showUpdateAlertPopover: true,
         };
@@ -57,7 +57,7 @@ export default class Alert extends React.Component {
     /**
      * toggle the boolean to show the popover to assign users to this alert
      */
-    _hideUpdateAlertPopover(e) {
+    hideUpdateAlertPopover(e) {
         let state = {
             showUpdateAlertPopover: false,
         };
@@ -67,7 +67,7 @@ export default class Alert extends React.Component {
     /**
      * Call the service method to close this alert
      */
-    _closeAlert() {
+    closeAlert() {
         AlertService.update(this.props.alert.id, {severity: "done"})
         .catch(error => NotificationActions.error("Erreur lors de la modification de l'alerte.", error));
     }
@@ -75,7 +75,7 @@ export default class Alert extends React.Component {
     /**
      * Call the service method to restore this alert
      */
-    _restoreAlert() {
+    restoreAlert() {
         AlertService.update(this.props.alert.id, {severity: "serious"})
         .catch(error => NotificationActions.error("Erreur lors de la modification de l'alerte.", error));
     }
@@ -142,7 +142,7 @@ export default class Alert extends React.Component {
 
 
 
-                    <button className="Alerts__Alert__action--icon" onClick={this._showUpdateAlertPopover}>
+                    <button className="Alerts__Alert__action--icon" onClick={this.showUpdateAlertPopover}>
                         {(Array.isArray(this.props.alert.users) && this.props.alert.users.length > 0) ?
                             <div>
                                 <div
@@ -177,11 +177,11 @@ export default class Alert extends React.Component {
                     </button>
 
                     {this.props.alert.severity != 'done' ?
-                        <button className="Alerts__Alert__action--primary" onClick={this._closeAlert}>
+                        <button className="Alerts__Alert__action--primary" onClick={this.closeAlert}>
                             <CheckIcon />
                         </button>
                         :
-                        <button className="Alerts__Alert__action--primary" onClick={this._restoreAlert}>
+                        <button className="Alerts__Alert__action--primary" onClick={this.restoreAlert}>
                             <UndoIcon />
                         </button>
                     }
@@ -189,7 +189,7 @@ export default class Alert extends React.Component {
                     { this.state.showUpdateAlertPopover &&
                         <UpdateAlertPopover
                             alert={this.props.alert}
-                            onRequestClose={this._hideUpdateAlertPopover}
+                            onRequestClose={this.hideUpdateAlertPopover}
                             open={this.state.showUpdateAlertPopover}
                             anchor={this.state.popoverAnchor}
                             users={this.props.users}

@@ -41,9 +41,9 @@ export default class UpdateBarrelTypeDialog extends React.Component {
         this.submitted = false,
 
         // binding
-        this._handleFieldChange = this._handleFieldChange.bind(this);
-        this._handleSubmit = this._handleSubmit.bind(this);
-        this._handleDelete = this._handleDelete.bind(this);
+        this.handleFieldChange = this.handleFieldChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     componentWillReceiveProps(props) {
@@ -69,7 +69,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
      * @param  {string} field Field name
      * @param  {string} value New value
      */
-    _handleFieldChange(field, value) {
+    handleFieldChange(field, value) {
         let values = this.state.values;
         values[field] = value;
         let shortNameModified = this.state.shortNameModified;
@@ -125,7 +125,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
      * @param {Event} e Event like form submit that will be stopped
      * @param {boolean} confirm has to be set to true to reduce barrel number
      */
-    _handleSubmit(e, confirm) {
+    handleSubmit(e, confirm) {
         if(e) {
             e.preventDefault();
         }
@@ -172,7 +172,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
      * Call the service to delete this element.
      * In case of success, close the update dialog
      */
-    _handleDelete() {
+    handleDelete() {
         // Submit
         BarrelTypeService.destroy(this.props.type.id)
         .then(() => {
@@ -198,7 +198,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                     <p>Modifier le formulaire ci-dessous pour modifier les fûts <strong>{this.state.values.name}</strong>.</p>
 
 
-                    <form onSubmit={this._handleSubmit}>
+                    <form onSubmit={this.handleSubmit}>
                         <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
                         <Grid container spacing={24}>
                             <Grid item xs={12} sm={6}>
@@ -208,7 +208,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                                     helperText={this.state.errors.name}
                                     value={this.state.values.name}
                                     fullWidth
-                                    onChange={e => this._handleFieldChange('name', e.target.value)}
+                                    onChange={e => this.handleFieldChange('name', e.target.value)}
                                     autoFocus={true}
                                     inputRef={(field) => { this.focusField = field; }}
                                 />
@@ -221,7 +221,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                                     helperText={this.state.errors.shortName}
                                     value={this.state.values.shortName}
                                     fullWidth
-                                    onChange={e => this._handleFieldChange('shortName', e.target.value)}
+                                    onChange={e => this.handleFieldChange('shortName', e.target.value)}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -231,7 +231,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                                     helperText={this.state.errors.supplierPrice}
                                     value={this.state.values.supplierPrice}
                                     fullWidth
-                                    onChange={e => this._handleFieldChange('supplierPrice', e.target.value)}
+                                    onChange={e => this.handleFieldChange('supplierPrice', e.target.value)}
                                     InputProps={{endAdornment: (<InputAdornment position="end">€</InputAdornment>)}}
                                 />
                         </Grid>
@@ -242,7 +242,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                                     helperText={this.state.errors.sellPrice}
                                     value={this.state.values.sellPrice}
                                     fullWidth
-                                    onChange={e => this._handleFieldChange('sellPrice', e.target.value)}
+                                    onChange={e => this.handleFieldChange('sellPrice', e.target.value)}
                                     InputProps={{endAdornment: (<InputAdornment position="end">€</InputAdornment>)}}
                                 />
                             </Grid>
@@ -253,7 +253,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                                     helperText={this.state.errors.liters}
                                     value={this.state.values.liters}
                                     fullWidth
-                                    onChange={e => this._handleFieldChange('liters', e.target.value)}
+                                    onChange={e => this.handleFieldChange('liters', e.target.value)}
                                     InputProps={{endAdornment: (<InputAdornment position="end">L</InputAdornment>)}}
                                 />
                             </Grid>
@@ -264,7 +264,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                                     helperText={this.state.errors.count}
                                     value={this.state.values.count}
                                     fullWidth
-                                    onChange={e => this._handleFieldChange('count', e.target.value)}
+                                    onChange={e => this.handleFieldChange('count', e.target.value)}
                                 />
                             </Grid>
                         </Grid>
@@ -273,7 +273,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                     <Confirm
                         show={this.state.showReduceDialog}
                         no={() => this.setState({showReduceDialog: false})}
-                        yes={() => this._handleSubmit(null, true)}
+                        yes={() => this.handleSubmit(null, true)}
                     >
                         Vous avez réduit le nombre de fûts. Ces fûts ainsi que toutes les informations associés à ces fûts (historique, état, position) seront supprimés.
                         Voulez-vous continuer ?
@@ -282,7 +282,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                     <Confirm
                         show={this.state.showDeleteDialog}
                         no={() => this.setState({showDeleteDialog: false})}
-                        yes={this._handleDelete}
+                        yes={this.handleDelete}
                     >
                         Voulez-vous vraiment supprimer le type de fût <strong>{this.state.values.name}</strong> ainsi que tout les fûts associés ?
                     </Confirm>
@@ -304,7 +304,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                     <Button
                         color="primary"
                         type="submit"
-                        onTouchTap={this._handleSubmit}
+                        onTouchTap={this.handleSubmit}
                     >
                         Modifier
                     </Button>

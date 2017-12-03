@@ -42,7 +42,7 @@ export default class NewButtonDialog extends React.Component {
 
         // binding
         this.handleFieldChange = this.handleFieldChange.bind(this);
-        this._handleSubmit = this._handleSubmit.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     /**
@@ -62,7 +62,7 @@ export default class NewButtonDialog extends React.Component {
      *
      * @param {Event} e Event like form submit that will be stopped
      */
-    _handleSubmit(e) {
+    handleSubmit(e) {
         if(e) {
             e.preventDefault();
         }
@@ -109,7 +109,7 @@ export default class NewButtonDialog extends React.Component {
 
                     <p>Remplissez le formulaire ci-dessous pour créer un nouveau bouton d'alerte.</p>
 
-                    <form onSubmit={this._handleSubmit}>
+                    <form onSubmit={this.handleSubmit}>
                         <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
                         <Grid container spacing={24}>
                             <Grid item xs={12} sm={6}>
@@ -216,7 +216,7 @@ export default class NewButtonDialog extends React.Component {
                     <Button
                         color="primary"
                         type="submit"
-                        onTouchTap={this._handleSubmit}
+                        onTouchTap={this.handleSubmit}
                     >
                         Créer
                     </Button>

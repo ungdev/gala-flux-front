@@ -24,36 +24,36 @@ export default class FluxNotification extends React.Component {
             playing: Sound.status.STOPPED,
         };
 
-        this._lastNotificationId = -1;
+        this.lastNotificationId = -1;
 
         // We will wate 5 seconds before start flash screen, this will contain the timeout
-        this._flashScreenTimeout = null;
+        this.flashScreenTimeout = null;
 
         // binding
-        this._updateData = this._updateData.bind(this);
-        this._clearNotifications = this._clearNotifications.bind(this);
-        this._showDesktopNotification = this._showDesktopNotification.bind(this);
+        this.updateData = this.updateData.bind(this);
+        this.clearNotifications = this.clearNotifications.bind(this);
+        this.showDesktopNotification = this.showDesktopNotification.bind(this);
     }
 
     componentDidMount() {
         // Listen store changes
-        NotificationStore.addChangeListener(this._updateData);
-        document.body.addEventListener('click', this._clearNotifications, true);
-        document.body.addEventListener('keydown', this._clearNotifications, true);
+        NotificationStore.addChangeListener(this.updateData);
+        document.body.addEventListener('click', this.clearNotifications, true);
+        document.body.addEventListener('keydown', this.clearNotifications, true);
 
     }
 
     componentWillUnmount() {
         // remove the store listener
-        NotificationStore.removeChangeListener(this._updateData);
-        document.body.removeEventListener('click', this._clearNotifications, true);
-        document.body.removeEventListener('keydown', this._clearNotifications, true);
+        NotificationStore.removeChangeListener(this.updateData);
+        document.body.removeEventListener('click', this.clearNotifications, true);
+        document.body.removeEventListener('keydown', this.clearNotifications, true);
     }
 
     /**
      * Set the notification data in the component state
      */
-    _updateData() {
+    updateData() {
         let notifications = NotificationStore.notifications;
         this.setState({
             configuration: NotificationStore.configuration,
@@ -61,12 +61,12 @@ export default class FluxNotification extends React.Component {
             flashScreen: (notifications.length == 0) ? false : this.state.flashScreen,
         });
 
-        this._showDesktopNotification(notifications);
+        this.showDesktopNotification(notifications);
 
         // Start flash scren in 5 seconds
-        if(notifications.length > 0 && !this._flashScreenTimeout && !this.state.flashScreen) {
-            this._flashScreenTimeout = setTimeout(() => {
-                this._flashScreenTimeout = null;
+        if(notifications.length > 0 && !this.flashScreenTimeout && !this.state.flashScreen) {
+            this.flashScreenTimeout = setTimeout(() => {
+                this.flashScreenTimeout = null;
                 if(this.state.notifications.length > 0) {
                     this.setState({flashScreen: true})
                 }
@@ -74,11 +74,11 @@ export default class FluxNotification extends React.Component {
         }
     }
 
-    _clearNotifications() {
+    clearNotifications() {
         NotificationActions.clearNotifications();
-        if(this._flashScreenTimeout) {
-            clearTimeout(this._flashScreenTimeout);
-            this._flashScreenTimeout = null;
+        if(this.flashScreenTimeout) {
+            clearTimeout(this.flashScreenTimeout);
+            this.flashScreenTimeout = null;
         }
     }
 
@@ -87,7 +87,7 @@ export default class FluxNotification extends React.Component {
      * If the user wants to receive desktop notifications
      * create a new desktop notification
      */
-    _showDesktopNotification() {
+    showDesktopNotification() {
         if (this.state.configuration.desktop) {
             // check if the browser handle desktop notifications
             if (!("Notification" in window)) {
@@ -95,7 +95,7 @@ export default class FluxNotification extends React.Component {
             }
 
             for (let data of this.state.notifications) {
-                if(this._lastNotificationId < data.id && Notification.requestPermission()) {
+                if(this.lastNotificationId < data.id && Notification.requestPermission()) {
                     // Request authorization
                     Notification.requestPermission().then((permission) => {
                         if(permission == 'granted') {
@@ -106,7 +106,7 @@ export default class FluxNotification extends React.Component {
                             });
 
                             notification.onclick = _ => {
-                                this._clearNotifications();
+                                this.clearNotifications();
                                 parent.focus();
                                 window.focus();
                                 notification.close();
@@ -120,7 +120,7 @@ export default class FluxNotification extends React.Component {
                         this.setState({playing: Sound.status.PLAYING});
 
                         // Avoid starting again this notification
-                        this._lastNotificationId = data.id
+                        this.lastNotificationId = data.id
                     });
                 }
             }

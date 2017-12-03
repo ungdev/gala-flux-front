@@ -50,7 +50,7 @@ export default class AlertScene extends React.Component {
             }
         }
 
-        // this._handleFilter = this._handleFilter.bind(this);
+        // this.handleFilter = this.handleFilter.bind(this);
         this.handleDatastoreChange = this.handleDatastoreChange.bind(this);
     }
 
@@ -94,9 +94,9 @@ export default class AlertScene extends React.Component {
      * Handle click on a filter button
      * @param clicked
      */
-    _handleFilter(clicked) {
+    handleFilter(clicked) {
         this.setState({ isDoneFilter: clicked === 'done' });
-        AlertStore._resetNewAlerts(clicked);
+        AlertStore.resetNewAlerts(clicked);
     }
 
     render() {
@@ -106,7 +106,7 @@ export default class AlertScene extends React.Component {
                     <Row center="sm">
                         <Col xs={6} sm={4}>
                             <Button raised
-                                onTouchTap={_ => this._handleFilter('processing')}
+                                onTouchTap={_ => this.handleFilter('processing')}
                                 color={!this.state.isDoneFilter ? 'accent' : 'default' }
                                 className="AlertScene__filters__fields"
                             >
@@ -115,7 +115,7 @@ export default class AlertScene extends React.Component {
                         </Col>
                         <Col xs={6} sm={4}>
                             <Button raised
-                                onTouchTap={_ => this._handleFilter('done')}
+                                onTouchTap={_ => this.handleFilter('done')}
                                 color={this.state.isDoneFilter ? 'accent' : 'default' }
                                 className="AlertScene__filters__fields"
                             >

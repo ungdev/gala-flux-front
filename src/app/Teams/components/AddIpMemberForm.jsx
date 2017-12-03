@@ -23,8 +23,8 @@ export default class AddIpMemberForm extends React.Component {
         };
 
         // binding
-        this._handleFieldChange = this._handleFieldChange.bind(this);
-        this._handleSubmit = this._handleSubmit.bind(this);
+        this.handleFieldChange = this.handleFieldChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
         this.submit = this.submit.bind(this);
     }
 
@@ -38,7 +38,7 @@ export default class AddIpMemberForm extends React.Component {
      * @param  {string} field Field name
      * @param  {string} value New value
      */
-    _handleFieldChange(field, value) {
+    handleFieldChange(field, value) {
         let values = this.state.values;
         values[field] = value;
         this.setState({values: values, errors: {}});
@@ -49,7 +49,7 @@ export default class AddIpMemberForm extends React.Component {
      *
      * @param {Event} e Event like form submit that will be stopped
      */
-    _handleSubmit(e) {
+    handleSubmit(e) {
         if(e) {
             e.preventDefault();
         }
@@ -79,10 +79,10 @@ export default class AddIpMemberForm extends React.Component {
     }
 
     /**
-     * External call for _handleSubmit
+     * External call for handleSubmit
      */
     submit() {
-        this._handleSubmit();
+        this.handleSubmit();
     }
 
     render() {
@@ -94,7 +94,7 @@ export default class AddIpMemberForm extends React.Component {
                     se connectera automatiquement en fonction de son ip, il vous
                     suffit d'entrer l'ip et le nom du compte dans le formulaire ci-dessous.</p>
 
-                    <form onSubmit={this._handleSubmit}>
+                    <form onSubmit={this.handleSubmit}>
                         <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
                         <Grid container spacing={24}>
                             <Grid item xs={12} sm={6}>
@@ -104,7 +104,7 @@ export default class AddIpMemberForm extends React.Component {
                                     helperText={this.state.errors.name}
                                     value={this.state.values.name}
                                     fullWidth
-                                    onChange={e => this._handleFieldChange('name', e.target.value)}
+                                    onChange={e => this.handleFieldChange('name', e.target.value)}
                                     autoFocus={true}
                                     inputRef={(field) => { this.focusField = field; }}
                                 />
@@ -116,7 +116,7 @@ export default class AddIpMemberForm extends React.Component {
                                     helperText={this.state.errors.ip}
                                     value={this.state.values.ip}
                                     fullWidth
-                                    onChange={e => this._handleFieldChange('ip', e.target.value)}
+                                    onChange={e => this.handleFieldChange('ip', e.target.value)}
                                 />
                             </Grid>
                         </Grid>
@@ -133,7 +133,7 @@ export default class AddIpMemberForm extends React.Component {
                     <Button
                         color="primary"
                         type="submit"
-                        onTouchTap={this._handleSubmit}
+                        onTouchTap={this.handleSubmit}
                     >
                         Ajouter
                     </Button>

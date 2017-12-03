@@ -38,29 +38,29 @@ export default class AuthMenu extends React.Component {
         };
 
         // binding
-        this._openMenu = this._openMenu.bind(this);
-        this._closeMenu = this._closeMenu.bind(this);
-        this._logout = this._logout.bind(this);
-        this._openLoginAs = this._openLoginAs.bind(this);
-        this._closeDialog = this._closeDialog.bind(this);
-        this._backToMainAccount = this._backToMainAccount.bind(this);
-        this._toggleNotificationsDialog = this._toggleNotificationsDialog.bind(this);
-        this._onAuthStoreChange = this._onAuthStoreChange.bind(this);
+        this.openMenu = this.openMenu.bind(this);
+        this.closeMenu = this.closeMenu.bind(this);
+        this.logout = this.logout.bind(this);
+        this.openLoginAs = this.openLoginAs.bind(this);
+        this.closeDialog = this.closeDialog.bind(this);
+        this.backToMainAccount = this.backToMainAccount.bind(this);
+        this.toggleNotificationsDialog = this.toggleNotificationsDialog.bind(this);
+        this.onAuthStoreChange = this.onAuthStoreChange.bind(this);
     }
 
     componentDidMount() {
         // listen the store change
-        AuthStore.addChangeListener(this._onAuthStoreChange);
+        AuthStore.addChangeListener(this.onAuthStoreChange);
     }
 
     componentWillUnmount() {
-        AuthStore.removeChangeListener(this._onAuthStoreChange);
+        AuthStore.removeChangeListener(this.onAuthStoreChange);
     }
 
     /**
      * When there is a change in the AuthStore, update the value of user in the component state
      */
-    _onAuthStoreChange() {
+    onAuthStoreChange() {
         this.setState({
             team: AuthStore.team,
             user: AuthStore.user,
@@ -73,7 +73,7 @@ export default class AuthMenu extends React.Component {
     /**
      * Close the menu and call the AuthActions to logout the user.
      */
-    _logout() {
+    logout() {
         // Delete jwt from localStorage
         AuthActions.logout();
     }
@@ -82,15 +82,15 @@ export default class AuthMenu extends React.Component {
      * Set the value of 'openLoginAs' to true in the state
      * to open the "login as" dialog
      */
-    _openLoginAs() {
+    openLoginAs() {
         this.setState({ openLoginAs: true });
-        this._closeMenu();
+        this.closeMenu();
     }
 
     /**
      * Toggle the dialog to update notifications parameters
      */
-    _toggleNotificationsDialog() {
+    toggleNotificationsDialog() {
         const state = this.state;
 
         state.openNotificationsDialog = !state.openNotificationsDialog;
@@ -105,7 +105,7 @@ export default class AuthMenu extends React.Component {
      * Set the value of 'openLoginAs' to false in the state
      * to close the "login as" dialog
      */
-    _closeDialog() {
+    closeDialog() {
         this.setState({ openLoginAs: false });
     }
 
@@ -115,7 +115,7 @@ export default class AuthMenu extends React.Component {
      *
      * @param event : used to get the position of the AuthMenu button
      */
-    _openMenu(e) {
+    openMenu(e) {
         e.preventDefault();
         this.setState({ openMenu: true, menuAnchor: e.currentTarget });
     }
@@ -123,16 +123,16 @@ export default class AuthMenu extends React.Component {
     /**
      * Close the menu and call the AuthService's method to come back to the main account
      */
-    _backToMainAccount() {
+    backToMainAccount() {
         AuthActions.loginBack();
-        this._closeMenu();
+        this.closeMenu();
     }
 
     /**
      * Set the value of 'open' to false in the state
      * to close the AuthMenu
      */
-    _closeMenu() {
+    closeMenu() {
         this.setState({ openMenu: false });
     }
 
@@ -146,7 +146,7 @@ export default class AuthMenu extends React.Component {
 
         return (
             <div className="Layout__AuthMenu">
-                <button onClick={this._openMenu} className="Layout__AuthMenu__button">
+                <button onClick={this.openMenu} className="Layout__AuthMenu__button">
                     <div className="Layout__AuthMenu__button__details">
                         <strong>{this.state.team.name}</strong><br/>
                         {this.state.user.name}
@@ -173,7 +173,7 @@ export default class AuthMenu extends React.Component {
                 <Popover
                     anchorEl={this.state.menuAnchor}
                     open={this.state.openMenu}
-                    onRequestClose={this._closeMenu}
+                    onRequestClose={this.closeMenu}
                     anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                     transformOrigin={{horizontal: 'right', vertical: 'top'}}
                 >
@@ -183,27 +183,27 @@ export default class AuthMenu extends React.Component {
                         <Divider/>
                     </div>
                     <MenuList>
-                        <MenuItem onClick={this._toggleNotificationsDialog}>Notifications</MenuItem>
+                        <MenuItem onClick={this.toggleNotificationsDialog}>Notifications</MenuItem>
 
                         { this.state.canLoginAs ?
-                            <MenuItem onClick={this._openLoginAs}>Se connecter en tant que ...</MenuItem>
+                            <MenuItem onClick={this.openLoginAs}>Se connecter en tant que ...</MenuItem>
                         :''}
 
                         { this.state.loginAs ?
-                            <MenuItem onClick={this._backToMainAccount}>Retour à votre compte</MenuItem>
+                            <MenuItem onClick={this.backToMainAccount}>Retour à votre compte</MenuItem>
                         :''}
 
-                        <MenuItem onClick={this._logout}>Se déconnecter</MenuItem>
+                        <MenuItem onClick={this.logout}>Se déconnecter</MenuItem>
 
                     </MenuList>
                 </Popover>
 
                 { this.state.openLoginAs ?
-                    <LoginAsDialog open={this.state.openLoginAs} closeDialog={this._closeDialog} />
+                    <LoginAsDialog open={this.state.openLoginAs} closeDialog={this.closeDialog} />
                 :''}
 
                 { this.state.openNotificationsDialog ?
-                    <NotificationsDialog close={this._toggleNotificationsDialog} />
+                    <NotificationsDialog close={this.toggleNotificationsDialog} />
                 :''}
 
             </div>

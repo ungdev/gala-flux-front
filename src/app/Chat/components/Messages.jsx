@@ -34,8 +34,8 @@ export default class Messages extends React.Component {
         this.scrollBottom = 0;
         this.clientHeight = 0;
 
-        this._handleWindowResize = this._handleWindowResize.bind(this);
-        this._handleScroll = this._handleScroll.bind(this);
+        this.handleWindowResize = this.handleWindowResize.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
         this.handleDatastoreChange = this.handleDatastoreChange.bind(this);
     }
 
@@ -82,23 +82,23 @@ export default class Messages extends React.Component {
 
     componentDidMount() {
         // Init scroll listening
-        window.addEventListener("resize", this._handleWindowResize);
-        this.scrollArea.addEventListener("scroll", this._handleScroll);
+        window.addEventListener("resize", this.handleWindowResize);
+        this.scrollArea.addEventListener("scroll", this.handleScroll);
         this.clientHeight = this.scrollArea.clientHeight;
         this.scrollBottom = 0;
     }
 
     componentWillUnmount() {
         // clear scroll listening
-        window.removeEventListener("resize", this._handleWindowResize);
-        this.scrollArea.removeEventListener("scroll", this._handleScroll);
+        window.removeEventListener("resize", this.handleWindowResize);
+        this.scrollArea.removeEventListener("scroll", this.handleScroll);
     }
 
 
     /**
      * Generate channel filter according to props
      */
-    _getChannelFilter(props) {
+    getChannelFilter(props) {
         if(props.channel === null) {
             return null;
         }
@@ -116,7 +116,7 @@ export default class Messages extends React.Component {
     /**
      * On Window resize, keep bottom scroll position to keep message position when keyboard show on mobile
      */
-    _handleWindowResize(e) {
+    handleWindowResize(e) {
         if(this.scrollBottom != 0 && this.scrollArea.clientHeight) {
             this.scrollArea.scrollTop = this.scrollBottom - this.scrollArea.clientHeight;
         }
@@ -127,7 +127,7 @@ export default class Messages extends React.Component {
     /**
      * On scroll, register the new bottom scroll position
      */
-    _handleScroll(e) {
+    handleScroll(e) {
         if(this.clientHeight == e.target.clientHeight) {
             this.scrollBottom = this.scrollArea.scrollTop + this.scrollArea.clientHeight;
         }
@@ -139,7 +139,7 @@ export default class Messages extends React.Component {
             <div className="Chat__Message" ref={(scrollArea) => { this.scrollArea = scrollArea; }} onClick={() => ChatActions.viewMessages(this.channel)}>
                 <DataLoader
                     filters={new Map([
-                        ['Message', this._getChannelFilter(this.props) ],
+                        ['Message', this.getChannelFilter(this.props) ],
                         ['User', (datastore) => ({id: datastore.Message.map(message => message.userId)}) ],
                         ['Team', (datastore) => ({id: datastore.User.map(user => user.teamId)}) ],
                     ])}

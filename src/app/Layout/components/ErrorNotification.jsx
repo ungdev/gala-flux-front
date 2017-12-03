@@ -28,43 +28,43 @@ export default class ErrorNotification extends React.Component {
         this.interval = null;
 
         // binding
-        this._openDialogIfNecessary = this._openDialogIfNecessary.bind(this);
-        this._closeDialog = this._closeDialog.bind(this);
-        this._handleTechnicalToggle = this._handleTechnicalToggle.bind(this);
-        this._onNotificationStoreChange = this._onNotificationStoreChange.bind(this);
+        this.openDialogIfNecessary = this.openDialogIfNecessary.bind(this);
+        this.closeDialog = this.closeDialog.bind(this);
+        this.handleTechnicalToggle = this.handleTechnicalToggle.bind(this);
+        this.onNotificationStoreChange = this.onNotificationStoreChange.bind(this);
     }
 
     componentDidMount() {
         // listen the store change
-        NotificationStore.addChangeListener(this._onNotificationStoreChange);
+        NotificationStore.addChangeListener(this.onNotificationStoreChange);
     }
 
     componentWillUnmount() {
         // unlisten the store change
-        NotificationStore.removeChangeListener(this._onNotificationStoreChange);
+        NotificationStore.removeChangeListener(this.onNotificationStoreChange);
     }
 
     componentDidUpdate() {
         // Prevent dialog to show before end of transition
         setTimeout(() => {
             this.preventDialog = false;
-            this._openDialogIfNecessary();
+            this.openDialogIfNecessary();
         }, 300);
     }
 
-    _handleTechnicalToggle(value) {
+    handleTechnicalToggle(value) {
         this.setState({showTechnical: value});
         localStorage.setItem('ErrorNotification/technical', value);
     }
 
-    _onNotificationStoreChange() {
-        this._openDialogIfNecessary();
+    onNotificationStoreChange() {
+        this.openDialogIfNecessary();
     }
 
     /**
      * Open the dialog if there is new error in the store and if there is no error currently
      */
-    _openDialogIfNecessary() {
+    openDialogIfNecessary() {
         if(!this.state.errorMessage && !this.preventDialog) {
             let errorMessage = NotificationStore.shiftError();
             if(errorMessage) {
@@ -115,7 +115,7 @@ export default class ErrorNotification extends React.Component {
                 // Enable timeout update
                 if(errorMessage.timeout > 0) {
                     this.interval = setInterval(() => {
-                        this._updateTimeout()
+                        this.updateTimeout()
                     }, 1000);
                 }
             }
@@ -125,7 +125,7 @@ export default class ErrorNotification extends React.Component {
     /**
      * hide the dialog
      */
-    _closeDialog() {
+    closeDialog() {
         if(this.state.errorMessage.refresh) {
             AuthActions.logout();
             location.href = '/';
@@ -137,7 +137,7 @@ export default class ErrorNotification extends React.Component {
     /**
      * hide the dialog
      */
-    _updateTimeout() {
+    updateTimeout() {
         if(this.state.errorMessage.timeout > 1) {
             const errorMessage = this.state.errorMessage;
             errorMessage.timeout = errorMessage.timeout - 1;
@@ -145,7 +145,7 @@ export default class ErrorNotification extends React.Component {
         }
         else if(this.state.errorMessage.timeout === 1) {
             clearInterval(this.interval);
-            this._closeDialog();
+            this.closeDialog();
         }
         else {
             clearInterval(this.interval);
@@ -168,7 +168,7 @@ export default class ErrorNotification extends React.Component {
             <Dialog
                 className="Layout__ErrorNotification"
                 open={(this.state.errorMessage != null && this.preventDialog != null)}
-                onRequestClose={this._closeDialog}
+                onRequestClose={this.closeDialog}
                 style={{zIndex: 2000}}
             >
                 <DialogTitle>Erreur !</DialogTitle>
@@ -235,14 +235,14 @@ export default class ErrorNotification extends React.Component {
                         className="Layout__ErrorNotification__technicalSwitch"
                         control={
                             <Switch
-                                onChange={(e, v) => this._handleTechnicalToggle(v)}
+                                onChange={(e, v) => this.handleTechnicalToggle(v)}
                                 checked={this.state.showTechnical}
                             />
                         }
                     />
                     <Button
                         color="primary"
-                        onTouchTap={this._closeDialog}
+                        onTouchTap={this.closeDialog}
                     >
                         {buttonLabel}
                     </Button>

@@ -22,7 +22,7 @@ export default class App extends React.Component {
         };
 
         // binding
-        // this._handleAuthStoreChange = this._handleAuthStoreChange.bind(this);
+        // this.handleAuthStoreChange = this.handleAuthStoreChange.bind(this);
     }
 
     componentDidMount() {
@@ -57,21 +57,21 @@ export default class App extends React.Component {
         // }
         //
         // // listen the stores changes
-        // AuthStore.addChangeListener(this._handleAuthStoreChange);
+        // AuthStore.addChangeListener(this.handleAuthStoreChange);
         //
         // // init
-        // this._handleAuthStoreChange();
+        // this.handleAuthStoreChange();
 
     }
 
     // componentWillUnmount() {
-    //     AuthStore.removeChangeListener(this._handleAuthStoreChange);
+    //     AuthStore.removeChangeListener(this.handleAuthStoreChange);
     // }
 
     /**
      * Set the state with the new data of the store
      */
-    // _handleAuthStoreChange() {
+    // handleAuthStoreChange() {
     //     this.setState({
     //         team: AuthStore.team
     //     });

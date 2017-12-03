@@ -28,15 +28,15 @@ export default class BottleTypeScene extends React.Component {
         };
 
         // binding
-        this._toggleNewBottleTypeDialog = this._toggleNewBottleTypeDialog.bind(this);
-        this._toggleUpdateBottleTypeDialog = this._toggleUpdateBottleTypeDialog.bind(this);
+        this.toggleNewBottleTypeDialog = this.toggleNewBottleTypeDialog.bind(this);
+        this.toggleUpdateBottleTypeDialog = this.toggleUpdateBottleTypeDialog.bind(this);
     }
 
 
     /**
      * Show or hide the create dialog
      */
-    _toggleNewBottleTypeDialog() {
+    toggleNewBottleTypeDialog() {
         this.setState({showNewBottleTypeDialog: !this.state.showNewBottleTypeDialog});
     }
 
@@ -44,7 +44,7 @@ export default class BottleTypeScene extends React.Component {
      * Show or hide the update dialog
      * @param {BottleType} type selected type object
      */
-    _toggleUpdateBottleTypeDialog(type) {
+    toggleUpdateBottleTypeDialog(type) {
         if(AuthStore.can('bottleType/admin')) {
             this.setState({
                 showUpdateBottleTypeDialog: (!this.state.showUpdateBottleTypeDialog && type != null),
@@ -75,7 +75,7 @@ export default class BottleTypeScene extends React.Component {
                                             return  <BottleTypeListItem
                                                     key={type.id}
                                                     type={type}
-                                                    onSelection={_ => this._toggleUpdateBottleTypeDialog(type)}
+                                                    onSelection={_ => this.toggleUpdateBottleTypeDialog(type)}
                                                 />
                                         })
                                     }
@@ -87,7 +87,7 @@ export default class BottleTypeScene extends React.Component {
                                     fab
                                     className="FloatingButton"
                                     color="primary"
-                                    onTouchTap={this._toggleNewBottleTypeDialog}
+                                    onTouchTap={this.toggleNewBottleTypeDialog}
                                 >
                                     <ContentAddIcon />
                                 </Button>
@@ -95,7 +95,7 @@ export default class BottleTypeScene extends React.Component {
 
                             <NewBottleTypeDialog
                                 show={this.state.showNewBottleTypeDialog}
-                                close={this._toggleNewBottleTypeDialog}
+                                close={this.toggleNewBottleTypeDialog}
                             />
 
                             { this.state.selectedType &&
@@ -103,7 +103,7 @@ export default class BottleTypeScene extends React.Component {
                                 show={this.state.showUpdateBottleTypeDialog}
                                 type={this.state.selectedType}
                                 count={0}
-                                close={this._toggleUpdateBottleTypeDialog}
+                                close={this.toggleUpdateBottleTypeDialog}
                             /> }
                         </div>
                     )}

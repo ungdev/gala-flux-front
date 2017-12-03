@@ -37,15 +37,15 @@ export default class TeamDetailsScene extends React.Component {
         };
 
         // binding
-        this._toggleUpdateTeamDialog = this._toggleUpdateTeamDialog.bind(this);
-        this._toggleUpdateMemberDialog = this._toggleUpdateMemberDialog.bind(this);
-        this._toggleAddMemberDialog = this._toggleAddMemberDialog.bind(this);
+        this.toggleUpdateTeamDialog = this.toggleUpdateTeamDialog.bind(this);
+        this.toggleUpdateMemberDialog = this.toggleUpdateMemberDialog.bind(this);
+        this.toggleAddMemberDialog = this.toggleAddMemberDialog.bind(this);
     }
 
     /**
      * Show or hide the update team dialog
      */
-    _toggleUpdateTeamDialog() {
+    toggleUpdateTeamDialog() {
         if(AuthStore.can('team/admin')) {
             this.setState({ showUpdateTeamDialog: !this.state.showUpdateTeamDialog });
         }
@@ -55,7 +55,7 @@ export default class TeamDetailsScene extends React.Component {
      * Show or hide the update member dialog
      * @param {User} member Selected member (optional)
      */
-    _toggleUpdateMemberDialog(member) {
+    toggleUpdateMemberDialog(member) {
         if(AuthStore.can('user/admin') || (AuthStore.can('user/team') && this.props.id == AuthStore.user.team)) {
             this.setState({
                 showUpdateMemberDialog: (!this.state.showUpdateMemberDialog && member != false),
@@ -67,7 +67,7 @@ export default class TeamDetailsScene extends React.Component {
     /**
      * Show or hide AddMember dialog
      */
-    _toggleAddMemberDialog() {
+    toggleAddMemberDialog() {
         this.setState({showAddMemberDialog: !this.state.showAddMemberDialog});
     }
 
@@ -95,7 +95,7 @@ export default class TeamDetailsScene extends React.Component {
                                     <List>
                                         <ListItem
                                             button={AuthStore.can('team/admin')}
-                                            onTouchTap={this._toggleUpdateTeamDialog}
+                                            onTouchTap={this.toggleUpdateTeamDialog}
                                         >
                                             <ListItemText
                                                 primary="Nom de l'équipe"
@@ -104,7 +104,7 @@ export default class TeamDetailsScene extends React.Component {
                                         </ListItem>
                                         <ListItem
                                             button={AuthStore.can('team/admin')}
-                                            onTouchTap={this._toggleUpdateTeamDialog}
+                                            onTouchTap={this.toggleUpdateTeamDialog}
                                         >
                                             <ListItemText
                                                 primary="Emplacement"
@@ -113,7 +113,7 @@ export default class TeamDetailsScene extends React.Component {
                                         </ListItem>
                                         <ListItem
                                             button={AuthStore.can('team/admin')}
-                                            onTouchTap={this._toggleUpdateTeamDialog}
+                                            onTouchTap={this.toggleUpdateTeamDialog}
                                         >
                                             <ListItemText
                                                 primary="Autorisations"
@@ -122,7 +122,7 @@ export default class TeamDetailsScene extends React.Component {
                                         </ListItem>
                                         <ListItem
                                             button={AuthStore.can('team/admin')}
-                                            onTouchTap={this._toggleUpdateTeamDialog}
+                                            onTouchTap={this.toggleUpdateTeamDialog}
                                         >
                                             <ListItemText
                                                 primary="Groupe de discussion"
@@ -144,7 +144,7 @@ export default class TeamDetailsScene extends React.Component {
                                                         return <MemberListItem
                                                             member={member}
                                                             key={member.id}
-                                                            onSelection={(member) => this._toggleUpdateMemberDialog(member)}
+                                                            onSelection={(member) => this.toggleUpdateMemberDialog(member)}
                                                         />
                                                     })
                                                 }
@@ -158,7 +158,7 @@ export default class TeamDetailsScene extends React.Component {
                                     <Button
                                         fab
                                         className="FloatingButton--secondary"
-                                        onTouchTap={this._toggleUpdateTeamDialog}
+                                        onTouchTap={this.toggleUpdateTeamDialog}
                                         color="accent"
                                     >
                                         <EditorModeEditIcon />
@@ -169,7 +169,7 @@ export default class TeamDetailsScene extends React.Component {
                                     <Button
                                         fab
                                         className="FloatingButton"
-                                        onTouchTap={this._toggleAddMemberDialog}
+                                        onTouchTap={this.toggleAddMemberDialog}
                                         color="primary"
                                     >
                                         <ContentAddIcon />
@@ -179,17 +179,17 @@ export default class TeamDetailsScene extends React.Component {
 
                                 <AddMemberDialog
                                     show={this.state.showAddMemberDialog}
-                                    close={this._toggleAddMemberDialog}
+                                    close={this.toggleAddMemberDialog}
                                     team={this.state.team}
                                 />
                                 <UpdateTeamDialog
                                     show={this.state.showUpdateTeamDialog}
-                                    close={this._toggleUpdateTeamDialog}
+                                    close={this.toggleUpdateTeamDialog}
                                     team={this.state.team}
                                 />
                                 <UpdateMemberDialog
                                     show={this.state.showUpdateMemberDialog}
-                                    close={() => this._toggleUpdateMemberDialog()}
+                                    close={() => this.toggleUpdateMemberDialog()}
                                     member={this.state.selectedMember}
                                 />
                             </div>)

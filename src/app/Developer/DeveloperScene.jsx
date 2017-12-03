@@ -14,10 +14,10 @@ export default class DeveloperScene extends React.Component {
             showRefreshDialog: false,
         };
 
-        this._handleRefresh = this._handleRefresh.bind(this);
+        this.handleRefresh = this.handleRefresh.bind(this);
     }
 
-    _handleRefresh() {
+    handleRefresh() {
         NotificationActions.snackbar('Demande d\'actualisation lancée.');
         DeveloperService.refresh()
         .catch((error) => {
@@ -43,7 +43,7 @@ export default class DeveloperScene extends React.Component {
                 <Confirm
                     show={this.state.showRefreshDialog}
                     no={() => this.setState({showRefreshDialog: false})}
-                    yes={this._handleRefresh}
+                    yes={this.handleRefresh}
                 >
                     Voulez-vous vraiment rediriger tous les utilisateurs vers la page d'accueil de Flux ?
                 </Confirm>

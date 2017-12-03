@@ -24,14 +24,14 @@ export default class TeamSpaceMenu extends React.Component {
         };
 
         // binding
-        this._redirect = this._redirect.bind(this);
+        this.redirect = this.redirect.bind(this);
     }
 
-    _handleChange(team) {
+    handleChange(team) {
         browserHistory.push('/overview/' + team);
     }
 
-    _redirect() {
+    redirect() {
         browserHistory.push('/overview');
     }
 
@@ -47,8 +47,8 @@ export default class TeamSpaceMenu extends React.Component {
             >
                 { () => (
                     <div>
-                        <Button raised onClick={this._redirect} color="accent" fullWidth>Retour à la liste</Button>
-                        <SelectableList onChange={this._handleChange} value={this.state.selected}>
+                        <Button raised onClick={this.redirect} color="accent" fullWidth>Retour à la liste</Button>
+                        <SelectableList onChange={this.handleChange} value={this.state.selected}>
                             {
                                 this.state.teams.map(team => <ListItem key={team.id} value={team.id}>{team.name}</ListItem>)
                             }

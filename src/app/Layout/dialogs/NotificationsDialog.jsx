@@ -21,34 +21,34 @@ export default class NotificationsDialog extends React.Component {
         };
 
         // binding
-        this._updateParameters = this._updateParameters.bind(this);
-        this._toggleParameter = this._toggleParameter.bind(this);
-        this._setNotificationsConfiguration = this._setNotificationsConfiguration.bind(this);
+        this.updateParameters = this.updateParameters.bind(this);
+        this.toggleParameter = this.toggleParameter.bind(this);
+        this.setNotificationsConfiguration = this.setNotificationsConfiguration.bind(this);
     }
 
     componentDidMount() {
         // Listen store events
-        NotificationStore.addChangeListener(this._setNotificationsConfiguration);
+        NotificationStore.addChangeListener(this.setNotificationsConfiguration);
         // init the notifications object in the state
-        this._setNotificationsConfiguration();
+        this.setNotificationsConfiguration();
     }
 
     componentWillUnmount() {
         // remove the store listener
-        NotificationStore.removeChangeListener(this._setNotificationsConfiguration);
+        NotificationStore.removeChangeListener(this.setNotificationsConfiguration);
     }
 
     /**
      * Update the notifications in the component state with the values from AuthStore
      */
-    _setNotificationsConfiguration() {
+    setNotificationsConfiguration() {
         this.setState({ configuration: NotificationStore.configuration });
     }
 
     /**
      * Update the notification parameters in the localStorage
      */
-    _updateParameters() {
+    updateParameters() {
         let conf = this.state.configuration;
         conf['submitted'] = true;
         NotificationActions.updateConfiguration(conf);
@@ -60,7 +60,7 @@ export default class NotificationsDialog extends React.Component {
      *
      * @param {string} parameter: the parameter to toggle
      */
-    _toggleParameter(parameter) {
+    toggleParameter(parameter) {
         let state = this.state;
         state.configuration[parameter] = !state.configuration[parameter];
         this.setState(state);
@@ -71,7 +71,7 @@ export default class NotificationsDialog extends React.Component {
      *
      * @param {string} channel Channel name
      */
-    _onChannelClick(channel) {
+    onChannelClick(channel) {
         let channels = this.state.configuration.channel;
         switch (channels[channel]) {
             case 'hide':
@@ -109,21 +109,21 @@ export default class NotificationsDialog extends React.Component {
                                     className="ToggleListItem"
                                     primaryText="Son"
                                     secondaryText="Jouer un son lors des notifications"
-                                    onTouchTap={_ => this._toggleParameter('sound')}
+                                    onTouchTap={_ => this.toggleParameter('sound')}
                                     rightIcon={<Switch checked={this.state.configuration.sound}/>}
                                 />
                                 <ListItem
                                     className="ToggleListItem"
                                     primaryText="Écran clignotant"
                                     secondaryText="Faire clignoter l'écran lors des notifications"
-                                    onTouchTap={_ => this._toggleParameter('flash')}
+                                    onTouchTap={_ => this.toggleParameter('flash')}
                                     rightIcon={<Switch checked={this.state.configuration.flash}/>}
                                 />
                                 <ListItem
                                     className="ToggleListItem"
                                     primaryText="Notifications pour bureau"
                                     secondaryText="Recevoir les notifications sur votre bureau"
-                                    onTouchTap={_ => this._toggleParameter('desktop')}
+                                    onTouchTap={_ => this.toggleParameter('desktop')}
                                     rightIcon={<Switch checked={this.state.configuration.desktop}/>}
                                 />
                             </div>
@@ -132,7 +132,7 @@ export default class NotificationsDialog extends React.Component {
                                 className="ToggleListItem"
                                 primaryText="Notifications Android"
                                 secondaryText="Recevoir des notifications Android"
-                                onTouchTap={_ => this._toggleParameter('android')}
+                                onTouchTap={_ => this.toggleParameter('android')}
                                 rightIcon={<Switch checked={this.state.configuration.android}/>}
                             />
                         }
@@ -140,7 +140,7 @@ export default class NotificationsDialog extends React.Component {
                             className="ToggleListItem"
                             primaryText="Nouvelles alertes"
                             secondaryText="Recevoir des notifications pour les nouvelles alertes"
-                            onTouchTap={_ => this._toggleParameter('alert')}
+                            onTouchTap={_ => this.toggleParameter('alert')}
                             rightIcon={<Switch checked={this.state.configuration.alert}/>}
                         />
                     </List>
@@ -168,7 +168,7 @@ export default class NotificationsDialog extends React.Component {
                                     style={this.state.configuration.channel[channel] == 'hide' ? {color: 'gray'} : {}}
                                     primaryText={this.state.configuration.channel[channel] == 'hide' ? <del>{primaryText}</del> : primaryText}
                                     secondaryText={secondaryText}
-                                    onTouchTap={_ => this._onChannelClick(channel)}
+                                    onTouchTap={_ => this.onChannelClick(channel)}
                                     rightIcon={<Switch checked={this.state.configuration.channel[channel] == 'notify'} disabled={this.state.configuration.channel[channel] == 'hide'}/>}
                                 />)
                             })
@@ -184,7 +184,7 @@ export default class NotificationsDialog extends React.Component {
                     </Button>
                     <Button
                         color="primary"
-                        onTouchTap={this._updateParameters}
+                        onTouchTap={this.updateParameters}
                     >
                         Valider
                     </Button>

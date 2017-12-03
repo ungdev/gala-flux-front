@@ -25,7 +25,7 @@ export default class AddEtuuttMemberForm extends React.Component {
 
         // binding
         this.handleSubmit = this.handleSubmit.bind(this);
-        this._addToTeam = this._addToTeam.bind(this);
+        this.addToTeam = this.addToTeam.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -68,7 +68,7 @@ export default class AddEtuuttMemberForm extends React.Component {
      *
      * @param {Object} user EtuUTT user object
      */
-    _addToTeam(user) {
+    addToTeam(user) {
         let createdUser = null;
         let avatarUri = user.avatar;
         UserService.create({
@@ -135,7 +135,7 @@ export default class AddEtuuttMemberForm extends React.Component {
                                             <ListItem
                                                 button
                                                 key={user.login}
-                                                onTouchTap={() => this._addToTeam(user)}
+                                                onTouchTap={() => this.addToTeam(user)}
                                             >
                                                 <Avatar src={user.avatar} />
                                                 <ListItemText primary={user.name} secondary={user.login} />

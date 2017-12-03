@@ -38,11 +38,11 @@ export default class UpdateMemberDialog extends React.Component {
 
 
         // binding
-        this._handleFieldChange = this._handleFieldChange.bind(this);
-        this._handleSubmit = this._handleSubmit.bind(this);
-        this._handleDelete = this._handleDelete.bind(this);
-        this._handleAvatarClick = this._handleAvatarClick.bind(this);
-        this._handleAvatarSubmit = this._handleAvatarSubmit.bind(this);
+        this.handleFieldChange = this.handleFieldChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+        this.handleAvatarClick = this.handleAvatarClick.bind(this);
+        this.handleAvatarSubmit = this.handleAvatarSubmit.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -64,7 +64,7 @@ export default class UpdateMemberDialog extends React.Component {
      * @param  {string} field Field name
      * @param  {string} value New value
      */
-    _handleFieldChange(field, value) {
+    handleFieldChange(field, value) {
         let values = this.state.values;
         values[field] = value;
         this.setState({values: values, errors: {}});
@@ -75,7 +75,7 @@ export default class UpdateMemberDialog extends React.Component {
      *
      * @param {Event} e Event like form submit that will be stopped
      */
-    _handleSubmit(e) {
+    handleSubmit(e) {
         if(e) {
             e.preventDefault();
         }
@@ -101,7 +101,7 @@ export default class UpdateMemberDialog extends React.Component {
      * Call the User service to delete this User.
      * In case of success, close the update dialog (because the user doesn't exists anymore)
      */
-    _handleDelete() {
+    handleDelete() {
         // Submit
         UserService.destroy(this.state.id)
         .then(() => {
@@ -117,7 +117,7 @@ export default class UpdateMemberDialog extends React.Component {
     /**
      * Pop a file submit window to update the avatar
      */
-    _handleAvatarClick(e) {
+    handleAvatarClick(e) {
         if(e) {
             e.preventDefault();
         }
@@ -132,7 +132,7 @@ export default class UpdateMemberDialog extends React.Component {
      *
      * @param {Event} e Event like form submit that will be stopped
      */
-    _handleAvatarSubmit(e) {
+    handleAvatarSubmit(e) {
         if(e) {
             e.preventDefault();
         }
@@ -175,7 +175,7 @@ export default class UpdateMemberDialog extends React.Component {
                             Vous pouvez modifier l'utilisateur <strong>{this.state.values.name}</strong> à l'aide du formulaire ci-dessous.
                         </p>
 
-                        <form onSubmit={this._handleSubmit}>
+                        <form onSubmit={this.handleSubmit}>
                             <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
                             <Grid container spacing={24}>
                                 <Grid item xs={12} sm={6}>
@@ -185,7 +185,7 @@ export default class UpdateMemberDialog extends React.Component {
                                         helperText={this.state.errors.name}
                                         value={this.state.values.name}
                                         fullWidth
-                                        onChange={e => this._handleFieldChange('name', e.target.value)}
+                                        onChange={e => this.handleFieldChange('name', e.target.value)}
                                         inputRef={(field) => { this.focusField = field; }}
                                         autoFocus={true}
                                     />
@@ -198,7 +198,7 @@ export default class UpdateMemberDialog extends React.Component {
                                             helperText={this.state.errors.login}
                                             value={this.state.values.login}
                                             fullWidth
-                                            onChange={e => this._handleFieldChange('login', e.target.value)}
+                                            onChange={e => this.handleFieldChange('login', e.target.value)}
                                             disabled={true}
                                         />
                                     :
@@ -208,19 +208,19 @@ export default class UpdateMemberDialog extends React.Component {
                                             helperText={this.state.errors.ip}
                                             value={this.state.values.ip}
                                             fullWidth
-                                            onChange={e => this._handleFieldChange('ip', e.target.value)}
+                                            onChange={e => this.handleFieldChange('ip', e.target.value)}
                                         />
                                     }
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <InputLabel>Avatar</InputLabel>
-                                    <a href="#" onTouchTap={this._handleAvatarClick}>
+                                    <a href="#" onTouchTap={this.handleAvatarClick}>
                                         <Avatar src={(constants.avatarBasePath + this.state.id + '?' + this.state.avatarRefreshTimestamp)} size={80} />
                                             <input
                                                 ref={(field) => { this.avatarUploadField = field; }}
                                                 type="file"
                                                 style={{"display" : "none"}}
-                                                onChange={this._handleAvatarSubmit}
+                                                onChange={this.handleAvatarSubmit}
                                             />
                                     </a>
                                 </Grid>
@@ -242,7 +242,7 @@ export default class UpdateMemberDialog extends React.Component {
                         </Button>
                         <Button
                             color="primary"
-                            onTouchTap={this._handleSubmit}
+                            onTouchTap={this.handleSubmit}
                         >
                             Modifier
                         </Button>
@@ -252,7 +252,7 @@ export default class UpdateMemberDialog extends React.Component {
                 <Confirm
                     show={this.state.showDeleteDialog}
                     no={() => this.setState({showDeleteDialog: false})}
-                    yes={this._handleDelete}
+                    yes={this.handleDelete}
                 >
                     Voulez-vous vraiment supprimer l'utilisateur <strong>{this.state.values.name}</strong> ?
                 </Confirm>

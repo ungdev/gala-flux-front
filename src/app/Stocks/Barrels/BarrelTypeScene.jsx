@@ -31,14 +31,14 @@ export default class BarrelTypeScene extends React.Component {
         };
 
         // binding
-        this._toggleNewBarrelTypeDialog = this._toggleNewBarrelTypeDialog.bind(this);
-        this._toggleUpdateBarrelTypeDialog = this._toggleUpdateBarrelTypeDialog.bind(this);
+        this.toggleNewBarrelTypeDialog = this.toggleNewBarrelTypeDialog.bind(this);
+        this.toggleUpdateBarrelTypeDialog = this.toggleUpdateBarrelTypeDialog.bind(this);
     }
 
     /**
      * Show or hide the create dialog
      */
-    _toggleNewBarrelTypeDialog() {
+    toggleNewBarrelTypeDialog() {
         this.setState({showNewBarrelTypeDialog: !this.state.showNewBarrelTypeDialog});
     }
 
@@ -46,7 +46,7 @@ export default class BarrelTypeScene extends React.Component {
      * Show or hide the update dialog
      * @param {BarrelType} type selected type object
      */
-    _toggleUpdateBarrelTypeDialog(type) {
+    toggleUpdateBarrelTypeDialog(type) {
         if(AuthStore.can('barrelType/admin')) {
             this.setState({
                 showUpdateBarrelTypeDialog: (!this.state.showUpdateBarrelTypeDialog && type != null),
@@ -79,7 +79,7 @@ export default class BarrelTypeScene extends React.Component {
                                                     key={type.id}
                                                     type={type}
                                                     count={this.state.barrels[type.id] ? this.state.barrels[type.id].length : 0}
-                                                    onSelection={_ => this._toggleUpdateBarrelTypeDialog(type)}
+                                                    onSelection={_ => this.toggleUpdateBarrelTypeDialog(type)}
                                                 />
                                         })
                                     }
@@ -91,7 +91,7 @@ export default class BarrelTypeScene extends React.Component {
                                     color="primary"
                                     fab
                                     className="FloatingButton"
-                                    onTouchTap={this._toggleNewBarrelTypeDialog}
+                                    onTouchTap={this.toggleNewBarrelTypeDialog}
                                 >
                                     <ContentAddIcon />
                                 </Button>
@@ -99,7 +99,7 @@ export default class BarrelTypeScene extends React.Component {
 
                             <NewBarrelTypeDialog
                                 show={this.state.showNewBarrelTypeDialog}
-                                close={this._toggleNewBarrelTypeDialog}
+                                close={this.toggleNewBarrelTypeDialog}
                             />
 
                             { this.state.selectedType &&
@@ -107,7 +107,7 @@ export default class BarrelTypeScene extends React.Component {
                                     show={this.state.showUpdateBarrelTypeDialog}
                                     type={this.state.selectedType}
                                     count={this.state.barrels[this.state.selectedType.id] ? this.state.barrels[this.state.selectedType.id].length : 0}
-                                    close={this._toggleUpdateBarrelTypeDialog}
+                                    close={this.toggleUpdateBarrelTypeDialog}
                                 />
                             }
                         </div>

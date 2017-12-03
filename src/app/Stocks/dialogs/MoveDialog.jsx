@@ -36,13 +36,13 @@ export default class MoveDialog extends React.Component {
         };
 
         // binding
-        this._moveBarrels = this._moveBarrels.bind(this);
+        this.moveBarrels = this.moveBarrels.bind(this);
     }
 
     /**
      * Call the service method to update the location of the selected barrels
      */
-    _moveBarrels() {
+    moveBarrels() {
         BarrelService.moveBarrels(this.props.barrels, this.state.teamId)
         .then(_ => {
 
@@ -130,7 +130,7 @@ export default class MoveDialog extends React.Component {
                             </Button>
                             <Button
                                 color="primary"
-                                onClick={this._moveBarrels}
+                                onClick={this.moveBarrels}
                             >
                                 Déplacer
                             </Button>

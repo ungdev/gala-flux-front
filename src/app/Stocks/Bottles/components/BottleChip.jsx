@@ -34,8 +34,8 @@ export default class BottleChip extends React.Component {
         };
 
         // binding
-        this._handleClick = this._handleClick.bind(this);
-        this._handleSelectSubmit = this._handleSelectSubmit.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+        this.handleSelectSubmit = this.handleSelectSubmit.bind(this);
 
     }
 
@@ -49,7 +49,7 @@ export default class BottleChip extends React.Component {
         });
     }
 
-    _handleClick() {
+    handleClick() {
         if (this.props.selectable && this.props.onSelection) {
             this.setState({showSelectDialog: true});
         }
@@ -58,7 +58,7 @@ export default class BottleChip extends React.Component {
         }
     }
 
-    _handleSelectSubmit(newCount) {
+    handleSelectSubmit(newCount) {
         this.setState({showSelectDialog: false});
         if (this.props.selectable && this.props.onSelection) {
             this.props.onSelection(this.state.type, this.state.team, newCount);
@@ -107,7 +107,7 @@ export default class BottleChip extends React.Component {
                 className="BottleChip"
                 backgroundColor={background}
                 onRequestDelete={this.props.onRequestDelete ? (() => this.props.onRequestDelete(this.state.bottleType)) : null}
-                onTouchTap={((this.props.selectable && this.props.onSelection) || this.props.onClick) ? this._handleClick : undefined}
+                onTouchTap={((this.props.selectable && this.props.onSelection) || this.props.onClick) ? this.handleClick : undefined}
                 data-tip
                 data-for={'BottleChip-' + this.state.count + '-' + this.state.state + '-' + this.state.type + '-' + this.state.team}
             >
@@ -132,7 +132,7 @@ export default class BottleChip extends React.Component {
                         count={this.state.count}
                         selected={this.state.selected}
                         close={_ => this.setState({showSelectDialog: false})}
-                        submit={this._handleSelectSubmit}
+                        submit={this.handleSelectSubmit}
                      />
                 }
 

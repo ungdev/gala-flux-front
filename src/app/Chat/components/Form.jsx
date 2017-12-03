@@ -26,11 +26,11 @@ export default class Form extends React.Component {
             multiline: false,
         };
 
-         this._handleChange = this._handleChange.bind(this);
-         this._handleSubmit = this._handleSubmit.bind(this);
-         this._handleKeyDown = this._handleKeyDown.bind(this);
+         this.handleChange = this.handleChange.bind(this);
+         this.handleSubmit = this.handleSubmit.bind(this);
+         this.handleKeyDown = this.handleKeyDown.bind(this);
          this.focus = this.focus.bind(this);
-         this._onTextAreaClick = this._onTextAreaClick.bind(this);
+         this.onTextAreaClick = this.onTextAreaClick.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -51,7 +51,7 @@ export default class Form extends React.Component {
         }
     }
 
-    _handleChange(e) {
+    handleChange(e) {
         this.setState({value: e.target.value ? e.target.value : ''});
         if(e.target) {
             localStorage.setItem('chat/input/'+this.state.channel, e.target.value);
@@ -62,13 +62,13 @@ export default class Form extends React.Component {
      * Will submit on enter, and add new line on ctrl+enter
      * @param e: event
      */
-    _handleKeyDown(e) {
+    handleKeyDown(e) {
         ChatActions.viewMessages(this.state.channel);
         if (e.keyCode === 13) {
             // Submit on enter press
             if(!e.ctrlKey && !e.shiftKey) {
                 e.preventDefault();
-                this._handleSubmit(e);
+                this.handleSubmit(e);
             }
             // Generally on browser ctrl+enter doesn't do anything, so we will manually insert return
             else if(e.ctrlKey && e.target && typeof e.target.selectionStart == 'number') {
@@ -82,7 +82,7 @@ export default class Form extends React.Component {
         }
     }
 
-    _handleSubmit(e) {
+    handleSubmit(e) {
         e.preventDefault();
         this.focus();
 
@@ -119,7 +119,7 @@ export default class Form extends React.Component {
     /**
      * Handle click on the textarea
      */
-    _onTextAreaClick() {
+    onTextAreaClick() {
         // if there was new messages for this channel, reset the new messages counter
         ChatActions.viewMessages(this.state.channel);
      }
@@ -132,18 +132,18 @@ export default class Form extends React.Component {
         }
 
         return (
-                <form onSubmit={this._handleSubmit} className="Chat__Form">
+                <form onSubmit={this.handleSubmit} className="Chat__Form">
                     <textarea
                         className="Chat__Form__input"
                         type="text"
                         value={this.state.value}
-                        onChange={this._handleChange}
-                        onKeyDown={this._handleKeyDown}
+                        onChange={this.handleChange}
+                        onKeyDown={this.handleKeyDown}
                         autoFocus={true}
                         ref={(input) => { this.textInput = input; }}
                         placeholder="Votre message.."
                         style={style}
-                        onClick={this._onTextAreaClick}
+                        onClick={this.onTextAreaClick}
                     />
 
                     <Button

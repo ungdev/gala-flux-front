@@ -46,8 +46,8 @@ export default class UpdateButtonDialog extends React.Component {
 
         // binding
         this.handleFieldChange = this.handleFieldChange.bind(this);
-        this._handleSubmit = this._handleSubmit.bind(this);
-        this._handleDelete = this._handleDelete.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     componentWillReceiveProps(props) {
@@ -81,7 +81,7 @@ export default class UpdateButtonDialog extends React.Component {
      *
      * @param {Event} e Event like form submit that will be stopped
      */
-    _handleSubmit(e) {
+    handleSubmit(e) {
         if(e) {
             e.preventDefault();
         }
@@ -111,7 +111,7 @@ export default class UpdateButtonDialog extends React.Component {
      * Call the model service to delete this item.
      * In case of success, close the update dialog (because the item doesn't exists anymore)
      */
-    _handleDelete() {
+    handleDelete() {
         // Submit
         AlertButtonService.destroy(this.props.button.id)
         .then(() => {
@@ -130,7 +130,7 @@ export default class UpdateButtonDialog extends React.Component {
      * @param {string} attr : the team attribute to update in the state
      * @param {string} v : the new attribute value
      */
-    _setTeamAttribute(attr, v) {
+    setTeamAttribute(attr, v) {
         const team = this.state.team;
         team[attr] = v;
         this.setState({team});
@@ -147,7 +147,7 @@ export default class UpdateButtonDialog extends React.Component {
 
                     <p>Remplissez le formulaire ci-dessous pour créer un nouveau bouton d'alerte.</p>
 
-                    <form onSubmit={this._handleSubmit}>
+                    <form onSubmit={this.handleSubmit}>
                         <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
                         <Grid container spacing={24}>
                             <Grid item xs={12} sm={6}>
@@ -261,7 +261,7 @@ export default class UpdateButtonDialog extends React.Component {
                     </Button>
                     <Button
                         color="primary"
-                        onTouchTap={this._handleSubmit}
+                        onTouchTap={this.handleSubmit}
                     >
                         Modifier
                     </Button>
@@ -269,7 +269,7 @@ export default class UpdateButtonDialog extends React.Component {
                 <Confirm
                     show={this.state.showDeleteDialog}
                     no={() => this.setState({showDeleteDialog: false})}
-                    yes={this._handleDelete}
+                    yes={this.handleDelete}
                 >
                     Voulez-vous vraiment supprimer le bouton d'alerte <strong>{this.state.values.title}</strong> ?
                 </Confirm>

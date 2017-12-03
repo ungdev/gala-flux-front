@@ -38,8 +38,8 @@ export default class UpdateBottleDialog extends React.Component {
         this.focus();
 
         // binding
-        this._handleFieldChange = this._handleFieldChange.bind(this);
-        this._handleSubmit = this._handleSubmit.bind(this);
+        this.handleFieldChange = this.handleFieldChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
         this.focus = this.focus.bind(this);
     }
 
@@ -69,7 +69,7 @@ export default class UpdateBottleDialog extends React.Component {
      * @param  {string} field Field name
      * @param  {string} value New value
      */
-    _handleFieldChange(field, value) {
+    handleFieldChange(field, value) {
         let values = this.state.values;
         // Save new field value
         values[field] = value;
@@ -103,7 +103,7 @@ export default class UpdateBottleDialog extends React.Component {
      *
      * @param {Event} e Event like form submit that will be stopped
      */
-    _handleSubmit(e) {
+    handleSubmit(e) {
         if(e) {
             e.preventDefault();
         }
@@ -155,7 +155,7 @@ export default class UpdateBottleDialog extends React.Component {
                 <DialogTitle>{'Mise à jour de ' + this.state.type.name + ' restant'}</DialogTitle>
                 <DialogContent>
 
-                    <form onSubmit={this._handleSubmit}>
+                    <form onSubmit={this.handleSubmit}>
                         <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
 
                         Il reste
@@ -165,7 +165,7 @@ export default class UpdateBottleDialog extends React.Component {
                             helperText={this.state.errors.box}
                             maxLength="3"
                             value={this.state.values.box}
-                            onChange={e => this._handleFieldChange('box', e.target.value)}
+                            onChange={e => this.handleFieldChange('box', e.target.value)}
                             autoFocus={true}
                             inputRef={(field) => { this.focusField = field; }}
                             style={{width: '40px', display: 'inline-block', verticalAlign: 'middle', margin: '0 3px'}}
@@ -177,7 +177,7 @@ export default class UpdateBottleDialog extends React.Component {
                             helperText={this.state.errors.bottle}
                             maxLength="3"
                             value={this.state.values.bottle}
-                            onChange={e => this._handleFieldChange('bottle', e.target.value)}
+                            onChange={e => this.handleFieldChange('bottle', e.target.value)}
                             style={{width: '40px', display: 'inline-block', verticalAlign: 'middle', margin: '0 3px'}}
                             inputStyle={{textAlign: 'center'}}
                             /> bouteille{(this.state.values.bottle > 1 ? 's ' : ' ')}
@@ -194,7 +194,7 @@ export default class UpdateBottleDialog extends React.Component {
                     <Button
                         color="primary"
                         type="submit"
-                        onTouchTap={this._handleSubmit}
+                        onTouchTap={this.handleSubmit}
                     >
                         Sauvegarder
                     </Button>

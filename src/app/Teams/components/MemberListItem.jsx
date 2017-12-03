@@ -18,13 +18,13 @@ export default class MemberListItem extends React.Component {
         super(props);
 
         // binding
-        this._handleSelection = this._handleSelection.bind(this);
+        this.handleSelection = this.handleSelection.bind(this);
     }
 
     /**
      * Call the service to remove a User from a Team
      */
-    _handleSelection() {
+    handleSelection() {
         this.props.onSelection(this.props.member);
     }
 
@@ -32,7 +32,7 @@ export default class MemberListItem extends React.Component {
         let avatarUri = constants.avatarBasePath + this.props.member.id  + '?u=' + this.props.member.updatedAt;
         return (
             <ListItem
-                onTouchTap={this._handleSelection}
+                onTouchTap={this.handleSelection}
                 button={AuthStore.can('user/admin') || (AuthStore.can('user/team') && this.state.team.id == AuthStore.user.team)}
             >
                 <Avatar src={avatarUri} />

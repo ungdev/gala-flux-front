@@ -28,13 +28,13 @@ export default class TeamListScene extends React.Component {
         };
 
         // binding
-        this._toggleCreateDialog = this._toggleCreateDialog.bind(this);
+        this.toggleCreateDialog = this.toggleCreateDialog.bind(this);
     }
 
     /**
      * Show or hide the create dialog
      */
-    _toggleCreateDialog() {
+    toggleCreateDialog() {
         this.setState({showCreateDialog: !this.state.showCreateDialog});
     }
 
@@ -71,7 +71,7 @@ export default class TeamListScene extends React.Component {
                         color="primary"
                         fab
                         className="FloatingButton"
-                        onTouchTap={this._toggleCreateDialog}
+                        onTouchTap={this.toggleCreateDialog}
                     >
                         <ContentAddIcon />
                     </Button>
@@ -79,7 +79,7 @@ export default class TeamListScene extends React.Component {
 
                 <NewTeamDialog
                     show={this.state.showCreateDialog}
-                    close={this._toggleCreateDialog}
+                    close={this.toggleCreateDialog}
                 />
             </div>
         );

@@ -23,7 +23,7 @@ export default class BottleTypeListItem extends React.Component {
         };
 
         // binding
-        this._handleSelection = this._handleSelection.bind(this);
+        this.handleSelection = this.handleSelection.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -35,7 +35,7 @@ export default class BottleTypeListItem extends React.Component {
     /**
      * Call the service to update the type
      */
-    _handleSelection() {
+    handleSelection() {
         this.props.onSelection(this.props.type);
     }
 
@@ -59,7 +59,7 @@ export default class BottleTypeListItem extends React.Component {
         return (
             <ListItem
                 button
-                onTouchTap={this._handleSelection}
+                onTouchTap={this.handleSelection}
             >
                 <Avatar className="BottleTypeListItem__avatar">{this.state.type.shortName}</Avatar>
                 <ListItemText primary={this.state.type.name} secondary={secondaryText} />

@@ -18,37 +18,37 @@ export default class SnackbarNotification extends React.Component {
         this.preventMessage = false;
 
         // binding
-        this._openMessageIfNecessary = this._openMessageIfNecessary.bind(this);
-        this._handleRequestClose = this._handleRequestClose.bind(this);
-        this._onNotificationStoreChange = this._onNotificationStoreChange.bind(this);
+        this.openMessageIfNecessary = this.openMessageIfNecessary.bind(this);
+        this.handleRequestClose = this.handleRequestClose.bind(this);
+        this.onNotificationStoreChange = this.onNotificationStoreChange.bind(this);
     }
 
     componentDidMount() {
         // listen the store change
-        NotificationStore.addChangeListener(this._onNotificationStoreChange);
+        NotificationStore.addChangeListener(this.onNotificationStoreChange);
     }
 
     componentWillUnmount() {
         // unlisten the store change
-        NotificationStore.removeChangeListener(this._onNotificationStoreChange);
+        NotificationStore.removeChangeListener(this.onNotificationStoreChange);
     }
 
     componentDidUpdate() {
         // Prevent message to show before end of transition
         setTimeout(() => {
             this.preventMessage = false;
-            this._openMessageIfNecessary();
+            this.openMessageIfNecessary();
         }, 300);
     }
 
-    _onNotificationStoreChange() {
-        this._openMessageIfNecessary();
+    onNotificationStoreChange() {
+        this.openMessageIfNecessary();
     }
 
     /**
      * Open the message if there is new notification in the store and if there is no notification currently
      */
-    _openMessageIfNecessary() {
+    openMessageIfNecessary() {
         if(!this.state.message && !this.preventMessage) {
             let message = NotificationStore.shiftSnackbar();
             if(message) {
@@ -61,7 +61,7 @@ export default class SnackbarNotification extends React.Component {
     }
 
 
-    _handleRequestClose() {
+    handleRequestClose() {
         this.setState({ message: null, count: this.state.count+1 });
     }
 
@@ -73,7 +73,7 @@ export default class SnackbarNotification extends React.Component {
                 open={(this.state.message != null && this.preventMessage != null)}
                 message={(this.state.message ? this.state.message : '')}
                 autoHideDuration={3000}
-                onRequestClose={this._handleRequestClose}
+                onRequestClose={this.handleRequestClose}
             />
         );
     }
