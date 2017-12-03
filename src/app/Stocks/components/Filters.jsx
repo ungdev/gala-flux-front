@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Row, Col } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
 import Input, { InputLabel } from 'material-ui/Input';
@@ -21,8 +21,8 @@ class Filters extends React.Component {
 
     render() {
         return (
-            <Row>
-                <Col xs={12} sm={6} md={3}>
+            <Grid container spacing={24}>
+                <Grid item xs={12} sm={6} md={3}>
                     <TextField
                         select
                         label="Types de fût"
@@ -51,9 +51,8 @@ class Filters extends React.Component {
                             })
                         }
                     </TextField>
-                </Col>
-
-                <Col xs={12} sm={6} md={3}>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
                     <LocationSelect
                         label="Emplacements"
                         SelectProps={{multiple:true, value: this.props.filters.locations}}
@@ -61,9 +60,8 @@ class Filters extends React.Component {
                         onChange={(e) => this.props.setFilters('locations', e.target.value)}
                         fullWidth
                     />
-                </Col>
-
-                <Col xs={12} sm={6} md={3}>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
                     <TextField
                         select
                         label="Etats"
@@ -75,17 +73,16 @@ class Filters extends React.Component {
                         <SelectableMenuItem value="opened">Entamé</SelectableMenuItem>
                         <SelectableMenuItem value="empty">Terminé</SelectableMenuItem>
                     </TextField>
-                </Col>
-
-                <Col xs={12} sm={6} md={3}>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
                     <TextField
                         label="Rechercher une référence"
                         value={this.props.filters.reference}
                         onChange={e => this.props.setFilters("reference", e.target.value)}
                         fullWidth
                     />
-                </Col>
-            </Row>
+                </Grid>
+            </Grid>
         );
     }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import Alert from 'app/Alerts/components/Alert.jsx';
-import { Row } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
 
 require('./AlertList.scss');
 
@@ -29,9 +29,9 @@ export default class AlertList extends React.Component {
 
         return (
             <div className="Alerts__AlertList">
-                <Row className="Alerts__AlertList__row">
+                <Grid container spacing={24} className="Alerts__AlertList__row">
                     {alertList}
-                </Row>
+                </Grid>
             </div>
         );
     }

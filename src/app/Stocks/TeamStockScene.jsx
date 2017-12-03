@@ -8,7 +8,7 @@ import BottleTypeStore from 'stores/BottleTypeStore';
 import AuthStore from 'stores/AuthStore';
 import NotificationActions from 'actions/NotificationActions';
 
-import { Row, Col } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
 import BottleChip from 'app/Stocks/Bottles/components/BottleChip.jsx';
 import UpdateBottleDialog from 'app/Stocks/Bottles/dialogs/UpdateBottleDialog.jsx';
 import BarrelChip from 'app/Stocks/Barrels/components/BarrelChip.jsx';
@@ -138,8 +138,8 @@ export default class TeamStockScene extends React.Component {
                 onChange={ datastore => this.handleDatastoreChange(datastore) }
             >
                 { () => (
-                    <Row className="TeamStockScene">
-                        <Col xs={12} sm={4}>
+                    <Grid container spacing={24} className="TeamStockScene">
+                        <Grid item xs={12} sm={4}>
                             <h3>En stock</h3>
                             <div>
                                 {
@@ -185,8 +185,8 @@ export default class TeamStockScene extends React.Component {
                                             <small>Aucun item en stock.</small>
                                 }
                             </div>
-                        </Col>
-                        <Col xs={12} sm={4}>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
                             <h3>Entamé</h3>
                             <div>
                                 {
@@ -217,8 +217,8 @@ export default class TeamStockScene extends React.Component {
                                         <small>Aucun item ouvert.</small>
                                 }
                             </div>
-                        </Col>
-                        <Col xs={12} sm={4}>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
                             <h3>Terminé</h3>
                             <div>
                                 {
@@ -264,7 +264,7 @@ export default class TeamStockScene extends React.Component {
                                         <small>Aucun item terminé.</small>
                                 }
                             </div>
-                        </Col>
+                        </Grid>
                         { this.state.updatedBottle.type &&
                             <UpdateBottleDialog
                                 type={this.state.updatedBottle.type}
@@ -276,7 +276,7 @@ export default class TeamStockScene extends React.Component {
                                 close={() => this.setState({updatedBottle: {type: null, count: 0, state: 'new'}})}
                             />
                         }
-                    </Row>
+                    </Grid>
                 )}
             </DataLoader>
         );

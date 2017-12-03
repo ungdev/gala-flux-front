@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Row, Col } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
 import Euro from 'material-ui-icons/EuroSymbol';
 import Barrel from 'material-ui-icons/BatteryFull';
 
@@ -32,20 +32,20 @@ export default class BarrelsInfo extends React.Component {
                 {
                     <div>
                         <div className="Overview__CardInfo__title">Fûts :</div>
-                        <Row>
+                        <Grid container spacing={24}>
                             {
                                 states.map((state) => {
                                     if (this.props.barrelCount[state] && this.props.barrelCount[state] > 0) {
-                                        return <Col xs={4} className="Overview__CardInfo" key={state}>
+                                        return <Grid item xs={4} className="Overview__CardInfo" key={state}>
                                                 <Barrel color={this.states[state]} />
                                                 <span>{this.props.barrelCount[state]}</span>
-                                            </Col>
+                                            </Grid>
                                     } else {
                                         emptyCounter++;
                                     }
                                 })
                             }
-                        </Row>
+                        </Grid>
                         {
                             emptyCounter === states.length &&
                             <div style={{textAlign: "center"}}>
@@ -53,20 +53,20 @@ export default class BarrelsInfo extends React.Component {
                             </div>
                         }
                         { Object.keys(this.props.prices).length != 0 &&
-                        <Row className="Overview__CardInfo__profitability">
-                            <Col xs={6} className="Overview__CardInfo Overview__CardInfo--bordered">
+                        <Grid container spacing={8} className="Overview__CardInfo__profitability">
+                            <Grid item xs={6} className="Overview__CardInfo Overview__CardInfo--bordered">
                                 <div>
                                     <span>{Math.round(this.props.prices.supplierPrice)}</span>
                                     <Euro color={red[600]} />
                                 </div>
-                            </Col>
-                            <Col xs={6} className="Overview__CardInfo Overview__CardInfo--bordered">
+                            </Grid>
+                            <Grid item xs={6} className="Overview__CardInfo Overview__CardInfo--bordered">
                                 <div>
                                     <span>{Math.round(this.props.prices.sellPrice)}</span>
                                     <Euro color={teal[600]} />
                                 </div>
-                            </Col>
-                        </Row>
+                            </Grid>
+                        </Grid>
                         }
                     </div>
                 }

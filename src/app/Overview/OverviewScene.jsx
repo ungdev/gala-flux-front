@@ -7,7 +7,7 @@ import SessionStore from 'stores/SessionStore';
 import BarrelTypeStore from 'stores/BarrelTypeStore';
 import NotificationActions from 'actions/NotificationActions';
 
-import { Row, Col } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
 import TeamCard from 'app/Overview/components/TeamCard.jsx';
 import DataLoader from 'app/components/DataLoader.jsx';
 
@@ -125,10 +125,10 @@ export default class OverviewScene extends React.Component {
             >
                 { () => (
                     <div className="OverviewScene">
-                        <Row>
+                        <Grid container spacing={8}>
                         {
                             this.state.teams.map(team => {
-                                return <Col key={team.id} xs sm={3}>
+                                return (<Grid item key={team.id} xs={12} sm={6} md={3} xl={2}>
                                             <TeamCard
                                                 team={team}
                                                 userNames={this.state.userNames[team.id] || []}
@@ -137,10 +137,10 @@ export default class OverviewScene extends React.Component {
                                                 barrelCount={this.state.barrelCount[team.id] || {}}
                                                 alertList={this.state.alertList[team.id] || {}}
                                             />
-                                        </Col>
+                                        </Grid>);
                             })
                         }
-                        </Row>
+                        </Grid>
                     </div>
                 )}
             </DataLoader>

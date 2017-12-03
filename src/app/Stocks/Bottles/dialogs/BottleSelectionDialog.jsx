@@ -4,7 +4,6 @@ import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import { Row, Col } from 'react-flexbox-grid';
 
 import BottleTypeService from 'services/BottleTypeService';
 import NotificationActions from 'actions/NotificationActions';

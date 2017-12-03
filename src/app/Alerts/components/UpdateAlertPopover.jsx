@@ -8,7 +8,6 @@ import * as constants from 'config/constants';
 import Popover from 'material-ui/Popover';
 import Button from 'material-ui/Button';
 import Avatar from 'material-ui/Avatar';
-import { Row, Col } from 'react-flexbox-grid';
 import List, { ListItem, ListItemText, ListItemAvatar } from 'material-ui/List';
 import CheckIcon from 'material-ui-icons/Check';
 import AccountCircleIcon from 'material-ui-icons/AccountCircle';

@@ -6,7 +6,7 @@ import UserStore from 'stores/UserStore';
 import NotificationActions from 'actions/NotificationActions';
 import * as constants from 'config/constants';
 
-import { Col } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
 import ReactTooltip from 'react-tooltip';
 import UpdateAlertPopover from 'app/Alerts/components/UpdateAlertPopover.jsx';
 import Assignment from 'material-ui-icons/AssignmentInd';
@@ -86,7 +86,7 @@ export default class Alert extends React.Component {
 
         let senderTeam = this.props.teams.get(this.props.alert.senderTeamId);
         return (
-            <Col xs={12} sm={6} className="Alerts__Alert">
+            <Grid item xs={12} sm={6} className="Alerts__Alert">
                 <div className="Alerts__Alert__container">
                     <button
                         data-tip
@@ -196,7 +196,7 @@ export default class Alert extends React.Component {
                         />
                     }
                 </div>
-            </Col>
+            </Grid>
         );
     }
 }

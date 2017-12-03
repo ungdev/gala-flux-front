@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Row, Col } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
 import ReactTooltip from 'react-tooltip';
 import WarningIcon from 'material-ui-icons/Warning';
 
@@ -29,20 +29,20 @@ export default class AlertsInfo extends React.Component {
             <div className="Overview__CardInfo__container">
                 <div>
                     <div className="Overview__CardInfo__title">Alertes :</div>
-                    <Row>
+                    <Grid container spacing={24}>
                         {
                             severities.map(severity => {
                                 if (this.props.alertList[severity] && this.props.alertList[severity].length > 0) {
-                                    return <Col xs={4} className="Overview__CardInfo" key={severity}>
+                                    return (<Grid item xs={4} className="Overview__CardInfo" key={severity}>
                                             <WarningIcon color={this.severities[severity]} />
                                             <span>{this.props.alertList[severity].length}</span>
-                                        </Col>
+                                        </Grid>);
                                 } else {
                                     emptyCounter++;
                                 }
                             })
                         }
-                    </Row>
+                    </Grid>
                     {
                         emptyCounter === severities.length &&
                         <div style={{textAlign: "center"}}>

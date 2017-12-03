@@ -8,7 +8,7 @@ import UserStore from 'stores/UserStore';
 import AuthStore from 'stores/AuthStore';
 import NotificationStore from 'stores/NotificationStore';
 import NotificationActions from 'actions/NotificationActions';
-import { Row, Col } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
 import ReceiverSelect from 'app/Alerts/components/ReceiverSelect.jsx';
 import AlertList from 'app/Alerts/components/AlertList.jsx';
 import DataLoader from "app/components/DataLoader.jsx";
@@ -103,8 +103,8 @@ export default class AlertScene extends React.Component {
         return (
             <div className="AlertScene">
                 <Paper className="AlertScene__filters">
-                    <Row center="sm">
-                        <Col xs={6} sm={4}>
+                    <Grid container spacing={24}>
+                        <Grid item xs={6} sm={4}>
                             <Button raised
                                 onTouchTap={_ => this.handleFilter('processing')}
                                 color={!this.state.isDoneFilter ? 'accent' : 'default' }
@@ -112,8 +112,8 @@ export default class AlertScene extends React.Component {
                             >
                                 {`En cours ${this.state.newAlerts.processing ? `(${this.state.newAlerts.processing})` : ''}`}
                             </Button>
-                        </Col>
-                        <Col xs={6} sm={4}>
+                        </Grid>
+                        <Grid item xs={6} sm={4}>
                             <Button raised
                                 onTouchTap={_ => this.handleFilter('done')}
                                 color={this.state.isDoneFilter ? 'accent' : 'default' }
@@ -121,18 +121,18 @@ export default class AlertScene extends React.Component {
                             >
                                 {`Terminées ${this.state.newAlerts.done ? `(${this.state.newAlerts.done})` : ''}`}
                             </Button>
-                        </Col>
+                        </Grid>
                         {
                             AuthStore.can('alert/admin') &&
-                            <Col xs={12} sm={4}>
+                            <Grid item xs={6} sm={4}>
                                 <ReceiverSelect
                                     teams={this.state.teams ? this.state.teams.findByPermission('ui/alertReceiver') : []}
                                     value={this.state.receiverFilter}
                                     onChange={(v) => this.setState({ receiverFilter: v })}
                                 />
-                            </Col>
+                            </Grid>
                         }
-                    </Row>
+                    </Grid>
                 </Paper>
                 <DataLoader
                     filters={new Map([

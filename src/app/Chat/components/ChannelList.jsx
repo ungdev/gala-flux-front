@@ -8,7 +8,6 @@ import ChatActions from 'actions/ChatActions';
 import AuthStore from 'stores/AuthStore';
 import NotificationActions from 'actions/NotificationActions';
 import Divider from 'material-ui/Divider';
-import Subheader from 'material-ui-old/Subheader';
 import SelectableListItem from 'app/components/SelectableListItem.jsx';
 import NotificationBubble from 'app/components/NotificationBubble.jsx';
 import FontAwesome from 'react-fontawesome';

@@ -4,7 +4,7 @@ import BottleActionStore from 'stores/BottleActionStore';
 import AuthStore from 'stores/AuthStore';
 import NotificationActions from 'actions/NotificationActions';
 
-import { Row, Col } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 import MoveDialog from 'app/Stocks/dialogs/MoveDialog.jsx';
 import Filters from 'app/Stocks/components/Filters.jsx';
@@ -243,28 +243,28 @@ export default class StockScene extends React.Component {
                                 filters={this.state.filters}
                             />
 
-                            <Row center="md">
-                                <Col xs={12} sm={6} md={3}>
+                            <Grid container spacing={24} justify="center">
+                                <Grid item xs={12} sm={6} md={3}>
                                     <Button
                                         raised
                                         disabled={selectionCount === 0}
                                         onClick={_ => this.setState({ selectedBarrels: new Set(), selectedBottles: {} })}
-                                        fullWidth
+                                        style={{width:'100%'}}
                                     >
                                         {'Déselectionner les fûts ' + (selectionCount ? '(' + selectionCount + ')' : '')}
                                     </Button>
-                                </Col>
-                                <Col xs={12} sm={6} md={3}>
+                                </Grid>
+                                <Grid item xs={12} sm={6} md={3}>
                                     <Button
                                         raised
                                         color="accent"
                                         onClick={this.resetFilters}
-                                        fullWidth
+                                        style={{width:'100%'}}
                                     >
                                         Reset les filtres
                                     </Button>
-                                </Col>
-                            </Row>
+                                </Grid>
+                            </Grid>
                         </Paper>
                     }
                     <DataLoader

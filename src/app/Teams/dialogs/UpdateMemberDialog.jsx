@@ -7,7 +7,6 @@ import * as constants from 'config/constants';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Avatar from 'material-ui/Avatar';
-import Subheader from 'material-ui-old/Subheader';
 import Grid from 'material-ui/Grid';
 import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 import Input, { InputLabel } from 'material-ui/Input';
