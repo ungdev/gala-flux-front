@@ -71,7 +71,7 @@ export default class BottleTypeScene extends React.Component {
                                 <h2 className="ListHeader">Types de bouteilles</h2>
                                 <SelectableList value={this.state.selectedId}>
                                     {
-                                        this.state.bottleTypes.map((type, i) => {
+                                        this.state.bottleTypes.map((type) => {
                                             return  <BottleTypeListItem
                                                     key={type.id}
                                                     type={type}

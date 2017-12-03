@@ -129,7 +129,7 @@ export default class AddEtuuttMemberForm extends React.Component {
                             { this.state.users ?
                             <List>
                                 {
-                                    this.state.users.map((user, i) => {
+                                    this.state.users.map((user) => {
 
                                         return  (
                                             <ListItem

@@ -230,7 +230,7 @@ class MainMenu extends React.Component {
         if(!this.props.tabs) {
             return (
                     <div>
-                        { this.state.items.map((item, i) => (
+                        { this.state.items.map((item) => (
                             <Hidden
                                 {...(item.hidden || {})}
                                 key={item.route + item.label}
@@ -256,7 +256,7 @@ class MainMenu extends React.Component {
             props.value = this.state.value;
             return (
                 <Tabs {...props}>
-                    { this.state.items.map((item, i) => (
+                    { this.state.items.map((item) => (
                         <Tab
                             label={
                                 <span>

@@ -115,7 +115,7 @@ export default class UpdateAlertPopover extends React.Component {
                             if(this.props.alert.users.includes(user ? user.id : null)) {
                                 return <ListItem
                                         button
-                                        key={i}
+                                        key={user ? user.id : -i}
                                         onClick={(e) => this.handleSelection(e, user)}
                                     >
                                         <ListItemAvatar><Avatar><CheckIcon color="white"/></Avatar></ListItemAvatar>
@@ -125,7 +125,7 @@ export default class UpdateAlertPopover extends React.Component {
                             else {
                                 return <ListItem
                                         button
-                                        key={i}
+                                        key={user ? user.id : -i}
                                         onClick={(e) => this.handleSelection(e, user)}
                                     >
                                         <ListItemAvatar><Avatar src={(constants.avatarBasePath + (user ? user.id + '?u=' + user.updatedAt : null))} /></ListItemAvatar>

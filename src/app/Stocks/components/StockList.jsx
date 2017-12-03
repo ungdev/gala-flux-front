@@ -48,9 +48,9 @@ export default class StockList extends React.Component {
                                             let type = this.props.bottleTypes.get(typeId);
                                             return  <div key={typeId} className="BarrelChipContainer">
                                                     {
-                                                        Object.keys(this.props.data[location].bottles[typeId]).map((state, i) => {
+                                                        Object.keys(this.props.data[location].bottles[typeId]).map((state) => {
                                                             return  <BottleChip
-                                                                key={i}
+                                                                key={state}
                                                                 count={this.props.data[location].bottles[typeId][state]}
                                                                 state={state}
                                                                 type={type}

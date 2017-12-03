@@ -85,9 +85,9 @@ export default class MoveDialog extends React.Component {
 
                             <div className="BarrelChipContainer">
                                 {
-                                    this.props.barrels.map((barrel, i) => {
+                                    this.props.barrels.map((barrel) => {
                                         return <BarrelChip
-                                                    key={i}
+                                                    key={barrel.id}
                                                     barrel={barrel}
                                                     team={this.props.teams.get(barrel.teamId)}
                                                     type={this.props.barrelTypes.get(barrel.typeId)}

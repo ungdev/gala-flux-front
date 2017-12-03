@@ -145,15 +145,15 @@ export default class TeamStockScene extends React.Component {
                                 {
                                     Object.keys(this.state.barrels.new).length || Object.keys(this.state.bottles.new).length
                                         ?
-                                            [Object.keys(this.state.barrels.new).map((typeId, i) => {
+                                            [Object.keys(this.state.barrels.new).map((typeId) => {
                                                 let type = this.state.barrelTypes.get(parseInt(typeId));
-                                                return <div key={i}>
+                                                return <div key={typeId}>
                                                     <h4>{type ? type.name : ''}</h4>
                                                     <div className="BarrelChipContainer">
                                                     {
-                                                        this.state.barrels.new[typeId].map((barrel, i) => {
+                                                        this.state.barrels.new[typeId].map((barrel) => {
                                                             return <BarrelChip
-                                                                        key={i}
+                                                                        key={barrel.id}
                                                                         barrel={barrel}
                                                                         type={type}
                                                                         onClick={this.moveNextState}
@@ -164,10 +164,10 @@ export default class TeamStockScene extends React.Component {
                                                 </div>
 
                                             }),
-                                            Object.keys(this.state.bottles.new).map((typeId, i) => {
+                                            Object.keys(this.state.bottles.new).map((typeId) => {
                                                 let type = this.state.bottleTypes.get(parseInt(typeId));
                                                 let total = (this.state.bottles.new[typeId] || 0) + (this.state.bottles.empty[typeId] || 0);
-                                                return <div key={i}>
+                                                return <div key={typeId}>
                                                     <h4>{type ? type.name : ''}</h4>
                                                     <div className="BarrelChipContainer">
                                                         <BottleChip
@@ -192,15 +192,15 @@ export default class TeamStockScene extends React.Component {
                                 {
                                     Object.keys(this.state.barrels.opened).length
                                         ?
-                                            Object.keys(this.state.barrels.opened).map((typeId, i) => {
+                                            Object.keys(this.state.barrels.opened).map((typeId) => {
                                                 let type = this.state.barrelTypes.get(parseInt(typeId));
-                                                return <div key={i}>
+                                                return <div key={typeId}>
                                                     <h4>{type ? type.name : ''}</h4>
                                                     <div className="BarrelChipContainer">
                                                     {
-                                                        this.state.barrels.opened[typeId].map((barrel, i) => {
+                                                        this.state.barrels.opened[typeId].map((barrel) => {
                                                             return <BarrelChip
-                                                                        key={i}
+                                                                        key={barrel.id}
                                                                         barrel={barrel}
                                                                         type={type}
                                                                         onClick={this.moveNextState}
@@ -224,15 +224,15 @@ export default class TeamStockScene extends React.Component {
                                 {
                                     Object.keys(this.state.barrels.empty).length || Object.keys(this.state.bottles.empty).length
                                         ?
-                                            [Object.keys(this.state.barrels.empty).map((typeId, i) => {
+                                            [Object.keys(this.state.barrels.empty).map((typeId) => {
                                                 let type = this.state.barrelTypes.get(parseInt(typeId));
-                                                return <div key={i}>
+                                                return <div key={typeId}>
                                                     <h4>{type ? type.name : ''}</h4>
                                                     <div className="BarrelChipContainer">
                                                     {
-                                                        this.state.barrels.empty[typeId].map((barrel, i) => {
+                                                        this.state.barrels.empty[typeId].map((barrel) => {
                                                             return <BarrelChip
-                                                                        key={i}
+                                                                        key={barrel.id}
                                                                         barrel={barrel}
                                                                         type={type}
                                                                         onRequestDelete={this.backPreviousState}
@@ -243,10 +243,10 @@ export default class TeamStockScene extends React.Component {
                                                 </div>
 
                                             }),
-                                            Object.keys(this.state.bottles.empty).map((typeId, i) => {
+                                            Object.keys(this.state.bottles.empty).map((typeId) => {
                                                 let type = this.state.bottleTypes.get(parseInt(typeId));
                                                 let total = (this.state.bottles.new[typeId] || 0) + (this.state.bottles.empty[typeId] || 0);
-                                                return <div key={i}>
+                                                return <div key={typeId}>
                                                     <h4>{type ? type.name : ''}</h4>
                                                     <div className="BarrelChipContainer">
                                                         <BottleChip

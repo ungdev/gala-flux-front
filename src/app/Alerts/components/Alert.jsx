@@ -150,8 +150,8 @@ export default class Alert extends React.Component {
                                     data-tip
                                     data-for={"avatar-" + this.props.alert.id}
                                 >
-                                    { this.props.alert.users.map((id, i) => {
-                                        return <div key={i}><Avatar src={(constants.avatarBasePath + id)} /></div>
+                                    { this.props.alert.users.map((id) => {
+                                        return <div key={id}><Avatar src={(constants.avatarBasePath + id)} /></div>
                                     })}
                                 </div>
                                 <div style={{whiteSpace: 'pre-line'}}>
@@ -160,12 +160,12 @@ export default class Alert extends React.Component {
                                         place="bottom"
                                     >
                                         <span style={{whiteSpace: 'pre-line'}} className="bite">
-                                            {this.props.alert.users.map((id, i) => {
+                                            {this.props.alert.users.map((id) => {
                                                 let user = this.props.users.get(id);
                                                 if(user) {
-                                                    return <span key={i}>{user.name}<br/></span>
+                                                    return <span key={id}>{user.name}<br/></span>
                                                 }
-                                                return <span key={i}>Quelqu'un<br/></span>
+                                                return <span key={id}>Quelqu'un<br/></span>
                                             })}
                                         </span>
                                     </ReactTooltip>

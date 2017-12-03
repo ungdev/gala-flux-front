@@ -150,7 +150,7 @@ export default class Messages extends React.Component {
                             <CenteredMessage>Aucun message</CenteredMessage>
                     :
                         // For each message, create a Message component
-                        this.state.messages.map((messageGroup, i) => {
+                        this.state.messages.map((messageGroup) => {
                             let user = this.state.users.get(messageGroup[0].userId) || {name: 'Utilisateur supprimé'};
                             let team = this.state.teams.get(user.teamId) || {name: 'Utilisateur supprimé'};
                             return (
@@ -166,7 +166,7 @@ export default class Messages extends React.Component {
                                             <DateTime date={messageGroup[0].createdAt} />
                                         </div>
                                         {
-                                            messageGroup.map((message, i) => {
+                                            messageGroup.map((message) => {
                                                 let date = new Date(message.createdAt);
                                                 let title = (date.getDate() < 10 ? '0' : '') + date.getDate() +
                                                     '/' + (date.getMonth() < 10 ? '0' : '') + date.getMonth() +

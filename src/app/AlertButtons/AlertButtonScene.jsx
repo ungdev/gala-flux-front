@@ -66,8 +66,8 @@ export default class AlertButtonScene extends React.Component {
                     { () => (
                         <div>
                             {
-                                categories.map((category, i) => {
-                                    return  <div key={i}>
+                                categories.map((category) => {
+                                    return  <div key={category}>
                                                 <h3>{category}</h3>
                                                 {
                                                     this.state.buttons[category].map(button => {

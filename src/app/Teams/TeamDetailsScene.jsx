@@ -140,7 +140,7 @@ export default class TeamDetailsScene extends React.Component {
                                             ?
                                             <List>
                                                 {
-                                                    this.state.users.map((member, i) => {
+                                                    this.state.users.map((member) => {
                                                         return <MemberListItem
                                                             member={member}
                                                             key={member.id}

@@ -148,7 +148,7 @@ export default class NotificationsDialog extends React.Component {
                     <h3>Channels du chat</h3>
                     <List>
                         {this.state.configuration && this.state.configuration.channel &&
-                            Object.keys(this.state.configuration.channel).sort((a,b) => a.replace('public:','0:').localeCompare(b.replace('public:','0:'))).map((channel, i) => {
+                            Object.keys(this.state.configuration.channel).sort((a,b) => a.replace('public:','0:').localeCompare(b.replace('public:','0:'))).map((channel) => {
 
                                 let primaryText = channel.split(':')[1];
                                 switch(channel.split(':')[0]) {
@@ -163,7 +163,7 @@ export default class NotificationsDialog extends React.Component {
 
                                 return (
                                 <ListItem
-                                    key={i}
+                                    key={channel}
                                     className="ToggleListItem"
                                     style={this.state.configuration.channel[channel] == 'hide' ? {color: 'gray'} : {}}
                                     primaryText={this.state.configuration.channel[channel] == 'hide' ? <del>{primaryText}</del> : primaryText}

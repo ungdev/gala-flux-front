@@ -74,11 +74,11 @@ export default class AdminAlertButtonScene extends React.Component {
                         <div className="FloatingButtonContainer">
                             {Object.keys(this.state.buttons).length > 0 ?
                                     <List>
-                                        {Object.keys(this.state.buttons).map((category, i) => {
+                                        {Object.keys(this.state.buttons).map((category) => {
                                             return (
-                                            <div key={i}>
+                                            <div key={category}>
                                                 <ListSubheader disableSticky>{category}</ListSubheader>
-                                                {this.state.buttons[category].map((button, i) => {
+                                                {this.state.buttons[category].map((button) => {
                                                     let team = this.state.teams.get(button.receiverTeamId);
                                                     team = team ? team.name : 'équipe supprimé';
 

@@ -74,7 +74,7 @@ export default class BarrelTypeScene extends React.Component {
                                 <h2 className="ListHeader">Types de fûts</h2>
                                 <SelectableList value={this.state.selectedId}>
                                     {
-                                        this.state.barrelTypes.map((type, i) => {
+                                        this.state.barrelTypes.map((type) => {
                                             return  <BarrelTypeListItem
                                                     key={type.id}
                                                     type={type}

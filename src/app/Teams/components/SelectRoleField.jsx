@@ -39,7 +39,7 @@ export default class SelectRoleField extends React.Component {
                 {...props}
             >
                 {
-                    this.state.options.map((option, i) => {
+                    this.state.options.map((option) => {
                         return <SelectableMenuItem key={option} value={option}>{option}</SelectableMenuItem>
                     })
                 }

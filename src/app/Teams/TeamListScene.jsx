@@ -52,7 +52,7 @@ export default class TeamListScene extends React.Component {
                     { () => (
                             <MenuContainer router={this.props.router}>
                                 {
-                                    this.state.teams.map((team, i) => {
+                                    this.state.teams.map((team) => {
                                         return (<SelectableListItem
                                                     value={'/admin/team/'+team.id}
                                                     key={team.id}

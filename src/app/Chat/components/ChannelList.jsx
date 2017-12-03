@@ -128,7 +128,7 @@ class ChannelList extends React.Component {
         return (
             <div>
             {
-                Object.keys(this.state.channels).map((key, i) => {
+                Object.keys(this.state.channels).map((key) => {
                     let channel = this.state.channels[key].channel;
                     return (
                         <SelectableListItem

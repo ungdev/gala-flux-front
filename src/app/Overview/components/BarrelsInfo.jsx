@@ -34,9 +34,9 @@ export default class BarrelsInfo extends React.Component {
                         <div className="Overview__CardInfo__title">Fûts :</div>
                         <Row>
                             {
-                                states.map((state, i) => {
+                                states.map((state) => {
                                     if (this.props.barrelCount[state] && this.props.barrelCount[state] > 0) {
-                                        return <Col xs={4} className="Overview__CardInfo" key={i}>
+                                        return <Col xs={4} className="Overview__CardInfo" key={state}>
                                                 <Barrel color={this.states[state]} />
                                                 <span>{this.props.barrelCount[state]}</span>
                                             </Col>
