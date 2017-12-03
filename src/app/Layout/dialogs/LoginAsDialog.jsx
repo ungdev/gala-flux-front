@@ -8,7 +8,7 @@ import NotificationActions from 'actions/NotificationActions';
 import Button from 'material-ui/Button';
 import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
-import AutoComplete from 'material-ui-old/AutoComplete';
+import AutoComplete from 'app/components/AutoComplete.jsx';
 import DataLoader from 'app/components/DataLoader.jsx';
 
 export default class LoginAsDialog extends React.Component {
@@ -40,7 +40,7 @@ export default class LoginAsDialog extends React.Component {
      * Submit the login as form
      */
     submitForm(item) {
-        AuthActions.loginAs(item.value)
+        AuthActions.loginAs(item.id)
         this.closeDialog();
     }
 
@@ -61,7 +61,7 @@ export default class LoginAsDialog extends React.Component {
                     ['User', null],
                 ])}
                 onChange={ datastore => this.setState({
-                    users: datastore.User.map(user => ({ value: user.id, text: user.name + ' : ' + datastore.Team.get(user.teamId).name})),
+                    users: datastore.User.map(user => ({ id: user.id, label: user.name + ' : ' + datastore.Team.get(user.teamId).name})),
                 })}
             >
                 { () => (
@@ -74,15 +74,16 @@ export default class LoginAsDialog extends React.Component {
                             <DialogContent>
                                 <AutoComplete
                                     label="Nom de l'utilisateur"
-                                    searchText={this.state.value}
-                                    onUpdateInput={this.handleChange}
-                                    dataSource={this.state.users}
-                                    filter={AutoComplete.caseInsensitiveFilter}
                                     error={!!this.state.error}
                                     helperText={this.state.error}
-                                    onNewRequest={this.submitForm}
+                                    value={this.state.value}
+                                    fullWidth
+                                    onChange={e => this.handleChange(e.target.value)}
+                                    onSuggestionSelected={this.submitForm}
+                                    suggestions={this.state.users}
                                     maxSearchResults={10}
                                     inputRef={(input) => { this.textInput = input; }}
+                                    autoFocus
                                 />
                             </DialogContent>
                             <DialogActions>

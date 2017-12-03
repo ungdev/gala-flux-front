@@ -10,7 +10,9 @@ import parse from 'autosuggest-highlight/parse';
 import { withStyles } from 'material-ui/styles';
 
 const styles = theme => ({
-    container: {},
+    container: {
+        postion: 'absolute',
+    },
     suggestionsContainerOpen: {
         position: 'fixed',
         zIndex: theme.zIndex.popover,
@@ -142,17 +144,11 @@ class AutoComplete extends React.Component {
     renderSuggestionsContainer(options) {
         const { containerProps, children } = options;
         return (
-            <div {...containerProps}>
-                {React.Children.count(children) > 0 && this.textFieldRef != undefined ?
-                    <Paper
-                        style={{postion: 'absolute',}}
-                    >
-                        {children}
-                    </Paper>
-                :
-                    children
-                }
-            </div>
+            <Paper
+                {...containerProps}
+            >
+                {children}
+            </Paper>
         );
     }
 
