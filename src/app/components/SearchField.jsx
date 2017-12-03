@@ -2,30 +2,27 @@ import React from 'react';
 
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
+import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import { CircularProgress } from 'material-ui/Progress';
 import SearchIcon from 'material-ui-icons/Search';
 require('./SearchField.scss');
 
+/**
+ * @param onSubmit(value)
+ * @param loading
+ * Every other parameters will be forwarded to the TextField
+ */
 export default class SearchField extends React.Component {
 
     constructor(props) {
         super(props);
-        /**
-         * Props:
-         * - disabled
-         * - errorText
-         * - floatingLabelText
-         * - onSubmit(value)
-         * - value
-         * - loading
-         */
 
         this.state = {
             value: this.props.value ? this.props.value : '',
         };
 
-         this._handleChange = this._handleChange.bind(this);
-         this._handleSubmit = this._handleSubmit.bind(this);
+         this.handleChange = this.handleChange.bind(this);
+         this.handleSubmit = this.handleSubmit.bind(this);
          this.focus = this.focus.bind(this);
     }
 
@@ -33,11 +30,14 @@ export default class SearchField extends React.Component {
         this.setState({ value: nextProps.value });
     }
 
-    _handleChange(e) {
+    handleChange(e) {
         this.setState({value: e.target.value});
+        if(this.props.onChange) {
+            this.props.onChange(e);
+        }
     }
 
-    _handleSubmit(e) {
+    handleSubmit(e) {
         e.preventDefault();
         if(this.props.onSubmit) {
             this.props.onSubmit(this.state.value);
@@ -52,34 +52,31 @@ export default class SearchField extends React.Component {
     }
 
     render() {
+        const {onChange, value, loading, onSubmit, ...props} = this.props;
         return (
-            <form className="search-field" onSubmit={this._handleSubmit}>
+            <form onSubmit={this.handleSubmit}>
                 <TextField
-                    disabled={this.props.disabled}
-                    label={this.props.floatingLabelText}
                     fullWidth
                     value={this.state.value}
-                    error={this.props.errorText != ''}
-                    helperText={this.props.errorText}
                     readOnly={this.props.loading}
-                    onChange={this._handleChange}
-                    autoFocus={true}
-                    name="searchTextField"
+                    onChange={this.handleChange}
                     inputRef={(input) => { this.textInput = input; }}
+                    {...props}
+                    InputProps={{
+                        endAdornment:(
+                        <InputAdornment position="end">
+                        {
+                            this.props.loading
+                            ?
+                            <CircularProgress size={30}/>
+                            :
+                            <IconButton type="submit">
+                                <SearchIcon />
+                            </IconButton>
+                        }
+                        </InputAdornment>
+                    )}}
                 />
-                {
-                    this.props.loading
-                    ?
-                    <CircularProgress size={30} className="search-field__progress" />
-                    :
-                    <IconButton
-                        className="search-field__button"
-                        type="submit"
-                        disabled={this.props.disabled}
-                    >
-                        <SearchIcon />
-                    </IconButton>
-                }
             </form>
         );
     }

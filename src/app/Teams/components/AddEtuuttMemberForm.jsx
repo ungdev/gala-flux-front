@@ -1,7 +1,10 @@
 import React from 'react';
 
-import {List, ListItem} from 'material-ui/List';
+import List, { ListItem, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
+import Button from 'material-ui/Button';
+import Grid from 'material-ui/Grid';
+import { DialogActions, DialogTitle, DialogContent } from 'material-ui/Dialog';
 
 import SearchField from "app/components/SearchField.jsx";
 import UserService from 'services/UserService';
@@ -21,7 +24,7 @@ export default class AddEtuuttMemberForm extends React.Component {
         };
 
         // binding
-        this._handleSubmit = this._handleSubmit.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
         this._addToTeam = this._addToTeam.bind(this);
     }
 
@@ -33,7 +36,7 @@ export default class AddEtuuttMemberForm extends React.Component {
      * Used for the start search ettuut user according to input
      * @param {string} value search value
      */
-    _handleSubmit(value) {
+    handleSubmit(value) {
         if(!value) {
             this.setState({ error: 'Ce champ ne peut pas être vide..' });
         }
@@ -75,17 +78,21 @@ export default class AddEtuuttMemberForm extends React.Component {
         })
         .then(user => {
             createdUser = user;
+            console.log('Created, download PNG')
             return UserService.downloadPngFromURI(avatarUri);
         })
         .then(blob => {
+            console.log('Upload PNG')
             return UserService.uploadAvatar(createdUser.id, blob);
         })
         .then(_ => {
+            console.log('Done')
             this.setState({ query: '', users: [] });
             NotificationActions.snackbar('L\'utilisateur ' + user.name + ' a bien été ajouté à l\'équipe ' + this.state.team.name);
             if(this.searchField) this.searchField.focus();
         })
         .catch(error => {
+            console.log('Error', error)
             if(!createdUser) {
                 if(error.status === 'ValidationError'
                 && error.formErrors && error.formErrors.login) {
@@ -108,37 +115,49 @@ export default class AddEtuuttMemberForm extends React.Component {
 
         return (
             <div>
-                Pour ajouter un membre à l'équipe <strong>{this.state.team.name}</strong> qui se connectera à partir d'EtuUTT,
-                vous devez le trouver à l'aide du champ de recherche ci-dessous.
-                Vous pouvez rechercher par prénom, nom, surnom, numéro étudiant, login UTT et email.<br/>
+                <DialogContent>
+                    <p>Pour ajouter un membre à l'équipe <strong>{this.state.team.name}</strong> qui se connectera à partir d'EtuUTT,
+                    vous devez le trouver à l'aide du champ de recherche ci-dessous.
+                    Vous pouvez rechercher par prénom, nom, surnom, numéro étudiant, login UTT et email.</p>
 
-                <SearchField
-                    error={this.state.error != ''}
-                    helperText={this.state.error}
-                    label="Recherche EtuUTT"
-                    onSubmit={this._handleSubmit}
-                    loading={this.state.loading}
-                    value={this.state.query}
-                    inputRef={(field) => { this.searchField = field; }}
-                />
-                { this.state.users ?
-                <List>
-                    {
-                        this.state.users.map((user, i) => {
+                            <SearchField
+                                error={this.state.error != ''}
+                                helperText={this.state.error}
+                                label="Recherche EtuUTT"
+                                onSubmit={this.handleSubmit}
+                                loading={this.state.loading}
+                                value={this.state.query}
+                                inputRef={(field) => { this.searchField = field; }}
+                                fullWidth
+                            />
+                            { this.state.users ?
+                            <List>
+                                {
+                                    this.state.users.map((user, i) => {
 
-                            return  (
-                                <ListItem
-                                    key={user.login}
-                                    primaryText={user.name}
-                                    secondaryText={user.login}
-                                    leftAvatar={<Avatar src={user.avatar} backgroundColor="white" />}
-                                    onTouchTap={() => this._addToTeam(user)}
-                                />
-                            );
-                        })
-                    }
-                </List>
-                : ''}
+                                        return  (
+                                            <ListItem
+                                                button
+                                                key={user.login}
+                                                onTouchTap={() => this._addToTeam(user)}
+                                            >
+                                                <Avatar src={user.avatar} />
+                                                <ListItemText primary={user.name} secondary={user.login} />
+                                            </ListItem>
+                                        );
+                                    })
+                                }
+                            </List>
+                            : ''}
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color="accent"
+                        onTouchTap={this.props.close}
+                    >
+                        Fermer
+                    </Button>
+                </DialogActions>
             </div>
         );
     }

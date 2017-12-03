@@ -24,45 +24,25 @@ export default class AddMemberDialog extends React.Component {
     }
 
     render() {
-
-        let actions = [
-            <Button
-                color="accent"
-                onTouchTap={this.props.close}
-            >
-                Fermer
-            </Button>,
-        ];
-
-        if(this.state.value == 'ip') {
-            actions.push(
-                <Button
-                    color="primary"
-                    type="submit"
-                    onTouchTap={(this.AddIpMemberForm ? this.AddIpMemberForm.submit : () => {})}
-                >
-                    Ajouter
-                </Button>
-            )
-        }
-
-
         return (
             <Dialog
                 open={this.props.show}
                 onRequestClose={this.props.close}
-                className="TabDialog__body"
             >
-                <Tabs contentContainerClassName="TabDialog__TabsContent"
-                    onChange={(value) => this.setState({value: value})}
-                    >
-                    <Tab label="Depuis EtuUTT" value="etuutt">
-                        <AddEtuuttMemberForm team={this.state.team} />
-                    </Tab>
-                    <Tab label="Par IP" value="ip">
-                        <AddIpMemberForm team={this.state.team} inputRef={(ref) => { this.AddIpMemberForm = ref; }}/>
-                    </Tab>
+                <Tabs
+                    value={this.state.value}
+                    onChange={(e,v) => this.setState({value: v})}
+                    centered
+                >
+                    <Tab label="Depuis EtuUTT" value="etuutt"/>
+                    <Tab label="Par IP" value="ip"/>
                 </Tabs>
+
+                { this.state.value == 'etuutt' ?
+                    <AddEtuuttMemberForm team={this.state.team} close={this.props.close}/>
+                :
+                    <AddIpMemberForm team={this.state.team} inputRef={(ref) => { this.AddIpMemberForm = ref; }} close={this.props.close}/>
+                }
             </Dialog>
         );
     }

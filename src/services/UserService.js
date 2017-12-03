@@ -47,6 +47,9 @@ class UserService extends BaseService {
                     return reject(new Error('Avatar download: ' + req.statusText));
                 }
             };
+            req.onerror = (e) => {
+                return reject(new Error('Avatar download: ' + req.statusText));
+            }
             req.send();
         });
     }

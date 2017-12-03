@@ -8,10 +8,13 @@ import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Avatar from 'material-ui/Avatar';
 import Subheader from 'material-ui-old/Subheader';
-import { Row, Col } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
 import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
+import Input, { InputLabel } from 'material-ui/Input';
+import { FormControl, FormHelperText } from 'material-ui/Form';
 
 import Dialog from 'app/components/ResponsiveDialog.jsx';
+import AlignedDialogActions from 'app/components/AlignedDialogActions.jsx';
 import SelectGroupField from 'app/Teams/components/SelectGroupField.jsx';
 import SelectRoleField from 'app/Teams/components/SelectRoleField.jsx';
 import Confirm from 'app/components/Confirm.jsx';
@@ -168,15 +171,17 @@ export default class UpdateMemberDialog extends React.Component {
                         {'Modification de l\'utilisateur ' + this.state.values.name}
                     </DialogTitle>
                     <DialogContent>
-                        Vous pouvez modifier l'utilisateur <strong>{this.state.values.name}</strong> à l'aide du formulaire ci-dessous.
+                        <p>
+                            Vous pouvez modifier l'utilisateur <strong>{this.state.values.name}</strong> à l'aide du formulaire ci-dessous.
+                        </p>
 
                         <form onSubmit={this._handleSubmit}>
                             <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                            <Row>
-                                <Col xs={12} sm={6}>
+                            <Grid container spacing={24}>
+                                <Grid item xs={12} sm={6}>
                                     <TextField
                                         label="Nom"
-                                        error={this.state.errors.name != ''}
+                                        error={!!this.state.errors.name}
                                         helperText={this.state.errors.name}
                                         value={this.state.values.name}
                                         fullWidth
@@ -184,12 +189,12 @@ export default class UpdateMemberDialog extends React.Component {
                                         inputRef={(field) => { this.focusField = field; }}
                                         autoFocus={true}
                                     />
-                                </Col>
-                                <Col xs={12} sm={6}>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
                                     { this.state.values.login ?
                                         <TextField
                                             label="Login EtuUTT"
-                                            error={this.state.errors.login != ''}
+                                            error={!!this.state.errors.login}
                                             helperText={this.state.errors.login}
                                             value={this.state.values.login}
                                             fullWidth
@@ -199,39 +204,33 @@ export default class UpdateMemberDialog extends React.Component {
                                     :
                                         <TextField
                                             label="IP"
-                                            error={this.state.errors.ip != ''}
+                                            error={!!this.state.errors.ip}
                                             helperText={this.state.errors.ip}
                                             value={this.state.values.ip}
                                             fullWidth
                                             onChange={e => this._handleFieldChange('ip', e.target.value)}
                                         />
                                     }
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col xs={12} sm={6}>
-                                    <label className="FieldLabel">Avatar</label>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <InputLabel>Avatar</InputLabel>
                                     <a href="#" onTouchTap={this._handleAvatarClick}>
-                                        <Avatar src={(constants.avatarBasePath + this.state.id + '?' + this.state.avatarRefreshTimestamp)} backgroundColor="white" size={80} />
+                                        <Avatar src={(constants.avatarBasePath + this.state.id + '?' + this.state.avatarRefreshTimestamp)} size={80} />
                                             <input
-                                                inputRef={(field) => { this.avatarUploadField = field; }}
+                                                ref={(field) => { this.avatarUploadField = field; }}
                                                 type="file"
                                                 style={{"display" : "none"}}
                                                 onChange={this._handleAvatarSubmit}
                                             />
                                     </a>
-                                    <br/>
-                                </Col>
-                                <Col xs={12} sm={6}>
-                                </Col>
-                            </Row>
+                                </Grid>
+                            </Grid>
                         </form>
                     </DialogContent>
-                    <DialogActions>
+                    <AlignedDialogActions>
                         <Button
                             color="accent"
                             onTouchTap={() => this.setState({showDeleteDialog: true})}
-                            className="Dialog__DeleteButon"
                         >
                             Supprimer
                         </Button>
@@ -247,7 +246,7 @@ export default class UpdateMemberDialog extends React.Component {
                         >
                             Modifier
                         </Button>
-                    </DialogActions>
+                    </AlignedDialogActions>
                 </Dialog>
 
                 <Confirm

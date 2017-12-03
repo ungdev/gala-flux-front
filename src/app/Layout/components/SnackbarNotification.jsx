@@ -69,6 +69,7 @@ export default class SnackbarNotification extends React.Component {
     render() {
         return (
             <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                 open={(this.state.message != null && this.preventMessage != null)}
                 message={(this.state.message ? this.state.message : '')}
                 autoHideDuration={3000}

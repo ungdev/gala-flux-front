@@ -1,7 +1,9 @@
 import React from 'react';
 
 import TextField from 'material-ui/TextField';
-import { Row, Col } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
+import Button from 'material-ui/Button';
+import { DialogActions, DialogTitle, DialogContent } from 'material-ui/Dialog';
 
 import UserService from 'services/UserService';
 import NotificationActions from 'actions/NotificationActions';
@@ -87,37 +89,55 @@ export default class AddIpMemberForm extends React.Component {
 
         return (
             <div>
-                Pour ajouter un membre à l'équipe <strong>{this.state.team.name}</strong> qui
-                se connectera automatiquement en fonction de son ip, il vous
-                suffit d'entrer l'ip et le nom du compte dans le formulaire ci-dessous.<br/>
+                <DialogContent>
+                    <p>Pour ajouter un membre à l'équipe <strong>{this.state.team.name}</strong> qui
+                    se connectera automatiquement en fonction de son ip, il vous
+                    suffit d'entrer l'ip et le nom du compte dans le formulaire ci-dessous.</p>
 
-                <form onSubmit={this._handleSubmit}>
-                    <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                    <Row>
-                        <Col xs={12} sm={6}>
-                            <TextField
-                                label="Nom"
-                                error={this.state.errors.name != ''}
-                                helperText={this.state.errors.name}
-                                value={this.state.values.name}
-                                fullWidth
-                                onChange={e => this._handleFieldChange('name', e.target.value)}
-                                autoFocus={true}
-                                inputRef={(field) => { this.focusField = field; }}
-                            />
-                        </Col>
-                        <Col xs={12} sm={6}>
-                            <TextField
-                                label="IP"
-                                error={this.state.errors.ip != ''}
-                                helperText={this.state.errors.ip}
-                                value={this.state.values.ip}
-                                fullWidth
-                                onChange={e => this._handleFieldChange('ip', e.target.value)}
-                            />
-                        </Col>
-                    </Row>
-                </form>
+                    <form onSubmit={this._handleSubmit}>
+                        <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
+                        <Grid container spacing={24}>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    label="Nom"
+                                    error={!!this.state.errors.name}
+                                    helperText={this.state.errors.name}
+                                    value={this.state.values.name}
+                                    fullWidth
+                                    onChange={e => this._handleFieldChange('name', e.target.value)}
+                                    autoFocus={true}
+                                    inputRef={(field) => { this.focusField = field; }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    label="IP"
+                                    error={!!this.state.errors.ip}
+                                    helperText={this.state.errors.ip}
+                                    value={this.state.values.ip}
+                                    fullWidth
+                                    onChange={e => this._handleFieldChange('ip', e.target.value)}
+                                />
+                            </Grid>
+                        </Grid>
+                    </form>
+
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color="accent"
+                        onTouchTap={this.props.close}
+                    >
+                        Fermer
+                    </Button>
+                    <Button
+                        color="primary"
+                        type="submit"
+                        onTouchTap={this._handleSubmit}
+                    >
+                        Ajouter
+                    </Button>
+                </DialogActions>
             </div>
         );
     }

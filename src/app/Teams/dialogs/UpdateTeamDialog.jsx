@@ -4,10 +4,11 @@ import TeamService from 'services/TeamService';
 
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import { Row, Col } from 'react-flexbox-grid';
-import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
+import Grid from 'material-ui/Grid';
+import { DialogTitle, DialogContent } from 'material-ui/Dialog';
 
 import Dialog from 'app/components/ResponsiveDialog.jsx';
+import AlignedDialogActions from 'app/components/AlignedDialogActions.jsx';
 import SelectGroupField from 'app/Teams/components/SelectGroupField.jsx';
 import SelectRoleField from 'app/Teams/components/SelectRoleField.jsx';
 import Confirm from 'app/components/Confirm.jsx';
@@ -129,11 +130,11 @@ export default class UpdateTeamDialog extends React.Component {
 
                         <form onSubmit={this._handleSubmit}>
                             <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                            <Row>
-                                <Col xs={12} sm={6}>
+                            <Grid container spacing={24}>
+                                <Grid item xs={12} sm={6}>
                                     <TextField
                                         label="Nom"
-                                        error={this.state.errors.name != ''}
+                                        error={!!this.state.errors.name}
                                         helperText={this.state.errors.name}
                                         value={this.state.values.name}
                                         fullWidth
@@ -141,46 +142,45 @@ export default class UpdateTeamDialog extends React.Component {
                                         autoFocus={true}
                                         inputRef={(field) => { this.focusField = field; }}
                                     />
-                                </Col>
-                                <Col xs={12} sm={6}>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
                                     <TextField
                                         label="Emplacement"
-                                        error={this.state.errors.location != ''}
+                                        error={!!this.state.errors.location}
                                         helperText={this.state.errors.location}
                                         value={this.state.values.location}
                                         fullWidth
                                         onChange={e => this._handleFieldChange('location', e.target.value)}
                                     />
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col xs={12} sm={6}>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
                                     <SelectRoleField
-                                        error={this.state.errors.role != ''}
+                                        label="Autorisations"
+                                        error={!!this.state.errors.role}
                                         helperText={this.state.errors.role}
-                                        selected={this.state.values.role}
+                                        value={this.state.values.role}
                                         fullWidth
-                                        onChange={value => this._handleFieldChange('role', value)}
+                                        onChange={e => this._handleFieldChange('role', e.target.value)}
                                     />
-                                </Col>
-                                <Col xs={12} sm={6}>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
                                     <SelectGroupField
-                                        error={this.state.errors.group != ''}
+                                        label="Groupe de discussion"
+                                        error={!!this.state.errors.group}
                                         helperText={this.state.errors.group}
                                         value={this.state.values.group}
                                         fullWidth
-                                        onChange={value => this._handleFieldChange('group', value)}
-                                        onSubmit={this._handleSubmit}
+                                        onChange={e => this._handleFieldChange('group', e.target.value)}
+                                        onSuggestionSelected={option => this._handleFieldChange('group', option.label)}
                                     />
-                                </Col>
-                            </Row>
+                                </Grid>
+                            </Grid>
                         </form>
                     </DialogContent>
-                    <DialogActions>
+                    <AlignedDialogActions>
                         <Button
                             color="accent"
                             onTouchTap={() => this.setState({showDeleteDialog: true})}
-                            className="Dialog__DeleteButon"
                         >
                             Supprimer
                         </Button>
@@ -196,7 +196,7 @@ export default class UpdateTeamDialog extends React.Component {
                         >
                             Modifier
                         </Button>
-                    </DialogActions>
+                    </AlignedDialogActions>
                 </Dialog>
 
                 <Confirm
