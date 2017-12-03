@@ -9,7 +9,7 @@ import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 import { withStyles } from 'material-ui/styles';
 
-const styles = theme => {console.log(theme);return ({
+const styles = theme => ({
     container: {},
     suggestionsContainerOpen: {
         position: 'fixed',
@@ -20,7 +20,7 @@ const styles = theme => {console.log(theme);return ({
         listStyleType: 'none',
         padding: 0,
     },
-})};
+});
 
 /**
  * Autocomplete Field
@@ -40,7 +40,6 @@ class AutoComplete extends React.Component {
         this.state = {
             suggestions: [],
         };
-        console.log(props.suggestions);
 
         // binding
         this.handleSuggestionsFetchRequested = this.handleSuggestionsFetchRequested.bind(this);
@@ -100,7 +99,6 @@ class AutoComplete extends React.Component {
     }
 
     getSuggestionValue(suggestion) {
-        console.log('getSuggestionvalue', suggestion)
         return suggestion.label;
     }
 
@@ -143,7 +141,6 @@ class AutoComplete extends React.Component {
 
     renderSuggestionsContainer(options) {
         const { containerProps, children } = options;
-            console.log('open', React.Children.count(children) > 0 && this.textFieldRef != undefined)
         return (
             <div {...containerProps}>
                 {React.Children.count(children) > 0 && this.textFieldRef != undefined ?

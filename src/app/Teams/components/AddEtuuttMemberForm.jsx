@@ -78,21 +78,17 @@ export default class AddEtuuttMemberForm extends React.Component {
         })
         .then(user => {
             createdUser = user;
-            console.log('Created, download PNG')
             return UserService.downloadPngFromURI(avatarUri);
         })
         .then(blob => {
-            console.log('Upload PNG')
             return UserService.uploadAvatar(createdUser.id, blob);
         })
         .then(_ => {
-            console.log('Done')
             this.setState({ query: '', users: [] });
             NotificationActions.snackbar('L\'utilisateur ' + user.name + ' a bien été ajouté à l\'équipe ' + this.state.team.name);
             if(this.searchField) this.searchField.focus();
         })
         .catch(error => {
-            console.log('Error', error)
             if(!createdUser) {
                 if(error.status === 'ValidationError'
                 && error.formErrors && error.formErrors.login) {

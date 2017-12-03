@@ -77,7 +77,6 @@ export default class NewTeamDialog extends React.Component {
     }
 
     render() {
-        console.log('content', !!this.state.errors.name)
         return (
             <Dialog
                 open={this.props.show}

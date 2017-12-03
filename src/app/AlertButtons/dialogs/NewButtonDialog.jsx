@@ -99,7 +99,6 @@ export default class NewButtonDialog extends React.Component {
 
 
     render() {
-        console.log('groupes', TeamStore.groups)
         return (
             <Dialog
                 open={this.props.show}

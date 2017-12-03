@@ -70,8 +70,6 @@ export default class MoveDialog extends React.Component {
     }
 
     render() {
-        console.log('barrels', this.props.barrels)
-        console.log('bottles', this.props.bottles)
         return (
             <div>
                 {
@@ -88,7 +86,6 @@ export default class MoveDialog extends React.Component {
                             <div className="BarrelChipContainer">
                                 {
                                     this.props.barrels.map((barrel, i) => {
-                                        console.log(barrel)
                                         return <BarrelChip
                                                     key={i}
                                                     barrel={barrel}
@@ -113,7 +110,7 @@ export default class MoveDialog extends React.Component {
                                     })
                                 }
                             </div>
-                            
+
                             <InputLabel htmlFor="destination-select">Destination</InputLabel>
                             <LocationSelect
                                 input={<Input id="destination-select" />}
@@ -122,7 +119,7 @@ export default class MoveDialog extends React.Component {
                                 setValue={(v) => this.setState({ teamId: v })}
                                 fullWidth
                             />
-                            
+
                         </DialogContent>
                         <DialogActions>
                             <Button

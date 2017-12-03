@@ -336,7 +336,6 @@ class AuthStore extends BaseStore {
         delete tmpNewUser.updatedAt;
         delete tmpUser.updatedAt;
         if(JSON.stringify(tmpNewUser) != JSON.stringify(tmpUser)) {
-            console.log('user change', tmpNewUser, tmpUser)
             notify = true;
         }
         this._user = newUser;
@@ -349,13 +348,11 @@ class AuthStore extends BaseStore {
         delete tmpNewTeam.updatedAt;
         delete tmpTeam.updatedAt;
         if(JSON.stringify(tmpNewTeam) != JSON.stringify(tmpTeam)) {
-            console.log('team change', tmpNewTeam, tmpTeam)
             notify = true;
         }
         this._team = newTeam;
 
         if(notify) {
-            console.log('Authstore emit change');
             this.emitChange();
         }
     }

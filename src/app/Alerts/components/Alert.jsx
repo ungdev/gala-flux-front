@@ -28,7 +28,6 @@ export default class Alert extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log('Alert constructor', props.alert.id)
 
         this.state = {
             showUpdateAlertPopover: false,
@@ -46,7 +45,6 @@ export default class Alert extends React.Component {
      * toggle the boolean to show the popover to assign users to this alert
      */
     _showUpdateAlertPopover(e) {
-        console.log('show')
         let state = {
             showUpdateAlertPopover: true,
         };
@@ -60,7 +58,6 @@ export default class Alert extends React.Component {
      * toggle the boolean to show the popover to assign users to this alert
      */
     _hideUpdateAlertPopover(e) {
-        console.log('hide')
         let state = {
             showUpdateAlertPopover: false,
         };
