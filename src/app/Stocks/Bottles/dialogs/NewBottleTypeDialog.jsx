@@ -4,7 +4,7 @@ import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import { Row, Col } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
 
 import BottleTypeService from 'services/BottleTypeService';
 import NotificationActions from 'actions/NotificationActions';
@@ -117,27 +117,10 @@ export default class NewBottleTypeDialog extends React.Component {
             if(this.focusField) this.focusField.focus();
         })
         .catch((error) => {
-            let errors = {};
-            if(error.status === 'ValidationError' && error.formErrors) {
-                for (let field in error.formErrors) {
-                    if(error.formErrors[field][0].rule == 'string') {
-                        errors[field] = 'Ce champ est vide ou contient une donnée invalide.';
-                    }
-                    else if(error.formErrors[field][0].rule == 'unique') {
-                        errors[field] = 'Il existe déjà un autre type de bouteille avec cette valeur.';
-                    }
-                    else if(error.formErrors[field][0].rule == 'required') {
-                        errors[field] = 'Ce champ est obligatoire.';
-                    }
-                    else {
-                        errors[field] = error.formErrors[field][0].message;
-                        console.warn('Validation message not translated. ', error.formErrors[field]);
-                    }
-                }
+            if(error.formErrors && Object.keys(error.formErrors).length) {
+                this.setState({ errors: error.formErrors });
             }
-            this.setState({ errors: errors });
-
-            if(!Object.keys(errors).length) {
+            else {
                 NotificationActions.error('Une erreur s\'est produite pendant la création du type de bouteille', error);
             }
         });
@@ -152,13 +135,13 @@ export default class NewBottleTypeDialog extends React.Component {
                 <DialogTitle>Création d'un type de bouteille</DialogTitle>
                 <DialogContent>
 
-                    Remplissez le formulaire ci-dessous pour créer un nouveau type de bouteille.
+                    <p>Remplissez le formulaire ci-dessous pour créer un nouveau type de bouteille.</p>
 
 
                     <form onSubmit={this._handleSubmit}>
                         <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                        <Row>
-                            <Col xs={12} sm={6}>
+                        <Grid container spacing={24}>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Nom"
                                     error={!!this.state.errors.name}
@@ -169,21 +152,19 @@ export default class NewBottleTypeDialog extends React.Component {
                                     autoFocus={true}
                                     inputRef={(field) => { this.focusField = field; }}
                                 />
-                            </Col>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Abréviation"
-                                    maxLength="3"
+                                    inputProps={{maxLength: 3}}
                                     error={!!this.state.errors.shortName}
                                     helperText={this.state.errors.shortName}
                                     value={this.state.values.shortName}
                                     fullWidth
                                     onChange={e => this._handleFieldChange('shortName', e.target.value)}
                                 />
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                             <TextField
                                 label="Prix fournisseur d'une bouteille (€)"
                                 error={!!this.state.errors.supplierPrice}
@@ -192,8 +173,8 @@ export default class NewBottleTypeDialog extends React.Component {
                                 fullWidth
                                 onChange={e => this._handleFieldChange('supplierPrice', e.target.value)}
                             />
-                            </Col>
-                            <Col xs={12} sm={6}>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Prix de revente d'une bouteille (€)"
                                     error={!!this.state.errors.sellPrice}
@@ -202,10 +183,8 @@ export default class NewBottleTypeDialog extends React.Component {
                                     fullWidth
                                     onChange={e => this._handleFieldChange('sellPrice', e.target.value)}
                                 />
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Nombre de bouteilles par caisse"
                                     error={!!this.state.errors.quantityPerBox}
@@ -214,8 +193,8 @@ export default class NewBottleTypeDialog extends React.Component {
                                     fullWidth
                                     onChange={e => this._handleFieldChange('quantityPerBox', e.target.value)}
                                 />
-                            </Col>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Nombre de bouteilles"
                                     error={!!this.state.errors.originalStock}
@@ -224,8 +203,8 @@ export default class NewBottleTypeDialog extends React.Component {
                                     fullWidth
                                     onChange={e => this._handleFieldChange('originalStock', e.target.value)}
                                 />
-                            </Col>
-                        </Row>
+                            </Grid>
+                        </Grid>
                     </form>
                 </DialogContent>
                 <DialogActions>

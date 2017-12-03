@@ -2,7 +2,7 @@ import React from 'react';
 
 import * as constants from 'config/constants';
 
-import { ListItem } from 'material-ui/List';
+import { ListItem, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 
 require('./BottleTypeListItem.scss');
@@ -58,12 +58,12 @@ export default class BottleTypeListItem extends React.Component {
 
         return (
             <ListItem
-                className="BottleTypeListItem"
-                primaryText={this.state.type.name}
-                secondaryText={secondaryText}
-                leftAvatar={<Avatar className="BottleTypeListItem__avatar">{this.state.type.shortName}</Avatar>}
+                button
                 onTouchTap={this._handleSelection}
-            />
+            >
+                <Avatar className="BottleTypeListItem__avatar">{this.state.type.shortName}</Avatar>
+                <ListItemText primary={this.state.type.name} secondary={secondaryText} />
+            </ListItem>
         );
     }
 

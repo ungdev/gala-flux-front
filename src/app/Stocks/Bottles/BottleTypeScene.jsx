@@ -86,6 +86,7 @@ export default class BottleTypeScene extends React.Component {
                                 <Button
                                     fab
                                     className="FloatingButton"
+                                    color="primary"
                                     onTouchTap={this._toggleNewBottleTypeDialog}
                                 >
                                     <ContentAddIcon />
