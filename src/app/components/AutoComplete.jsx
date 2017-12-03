@@ -9,17 +9,18 @@ import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 import { withStyles } from 'material-ui/styles';
 
-const styles = theme => ({
+const styles = theme => {console.log(theme);return ({
     container: {},
     suggestionsContainerOpen: {
         position: 'fixed',
+        zIndex: theme.zIndex.popover,
     },
     suggestion: {},
     suggestionsList: {
         listStyleType: 'none',
         padding: 0,
     },
-});
+})};
 
 /**
  * Autocomplete Field

@@ -5,13 +5,14 @@ import NotificationActions from 'actions/NotificationActions';
 import TeamStore from 'stores/TeamStore';
 
 import Dialog from 'app/components/ResponsiveDialog.jsx';
-import { Row, Col } from 'react-flexbox-grid';
+import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
+import Grid from 'material-ui/Grid';
+import { MenuItem } from 'material-ui/Menu';
 import TextField from 'material-ui/TextField';
-import SelectableMenuItem from 'app/components/SelectableMenuItem.jsx';
 import Switch from 'material-ui/Switch';
 import { FormControlLabel } from 'material-ui/Form';
 import Button from 'material-ui/Button';
-import AutoComplete from 'material-ui-old/AutoComplete';
+import AutoComplete from 'app/components/AutoComplete.jsx';
 
 
 
@@ -29,10 +30,10 @@ export default class NewButtonDialog extends React.Component {
             values: {
                 title: '',
                 category: '',
-                senderGroup: null,
+                senderGroup: '-',
                 receiverTeamId: '',
                 messageRequired: false,
-                messagePrompt: 'Quel est le problème ?',
+                messagePrompt: '',
                 messageDefault: '',
             },
             errors: {},
@@ -40,7 +41,7 @@ export default class NewButtonDialog extends React.Component {
 
 
         // binding
-        this._handleFieldChange = this._handleFieldChange.bind(this);
+        this.handleFieldChange = this.handleFieldChange.bind(this);
         this._handleSubmit = this._handleSubmit.bind(this);
     }
 
@@ -50,7 +51,7 @@ export default class NewButtonDialog extends React.Component {
      * @param  {string} field Field name
      * @param  {string} value New value
      */
-    _handleFieldChange(field, value) {
+    handleFieldChange(field, value) {
         let values = this.state.values;
         values[field] = value;
         this.setState({values: values, errors: {}});
@@ -66,16 +67,20 @@ export default class NewButtonDialog extends React.Component {
             e.preventDefault();
         }
 
+        // Replace selects with '-' value by null
+        let values = this.state.values;
+        values.senderGroup = values.senderGroup === '-' ? null : values.senderGroup;
+
         // Submit
-        AlertButtonService.create(this.state.values)
+        AlertButtonService.create(values)
         .then((button) => {
             this.setState({ values: {
                 title: '',
                 category: '',
-                senderGroup: null,
+                senderGroup: '-',
                 receiverTeamId: '',
                 messageRequired: false,
-                messagePrompt: 'Quel est le problème ?',
+                messagePrompt: '',
                 messageDefault: '',
             } });
             NotificationActions.snackbar('Le bouton ' + button.title + ' a bien été créé.');
@@ -94,133 +99,129 @@ export default class NewButtonDialog extends React.Component {
 
 
     render() {
-        const actions = [
-            <Button
-                color="accent"
-                onTouchTap={this.props.close}
-            >
-                Fermer
-            </Button>,
-            <Button
-                color="primary"
-                type="submit"
-                onTouchTap={this._handleSubmit}
-            >
-                Créer
-            </Button>,
-        ];
-
-
+        console.log('groupes', TeamStore.groups)
         return (
             <Dialog
-                title={'Creation d\'un bouton d\'alerte'}
                 open={this.props.show}
-                actions={actions}
-                autoScrollBodyContent={true}
-                modal={false}
                 onRequestClose={this.props.close}
             >
+                <DialogTitle>Creation d'un bouton d'alerte</DialogTitle>
+                <DialogContent>
 
-                Remplissez le formulaire ci-dessous pour créer un nouveau bouton d'alerte.
+                    <p>Remplissez le formulaire ci-dessous pour créer un nouveau bouton d'alerte.</p>
 
-                <form onSubmit={this._handleSubmit}>
-                    <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                    <Row>
-                        <Col xs={12} sm={6}>
-                            <TextField
-                                label="Nom de l'alerte"
-                                error={!!this.state.errors.title}
-                                helperText={this.state.errors.title}
-                                value={this.state.values.title}
-                                fullWidth
-                                onChange={e => this._handleFieldChange('title', e.target.value)}
-                                autoFocus
-                                inputRef={(field) => { this.focusField = field; }}
-                            />
-                        </Col>
-                        <Col xs={12} sm={6}>
-                            <AutoComplete
-                                label="Catégorie"
-                                error={!!this.state.errors.category}
-                                helperText={this.state.errors.category}
-                                value={this.state.values.category}
-                                fullWidth
-                                onUpdateInput={v => this._handleFieldChange('category', v)}
-                                filter={AutoComplete.fuzzyFilter}
-                                dataSource={this.props.categories}
-                                openOnFocus={true}
-                            />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12} sm={6}>
-                            <TextField
-                                select
-                                label="Groupe d'expéditeur de l'alerte"
-                                value={this.state.values.senderGroup}
-                                onChange={(e) => this.props.setFilters('senderGroup', e.target.value)}
-                                fullWidth
-                            >
-                                <SelectableMenuItem value={null}>Tous les groupes</SelectableMenuItem>
-                                {
-                                    this.state.groups.map((group, i) => {
-                                        return <SelectableMenuItem key={group} value={group} >{group}</SelectableMenuItem>
-                                    })
-                                }
-                            </TextField>
-                        </Col>
-                        <Col xs={12} sm={6}>
-                            <SelectField
-                                onChange={(e, i, v) => this._handleFieldChange("receiverTeamId", v)}
-                                value={this.state.values.receiverTeamId}
-                                error={!!this.state.errors.receiverTeamId}
-                                helperText={this.state.errors.receiverTeamId}
-                                fullWidth
-                                label="Destinataire de l'alerte"
-                            >
-                                {
-                                    this.props.teams.map((team, i) => {
-                                        return <MenuItem key={i} value={team.id} primaryText={team.name} />
-                                    })
-                                }
-                            </SelectField>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12} sm={6}>
-                            <TextField
-                                multiLine
-                                label="Question du message"
-                                fullWidth
-                                rows={3}
-                                rowsMax={3}
-                                value={this.state.values.messagePrompt}
-                                onChange={e => this._handleFieldChange('messagePrompt', e.target.value)}
-                            />
-                            <FormControlLabel
-                                label="Message obligatoire"
-                                control={
-                                    <Switch
-                                        labelPosition="right"
-                                        checked={this.state.values.messageRequired}
-                                        onChange={(e, v) => this._handleFieldChange('messageRequired', v)}
-                                    />
-                                }
-                            />
-                        </Col>
-                        <Col xs={12} sm={6}>
-                            <TextField
-                                multiLine
-                                label="Réponse par défaut"
-                                fullWidth
-                                rows={3}
-                                rowsMax={3}
-                                value={this.state.values.messageDefault}
-                                onChange={e => this._handleFieldChange('messageDefault', e.target.value)}
-                            />
-                        </Col>
-                    </Row>
-                </form>
+                    <form onSubmit={this._handleSubmit}>
+                        <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
+                        <Grid container spacing={24}>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    label="Nom de l'alerte"
+                                    error={!!this.state.errors.title}
+                                    helperText={this.state.errors.title}
+                                    value={this.state.values.title}
+                                    fullWidth
+                                    onChange={e => this.handleFieldChange('title', e.target.value)}
+                                    autoFocus
+                                    inputRef={(field) => { this.focusField = field; }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <AutoComplete
+                                    label="Catégorie"
+                                    error={!!this.state.errors.category}
+                                    helperText={this.state.errors.category}
+                                    value={this.state.values.category}
+                                    fullWidth
+                                    onChange={e => this.handleFieldChange('category', e.target.value)}
+                                    onSuggestionSelected={option => this.handleFieldChange('category', option.label)}
+                                    suggestions={this.props.categories.map(c => ({label: c}))}
+                                    openOnFocus={true}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    select
+                                    label="Groupe d'expéditeur de l'alerte"
+                                    value={this.state.values.senderGroup}
+                                    error={!!this.state.errors.senderGroup}
+                                    helperText={this.state.errors.senderGroup}
+                                    onChange={(e) => this.handleFieldChange('senderGroup', e.target.value)}
+                                    fullWidth
+                                >
+                                    <MenuItem value="-">Tous les groupes</MenuItem>
+                                    {
+                                        this.state.groups.map((group) => {
+                                            return <MenuItem key={group} value={group}>{group}</MenuItem>
+                                        })
+                                    }
+                                </TextField>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    select
+                                    onChange={(e) => this.handleFieldChange('receiverTeamId', e.target.value)}
+                                    value={this.state.values.receiverTeamId}
+                                    error={!!this.state.errors.receiverTeamId}
+                                    helperText={this.state.errors.receiverTeamId}
+                                    fullWidth
+                                    label="Destinataire de l'alerte"
+                                >
+                                    {
+                                        this.props.teams.map((team) => {
+                                            return <MenuItem key={team.id} value={team.id}>{team.name}</MenuItem>
+                                        })
+                                    }
+                                </TextField>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    multiline
+                                    label="Question du message"
+                                    fullWidth
+                                    rows={3}
+                                    rowsMax={3}
+                                    value={this.state.values.messagePrompt}
+                                    onChange={e => this.handleFieldChange('messagePrompt', e.target.value)}
+                                />
+                                <FormControlLabel
+                                    label="Message obligatoire"
+                                    control={
+                                        <Switch
+                                            checked={this.state.values.messageRequired}
+                                            onChange={(e, v) => this.handleFieldChange('messageRequired', v)}
+                                        />
+                                    }
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    multiline
+                                    label="Réponse par défaut"
+                                    fullWidth
+                                    rows={3}
+                                    rowsMax={3}
+                                    value={this.state.values.messageDefault}
+                                    onChange={e => this.handleFieldChange('messageDefault', e.target.value)}
+                                />
+                            </Grid>
+                        </Grid>
+                    </form>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color="accent"
+                        onTouchTap={this.props.close}
+                    >
+                        Fermer
+                    </Button>
+                    <Button
+                        color="primary"
+                        type="submit"
+                        onTouchTap={this._handleSubmit}
+                    >
+                        Créer
+                    </Button>
+                </DialogActions>
             </Dialog>
         )
     }

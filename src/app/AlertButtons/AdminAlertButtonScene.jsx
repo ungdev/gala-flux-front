@@ -7,9 +7,9 @@ import NotificationActions from 'actions/NotificationActions';
 
 import ContentAddIcon from 'material-ui-icons/Add';
 import Button from 'material-ui/Button';
-import Subheader from 'material-ui-old/Subheader';
+import ListSubheader from 'material-ui/List/ListSubheader';
 import Divider from 'material-ui/Divider';
-import {List, ListItem} from 'material-ui/List';
+import List, { ListItemText, ListItem } from 'material-ui/List';
 import CenteredMessage from 'app/components/CenteredMessage.jsx'
 import DataLoader from "app/components/DataLoader.jsx";
 
@@ -75,21 +75,24 @@ export default class AdminAlertButtonScene extends React.Component {
                             {Object.keys(this.state.buttons).length > 0 ?
                                     <List>
                                         {Object.keys(this.state.buttons).map((category, i) => {
-                                            return <div key={i}>
-                                                <Subheader>{category}</Subheader>
+                                            return (
+                                            <div key={i}>
+                                                <ListSubheader disableSticky>{category}</ListSubheader>
                                                 {this.state.buttons[category].map((button, i) => {
                                                     let team = this.state.teams.get(button.receiverTeamId);
                                                     team = team ? team.name : 'équipe supprimé';
 
-                                                    return  <ListItem
-                                                            primaryText={button.title}
-                                                            secondaryText={<span>{(button.senderGroup || '')} → {team}</span>}
+                                                    return (
+                                                        <ListItem
+                                                            button
                                                             key={button.id}
                                                             onTouchTap={_ => this._toggleUpdateButtonDialog(button)}
-                                                        />
+                                                        >
+                                                            <ListItemText primary={button.title} secondary={<span>{(button.senderGroup || '')} → {team}</span>} />
+                                                        </ListItem>);
                                                 })}
                                                 <Divider/>
-                                            </div>
+                                            </div>);
                                         })}
                                     </List>
                             :
@@ -99,13 +102,13 @@ export default class AdminAlertButtonScene extends React.Component {
                             { AuthStore.can('alertButton/admin') &&
                                 <Button
                                     fab
+                                    color="primary"
                                     className="FloatingButton"
                                     onTouchTap={this._toggleNewButtonDialog}
                                 >
                                     <ContentAddIcon />
                                 </Button>
                             }
-
 
                             <NewButtonDialog
                                 show={this.state.showNewButtonDialog}

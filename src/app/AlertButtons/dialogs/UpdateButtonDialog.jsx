@@ -4,14 +4,16 @@ import AlertButtonService from 'services/AlertButtonService';
 import NotificationActions from 'actions/NotificationActions';
 import TeamStore from 'stores/TeamStore';
 
-import { Row, Col } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
 import SelectableMenuItem from 'app/components/SelectableMenuItem.jsx';
 import Switch from 'material-ui/Switch';
 import { FormControlLabel } from 'material-ui/Form';
 import Button from 'material-ui/Button';
-import AutoComplete from 'material-ui-old/AutoComplete';
-import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
+import { MenuItem } from 'material-ui/Menu';
+import AutoComplete from 'app/components/AutoComplete.jsx';
+import AlignedDialogActions from 'app/components/AlignedDialogActions.jsx';
+import { DialogTitle, DialogContent } from 'material-ui/Dialog';
 
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import Confirm from 'app/components/Confirm.jsx';
@@ -30,7 +32,7 @@ export default class UpdateButtonDialog extends React.Component {
             values: {
                 title: props.button.title || '',
                 category: props.button.category || '',
-                senderGroup: props.button.senderGroup || null,
+                senderGroup: props.button.senderGroup || '-',
                 receiverTeamId: props.button.receiverTeamId || '',
                 messageRequired: props.button.messageRequired || false,
                 messagePrompt: props.button.messagePrompt || '',
@@ -43,7 +45,7 @@ export default class UpdateButtonDialog extends React.Component {
 
 
         // binding
-        this._handleFieldChange = this._handleFieldChange.bind(this);
+        this.handleFieldChange = this.handleFieldChange.bind(this);
         this._handleSubmit = this._handleSubmit.bind(this);
         this._handleDelete = this._handleDelete.bind(this);
     }
@@ -53,7 +55,7 @@ export default class UpdateButtonDialog extends React.Component {
             values: {
                 title: props.button.title || '',
                 category: props.button.category || '',
-                senderGroup: props.button.senderGroup || null,
+                senderGroup: props.button.senderGroup || '-',
                 receiverTeamId: props.button.receiverTeamId || '',
                 messageRequired: props.button.messageRequired || false,
                 messagePrompt: props.button.messagePrompt || '',
@@ -68,7 +70,7 @@ export default class UpdateButtonDialog extends React.Component {
      * @param  {string} field Field name
      * @param  {string} value New value
      */
-    _handleFieldChange(field, value) {
+    handleFieldChange(field, value) {
         let values = this.state.values;
         values[field] = value;
         this.setState({values: values, errors: {}});
@@ -83,8 +85,13 @@ export default class UpdateButtonDialog extends React.Component {
         if(e) {
             e.preventDefault();
         }
+
+        // Replace selects with '-' value by null
+        let values = this.state.values;
+        values.senderGroup = values.senderGroup === '-' ? null : values.senderGroup;
+
         // Submit
-        AlertButtonService.update(this.props.button.id, this.state.values)
+        AlertButtonService.update(this.props.button.id, values)
         .then((button) => {
             NotificationActions.snackbar('Le bouton ' + button.title + ' a bien été modifié.');
             if(this.focusField) this.focusField.focus();
@@ -138,60 +145,58 @@ export default class UpdateButtonDialog extends React.Component {
                 <DialogTitle>Modification d'un bouton d'alerte</DialogTitle>
                 <DialogContent>
 
-                    Remplissez le formulaire ci-dessous pour créer un nouveau bouton d'alerte.
+                    <p>Remplissez le formulaire ci-dessous pour créer un nouveau bouton d'alerte.</p>
 
                     <form onSubmit={this._handleSubmit}>
                         <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                        <Row>
-                            <Col xs={12} sm={6}>
+                        <Grid container spacing={24}>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Nom de l'alerte"
                                     error={!!this.state.errors.title}
                                     helperText={this.state.errors.title}
                                     value={this.state.values.title}
                                     fullWidth
-                                    onChange={e => this._handleFieldChange('title', e.target.value)}
+                                    onChange={e => this.handleFieldChange('title', e.target.value)}
                                     autoFocus={true}
                                     inputRef={(field) => { this.focusField = field; }}
                                 />
-                            </Col>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 <AutoComplete
                                     label="Catégorie"
                                     error={!!this.state.errors.category}
                                     helperText={this.state.errors.category}
                                     value={this.state.values.category}
                                     fullWidth
-                                    onUpdateInput={v => this._handleFieldChange('category', v)}
-                                    filter={AutoComplete.fuzzyFilter}
-                                    dataSource={this.props.categories}
+                                    onChange={e => this.handleFieldChange('category', e.target.value)}
+                                    onSuggestionSelected={option => this.handleFieldChange('category', option.label)}
+                                    suggestions={this.props.categories.map(c => ({label: c}))}
                                     openOnFocus={true}
                                 />
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12} sm={6}>
-                                <SelectField
-                                    onChange={(e, i, v) => this._handleFieldChange("senderGroup", v)}
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    select
+                                    label="Groupe d'expéditeur de l'alerte"
                                     value={this.state.values.senderGroup}
                                     error={!!this.state.errors.senderGroup}
                                     helperText={this.state.errors.senderGroup}
+                                    onChange={(e) => this.handleFieldChange('senderGroup', e.target.value)}
                                     fullWidth
-                                    label="Groupe d'expéditeur de l'alerte"
-                                    floatingLabelFixed={true}
                                 >
-                                    <MenuItem value={null} primaryText="Tous les groupes" />
+                                    <MenuItem value="-">Tous les groupes</MenuItem>
                                     {
-                                        this.state.groups.map((group, i) => {
-                                            return <MenuItem key={i} value={group} primaryText={group} />
+                                        this.state.groups.map((group) => {
+                                            return <MenuItem key={group} value={group}>{group}</MenuItem>
                                         })
                                     }
-                                </SelectField>
-                            </Col>
-                            <Col xs={12} sm={6}>
+                                </TextField>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     select
-                                    onChange={(e, i, v) => this._handleFieldChange("receiverTeamId", v)}
+                                    onChange={(e) => this.handleFieldChange('receiverTeamId', e.target.value)}
                                     value={this.state.values.receiverTeamId}
                                     error={!!this.state.errors.receiverTeamId}
                                     helperText={this.state.errors.receiverTeamId}
@@ -199,58 +204,48 @@ export default class UpdateButtonDialog extends React.Component {
                                     label="Destinataire de l'alerte"
                                 >
                                     {
-                                        this.props.teams.map((team, i) => {
+                                        this.props.teams.map((team) => {
                                             return <SelectableMenuItem key={team.id} value={team.id}>{team.name}</SelectableMenuItem>
                                         })
                                     }
                                 </TextField>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
-                                    multiLine={true}
+                                    multiline
                                     label="Question du message"
                                     fullWidth
                                     rows={3}
                                     rowsMax={3}
                                     value={this.state.values.messagePrompt}
-                                    onChange={e => this._handleFieldChange('messagePrompt', e.target.value)}
+                                    onChange={e => this.handleFieldChange('messagePrompt', e.target.value)}
                                 />
                                 <br/><br/>
                                 <FormControlLabel
                                     label="Message obligatoire"
                                     control={
-                                        <Toggle
-                                            labelPosition="right"
+                                        <Switch
                                             checked={this.state.values.messageRequired}
-                                            onChange={(e, v) => this._handleFieldChange('messageRequired', v)}
-                                        />}
+                                            onChange={(e, v) => this.handleFieldChange('messageRequired', v)}
+                                        />
+                                    }
                                 />
-                            </Col>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
-                                    multiLine={true}
+                                    multiline
                                     label="Réponse par défaut"
                                     fullWidth
                                     rows={3}
                                     rowsMax={3}
                                     value={this.state.values.messageDefault}
-                                    onChange={e => this._handleFieldChange('messageDefault', e.target.value)}
+                                    onChange={e => this.handleFieldChange('messageDefault', e.target.value)}
                                 />
-                            </Col>
-                        </Row>
+                            </Grid>
+                        </Grid>
                     </form>
-
-                    <Confirm
-                        show={this.state.showDeleteDialog}
-                        no={() => this.setState({showDeleteDialog: false})}
-                        yes={this._handleDelete}
-                    >
-                        Voulez-vous vraiment supprimer le bouton d'alerte <strong>{this.state.values.title}</strong> ?
-                    </Confirm>
                 </DialogContent>
-                <DialogActions>
+                <AlignedDialogActions>
                     <Button
                         color="accent"
                         onTouchTap={() => this.setState({showDeleteDialog: true})}
@@ -270,7 +265,14 @@ export default class UpdateButtonDialog extends React.Component {
                     >
                         Modifier
                     </Button>
-                </DialogActions>
+                </AlignedDialogActions>
+                <Confirm
+                    show={this.state.showDeleteDialog}
+                    no={() => this.setState({showDeleteDialog: false})}
+                    yes={this._handleDelete}
+                >
+                    Voulez-vous vraiment supprimer le bouton d'alerte <strong>{this.state.values.title}</strong> ?
+                </Confirm>
             </Dialog>
         )
     }

@@ -38,6 +38,20 @@ const themeConfiguration = {
             'contrastDefaultColor': 'light'
         },
     },
+    zIndex: {
+        appBar: 1100,
+        dialog: 1500,
+        dialogOverlay: 1400,
+        drawerOverlay: 1200,
+        layer: 2000,
+        menu: 1000,
+        mobileStepper: 900,
+        navDrawer: 1300,
+        popover: 2100,
+        snackbar: 2900,
+        tooltip: 3000,
+    },
+
 
     // Custom variables
     'custom': {

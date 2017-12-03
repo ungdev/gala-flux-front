@@ -55,18 +55,3 @@ export default class SelectGroupField extends React.Component {
     }
 
 }
-
-    // {/* () => {
-    //
-    //     return (<AutoComplete
-    //         searchText={this.state.value}
-    //         onUpdateInput={this._handleUpdateInput}
-    //         onNewRequest={(value, index) => {
-    //             // Only if enter is pressed
-    //             if(index == -1 && this.props.onSubmit) {
-    //                 this.props.onSubmit();
-    //             }
-    //         }}
-    //     />
-    //
-    // )*/}

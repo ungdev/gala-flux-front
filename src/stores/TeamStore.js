@@ -18,8 +18,10 @@ class TeamStore extends BaseStore {
      */
     get groups() {
         let groups = new Set();
-        for (let i in this._modelData) {
-            groups.add(this._modelData[i].group);
+        for (let team of this._modelData) {
+            if(team[1].group) {
+                groups.add(team[1].group);
+            }
         }
         groups = [...groups];
         groups.sort((a,b) =>  a.localeCompare(b));

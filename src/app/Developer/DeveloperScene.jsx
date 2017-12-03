@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {List, ListItem} from 'material-ui/List'
+import List, {ListItem, ListItemText} from 'material-ui/List'
 import Confirm from 'app/components/Confirm.jsx'
 import NotificationActions from 'actions/NotificationActions';
 import DeveloperService from 'services/DeveloperService';
@@ -30,10 +30,14 @@ export default class DeveloperScene extends React.Component {
             <div>
                 <List>
                     <ListItem
-                        primaryText="Actualiser les clients Flux"
-                        secondaryText="Tout les navigateurs connectés seront redirigé vers la page d'accueil"
+                        button
                         onClick={() => this.setState({showRefreshDialog: true})}
+                    >
+                        <ListItemText
+                            primary="Actualiser les clients Flux"
+                            secondary="Tout les navigateurs connectés seront redirigé vers la page d'accueil"
                         />
+                    </ListItem>
                 </List>
 
                 <Confirm

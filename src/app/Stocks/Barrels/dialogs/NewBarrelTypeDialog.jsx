@@ -5,6 +5,7 @@ import Dialog from 'app/components/ResponsiveDialog.jsx';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Grid from 'material-ui/Grid';
+import { InputAdornment } from 'material-ui/Input';
 
 import BarrelTypeService from 'services/BarrelTypeService';
 import NotificationActions from 'actions/NotificationActions';
@@ -173,22 +174,24 @@ export default class NewBarrelTypeDialog extends React.Component {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    label="Prix fournisseur d'un fût (€)"
+                                    label="Prix fournisseur d'un fût"
                                     error={!!this.state.errors.supplierPrice}
                                     helperText={this.state.errors.supplierPrice}
                                     value={this.state.values.supplierPrice}
                                     fullWidth
                                     onChange={e => this._handleFieldChange('supplierPrice', e.target.value)}
+                                    InputProps={{endAdornment: (<InputAdornment position="end">€</InputAdornment>)}}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    label="Prix de revente d'un fût (€)"
+                                    label="Prix de revente d'un fût"
                                     error={!!this.state.errors.sellPrice}
                                     helperText={this.state.errors.sellPrice}
                                     value={this.state.values.sellPrice}
                                     fullWidth
                                     onChange={e => this._handleFieldChange('sellPrice', e.target.value)}
+                                    InputProps={{endAdornment: (<InputAdornment position="end">€</InputAdornment>)}}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -199,6 +202,7 @@ export default class NewBarrelTypeDialog extends React.Component {
                                     value={this.state.values.liters}
                                     fullWidth
                                     onChange={e => this._handleFieldChange('liters', e.target.value)}
+                                    InputProps={{endAdornment: (<InputAdornment position="end">L</InputAdornment>)}}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
