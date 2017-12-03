@@ -78,7 +78,7 @@ export default class LoginAsDialog extends React.Component {
                                     onUpdateInput={this.handleChange}
                                     dataSource={this.state.users}
                                     filter={AutoComplete.caseInsensitiveFilter}
-                                    error={this.state.error != ''}
+                                    error={!!this.state.error}
                                     helperText={this.state.error}
                                     onNewRequest={this.submitForm}
                                     maxSearchResults={10}

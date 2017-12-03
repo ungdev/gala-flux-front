@@ -4,8 +4,41 @@ import Form from 'app/Chat/components/Form.jsx';
 import Messages from 'app/Chat/components/Messages.jsx';
 import ChannelList from 'app/Chat/components/ChannelList.jsx';
 import MenuContainer from 'app/Layout/components/MenuContainer.jsx';
+import Page from 'app/components/Page.jsx';
+import PagePart from 'app/components/PagePart.jsx';
+import { withStyles } from 'material-ui/styles';
 
-require('./ChatScene.scss');
+const styles = theme => ({
+    mainPannel: {
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        maxHeight: '100%',
+        overflow: 'hidden',
+    },
+    messages: {
+        overflowX: 'hidden',
+        overflowY: 'auto',
+        width: '100%',
+        height: '100%',
+    },
+    form: {
+        maxHeight: '48px',
+        minHeight: '48px',
+        height: '48px',
+    },
+    menu: {
+        [theme.breakpoints.down('md')]: {
+            width: '180px',
+            maxWidth: '180px',
+        },
+        [theme.breakpoints.up('md')]: {
+            width: '250px',
+            maxWidth: '250px',
+        },
+    }
+});
 
 /**
  * This component will print thet chat page for the admin panel
@@ -13,13 +46,14 @@ require('./ChatScene.scss');
  * @param {bool} hideMenu If true, channel selector will not be shown
  * @param {Object} router react-router router object
  */
-export default class ChatScene extends React.Component {
+class ChatScene extends React.Component {
 
     constructor(props) {
         super(props);
     }
 
     render() {
+        const { classes } = this.props;
         let channel = null;
         // Set channel if we are on chat path
         if(this.props.router && this.props.router.routes.map(route => route.path).includes('/chat/**') && this.props.router.params.splat) {
@@ -27,17 +61,20 @@ export default class ChatScene extends React.Component {
         }
 
         return (
-            <div className="ChatScene">
-                <div className="ChatScene__column">
+            <Page>
+                <PagePart main={true} className={classes.mainPannel}>
                     <Messages channel={this.props.channel} />
                     <Form channel={this.props.channel} />
-                </div>
+                </PagePart>
                 {!this.props.hideMenu &&
-                    <MenuContainer router={this.props.router}>
-                        <ChannelList selectDefault={true}/>
-                    </MenuContainer>
+                    <PagePart main={false} breakpoint="xs" className={classes.menu}>
+                        <MenuContainer router={this.props.router}>
+                            <ChannelList selectDefault={true}/>
+                        </MenuContainer>
+                    </PagePart>
                 }
-            </div>
+            </Page>
         );
     }
 }
+export default withStyles(styles)(ChatScene);

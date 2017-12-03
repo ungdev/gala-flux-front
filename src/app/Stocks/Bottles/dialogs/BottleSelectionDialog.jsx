@@ -132,7 +132,7 @@ export default class BottleSelectionDialog extends React.Component {
                         Selectionner
                         <TextField
                             name="box"
-                            error={this.state.errors.box != ''}
+                            error={!!this.state.errors.box}
                             helperText={this.state.errors.box}
                             maxLength="3"
                             value={this.state.values.box}
@@ -144,7 +144,7 @@ export default class BottleSelectionDialog extends React.Component {
                             /> carton{(this.state.values.box > 1 ? 's' : '')} et
                         <TextField
                             name="bottle"
-                            error={this.state.errors.bottle != ''}
+                            error={!!this.state.errors.bottle}
                             helperText={this.state.errors.bottle}
                             maxLength="3"
                             value={this.state.values.bottle}

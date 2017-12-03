@@ -218,7 +218,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
                             <Col xs={12} sm={6}>
                                 <TextField
                                     label="Nom"
-                                    error={this.state.errors.name != ''}
+                                    error={!!this.state.errors.name}
                                     helperText={this.state.errors.name}
                                     value={this.state.values.name}
                                     fullWidth
@@ -231,7 +231,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
                                 <TextField
                                     label="Abréviation"
                                     maxLength="3"
-                                    error={this.state.errors.shortName != ''}
+                                    error={!!this.state.errors.shortName}
                                     helperText={this.state.errors.shortName}
                                     value={this.state.values.shortName}
                                     fullWidth
@@ -243,7 +243,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
                             <Col xs={12} sm={6}>
                             <TextField
                                 label="Prix fournisseur d'une bouteille (€)"
-                                error={this.state.errors.supplierPrice != ''}
+                                error={!!this.state.errors.supplierPrice}
                                 helperText={this.state.errors.supplierPrice}
                                 value={this.state.values.supplierPrice}
                                 fullWidth
@@ -253,7 +253,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
                             <Col xs={12} sm={6}>
                                 <TextField
                                     label="Prix de revente d'une bouteille (€)"
-                                    error={this.state.errors.sellPrice != ''}
+                                    error={!!this.state.errors.sellPrice}
                                     helperText={this.state.errors.sellPrice}
                                     value={this.state.values.sellPrice}
                                     fullWidth
@@ -265,7 +265,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
                             <Col xs={12} sm={6}>
                                 <TextField
                                     label="Nombre de bouteille par caisse"
-                                    error={this.state.errors.quantityPerBox != ''}
+                                    error={!!this.state.errors.quantityPerBox}
                                     helperText={this.state.errors.quantityPerBox}
                                     value={this.state.values.quantityPerBox}
                                     fullWidth
@@ -275,7 +275,7 @@ export default class UpdateBottleTypeDialog extends React.Component {
                             <Col xs={12} sm={6}>
                                 <TextField
                                     label="Nombre de bouteilles"
-                                    error={this.state.errors.originalStock != ''}
+                                    error={!!this.state.errors.originalStock}
                                     helperText={this.state.errors.originalStock}
                                     value={this.state.values.originalStock}
                                     fullWidth

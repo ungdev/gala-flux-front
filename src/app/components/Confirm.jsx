@@ -34,7 +34,7 @@ export default class Confirm extends React.Component {
                         </Button>
                         <Button
                             color="primary"
-                            keyboardFocused={true}
+                            autoFocus
                             onTouchTap={this.props.yes}
                         >
                             Oui

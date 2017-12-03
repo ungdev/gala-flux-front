@@ -88,6 +88,7 @@ export default class BarrelTypeScene extends React.Component {
 
                             { AuthStore.can('barrelType/admin') &&
                                 <Button
+                                    color="primary"
                                     fab
                                     className="FloatingButton"
                                     onTouchTap={this._toggleNewBarrelTypeDialog}

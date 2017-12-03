@@ -1,10 +1,11 @@
 import React from 'react';
 
 import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
+import AlignedDialogActions from 'app/components/AlignedDialogActions.jsx';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import { Grid, Row, Col } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
 
 import BarrelTypeService from 'services/BarrelTypeService';
 import NotificationActions from 'actions/NotificationActions';
@@ -156,30 +157,11 @@ export default class UpdateBarrelTypeDialog extends React.Component {
             this.props.close();
         })
         .catch((error) => {
-            this.submitted = false;
-
-            let errors = {};
-            if(error.status === 'ValidationError' && error.formErrors) {
-                for (let field in error.formErrors) {
-                    if(error.formErrors[field][0].rule == 'string') {
-                        errors[field] = 'Ce champ est vide ou contient une donnée invalide.';
-                    }
-                    else if(error.formErrors[field][0].rule == 'unique') {
-                        errors[field] = 'Il existe déjà un autre type de fût avec cette valeur.';
-                    }
-                    else if(error.formErrors[field][0].rule == 'required') {
-                        errors[field] = 'Ce champ est obligatoire.';
-                    }
-                    else {
-                        errors[field] = error.formErrors[field][0].message;
-                        console.warn('Validation message not translated. ', error.formErrors[field]);
-                    }
-                }
+            if(error.formErrors && Object.keys(error.formErrors).length) {
+                this.setState({ errors: error.formErrors });
             }
-            this.setState({ errors: errors });
-
-            if(!Object.keys(errors).length) {
-                NotificationActions.error('Une erreur s\'est produite pendant la création du type de fût', error);
+            else {
+                NotificationActions.error('Une erreur s\'est produite pendant la modification du type de fût', error);
             }
         });
     }
@@ -212,16 +194,16 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                 <DialogTitle>{'Modification des fûts ' + this.state.values.name}</DialogTitle>
                 <DialogContent>
 
-                    Modifier le formulaire ci-dessous pour modifier les fûts <strong>{this.state.values.name}</strong>.
+                    <p>Modifier le formulaire ci-dessous pour modifier les fûts <strong>{this.state.values.name}</strong>.</p>
 
 
                     <form onSubmit={this._handleSubmit}>
                         <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                        <Row>
-                            <Col xs={12} sm={6}>
+                        <Grid container spacing={24}>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Nom"
-                                    error={this.state.errors.name != ''}
+                                    error={!!this.state.errors.name}
                                     helperText={this.state.errors.name}
                                     value={this.state.values.name}
                                     fullWidth
@@ -229,63 +211,59 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                                     autoFocus={true}
                                     inputRef={(field) => { this.focusField = field; }}
                                 />
-                            </Col>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Abréviation"
-                                    maxLength="3"
-                                    error={this.state.errors.shortName != ''}
+                                    inputProps={{maxLength: 3}}
+                                    error={!!this.state.errors.shortName}
                                     helperText={this.state.errors.shortName}
                                     value={this.state.values.shortName}
                                     fullWidth
                                     onChange={e => this._handleFieldChange('shortName', e.target.value)}
                                 />
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                             <TextField
                                 label="Prix fournisseur d'un fût (€)"
-                                error={this.state.errors.supplierPrice != ''}
+                                error={!!this.state.errors.supplierPrice}
                                 helperText={this.state.errors.supplierPrice}
                                 value={this.state.values.supplierPrice}
                                 fullWidth
                                 onChange={e => this._handleFieldChange('supplierPrice', e.target.value)}
                             />
-                            </Col>
-                            <Col xs={12} sm={6}>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Prix de revente d'un fût (€)"
-                                    error={this.state.errors.sellPrice != ''}
+                                    error={!!this.state.errors.sellPrice}
                                     helperText={this.state.errors.sellPrice}
                                     value={this.state.values.sellPrice}
                                     fullWidth
                                     onChange={e => this._handleFieldChange('sellPrice', e.target.value)}
                                 />
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Nombre de litres par fût"
-                                    error={this.state.errors.liters != ''}
+                                    error={!!this.state.errors.liters}
                                     helperText={this.state.errors.liters}
                                     value={this.state.values.liters}
                                     fullWidth
                                     onChange={e => this._handleFieldChange('liters', e.target.value)}
                                 />
-                            </Col>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Nombre de fûts"
-                                    error={this.state.errors.count != ''}
+                                    error={!!this.state.errors.count}
                                     helperText={this.state.errors.count}
                                     value={this.state.values.count}
                                     fullWidth
                                     onChange={e => this._handleFieldChange('count', e.target.value)}
                                 />
-                            </Col>
-                        </Row>
+                            </Grid>
+                        </Grid>
                     </form>
 
                     <Confirm
@@ -305,7 +283,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                         Voulez-vous vraiment supprimer le type de fût <strong>{this.state.values.name}</strong> ainsi que tout les fûts associés ?
                     </Confirm>
                 </DialogContent>
-                <DialogActions>
+                <AlignedDialogActions>
                     <Button
                         color="accent"
                         onTouchTap={() => this.setState({showDeleteDialog: true})}
@@ -326,7 +304,7 @@ export default class UpdateBarrelTypeDialog extends React.Component {
                     >
                         Modifier
                     </Button>
-                </DialogActions>
+                </AlignedDialogActions>
             </Dialog>
         );
     }

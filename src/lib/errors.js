@@ -56,6 +56,9 @@ export class ApiError extends Error {
                                         case 'Validation isIP failed':
                                             formErrors[error.path] = 'Cette ip n\'est pas valide';
                                             break;
+                                        case 'Validation len failed':
+                                            formErrors[error.path] = 'La longeur de cette valeur n\'est pas valide';
+                                            break;
                                     }
                                     break;
                             }

@@ -249,7 +249,7 @@ export default class AlertButton extends React.Component {
                             onChange={this._handleInputChange}
                             value={(this.state.showInput ? this.state.message : '') || ''}
                             placeholder={this.props.button.messageRequired ? "Commentaire obligatoire" : ""}
-                            error={this.state.messageError != ''}
+                            error={!!this.state.messageError}
                             helperText={this.state.messageError}
                             id={"button-"+this.props.button.id}
                             />

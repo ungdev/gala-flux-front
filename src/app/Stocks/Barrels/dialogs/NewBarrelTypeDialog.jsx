@@ -4,7 +4,7 @@ import { DialogTitle, DialogActions, DialogContent } from 'material-ui/Dialog';
 import Dialog from 'app/components/ResponsiveDialog.jsx';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import { Grid, Row, Col } from 'react-flexbox-grid';
+import Grid from 'material-ui/Grid';
 
 import BarrelTypeService from 'services/BarrelTypeService';
 import NotificationActions from 'actions/NotificationActions';
@@ -105,7 +105,7 @@ export default class NewBarrelTypeDialog extends React.Component {
             typeName = type.name;
 
             // Set the barrel number
-            return BarrelTypeService.setBarrelNumber(type.id, this.state.values.count);
+            return BarrelTypeService.setBarrelCount(type.id, this.state.values.count);
         })
         .then(() => {
             this.setState({
@@ -147,11 +147,11 @@ export default class NewBarrelTypeDialog extends React.Component {
 
                     <form onSubmit={this._handleSubmit}>
                         <button type="submit" style={{display:'none'}}>Hidden submit button, necessary for form submit</button>
-                        <Row>
-                            <Col xs={12} sm={6}>
+                        <Grid container spacing={24}>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Nom"
-                                    error={this.state.errors.name != ''}
+                                    error={!!this.state.errors.name}
                                     helperText={this.state.errors.name}
                                     value={this.state.values.name}
                                     fullWidth
@@ -159,63 +159,59 @@ export default class NewBarrelTypeDialog extends React.Component {
                                     autoFocus={true}
                                     inputRef={(field) => { this.focusField = field; }}
                                 />
-                            </Col>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Abréviation"
-                                    maxLength="3"
-                                    error={this.state.errors.shortName != ''}
+                                    inputProps={{maxLength: 3}}
+                                    error={!!this.state.errors.shortName}
                                     helperText={this.state.errors.shortName}
                                     value={this.state.values.shortName}
                                     fullWidth
                                     onChange={e => this._handleFieldChange('shortName', e.target.value)}
                                 />
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12} sm={6}>
-                            <TextField
-                                label="Prix fournisseur d'un fût (€)"
-                                error={this.state.errors.supplierPrice != ''}
-                                helperText={this.state.errors.supplierPrice}
-                                value={this.state.values.supplierPrice}
-                                fullWidth
-                                onChange={e => this._handleFieldChange('supplierPrice', e.target.value)}
-                            />
-                            </Col>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    label="Prix fournisseur d'un fût (€)"
+                                    error={!!this.state.errors.supplierPrice}
+                                    helperText={this.state.errors.supplierPrice}
+                                    value={this.state.values.supplierPrice}
+                                    fullWidth
+                                    onChange={e => this._handleFieldChange('supplierPrice', e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Prix de revente d'un fût (€)"
-                                    error={this.state.errors.sellPrice != ''}
+                                    error={!!this.state.errors.sellPrice}
                                     helperText={this.state.errors.sellPrice}
                                     value={this.state.values.sellPrice}
                                     fullWidth
                                     onChange={e => this._handleFieldChange('sellPrice', e.target.value)}
                                 />
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Nombre de litres par fût"
-                                    error={this.state.errors.liters != ''}
+                                    error={!!this.state.errors.liters}
                                     helperText={this.state.errors.liters}
                                     value={this.state.values.liters}
                                     fullWidth
                                     onChange={e => this._handleFieldChange('liters', e.target.value)}
                                 />
-                            </Col>
-                            <Col xs={12} sm={6}>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Nombre de fûts"
-                                    error={this.state.errors.count != ''}
+                                    error={!!this.state.errors.count}
                                     helperText={this.state.errors.count}
                                     value={this.state.values.count}
                                     fullWidth
                                     onChange={e => this._handleFieldChange('count', e.target.value)}
                                 />
-                            </Col>
-                        </Row>
+                            </Grid>
+                        </Grid>
                     </form>
                 </DialogContent>
                 <DialogActions>
