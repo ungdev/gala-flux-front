@@ -205,7 +205,9 @@ export default class DataLoader extends React.Component {
      * Set datastore and inform parent if necessary
      */
     set datastore(datastore) {
-        this.props.onChange(datastore);
+        if(this.props.onChange) {
+            this.props.onChange(datastore);
+        }
         this._datastore = datastore;
     }
 

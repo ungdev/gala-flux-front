@@ -59,12 +59,13 @@ class NotificationStore extends BaseStore {
             console.error('localstorage notificationConfiguration json parsing error', e);
         }
         this._configuration = Object.assign({
-            sound: !global.Android,
-            flash: !global.Android,
-            desktop: !global.Android,
+            enable: true,
+            sound: true,
+            flash: true,
+            desktop: true,
             android: true,
-            alert: true,
-            channel: {}, // notify, show, hide
+            channels: {}, // notify, show, hide
+            alerts: {}, // notify, show
         }, this._configuration);
         localStorage.setItem('notificationConfiguration', JSON.stringify(this._configuration));
         if(global.Android) Android.setConfiguration(JSON.stringify(this._configuration));
@@ -121,9 +122,10 @@ class NotificationStore extends BaseStore {
             return MessageService.getChannels();
         })
         .then(channels => {
+            console.log(channels)
             for (let channel of channels) {
-                if(!this._configuration.channel[channel]) {
-                    this._configuration.channel[channel] = 'notify';
+                if(!this._configuration.channels[channel]) {
+                    this._configuration.channels[channel] = 'notify';
                 }
             }
             localStorage.setItem('notificationConfiguration', JSON.stringify(this._configuration));

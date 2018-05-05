@@ -295,8 +295,9 @@ export default class BaseStore extends EventEmitter {
      * @returns {object|undefined}
      */
     findById(id) {
-        if(this._modelData[id]) {
-            return Object.assign({}, this._modelData.get(id));
+        let obj = this._modelData.get(Number.parseInt(id));
+        if(obj) {
+            return Object.assign({}, obj);
         }
         return undefined;
     }

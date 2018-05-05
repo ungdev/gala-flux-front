@@ -15,7 +15,7 @@ import { red } from 'material-ui/colors';
 import CloudOffIcon from 'material-ui-icons/CloudOff';
 
 import LoginAsDialog from 'app/Layout/dialogs/LoginAsDialog.jsx';
-import NotificationsDialog from "app/Layout/dialogs/NotificationsDialog.jsx";
+import NotificationsDialog from "app/Layout/dialogs/PreferencesDialog.jsx";
 import { MenuList, MenuItem } from 'material-ui/Menu';
 
 require('./AuthMenu.scss');
@@ -158,9 +158,10 @@ export default class AuthMenu extends React.Component {
                             <Avatar
                                 data-tip
                                 data-for="authmenu-offline"
-                                className="Layout__AuthMenu__button__avatar"
-                                icon={<CloudOffIcon color="white" />}
-                            />
+                                className="Layout__AuthMenu__button__avatar--offline"
+                            >
+                                <CloudOffIcon color="white" />
+                            </Avatar>
                             <ReactTooltip
                                 id="authmenu-offline"
                                 place="left"
@@ -183,7 +184,7 @@ export default class AuthMenu extends React.Component {
                         <Divider/>
                     </div>
                     <MenuList>
-                        <MenuItem onClick={this.toggleNotificationsDialog}>Notifications</MenuItem>
+                        <MenuItem onClick={this.toggleNotificationsDialog}>Préférences</MenuItem>
 
                         { this.state.canLoginAs ?
                             <MenuItem onClick={this.openLoginAs}>Se connecter en tant que ...</MenuItem>
@@ -211,4 +212,3 @@ export default class AuthMenu extends React.Component {
     }
 
 }
-

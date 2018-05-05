@@ -23,6 +23,8 @@
     box-sizing: border-box;
     display: flex;
     align-items: center;
+    word-break: break-word;
+    hyphens: auto;
 
     cursor: pointer;
     border: 0;

@@ -82,6 +82,27 @@ class UserService extends BaseService {
             req.send(formData);
         });
     }
+
+
+    /**
+     * Make a webSocket request to get user preferences
+     * @return {Promise} A promise to user preferences
+     */
+    getPreferences() {
+        return this.request('get', '/user/preferences');
+    }
+
+
+    /**
+     * Make a webSocket request to set user preferences
+     * @param {Object} preferences User preferences object
+     * @return {Promise} A promise to user preferences
+     */
+    setPreferences(preferences) {
+        return this.request('put', '/user/preferences', {
+            preferences,
+        });
+    }
 }
 
 export default new UserService();
