@@ -3,18 +3,18 @@ DOKKU_HOST=ung.utt.fr
 DOKKU_PROD=flux.uttnetgroup.fr
 DOKKU_DEV=flux-dev.uttnetgroup.fr
 
-if [[ -n $encrypted_e378bde8517e_key ]] ; then
+if [[ -n $SSH_DEPLOY_KEY ]] ; then
     # Set up ssh key
-    openssl aes-256-cbc -K $encrypted_e378bde8517e_key -iv $encrypted_e378bde8517e_iv -in deploy_key.enc -out deploy_key -d
-    chmod 600 deploy_key
-    mv deploy_key ~/.ssh/id_rsa
-    eval $(ssh-agent)
+    mkdir -p ~/.ssh
+    echo -e "${SSH_DEPLOY_KEY}" > ~/.ssh/id_rsa
+    chmod 600 ~/.ssh/id_rsa
+    eval $(ssh-agent -s)
     ssh-add ~/.ssh/id_rsa
     # SSH config
     echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     # Add dokku to known hosts
     ssh-keyscan -H $DOKKU_HOST >> ~/.ssh/known_hosts
-    # Prepare build directory
+    # Add commit with git original repo informations
     mkdir deploy
     mv dist deploy/
     mv static.json deploy/
@@ -30,5 +30,5 @@ if [[ -n $encrypted_e378bde8517e_key ]] ; then
     else
         git remote add dokku dokku@$DOKKU_HOST:$DOKKU_DEV
     fi
-    git push dokku master -f
+    git push dokku HEAD:refs/heads/master -f
 fi
