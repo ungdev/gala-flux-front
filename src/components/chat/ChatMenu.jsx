@@ -57,6 +57,8 @@ export default class ChatMenu extends React.Component {
                 group: [],
                 public: [],
             };
+            let config = NotificationStore.configuration;
+            config.channel = {};
             for (let channel of channels) {
                 let channelParts = channel.split(':');
                 // Add to the beginning of the list if this is the channel of the team
@@ -66,6 +68,21 @@ export default class ChatMenu extends React.Component {
                 else {
                     newChannels[channelParts[0]].push(channel);
                 }
+
+                // Build notificatuon configuration
+                if (['notify', 'hide', 'show'].includes(NotificationStore.configuration.channel[channel])) {
+                    config.channel[channel] = NotificationStore.configuration.channel[channel];
+                }
+                else {
+                    if(AuthStore.team && (channelParts[1] == AuthStore.team.name || channelParts[1] == AuthStore.team.group)) {
+                        config.channel[channel] = 'notify';
+                    }
+                    else {
+                        config.channel[channel] = 'show';
+                    }
+                }
+                NotificationActions.updateConfiguration(config);
+
             }
             this.setState({channels: newChannels});
         })

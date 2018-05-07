@@ -121,11 +121,6 @@ class NotificationStore extends BaseStore {
             return ChatService.getChannels();
         })
         .then(channels => {
-            for (let channel of channels) {
-                if(!this._configuration.channel[channel]) {
-                    this._configuration.channel[channel] = 'notify';
-                }
-            }
             localStorage.setItem('notificationConfiguration', JSON.stringify(this._configuration));
             if(global.Android) Android.setConfiguration(JSON.stringify(this._configuration));
             this.emitChange();
