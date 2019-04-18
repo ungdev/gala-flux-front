@@ -8,9 +8,8 @@
     "dev": "webpack-dev-server --config webpack.dev.config.js --progress --colors",
     "pubdev": "webpack-dev-server --config webpack.dev.config.js --progress --colors --host 0.0.0.0",
     "old-start": "webpack-dev-server --config webpack.dev.config.js --progress --colors",
-    "old-build": "webpack --config webpack.prod.config.js",
-    "build": "react-scripts build",
-    "start": "static dist --host-address 0.0.0.0 --port 8080 --spa"
+    "build": "webpack --config webpack.prod.config.js",
+    "start": "yarn build && static dist --host-address 0.0.0.0 --port 8080 --spa"
   },
   "repository": {
     "type": "git",
@@ -39,7 +38,6 @@
     "react-flexbox-grid": "^1.0.2",
     "react-fontawesome": "^1.6.1",
     "react-router5": "^4.0.1",
-    "react-scripts": "1.1.4",
     "react-sound": "^0.6.0",
     "react-tap-event-plugin": "^2.0.1",
     "react-tooltip": "^3.3.0",
