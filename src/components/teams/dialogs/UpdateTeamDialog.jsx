@@ -24,6 +24,7 @@ export default class UpdateTeamDialog extends React.Component {
                 'role': (props.team ? props.team.role : ''),
                 'group': (props.team ? props.team.group : ''),
                 'location': (props.team ? props.team.location : ''),
+                'point': (props.team ? props.team.point : ''),
             },
             errors: {},
             showDeleteDialog: false,
@@ -44,6 +45,7 @@ export default class UpdateTeamDialog extends React.Component {
                 'role': (nextProps.team ? nextProps.team.role : this.state.values.role),
                 'group': (nextProps.team ? nextProps.team.group : this.state.values.group),
                 'location': (nextProps.team ? nextProps.team.location : this.state.values.location),
+                'point': (nextProps.team ? nextProps.team.point : this.state.values.point),
             }
         });
     }
@@ -207,6 +209,19 @@ export default class UpdateTeamDialog extends React.Component {
                                     onChange={value => this._handleFieldChange('group', value)}
                                     onSubmit={this._handleSubmit}
                                 />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12} sm={6}>
+                              <TextField
+                                  floatingLabelText="Point"
+                                  errorText={this.state.errors.point}
+                                  value={this.state.values.point}
+                                  fullWidth={true}
+                                  onChange={e => this._handleFieldChange('point', e.target.value)}
+                                  autoFocus={true}
+                                  ref={(field) => { this.focusField = field; }}
+                              />
                             </Col>
                         </Row>
                     </form>

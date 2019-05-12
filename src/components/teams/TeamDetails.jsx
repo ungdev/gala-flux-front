@@ -188,6 +188,11 @@ export default class TeamDetails extends React.Component {
                                 secondaryText={this.state.team.group}
                                 onTouchTap={this._toggleUpdateTeamDialog}
                             />
+                            <ListItem
+                                primaryText="Nom du point dans Buckless"
+                                secondaryText={this.state.team.point || 'Clicker ici pour ajouter'}
+                                onTouchTap={this._toggleUpdateTeamDialog}
+                            />
                         </List>
 
                         <Divider />
