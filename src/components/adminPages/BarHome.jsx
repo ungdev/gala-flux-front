@@ -5,6 +5,7 @@ import TeamStore from '../../stores/TeamStore';
 import ChatMessageList from 'components/chat/ChatMessageList.jsx';
 import ChatMessageForm from 'components/chat/ChatMessageForm.jsx';
 import BarBarrels from 'components/barrels/BarBarrels.jsx';
+import BarStats from 'components/buckless/BarStats.jsx';
 import BarAlertButtons from 'components/alertButtons/BarAlertButtons.jsx';
 import BarNav from 'components/bars/BarNav.jsx';
 
@@ -63,6 +64,7 @@ export default class BarHome extends React.Component {
                     </div>
                     <div className="BarHomePage__stock">
                         <BarBarrels barId={this.state.barId} />
+                        {this.state.team && <BarStats team={this.state.team} />}
                     </div>
                     <div className="BarHomePage__chat">
                         <ChatMessageList channel={channel} />

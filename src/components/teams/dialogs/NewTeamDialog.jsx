@@ -23,6 +23,7 @@ export default class NewTeamDialog extends React.Component {
                 'role': '',
                 'group': '',
                 'location': '',
+                'point': '',
             },
             errors: {},
         };
@@ -61,6 +62,7 @@ export default class NewTeamDialog extends React.Component {
                 role: '',
                 group: '',
                 location: '',
+                point: '',
             } });
             NotificationActions.snackbar('L\'équipe ' + team.name + ' a bien été créé.');
             if(this.focusField) this.focusField.focus();
@@ -161,6 +163,19 @@ export default class NewTeamDialog extends React.Component {
                                 fullWidth={true}
                                 onChange={value => this._handleFieldChange('group', value)}
                                 onSubmit={this._handleSubmit}
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} sm={6}>
+                            <TextField
+                                floatingLabelText="Point Buckless"
+                                errorText={this.state.errors.point}
+                                value={this.state.values.point}
+                                fullWidth={true}
+                                onChange={e => this._handleFieldChange('point', e.target.value)}
+                                autoFocus={true}
+                                ref={(field) => { this.focusField = field; }}
                             />
                         </Col>
                     </Row>
