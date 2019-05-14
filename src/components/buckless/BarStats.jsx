@@ -25,7 +25,23 @@ export default class BarStats extends React.Component {
   render() {
     const { stats } = this.props.team
     if(!stats) return null
-    const result = JSON.parse(stats)
+    const result = JSON.parse(stats).map(item => {
+      return {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        totalTI: parseInt(item.totalTI),
+        count: parseInt(item.count),
+        isCancellation: item.isCancellation
+      }
+    })
+    let items = result.filter(item => !item.isCancellation)
+    const cancellation = result.filter(item => item.isCancellation)
+    cancellation.forEach(item => {
+      let index = items.findIndex(i => i.name === item.name)
+      items[index].count -= item.count
+      items[index].totalTI -= item.totalTI
+    });
     return (
       <div className='BarStats'>
         <Divider />
@@ -43,7 +59,7 @@ export default class BarStats extends React.Component {
             Total
           </Col>
         </Row>
-        {result.map(row => (
+        {items.map(row => (
           <Row key={row.id}>
             <Col xs={12} sm={5}>
               {row.name}

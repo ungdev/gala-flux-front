@@ -185,14 +185,37 @@ export default class BarList extends React.Component {
                 <Row>
                 {
                     this.state.teams.map(team => {
-                        return <Col key={team.id} xs sm={3}>
-                                    <BarCard
-                                        team={team}
-                                        barrels={this.state.barrels[team.id]}
-                                        users={this.state.users[team.id]}
-                                        alerts={fakeAlerts}
-                                    />
-                                </Col>
+                      let buckless = 0
+                      if (team.point) {
+                        const result = JSON.parse(team.stats).map(item => {
+                          return {
+                            name: item.name,
+                            totalTI: parseInt(item.totalTI),
+                            count: parseInt(item.count),
+                            isCancellation: item.isCancellation
+                          }
+                        })
+                        let items = result.filter(item => !item.isCancellation)
+                        const cancellation = result.filter(item => item.isCancellation)
+                        cancellation.forEach(item => {
+                          let index = items.findIndex(i => i.name === item.name)
+                          items[index].count -= item.count
+                          items[index].totalTI -= item.totalTI
+                        });
+                        items.forEach(item => {
+                          buckless += item.totalTI
+                        });
+                      }
+                      return (
+                        <Col key={team.id} xs sm={3}>
+                          <BarCard
+                            team={team}
+                            barrels={this.state.barrels[team.id]}
+                            buckless={buckless}
+                            users={this.state.users[team.id]}
+                            alerts={fakeAlerts}
+                          />
+                        </Col>)
                     })
                 }
                 </Row>
