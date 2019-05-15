@@ -141,7 +141,7 @@ export default class ChatMessageForm extends React.Component {
                         onKeyDown={this._handleKeyDown}
                         autoFocus={true}
                         ref={(input) => { this.textInput = input; }}
-                        placeholder="Votre message.."
+                        placeholder="Votre message..."
                         style={style}
                         onClick={this._onTextAreaClick}
                     />

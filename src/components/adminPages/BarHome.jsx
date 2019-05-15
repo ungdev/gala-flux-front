@@ -23,10 +23,12 @@ export default class BarHome extends React.Component {
 
         // binding
         this._loadTeam = this._loadTeam.bind(this);
+        this._updateData = this._updateData.bind(this);
     }
 
     componentDidMount() {
         this._loadTeam(this.state.barId);
+        TeamStore.addChangeListener(this._updateData);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -52,6 +54,13 @@ export default class BarHome extends React.Component {
                 NotificationActions.error("Une erreur s'est produite pendant le chargement de l'équipe.", error);
             });
     }
+
+    _updateData(props) {
+      if(!props) {
+          props = this.props;
+      }
+      this._loadTeam(this.state.barId);
+  }
 
     render() {
         const channel = this.state.team ? 'public:' + this.state.team.name : null;

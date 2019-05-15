@@ -201,7 +201,7 @@ export default class ChatMessageList extends React.Component {
         return (
             <div className="ChatMessageList" ref={(scrollArea) => { this.scrollArea = scrollArea; }} onClick={() => ChatActions.viewMessages(this.channel)}>
                 { this.state.loading ?
-                    <CenteredMessage>Chargement..</CenteredMessage>
+                    <CenteredMessage>Chargement...</CenteredMessage>
                 :
 
                     ( this.state.messages.length == 0 ?
