@@ -2,16 +2,13 @@ import React from 'react'
 import { Row, Col } from 'react-flexbox-grid'
 import Divider from 'material-ui/Divider'
 
-
-
 require('styles/buckless/BarStats.scss')
 
 export default class BarStats extends React.Component {
-
   constructor(props) {
-    super(props);
+    super(props)
     this.price = this.price.bind(this)
-}
+  }
 
   price(p) {
     let res = `${p}€`
@@ -23,9 +20,9 @@ export default class BarStats extends React.Component {
   }
 
   render() {
-    const { stats } = this.props.team
-    if(!stats) return null
-    const result = JSON.parse(stats).map(item => {
+    const { sells, reloads } = this.props.team
+    if (!sells) return null
+    let result = JSON.parse(sells).map(item => {
       return {
         id: item.id,
         name: item.name,
@@ -35,13 +32,28 @@ export default class BarStats extends React.Component {
         isCancellation: item.isCancellation
       }
     })
-    let items = result.filter(item => !item.isCancellation)
-    const cancellation = result.filter(item => item.isCancellation)
+    let soldItems = result.filter(item => !item.isCancellation)
+    let cancellation = result.filter(item => item.isCancellation)
     cancellation.forEach(item => {
-      let index = items.findIndex(i => i.name === item.name)
-      items[index].count -= item.count
-      items[index].totalTI -= item.totalTI
-    });
+      let index = soldItems.findIndex(i => i.name === item.name)
+      soldItems[index].count -= item.count
+      soldItems[index].totalTI -= item.totalTI
+    })
+    result = JSON.parse(reloads).map(item => {
+      return {
+        id: item.id,
+        type: item.type,
+        credit: parseInt(item.credit),
+        isCancellation: item.isCancellation
+      }
+    })
+    let reloadItems = []
+    result.forEach(item => {
+      if (!reloadItems[item.type]) reloadItems[item.type] = item
+      else
+        reloadItems[item.type].credit +=
+          item.credit * (item.isCancellation ? -1 : 1)
+    })
     return (
       <div className='BarStats'>
         <Divider />
@@ -59,7 +71,7 @@ export default class BarStats extends React.Component {
             Total
           </Col>
         </Row>
-        {items.map(row => (
+        {soldItems.map(row => (
           <Row key={row.id}>
             <Col xs={12} sm={5}>
               {row.name}
@@ -73,6 +85,25 @@ export default class BarStats extends React.Component {
             <Col xs={12} sm={2}>
               {this.price(row.totalTI)}
             </Col>
+          </Row>
+        ))}
+        <Divider />
+        <Row className='Header'>
+          <Col xs={12} sm={6}>
+            Type
+          </Col>
+          <Col xs={12} sm={6}>
+            Crédit
+          </Col>
+        </Row>
+        {Object.values(reloadItems).map(row => (
+          <Row key={row.id}>
+            <Col xs={12} sm={6}>
+              {row.type}
+            </Col>
+            <Col xs={12} sm={6}>
+              {this.price(row.credit)}
+            </Col>-
           </Row>
         ))}
       </div>

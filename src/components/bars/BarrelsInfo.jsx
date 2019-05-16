@@ -32,7 +32,12 @@ export default class BarrelsInfo extends React.Component {
     render() {
         let states = Object.keys(this.states);
         let emptyCounter = 0;
-
+        let nbr = 0
+        if(this.state.barrels && Math.round(this.state.barrels.cost) != 0) nbr++
+        if(this.state.barrels && Math.round(this.state.barrels.profitability) != 0) nbr++
+        if(Math.round(this.props.bucklessSells/100) != 0) nbr++
+        if(Math.round(this.props.bucklessReloads/100) != 0) nbr++
+        const size = 12 / nbr
         return (
             <div className="CardInfo_container">
                 {
@@ -59,7 +64,8 @@ export default class BarrelsInfo extends React.Component {
                             </div>
                         }
                         <Row className="Barrels_profitability">
-                            <Col xs={4 + (this.props.buckless > 0 ? 0 : 2)} className="CardInfo CardInfo_bordered">
+                            {Math.round(this.state.barrels.cost) > 0 &&
+                              <Col xs={size} className="CardInfo CardInfo_bordered">
                                 <div
                                   data-tip
                                   data-for="tip-cost"
@@ -75,14 +81,15 @@ export default class BarrelsInfo extends React.Component {
                                       Coût total
                                   </span>
                                 </ReactTooltip>
-                            </Col>
-                            {this.props.buckless > 0 && <Col xs={this.props.buckless > 0 ? 4 : 0} className="CardInfo CardInfo_bordered">
+                            </Col>}
+                            {Math.round(this.props.bucklessSells/100) > 0 &&
+                              <Col xs={size} className="CardInfo CardInfo_bordered">
                               <div
                                 data-tip
                                 data-for="tip-buckless"
                               >
                                   <Euro color={color.orange600} />
-                                  <span>{Math.round(this.props.buckless/100)}</span>
+                                  <span>{Math.round(this.props.bucklessSells/100)}</span>
                               </div>
                               <ReactTooltip
                                 id="tip-buckless"
@@ -93,7 +100,26 @@ export default class BarrelsInfo extends React.Component {
                                 </span>
                               </ReactTooltip>
                             </Col>}
-                            <Col xs={4 + (this.props.buckless > 0 ? 0 : 2)} className="CardInfo CardInfo_bordered">
+                            {Math.round(this.props.bucklessReloads/100) > 0 &&
+                              <Col xs={size} className="CardInfo CardInfo_bordered">
+                              <div
+                                data-tip
+                                data-for="tip-buckless-reload"
+                              >
+                                  <Euro color={color.blue600} />
+                                  <span>{Math.round(this.props.bucklessReloads/100)}</span>
+                              </div>
+                              <ReactTooltip
+                                id="tip-buckless-reload"
+                                place="bottom"
+                              >
+                                <span style={{whiteSpace: 'pre-line'}} className="bite">
+                                    Rechargement total sur buckless
+                                </span>
+                              </ReactTooltip>
+                            </Col>}
+                            {Math.round(this.state.barrels.profitability) > 0 &&
+                              <Col xs={size} className="CardInfo CardInfo_bordered">
                                 <div
                                   data-tip
                                   data-for="tip-profitability"
@@ -109,7 +135,7 @@ export default class BarrelsInfo extends React.Component {
                                       Vente théorique
                                   </span>
                                 </ReactTooltip>
-                            </Col>
+                            </Col>}
                         </Row>
                     </div>
                 }

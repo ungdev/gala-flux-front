@@ -71,7 +71,11 @@ export default class BarCard extends React.Component {
                 />
                 <CardText>
                     <AlertsInfo alerts={this.state.alerts} />
-                    <BarrelsInfo barrels={this.state.barrels} buckless={this.props.buckless}/>
+                    <BarrelsInfo
+                      barrels={this.state.barrels}
+                      bucklessSells={this.props.bucklessSells}
+                      bucklessReloads={this.props.bucklessReloads}
+                    />
                 </CardText>
             </Card>
         );

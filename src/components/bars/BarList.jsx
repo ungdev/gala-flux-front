@@ -185,9 +185,10 @@ export default class BarList extends React.Component {
                 <Row>
                 {
                     this.state.teams.map(team => {
-                      let buckless = 0
+                      let bucklessSells = 0
+                      let bucklessReloads = 0
                       if (team.point) {
-                        const result = JSON.parse(team.stats).map(item => {
+                        let result = JSON.parse(team.sells).map(item => {
                           return {
                             name: item.name,
                             totalTI: parseInt(item.totalTI),
@@ -203,15 +204,27 @@ export default class BarList extends React.Component {
                           items[index].totalTI -= item.totalTI
                         });
                         items.forEach(item => {
-                          buckless += item.totalTI
+                          bucklessSells += item.totalTI
                         });
+                        result = JSON.parse(team.reloads).map(item => {
+                          return {
+                            id: item.id,
+                            credit: parseInt(item.credit),
+                            isCancellation: item.isCancellation
+                          }
+                        })
+                    
+                        result.forEach(item => {
+                          bucklessReloads += item.credit * (item.isCancellation ? -1 : 1)
+                        })
                       }
                       return (
                         <Col key={team.id} xs sm={3}>
                           <BarCard
                             team={team}
                             barrels={this.state.barrels[team.id]}
-                            buckless={buckless}
+                            bucklessSells={bucklessSells}
+                            bucklessReloads={bucklessReloads}
                             users={this.state.users[team.id]}
                             alerts={fakeAlerts}
                           />
