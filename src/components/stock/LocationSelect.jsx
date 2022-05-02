@@ -2,6 +2,7 @@ import React from 'react';
 
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import TeamStore from 'stores/TeamStore';
 
 export default class LocationSelect extends React.Component {
 
@@ -39,7 +40,7 @@ export default class LocationSelect extends React.Component {
                     primaryText={"Reserve"}
                 />
                 {
-                    this.state.teams.map(team => {
+                    TeamStore.teams.map(team => {
                         return <MenuItem
                             key={team.id}
                             insetChildren={true}
